@@ -1,0 +1,10 @@
+<ComplexDummyModel>
+    <AnotherDummy varA="1" varB="I am another dummy"/>
+    <Dummy varA="true" varB="1000" varC="I am a dummy" varD="14" varE="100"/>
+    <List>
+        <Dummy varA="true" varB="1" varC="dummy1" varD="11" varE="101"/>
+        <Dummy varA="true" varB="2" varC="dummy2" varD="12" varE="102"/>
+        <Dummy varA="true" varB="3" varC="dummy3" varD="13" varE="103"/>
+        <SubDummy id="1" varC="subDummy1"/>
+    </List>
+</ComplexDummyModel>

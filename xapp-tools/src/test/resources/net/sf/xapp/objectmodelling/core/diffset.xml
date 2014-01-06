@@ -1,0 +1,25 @@
+<DiffSet>
+  <NewNodeDiffs>
+    <NewNodeDiff containerClass="Database" listProperty="People" nodeClass="Person" originalIndex="2">
+      <NewValue><![CDATA[<Person age="0" name="Cynthia-Conny">
+  <Description>]ATADC]!>the most beautiful woman in the world
+        , no really!>]]</Description>
+</Person>
+]]></NewValue>
+    </NewNodeDiff>
+  </NewNodeDiffs>
+  <PropertyDiffs>
+    <PropertyDiff clazz="Person" key="Andy" newValue="Cynthia-Conny" oldValue="Cynthia" property="Mother"/>
+    <PropertyDiff clazz="Person" key="Bill" newValue="2" oldValue="0" property="Age"/>
+    <RichTextPropertyDiff clazz="Person" key="Ed" property="Description">
+      <NewValue><![CDATA[boring]]></NewValue>
+    </RichTextPropertyDiff>
+  </PropertyDiffs>
+  <ReferenceListDiffs>
+    <ReferenceListDiff addedNodeIndexes="1," addedNodes="Cynthia-Conny," containerClass="Group" containerKey="knitting club" listProperty="Members" removedNodes="Cynthia,"/>
+    <ReferenceListDiff addedNodeIndexes="0,2," addedNodes="Cynthia-Conny,Andy," containerClass="Group" containerKey="cooking club" listProperty="Members" removedNodes="Cynthia,Bill,Doris,"/>
+  </ReferenceListDiffs>
+  <RemovedNodeDiffs>
+    <RemovedNodeDiff containerClass="Database" key="Cynthia" listProperty="People" nodeClass="Person"/>
+  </RemovedNodeDiffs>
+</DiffSet>

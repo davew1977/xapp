@@ -1,0 +1,48 @@
+<Database>
+  <Groups>
+    <Group name="knitting club">
+      <Assets>
+        <Asset name="needles" value="8"/>
+        <Asset name="tv" value="90"/>
+      </Assets>
+      <Members>
+        <Person ref="Andy"/>
+        <Person ref="Cynthia-Conny"/>
+        <Person ref="Doris"/>
+      </Members>
+    </Group>
+    <Group name="reading club"> <!-- a group that does not change -->
+      <Assets>
+        <Asset name="100 books" value="2"/>
+      </Assets>
+      <Members>
+        <Person ref="Ed"/>
+        <Person ref="Bill"/>
+        <Person ref="Andy"/>
+      </Members>
+    </Group>
+    <Group name="cooking club">
+      <Assets>
+        <Asset name="Bosch Oven" value="700"/>
+      </Assets>
+      <Members>
+        <Person ref="Cynthia-Conny"/>
+        <Person ref="Ed"/>
+        <Person ref="Andy"/>
+      </Members>
+    </Group>
+  </Groups>
+  <People>
+    <Person father="Bill" mother="Cynthia-Conny" name="Andy"/>
+    <Person name="Bill" age="2"/>
+    <Person name="Cynthia-Conny">
+        <Description>the most beautiful woman in the world
+        , no really!</Description>
+    </Person>
+    <Person name="Doris"/>
+    <Person name="Ed">
+        <Description>boring</Description>
+    </Person>
+    <Person father="Andy" mother="Doris" name="Frances"/>
+  </People>
+</Database>

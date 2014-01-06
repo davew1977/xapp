@@ -1,0 +1,4 @@
+<DummyModel>
+    <Dummy  varB="1000" varD="14" varC="I am a dummy" varA="true" varE="100"/>
+    <AnotherDummy varB="I am another dummy" varA="1"/>
+</DummyModel>

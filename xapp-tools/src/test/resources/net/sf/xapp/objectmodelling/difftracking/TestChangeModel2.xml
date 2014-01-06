@@ -1,0 +1,24 @@
+<ChangeModel>
+    <ChangeSets>
+        <ChangeSet>
+            <PrimaryKeyChanges>
+                <PrimaryKeyChange clazz="A" new="k" old="j"/>
+            </PrimaryKeyChanges>
+        </ChangeSet>
+        <ChangeSet>
+            <PrimaryKeyChanges>
+            </PrimaryKeyChanges>
+        </ChangeSet>
+        <ChangeSet>
+            <PrimaryKeyChanges>
+                <PrimaryKeyChange clazz="A" new="m" old="k"/>
+            </PrimaryKeyChanges>
+        </ChangeSet>
+        <ChangeSet>
+            <PrimaryKeyChanges>
+                <PrimaryKeyChange clazz="A" new="n" old="m"/>
+            </PrimaryKeyChanges>
+        </ChangeSet>
+    </ChangeSets>
+
+</ChangeModel>

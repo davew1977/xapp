@@ -1,0 +1,43 @@
+<DiffSet>
+  <ComplexPropertyDiffs>
+    <ComplexPropertyDiff clazz="B" key="K" property="prop1" propertyClass="P">
+      <DiffSet>
+        <PropertyDiffs>
+           <PropertyDiff clazz="BO" newValue="newValue" property="prop4"/>
+           <PropertyDiff clazz="BO" newValue="sameValue" property="prop2"/>
+           <PropertyDiff clazz="BO" newValue="diffValue2" property="prop3"/>
+        </PropertyDiffs>
+      </DiffSet>
+    </ComplexPropertyDiff>
+
+    <ComplexPropertyDiff clazz="B" key="K" property="prop2" propertyClass="P">
+        <DiffSet>
+            <PropertyDiffs>
+                <PropertyDiff clazz="BO" newValue="newValue" property="prop1"/>
+            </PropertyDiffs>
+        </DiffSet>
+    </ComplexPropertyDiff>
+
+    <ComplexPropertyDiff clazz="B" key="K" property="prop3" propertyClass="P" removed="true"/>
+
+    <ComplexPropertyDiff clazz="B" key="K" property="prop4" propertyClass="P">
+      <NewValue><![CDATA[identicalContent]]></NewValue>
+    </ComplexPropertyDiff>
+
+    <ComplexPropertyDiff clazz="B" key="K" property="prop5" propertyClass="P">
+      <NewValue><![CDATA[diffContent2]]></NewValue>
+    </ComplexPropertyDiff>
+
+  </ComplexPropertyDiffs>
+  <PropertyDiffs>
+    <PropertyDiff clazz="C" newValue="newValue2" property="prop1"/>
+    <PropertyDiff clazz="C" newValue="newValue" property="prop2"/>
+  </PropertyDiffs>
+  <ReferenceListDiffs>
+    <ReferenceListDiff addedNodes="A,B," removedNodes="E" containerClass="Config" listProperty="prop1"/>
+  </ReferenceListDiffs>
+  <RemovedNodeDiffs>
+    <RemovedNodeDiff containerClass="Layer" containerKey="layers.table" key="layers.table.totalPotAmount" listProperty="Children" nodeClass="Text"/>
+    <RemovedNodeDiff containerClass="Definition" containerKey="tabledefs" key="tabledefs.totalPotAmount" listProperty="Children" nodeClass="Definition"/>
+  </RemovedNodeDiffs>
+</DiffSet>

@@ -1,0 +1,15 @@
+<Database>
+  <Groups>
+    <Group name="knitting club">
+      <Members>
+        <Person ref="Andy"/>
+        <Person ref="Cynthia"/>
+      </Members>
+    </Group>
+  </Groups>
+  <People>
+    <Person name="Cynthia"/>
+    <Person name="Doris"/>
+    <Person name="Andy"/>
+  </People>
+</Database>

@@ -1,0 +1,28 @@
+<DiffSet>
+  <ComplexPropertyDiffs>
+    <ComplexPropertyDiff clazz="Button" key="layers.buttons.ExpandLeftButton.expandLeft" property="ButtonOverlay" propertyClass="ButtonOverlay">
+      <DiffSet>
+        <PropertyDiffs>
+          <PropertyDiff clazz="ButtonOverlay" newValue="0xffff00" oldValue="0xff9933" property="NormalOverlayColor"/>
+          <PropertyDiff clazz="ButtonOverlay" newValue="0xff00" oldValue="0xff9933" property="PressedOverlayColor"/>
+          <PropertyDiff clazz="ButtonOverlay" newValue="0x999900" property="RolloverOverlayColor"/>
+        </PropertyDiffs>
+      </DiffSet>
+    </ComplexPropertyDiff>
+    <ComplexPropertyDiff clazz="Button" key="layers.buttons.ExpandRightButton.expandRight" property="ButtonOverlay" propertyClass="com.bwin.davinci.model.layout.ButtonOverlay">
+      <NewValue><![CDATA[<ButtonOverlay disabledOverlayColor="0x990099" normalOverlayColor="0x990066" pressedOverlayColor="0xff6666"/>
+]]></NewValue>
+    </ComplexPropertyDiff>
+  </ComplexPropertyDiffs>
+  <PropertyDiffs>
+    <PropertyDiff clazz="Config" newValue="bwin/images,default/images,default/sounds,default/fonts" oldValue="../assets/images,../assets/sounds," property="AssetDirs"/>
+    <PropertyDiff clazz="Picture" key="layers.table.background" newValue="0xffff00" property="OverlayColor"/>
+  </PropertyDiffs>
+  <ReferenceListDiffs>
+    <ReferenceListDiff addedNodes="Japanese,Swedish," containerClass="Config" listProperty="AvailableLanguages"/>
+  </ReferenceListDiffs>
+  <RemovedNodeDiffs>
+    <RemovedNodeDiff containerClass="Layer" containerKey="layers.table" key="layers.table.totalPotAmount" listProperty="Children" nodeClass="Text"/>
+    <RemovedNodeDiff containerClass="Definition" containerKey="tabledefs" key="tabledefs.totalPotAmount" listProperty="Children" nodeClass="Definition"/>
+  </RemovedNodeDiffs>
+</DiffSet>
