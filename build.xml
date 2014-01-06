@@ -1,0 +1,72 @@
+<project name="requiem_project" basedir="." default="all">
+
+    <!-- Basic properties are read from property files -->
+    <property file="version.properties"/>
+    <property file="local.properties"/>  <!-- This file is not meant to be in Version Control, it's for local developer properties -->
+    <property file="build.properties"/>
+    <property file="${buildenv.dir}/cobuto/build.properties"/>
+
+    <!-- Define the DSTAMP, TSTAMP and TODAY properties -->
+    <tstamp/>
+
+    <!--
+    ***************************************************************************************
+    ** Imported global build macros
+    ***************************************************************************************
+    -->
+    <import file="${buildenv.dir}/cobuto/jar-import.xml"/>
+    <import file="${buildenv.dir}/cobuto/macros/subversion.xml"/>	
+
+
+    <!-- TARGETS -->
+
+    <!--
+    ***************************************************************************************
+    ** Makes all
+    ***************************************************************************************
+    -->
+    <!--
+    Build aggregate targets like these, who rely on the targets from the Cobuto include files.
+    As long as you're using defaults, that's all that's needed. For customization, your targets may
+    need to include some custom targets and/or functionality in old Ant-style, but you'll still be able to use
+    Cobuto's Ant-targets and macros.
+    -->
+    <target name="all" depends="t_info, t_clean, t_init, t_resolve, t_compile, t_test-compile, t_jar" description="Builds the whole product"/>
+
+    <!--
+    ***************************************************************************************
+    ** publish
+    ***************************************************************************************
+    -->
+
+      <target name="publish" depends="all,t_ivy-configure,t_ivy-publish,notify-interested-parties"/>
+
+    <!--
+    ***************************************************************************************
+    ** This target will be run by the continuous integration
+    ***************************************************************************************
+    -->
+    <target name="continuous-build" depends="all" description="This target will be called by a Continuous Integration server"/>
+
+    <target name="rebuild-and-copy" depends="t_compile,t_jar" description="rebuilds model def and copies it directly to dependent projects" >
+        <copy file="${dist.dir}/${product.name}.jar" tofile="C:\dev\svn-stuff\novello_sf\_BUILD\dependencies\compile\xapp-1.0-SNAPSHOT.jar"/>
+    </target>
+
+    <target name="notify-interested-parties" description="Send a mail informing about the new release">
+        <!--<mail mailhost="ex01.ongame.com"
+              subject="New tools release made of ${product.name} by ${user.name}"
+              encoding="plain"
+              files="changelog.txt"
+              tolist="${release_mail_recipients}">
+            <from address="buildscript@ongame.com (mailto:from=%22buildscript@ongame.com)"/>
+            <message>${product.name} released with version ${release.version}
+            </message>
+        </mail>-->
+    </target>
+
+    <target name="copy-jar">
+        <copy file="C:\Documents and Settings\davidw\.m2\repository\com\xapp\xapp\1.0-SNAPSHOT\xapp-1.0-SNAPSHOT.jar" tofile="C:\dev\svn-stuff\ng-poker-copy\lib\3rd-party\xapp.jar"/>
+    </target>
+
+
+</project>
