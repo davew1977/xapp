@@ -91,6 +91,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
                 if (commitMessage!=null)
                 {
                     commit(commitMessage);
+                    SwingUtils.warnUser(m_appContainer.getMainFrame(), "Commit successful");
                 }
             } else {
                 SwingUtils.warnUser(m_appContainer.getMainFrame(), "No Changes to Commit");
