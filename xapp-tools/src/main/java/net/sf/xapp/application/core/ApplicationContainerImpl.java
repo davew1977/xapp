@@ -336,6 +336,13 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return toolbar;
     }
 
+    @Override
+    public void setToolBar(JToolBar toolBar) {
+        m_mainPanel.remove(this.toolbar);
+        this.toolbar = toolBar;
+        m_mainPanel.add(this.toolbar, BorderLayout.NORTH);
+    }
+
     public JMenuBar getMenuBar()
     {
         if (m_mainMenuBar == null)
@@ -445,6 +452,9 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return getNode(getMainTree().getSelectionPath());
     }
 
+    public List<Node> getSelectedNodes() {
+        return getNodes(m_mainTree.getSelectionPaths());
+    }
 
     private List<Command> getCommands(Node node, CommandContext commandContext)
     {
@@ -1182,7 +1192,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
      * @param nodes
      * @return The "lowest" common class, Object.class if not in same heirarchy
      */
-    static Class getCommonClass(List<Node> nodes)
+    public static Class getCommonClass(List<Node> nodes)
     {
         ArrayList<Class> classList = new ArrayList<Class>();
         for (Node node : nodes)

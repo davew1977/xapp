@@ -526,7 +526,7 @@ public class Unmarshaller<T>
 
         public void execute()
         {
-            List list = new ArrayList();
+            Collection list = m_listProperty.createCollection();
             for (String s : m_references)
             {
                 Class propertyClass = m_listProperty.getContainedType();

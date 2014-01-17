@@ -12,8 +12,11 @@
  */
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.application.utils.SwingUtils;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.utils.XappException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +25,6 @@ import java.util.Map;
 public class SimpleApplication<T> implements Application<T>
 {
     protected ApplicationContainer<T> m_appContainer;
-
-    public void handleUncaughtException(Throwable e)
-    {
-        e.printStackTrace();
-    }
 
     public SpecialTreeGraphics createSpecialTreeGraphics()
     {
@@ -107,5 +105,29 @@ public class SimpleApplication<T> implements Application<T>
 
     public T model() {
         return m_appContainer.getGuiContext().getInstance();
+    }
+
+    public ClassDatabase<T> classDatabase() {
+        return m_appContainer.getGuiContext().getClassDatabase();
+    }
+    @Override
+    public void handleUncaughtException(Throwable e) {
+        if(!handle(e)) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean handle(Throwable t) {
+        if(t instanceof XappException) {
+            SwingUtils.warnUser(m_appContainer.getMainFrame(), t.getMessage());
+            return true;
+        } else if(t.getCause() != null) {
+            return handle(t.getCause());
+        }
+        return false;
+    }
+
+    public String getName() {
+        return getClass().getSimpleName();
     }
 }

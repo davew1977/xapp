@@ -72,10 +72,6 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         return m_svnFacade != null;
     }
 
-    protected ClassDatabase<T> classDatabase() {
-        return m_appContainer.getGuiContext().getClassDatabase();
-    }
-
     private class CommitAction extends AbstractAction
     {
         private CommitAction()

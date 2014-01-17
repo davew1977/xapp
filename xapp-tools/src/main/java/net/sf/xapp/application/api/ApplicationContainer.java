@@ -65,6 +65,7 @@ public interface ApplicationContainer<T>
      * @return the toolbar.
      */
     JToolBar getToolBar();
+    void setToolBar(JToolBar toolBar);
     
     
     JScrollPane setUserPanel(JComponent panel);
@@ -229,6 +230,8 @@ public interface ApplicationContainer<T>
     void showTipOfTheDay(List<Tip> tips);
 
     void showPopupAt(JPopupMenu popup, Node node);
+
+    List<Node> getSelectedNodes();
 
     /**
      * Interface for application specific hooks.
