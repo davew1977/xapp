@@ -16,7 +16,7 @@ public class Word {
         this.start = start;
         this.end = end;
         this.cutIndex = cutIndex;
-        assert cutIndex >=0 && cutIndex<=length();
+        assert isEmpty() || (cutIndex >=0 && cutIndex<=length());
     }
 
     public int length() {
