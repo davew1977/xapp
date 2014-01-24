@@ -608,7 +608,7 @@ public abstract class TextEditor extends JTextPane
                 }
             }
             int c = m_startIndex + m_caretIndexInLine;
-            return new Word("", c, c, c);
+            return new Word("", c, c, 0);
         }
 
         public static String textAfter(String src, String regexp)
