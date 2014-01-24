@@ -46,7 +46,9 @@ public class MethodProperty extends AbstractPropertyAccess
 
     public void set(Object target, Object value) throws InvocationTargetException, IllegalAccessException
     {
-        m_modifier.invoke(target, value);
+        if (m_modifier!=null) {
+            m_modifier.invoke(target, value);
+        }
     }
 
     public Object get(Object target) throws InvocationTargetException, IllegalAccessException
