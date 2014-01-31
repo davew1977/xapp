@@ -91,9 +91,19 @@ public class EditorManager
      * @param p
      * @return
      */
-    public boolean edit(Frame comp, Object p)
+    public boolean edit(Frame comp, Object p) {
+        return edit(comp, p, InspectionType.FIELD);
+    }
+
+    /**
+     * Overloading where a new classmodel is created from scratch
+     * @param p
+     * @param field
+     * @return
+     */
+    public boolean edit(Frame comp, Object p, InspectionType field)
     {
-        return edit(comp, new ClassModelManager(p.getClass(), InspectionType.FIELD).getRootClassModel(), p);
+        return edit(comp, new ClassModelManager(p.getClass(), field).getRootClassModel(), p);
     }
 
 

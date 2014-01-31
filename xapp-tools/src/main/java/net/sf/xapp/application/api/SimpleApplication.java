@@ -130,4 +130,8 @@ public class SimpleApplication<T> implements Application<T>
     public String getName() {
         return getClass().getSimpleName();
     }
+
+    public void save() {
+        getAppContainer().save();
+    }
 }
