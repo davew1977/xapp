@@ -41,4 +41,12 @@ public class CollectionsUtils
     }
 
 
+    public static <T> T next(List<T> items, T t) {
+        int i = items.indexOf(t);
+        return i!=-1 ? items.get((i + 1) % items.size()) : null;
+    }
+    public static <T> T previous(List<T> items, T t) {
+        int i = items.indexOf(t);
+        return i!=-1 ? items.get((i + items.size() - 1) % items.size()) : null;
+    }
 }
