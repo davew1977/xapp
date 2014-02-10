@@ -18,13 +18,25 @@ import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 import net.sf.xapp.utils.XappException;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class SimpleApplication<T> implements Application<T>
 {
-    protected ApplicationContainer<T> m_appContainer;
+    protected ApplicationContainer<T> appContainer;
+    private JComponent userPanel;
+    private boolean needsScrollPane;
+
+    public JScrollPane setUserPanel(JComponent panel) {
+        return setUserPanel(panel, true);
+    }
+    public JScrollPane setUserPanel(JComponent panel, boolean needsScrollPane) {
+        this.userPanel = panel;
+        this.needsScrollPane = needsScrollPane;
+        return appContainer.setUserPanel(panel, needsScrollPane);
+    }
 
     public SpecialTreeGraphics createSpecialTreeGraphics()
     {
@@ -90,7 +102,7 @@ public class SimpleApplication<T> implements Application<T>
 
     public void init(ApplicationContainer<T> applicationContainer)
     {
-        m_appContainer = applicationContainer;
+        appContainer = applicationContainer;
     }
 
     public void nodesUpdated(List<PropertyChangeTuple> changes)
@@ -100,15 +112,15 @@ public class SimpleApplication<T> implements Application<T>
 
     public ApplicationContainer<T> getAppContainer()
     {
-        return m_appContainer;
+        return appContainer;
     }
 
     public T model() {
-        return m_appContainer.getGuiContext().getInstance();
+        return appContainer.getGuiContext().getInstance();
     }
 
     public ClassDatabase<T> classDatabase() {
-        return m_appContainer.getGuiContext().getClassDatabase();
+        return appContainer.getGuiContext().getClassDatabase();
     }
     @Override
     public void handleUncaughtException(Throwable e) {
@@ -119,7 +131,7 @@ public class SimpleApplication<T> implements Application<T>
 
     private boolean handle(Throwable t) {
         if(t instanceof XappException) {
-            SwingUtils.warnUser(m_appContainer.getMainFrame(), t.getMessage());
+            SwingUtils.warnUser(appContainer.getMainFrame(), t.getMessage());
             return true;
         } else if(t.getCause() != null) {
             return handle(t.getCause());
@@ -133,5 +145,13 @@ public class SimpleApplication<T> implements Application<T>
 
     public void save() {
         getAppContainer().save();
+    }
+
+    public JComponent getUserPanel() {
+        return userPanel;
+    }
+
+    public boolean userPanelNeedsScrollPane() {
+        return needsScrollPane;
     }
 }

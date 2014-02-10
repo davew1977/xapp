@@ -10,7 +10,6 @@ package net.sf.xapp.utils.svn;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.SimpleApplication;
 import net.sf.xapp.application.utils.SwingUtils;
-import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import org.tmatesoft.svn.core.SVNException;
 
 import javax.swing.*;
@@ -47,16 +46,16 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
 
         if (isSVNMode())
         {
-            m_appContainer.getToolBar().add(m_updateAction).setToolTipText("Fetch changes from the server");
-            m_appContainer.getToolBar().add(m_commitAction).setToolTipText("Saves and sends your changes to the server");
-            m_appContainer.getToolBar().add(m_revertAction).setToolTipText("Removes all your changes since your last commit");
+            appContainer.getToolBar().add(m_updateAction).setToolTipText("Fetch changes from the server");
+            appContainer.getToolBar().add(m_commitAction).setToolTipText("Saves and sends your changes to the server");
+            appContainer.getToolBar().add(m_revertAction).setToolTipText("Removes all your changes since your last commit");
             updateViewState();
-            m_appContainer.addBeforeHook(DefaultAction.QUIT, new ExitCommitHook());
+            appContainer.addBeforeHook(DefaultAction.QUIT, new ExitCommitHook());
             Box b = Box.createHorizontalBox();
             b.add(Box.createHorizontalStrut(10));
             b.add(new JLabel("user: " + m_svnFacade.getUsername()));
             SwingUtils.setFont(b);
-            m_appContainer.getToolBar().add(b);
+            appContainer.getToolBar().add(b);
         }
     }
 
@@ -87,10 +86,10 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
                 if (commitMessage!=null)
                 {
                     commit(commitMessage);
-                    SwingUtils.warnUser(m_appContainer.getMainFrame(), "Commit successful");
+                    SwingUtils.warnUser(appContainer.getMainFrame(), "Commit successful");
                 }
             } else {
-                SwingUtils.warnUser(m_appContainer.getMainFrame(), "No Changes to Commit");
+                SwingUtils.warnUser(appContainer.getMainFrame(), "No Changes to Commit");
             }
         }
     }
@@ -101,7 +100,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         textarea.setLineWrap(true);
         JScrollPane jsp = new JScrollPane(textarea);
         jsp.setPreferredSize(new Dimension(300,200));
-        int i = JOptionPane.showConfirmDialog(m_appContainer.getMainFrame(),
+        int i = JOptionPane.showConfirmDialog(appContainer.getMainFrame(),
                 jsp, "Enter a message to commit your changes:", JOptionPane.OK_CANCEL_OPTION);
         String message = textarea.getText();
         message = message==null ? "changes" : message;
@@ -117,7 +116,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
 
         public void actionPerformed(ActionEvent e)
         {
-            if (SwingUtils.askUser(m_appContainer.getMainFrame(), "Are you sure you want to undo all changes\nsince your last commit?"))
+            if (SwingUtils.askUser(appContainer.getMainFrame(), "Are you sure you want to undo all changes\nsince your last commit?"))
             {
                 m_svnFacade.revert(currentFilePath());
 
@@ -141,7 +140,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
             UpdateResult result = m_svnFacade.update(currentFilePath());
             if (result.isConflict())
             {
-                SwingUtils.warnUser(m_appContainer.getMainFrame(), "You have a conflict. You should close Novello and fix it manually\n" +
+                SwingUtils.warnUser(appContainer.getMainFrame(), "You have a conflict. You should close Novello and fix it manually\n" +
                         "You can revert the file, but then you will lose your changes");
             }
             else
@@ -152,7 +151,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
     }
 
     public void reloadFile() {
-        m_appContainer.disposeAndReload();
+        appContainer.disposeAndReload();
     }
 
     public String getCurrentUser()
@@ -162,7 +161,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
 
     private String currentFilePath()
     {
-        return m_appContainer.getGuiContext().getCurrentFile().getAbsolutePath();
+        return appContainer.getGuiContext().getCurrentFile().getAbsolutePath();
     }
 
     private class ExitCommitHook implements ApplicationContainer.Hook
@@ -171,7 +170,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         {
             trySave();
             if(m_svnFacade.hasLocalChanges(currentFilePath())) {
-                int i = JOptionPane.showOptionDialog(m_appContainer.getMainFrame(),
+                int i = JOptionPane.showOptionDialog(appContainer.getMainFrame(),
                         "Would you like to commit your changes?", "SVN Commit",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (i == JOptionPane.YES_OPTION)
@@ -203,7 +202,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
             if (e.getCause() instanceof SVNException)
             {
                 SVNException svnException = (SVNException) e.getCause();
-                SwingUtils.warnUser(m_appContainer.getMainFrame(), svnException.getMessage());
+                SwingUtils.warnUser(appContainer.getMainFrame(), svnException.getMessage());
             }
             else
             {
