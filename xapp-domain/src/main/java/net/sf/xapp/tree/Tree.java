@@ -32,6 +32,9 @@ public class Tree extends TreeNode
         m_children = new ArrayList<TreeNode>();
     }
 
+    public Tree(String name) {
+        super(name);
+    }
 
     public final List<TreeNode> getChildren()
     {

@@ -34,6 +34,10 @@ public abstract class TreeNode implements Comparable, Cloneable
     {
     }
 
+    protected TreeNode(String name) {
+        this.m_name = name;
+    }
+
     /**
      * 20131025 renamed to parent to prevent other java binding technologies from treating it as a property
      * @return the parent Tree node
