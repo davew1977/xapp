@@ -20,7 +20,7 @@ public class AbstractCodeFileTest extends TestCase
 
     public void testFindMethod()
     {
-        CodeFile cf = new JavaFile(null);
+        CodeFile cf = new JavaFile(null, false);
         cf.setName("Doo");
         cf.method("foo", "bar", "int f","boolean g");
 

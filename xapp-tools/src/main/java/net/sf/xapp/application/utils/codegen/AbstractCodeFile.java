@@ -31,6 +31,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
     public static final int MAX_LINE_LENGTH = 120;
     public static XappLogger logger = new SysOutXappLogger();
 
+    private boolean writeToFile;
     public String modifier = "public";
     protected boolean m_interface;
     protected String name;
@@ -66,8 +67,9 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
     private Map<CodeFileSection, String> docBlocks;
     private List<String> annotations;
 
-    public AbstractCodeFile(File outPath) {
+    public AbstractCodeFile(File outPath, boolean writeToFile) {
         this.outPath = outPath;
+        this.writeToFile = writeToFile;
         imports = new LinkedHashSet<String>();
         implementedInterfaces = new ArrayList<String>();
         methods = new LinkedHashSet<MethodImpl>();
@@ -113,7 +115,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         if (!enumValues.isEmpty()) {
             throw new RuntimeException("cannot use both enum value objects and strings");
         }
-        JavaFile javaFile = new JavaFile(null); //Reusing this class
+        JavaFile javaFile = new JavaFile(null, false); //Reusing this class
         javaFile.setName(name);
         enumContexts.add(javaFile);
         return javaFile;
@@ -540,13 +542,15 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         if (outPath == null) {
             throw new RuntimeException("output path not set");
         }
-        File dir = new File(getDirPath());
-        if (!dir.exists()) {
-            dir.mkdirs();
+        if (writeToFile) {
+            File dir = new File(getDirPath());
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File srcFile = new File(dir, getFileName());
+            FileUtils._writeFile(sb.toString(), srcFile);
+            logger.info("written " + srcFile);
         }
-        File srcFile = new File(dir, getFileName());
-        FileUtils._writeFile(sb.toString(), srcFile);
-        logger.info("written " + srcFile);
     }
 
     private String getDirPath() {
@@ -659,7 +663,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
 
     @Override
     public ClassContext newInnerClass(String name) {
-        JavaFile javaFile = new JavaFile(outPath);
+        JavaFile javaFile = new JavaFile(outPath, false);
         javaFile.setName(name);
         if (m_static) {
             javaFile.setStatic();

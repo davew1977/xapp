@@ -17,9 +17,9 @@ import java.io.File;
 public class JavaFile extends AbstractCodeFile
 {
 
-    public JavaFile(File outPath)
+    public JavaFile(File outPath, boolean writeToFile)
     {
-        super(outPath);
+        super(outPath, writeToFile);
     }
 
     MethodImpl createMethod()

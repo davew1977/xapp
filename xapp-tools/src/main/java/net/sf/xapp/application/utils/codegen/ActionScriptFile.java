@@ -19,7 +19,7 @@ public class ActionScriptFile extends AbstractCodeFile
 
     public ActionScriptFile(File outPath)
     {
-        super(outPath);
+        super(outPath, true);
     }
 
     MethodImpl createMethod()

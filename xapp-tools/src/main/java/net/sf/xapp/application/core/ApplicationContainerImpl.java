@@ -132,7 +132,9 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         m_specialTreeGraphics = application.createSpecialTreeGraphics();
         if (m_specialTreeGraphics != null)
         {
-            m_specialTreeGraphics.init(this);
+            if (m_specialTreeGraphics != m_application) {
+                m_specialTreeGraphics.init(this);
+            }
             m_treeCellRenderer.setTreeGraphics(m_specialTreeGraphics);
         }
     }
