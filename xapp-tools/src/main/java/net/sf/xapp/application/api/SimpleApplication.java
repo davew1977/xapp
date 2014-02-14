@@ -26,7 +26,7 @@ import java.util.Map;
 public class SimpleApplication<T> implements Application<T>
 {
     protected ApplicationContainer<T> appContainer;
-    private JComponent userPanel;
+    protected JComponent userPanel;
     private boolean needsScrollPane;
 
     public JScrollPane setUserPanel(JComponent panel) {
