@@ -12,9 +12,7 @@
  */
 package net.sf.xapp.utils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CollectionsUtils
 {
@@ -48,5 +46,27 @@ public class CollectionsUtils
     public static <T> T previous(List<T> items, T t) {
         int i = items.indexOf(t);
         return i!=-1 ? items.get((i + items.size() - 1) % items.size()) : null;
+    }
+
+    public static <K,V> Set<V> lookup(Map<K,V> map, Collection<K> keys) {
+        Set<V> result = new LinkedHashSet<V>();
+        for (K key : keys) {
+            V e = map.get(key);
+            if (e != null) {
+                result.add(e);
+            }
+        }
+        return result;
+    }
+
+
+    public static <T> List<T> filter(Collection<? extends T> items, Filter<? super T> filter) {
+        List<T> result = new ArrayList<T>();
+        for (T item : items) {
+            if(filter.matches(item)) {
+                result.add(item);
+            }
+        }
+        return result;
     }
 }
