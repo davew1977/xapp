@@ -15,18 +15,28 @@ package net.sf.xapp.marshalling.stringserializers;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.utils.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 
-public class StringListSerializer implements StringSerializer<List<String>>
+import static net.sf.xapp.utils.StringUtils.*;
+
+public class StringListSerializer implements StringSerializer<Collection<String>>
 {
-    public List<String> read(String str)
-    {
-        return StringUtils.convertToStringList(str);
+    boolean isSet;
+
+    public StringListSerializer(boolean setCollection) {
+
+        isSet = setCollection;
     }
 
-    public String write(List<String> ints)
+    public Collection<String> read(String str)
     {
-        return StringUtils.convertToString(ints);
+        return isSet ? convertToStringSet(str) : convertToStringList(str);
+    }
+
+    public String write(Collection<String> ints)
+    {
+        return convertToString(ints);
     }
 
     public String validate(String text)

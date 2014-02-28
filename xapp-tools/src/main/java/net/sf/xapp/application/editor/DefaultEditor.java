@@ -227,7 +227,7 @@ public class DefaultEditor implements Editor
             }
             //m_compPanel.add(Box.createVerticalGlue());
             //resolve the filter on properties
-            for (final Property property : m_editableContext.getVisibleProperties())
+            for (final Property property : allProperties)
             {
                 String filterOnProperty = property.getFilterOnProperty();
                 if (filterOnProperty != null)
@@ -312,7 +312,7 @@ public class DefaultEditor implements Editor
             }
             if (lp.getContainedType().equals(String.class))
             {
-                return new StringListPropertyWidget();
+                return new StringListPropertyWidget(lp.isSetCollection());
             }
             if(lp.getContainedType().equals(Long.class))
             {

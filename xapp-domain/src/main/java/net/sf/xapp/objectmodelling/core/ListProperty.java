@@ -125,10 +125,10 @@ public class ListProperty extends Property
     }
 
     public Collection createCollection() {
-        if(List.class.isAssignableFrom(m_class)) {
+        if(isList()) {
             return new ArrayList();
         }
-        else if(Set.class.isAssignableFrom(m_class)) {
+        else if(isSetCollection()) {
             return new LinkedHashSet();
         }
         else throw new IllegalArgumentException("Collection of type "+m_class+" not supported");

@@ -200,7 +200,9 @@ public class ClassModel<T>
         ArrayList<Property> results = new ArrayList<Property>();
         for (Property prop : props)
         {
-            if (prop.isVisibilityRestricted() && !prop.isHidden()) results.add(prop);
+            if (prop.isVisibilityRestricted()) {
+                results.add(prop);
+            }
         }
         return results;
     }
@@ -210,7 +212,7 @@ public class ClassModel<T>
         List<ListProperty> list = new ArrayList<ListProperty>();
         for (ListProperty property : m_listProperties)
         {
-            if (!property.isTransient() && (
+            if (!property.isTransient() && !property.hasSpecialBoundComponent() && (
                     property.getContainedType() == String.class ||
                     property.getContainedType() == Integer.class ||
                     property.getContainedType() == Long.class ||

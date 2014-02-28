@@ -26,6 +26,7 @@ import net.sf.xapp.utils.XappException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A property encapsulates meta data about a class's property. A property is an attribute of a class that is
@@ -300,7 +301,11 @@ public class Property<T> implements Comparable
 
     public boolean isList()
     {
-        return m_class.isAssignableFrom(List.class);
+        return List.class.isAssignableFrom(m_class);
+    }
+
+    public boolean isSetCollection() {
+        return Set.class.isAssignableFrom(m_class);
     }
 
     public boolean isCollection()

@@ -19,8 +19,8 @@ import java.util.List;
 
 public class StringListPropertyWidget extends StringSerializerPropertyWidget
 {
-    public StringListPropertyWidget()
+    public StringListPropertyWidget(boolean setCollection)
     {
-        super(new StringListSerializer());
+        super(new StringListSerializer(setCollection));
     }
 }
