@@ -17,6 +17,9 @@ import java.io.File;
 public class JavaFile extends AbstractCodeFile
 {
 
+    public JavaFile(File outPath) {
+        this(outPath, true);
+    }
     public JavaFile(File outPath, boolean writeToFile)
     {
         super(outPath, writeToFile);
