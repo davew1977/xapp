@@ -175,6 +175,7 @@ public interface SVNFacade
 	 * @param newPath Where to copy to
 	 */
 	void copy(String workingPath, String newPath);
+    void move(String workingPath, String newPath);
 
 	/**
 	 * Deletes a working copy - does not force

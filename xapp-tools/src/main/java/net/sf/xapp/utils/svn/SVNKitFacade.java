@@ -459,7 +459,9 @@ public class SVNKitFacade implements SVNFacade
 			File target = new File(targetpath);
 			SVNDepth depth = empty ? SVNDepth.EMPTY : SVNDepth.INFINITY;
 			//checkout svn, to target, peg revision, wanted revision, recursively, don't allow unversioned obstructions
+            m_svnManager.getUpdateClient().setEventHandler(new BasicEventHandler());
 			m_svnManager.getUpdateClient().doCheckout(url, target, SVNRevision.HEAD, SVNRevision.HEAD, depth, false);
+            m_svnManager.getUpdateClient().setEventHandler(null);
 		}
 		catch(SVNException svne)
 		{
@@ -483,6 +485,18 @@ public class SVNKitFacade implements SVNFacade
 			throw new RuntimeException(e);
 		}
 	}
+
+    public void move(String workingPath, String newPath) {
+        File workingCopy = new File(workingPath);
+        File targetFile = new File(newPath);
+        try {
+            m_svnManager.getMoveClient().setEventHandler(new BasicEventHandler());
+            m_svnManager.getMoveClient().doMove(workingCopy, targetFile);
+            m_svnManager.getMoveClient().setEventHandler(null);
+        } catch (SVNException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	public void delete(String workingPath)
 	{
@@ -565,6 +579,18 @@ public class SVNKitFacade implements SVNFacade
         catch (SVNException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static class BasicEventHandler implements ISVNEventHandler {
+        @Override
+        public void handleEvent(SVNEvent event, double progress) throws SVNException {
+            System.out.println(event);
+        }
+
+        @Override
+        public void checkCancelled() throws SVNCancelException {
+
         }
     }
 
