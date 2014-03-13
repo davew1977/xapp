@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.application.editor.widgets;
 
+import net.sf.xapp.annotations.application.Validate;
 import net.sf.xapp.application.api.WidgetContext;
 
 import javax.swing.*;
@@ -51,5 +52,18 @@ public class StringPropertyWidget extends AbstractPropertyWidget
     public void setEditable(boolean editable)
     {
         m_textField.setEditable(editable);
+    }
+
+    @Override
+    public String validate() {
+        Validate validate = getProperty().getValidate();
+        if(validate != null) {
+            String regexp = validate.regexp();
+            if(getValue() != null && !((String) getValue()).matches(regexp)) {
+                return !validate.errorMsg().isEmpty() ? validate.errorMsg() :
+                        " must match regexp: " + regexp;
+            }
+        }
+        return null;
     }
 }

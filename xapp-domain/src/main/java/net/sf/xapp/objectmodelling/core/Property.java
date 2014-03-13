@@ -14,6 +14,7 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.application.Hide;
+import net.sf.xapp.annotations.application.Validate;
 import net.sf.xapp.annotations.objectmodelling.*;
 import net.sf.xapp.annotations.marshalling.MarshalAsAttribute;
 import net.sf.xapp.annotations.marshalling.MarshalAsElement;
@@ -499,5 +500,9 @@ public class Property<T> implements Comparable
 
     public EditorWidget getEditorWidget() {
         return m_editorWidget;
+    }
+
+    public Validate getValidate() {
+        return m_propertyAccess.getAnnotation(Validate.class);
     }
 }
