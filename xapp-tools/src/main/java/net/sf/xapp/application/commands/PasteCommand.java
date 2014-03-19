@@ -78,7 +78,7 @@ public class PasteCommand extends NodeCommand
             //add object to data model
             node.getListNodeContext().getCollection().add(clipboardObject);
             //create new node
-            Node newNode = applicationContainer.getNodeBuilder().createNode(clipboardObject, node, node.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
+            Node newNode = applicationContainer.getNodeBuilder().createNode(null, clipboardObject, node, node.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
 
             applicationContainer.getMainPanel().repaint();
             node.updateDomainTreeRoot();

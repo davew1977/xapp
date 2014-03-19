@@ -38,7 +38,7 @@ public class ApplicationContainerImplTest extends TestCase
     {
         public DummyNode(Object instance)
         {
-            super(null, null, null, null, new ObjectNodeContextImpl(null, instance, null));
+            super(null, null, null, null, new ObjectNodeContextImpl(null, null, instance, null));
         }
     }
 }

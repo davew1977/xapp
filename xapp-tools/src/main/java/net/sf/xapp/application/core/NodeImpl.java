@@ -14,6 +14,7 @@ package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.commands.RefreshCommand;
+import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.tree.Tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -144,7 +145,7 @@ public class NodeImpl implements Node
     public String toString()
     {
         //special root handling, default to file name minus suffix
-        if (isRoot() && !m_objectNodeContext.getClassModel().hasDeclaredMethod("toString"))
+        if (isRoot() && !m_objectNodeContext.hasToStringMethod())
         {
 			File currentFile = m_applicationContainer.getGuiContext().getCurrentFile();
 			if(currentFile != null)
@@ -159,12 +160,17 @@ public class NodeImpl implements Node
 		}
         if (wrappedObject() != null)
         {
-            String strValue = wrappedObject().toString();
-            if (strValue != null && strValue.length() > 50)
-            {
-                strValue = strValue.substring(0, 50);
+            if(m_objectNodeContext.hasToStringMethod()) {
+                String strValue = wrappedObject().toString();
+                if (strValue != null && strValue.length() > 50)
+                {
+                    strValue = strValue.substring(0, 50);
+                }
+                return strValue;
+            } else {
+                Property property = m_objectNodeContext.getProperty();
+                return wrappedObject().getClass().getSimpleName() + (property != null ? ":" + property.getName() : "");
             }
-            return strValue;
         }
         return m_listNodeContext.getListProperty().getName();
     }

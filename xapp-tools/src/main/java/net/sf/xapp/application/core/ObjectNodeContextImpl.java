@@ -19,6 +19,7 @@ import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIS
 import net.sf.xapp.application.commands.*;
 import static net.sf.xapp.objectmodelling.api.Rights.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,24 @@ public class ObjectNodeContextImpl implements ObjectNodeContext
     private ClassModel m_classModel;
     private Object m_instance;
     private ObjectContext m_objectContext;
+    private Property property;
 
-    public ObjectNodeContextImpl(ClassModel classModel, Object instance, ObjectContext objectContext)
+    public ObjectNodeContextImpl(Property property, ClassModel classModel, Object instance, ObjectContext objectContext)
     {
+        this.property = property;
         m_classModel = classModel;
         m_instance = instance;
         m_objectContext = objectContext;
+    }
+
+    @Override
+    public boolean hasToStringMethod() {
+        return getClassModel().hasMethod("toString");
+    }
+
+    @Override
+    public Property getProperty() {
+        return property;
     }
 
     public ClassModel getClassModel()

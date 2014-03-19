@@ -13,12 +13,17 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.Property;
 
 /**
  * Encapsulates the properties of nodes that are backed with real objects in the data model.
  */
 public interface ObjectNodeContext extends NodeContext
 {
+
+    boolean hasToStringMethod();
+
+    Property getProperty();
 
     enum ObjectContext {
         IN_LIST,

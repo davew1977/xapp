@@ -48,7 +48,7 @@ public class CreateCommand extends NodeCommand
                 {
                     list.add(instance);
                     NodeBuilder nodeBuilder = applicationContainer.getNodeBuilder();
-                    Node newNode = nodeBuilder.createNode(instance, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
+                    Node newNode = nodeBuilder.createNode(null, instance, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
                     applicationContainer.getMainPanel().repaint();
                     parentNode.updateDomainTreeRoot();
                     applicationContainer.getApplication().nodeAdded(newNode);

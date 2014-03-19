@@ -521,7 +521,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
             else {
                 list.add(index, obj);
             }
-            Node newNode = m_nodeBuilder.createNode(obj, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
+            Node newNode = m_nodeBuilder.createNode(null, obj, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
             getMainPanel().repaint();
             parentNode.updateDomainTreeRoot();
             getApplication().nodeAdded(newNode);

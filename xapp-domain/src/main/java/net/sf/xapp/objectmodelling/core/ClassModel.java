@@ -25,6 +25,7 @@ import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.objectmodelling.difftracking.*;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
+import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.XappException;
 import net.sf.xapp.utils.FileUtils;
 
@@ -898,17 +899,9 @@ public class ClassModel<T>
         }
     }
 
-    public boolean hasDeclaredMethod(String methodName, Class<?>... parameterTypes)
+    public boolean hasMethod(String methodName, Class<?>... parameterTypes)
     {
-        try
-        {
-            Method declaredMethod = m_class.getDeclaredMethod(methodName, parameterTypes);
-            return true;
-        }
-        catch (NoSuchMethodException e)
-        {
-            return false;
-        }
+        return ReflectionUtils.hasMethodInHierarchy(m_class, methodName, parameterTypes);
     }
 
     private class PrimaryKeyChangedListener implements PropertyChangeListener

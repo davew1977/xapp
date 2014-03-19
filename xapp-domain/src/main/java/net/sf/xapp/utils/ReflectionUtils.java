@@ -78,6 +78,19 @@ public class ReflectionUtils
         }
     }
 
+    public static boolean hasMethodInHierarchy(Class aClass, String methodName, Class... parameterTypes) {
+
+        try
+        {
+            Method declaredMethod = aClass.getMethod(methodName, parameterTypes);
+            return !declaredMethod.getDeclaringClass().equals(Object.class);
+        }
+        catch (NoSuchMethodException e)
+        {
+            return false;
+        }
+    }
+
     public static Method findMatchingMethod(Class cl, String method, Object... p)
     {
         HashSet<Method> methods = new HashSet<Method>();

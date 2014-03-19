@@ -44,24 +44,24 @@ public class NodeBuilder
 
     public Node createTree()
     {
-        Node node = createNode(m_applicationContainer.getGuiContext().getInstance(), null, null, null, 0);
+        Node node = createNode(null, m_applicationContainer.getGuiContext().getInstance(), null, null, null, 0);
         m_applicationContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }
 
-    public Node createNode(Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext)
+    public Node createNode(Property property, Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext)
     {
-        return createNode(instance, parentNode, domainTreeRoot, objectContext, parentNode.numChildren());
+        return createNode(property, instance, parentNode, domainTreeRoot, objectContext, parentNode.numChildren());
     }
 
-    public Node createNode(Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
+    public Node createNode(Property parentProperty, Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
     {
         DefaultMutableTreeNode jtreeNode = new DefaultMutableTreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
 
         ClassDatabase classDatabase = m_applicationContainer.getGuiContext().getClassDatabase();
         ClassModel classModel = classDatabase.getClassModel(instance.getClass());
-        ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(classModel, instance, objectContext);
+        ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, instance, objectContext);
         ListNodeContextImpl listNodeContext = null;
         ListProperty containerListProperty = classModel.getContainerListProperty();
         if (classModel.isContainer())
@@ -132,7 +132,7 @@ public class NodeBuilder
             Object value = property.get(instance);
             if (value != null)
             {
-                createNode(value, newNode, propertySubTreeMeta!=null ? (Tree) value : domainTreeRoot, PROPERTY);
+                createNode( property, value, newNode, propertySubTreeMeta!=null ? (Tree) value : domainTreeRoot, PROPERTY);
             }
         }
         return newNode;
@@ -162,7 +162,7 @@ public class NodeBuilder
         {
             for (Object o : list)
             {
-                createNode(o, parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
+                createNode(null, o, parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
             }
         }
     }
@@ -181,7 +181,7 @@ public class NodeBuilder
             m_applicationContainer.removeNode(node);
             if(node.getObjectNodeContext()!=null)
             {
-                newNode = createNode(node.wrappedObject(), parent, node.getDomainTreeRoot(), node.getObjectNodeContext().getObjectContext(), oldIndex);
+                newNode = createNode(null, node.wrappedObject(), parent, node.getDomainTreeRoot(), node.getObjectNodeContext().getObjectContext(), oldIndex);
             }
             else
             {
