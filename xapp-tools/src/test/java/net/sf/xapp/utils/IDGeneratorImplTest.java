@@ -13,7 +13,7 @@ public class IDGeneratorImplTest extends TestCase
 
 	protected void setUp()
 	{
-		m_generator = IDGeneratorImpl.getInstance();
+		m_generator = new IDGeneratorImpl();
 	}
 
 	public void testNewKeys()
