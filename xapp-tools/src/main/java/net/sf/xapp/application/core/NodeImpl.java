@@ -172,12 +172,12 @@ public class NodeImpl implements Node
                 return wrappedObject().getClass().getSimpleName() + (property != null ? ":" + property.getName() : "");
             }
         }
-        return m_listNodeContext.getListProperty().getName();
+        return m_listNodeContext.getContainerProperty().getName();
     }
 
     public boolean containsReferences()
     {
-        return m_listNodeContext != null && m_listNodeContext.getListProperty().containsReferences();
+        return m_listNodeContext != null && m_listNodeContext.getContainerProperty().containsReferences();
     }
 
     public boolean isReference()

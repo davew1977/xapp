@@ -46,6 +46,7 @@ import java.util.*;
  */
 public class ClassModel<T>
 {
+    private final List<ContainerProperty> mapProperties;
     private Class<T> m_class;
     private ClassDatabase m_classDatabase;
     private List<Property> m_properties;
@@ -81,6 +82,7 @@ public class ClassModel<T>
                       Class aClass,
                       List<Property> properties,
                       List<ListProperty> listProperties,
+                      List<ContainerProperty> mapProperties,
                       List<ClassModel<? extends T>> validImplementations,
                       EditorWidget editorWidget,
                       BoundObjectType boundObjectType,
@@ -96,26 +98,13 @@ public class ClassModel<T>
         m_classDatabase = classDatabase;
         m_properties = properties;
         m_listProperties = listProperties;
+        this.mapProperties = mapProperties;
         m_validImplementations = validImplementations;
         m_propertyMap = new HashMap<String, Property>();
         m_propertyMapByXMLMapping = new HashMap<String, Property>();
-        for (Property property : properties)
-        {
-            String propNameLC = property.getName().toLowerCase();
-            m_propertyMap.put(propNameLC, property);
-            if (property.getXMLMapping() != null)
-            {
-                m_propertyMapByXMLMapping.put(property.getXMLMapping(), property);
-            }
-        }
-        for (ListProperty property : listProperties)
-        {
-            m_propertyMap.put(property.getName().toLowerCase(), property);
-            if (property.getXMLMapping() != null)
-            {
-                m_propertyMapByXMLMapping.put(property.getXMLMapping(), property);
-            }
-        }
+        addProperties(properties);
+        addProperties(listProperties);
+        addProperties(mapProperties);
         m_instances = new ArrayList<T>();
         m_mapByPrimaryKey = new HashMap<Object, T>();
         this.boundObjectType = boundObjectType;
@@ -145,6 +134,18 @@ public class ClassModel<T>
         if (m_trackKeyChanges != null && !hasPrimaryKey())
         {
             throw new XappException("class " + getSimpleName() + " is annotated with @TrackKeyChanges but has no primary key");
+        }
+    }
+
+    private void addProperties(List<? extends Property> properties) {
+        for (Property property : properties)
+        {
+            String propNameLC = property.getName().toLowerCase();
+            m_propertyMap.put(propNameLC, property);
+            if (property.getXMLMapping() != null)
+            {
+                m_propertyMapByXMLMapping.put(property.getXMLMapping(), property);
+            }
         }
     }
 
@@ -228,6 +229,10 @@ public class ClassModel<T>
     public List<ListProperty> getListProperties()
     {
         return m_listProperties;
+    }
+
+    public List<ContainerProperty> getMapProperties() {
+        return mapProperties;
     }
 
     public String toString()

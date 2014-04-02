@@ -72,7 +72,7 @@ public class PasteCommand extends NodeCommand
                     clones.add(clone);
                 }
                 applicationContainer.getApplication().nodeAboutToBeAdded(
-                        node.getListNodeContext().getListProperty(),
+                        node.getListNodeContext().getContainerProperty(),
                         node.getListNodeContext().getListOwner(), clipboardObject);
             }
             //add object to data model

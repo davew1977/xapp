@@ -17,6 +17,7 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.editor.EditorListener;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ListProperty;
 
 import javax.swing.*;
 import java.awt.*;
@@ -80,9 +81,9 @@ public class ListReferenceGUI extends JFrame
         if (m_mainBox == null)
         {
             m_mainBox = new Box(BoxLayout.PAGE_AXIS);
-            ClassModel cm = m_node.getListNodeContext().getListProperty().getContainedTypeClassModel();
+            ClassModel cm = m_node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
             m_referenceProperty = new ReferencePropertyWidget(true);
-            m_referenceProperty.init(new DummyWidgetContext(cm, m_node.getListNodeContext().getListProperty()));
+            m_referenceProperty.init(new DummyWidgetContext(cm, (ListProperty) m_node.getListNodeContext().getContainerProperty()));
             m_referenceProperty.setValue(null, m_node.getParent().wrappedObject());
             m_mainBox.add(m_referenceProperty.getComponent());
 

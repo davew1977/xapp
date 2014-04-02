@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
@@ -95,7 +96,7 @@ public interface Application<T>
      * @param parent
      * @param newChild
      */
-    void nodeAboutToBeAdded(ListProperty listProperty, Object parent, Object newChild);
+    void nodeAboutToBeAdded(ContainerProperty containerProperty, Object parent, Object newChild);
 
     /**
      * A notification that a datamodel object has been edited. The user hit the save button in an editor

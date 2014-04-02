@@ -19,6 +19,7 @@ import net.sf.xapp.application.commands.*;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 
 import java.util.ArrayList;
@@ -30,11 +31,11 @@ import java.util.List;
  */
 public class ListNodeContextImpl implements ListNodeContext
 {
-    private ListProperty m_listProperty;
+    private ContainerProperty m_listProperty;
     private Object m_listOwner;
     private Node m_node;
 
-    public ListNodeContextImpl(ListProperty listProperty, Object listOwner)
+    public ListNodeContextImpl(ContainerProperty listProperty, Object listOwner)
     {
         m_listProperty = listProperty;
         m_listOwner = listOwner;
@@ -42,13 +43,7 @@ public class ListNodeContextImpl implements ListNodeContext
 
     public Collection getCollection()
     {
-        Collection list = m_listProperty.get(m_listOwner);
-        if(list==null)
-        {
-            list = new ArrayList();
-            m_listProperty.set(m_listOwner, list);
-        }
-        return list;
+        return m_listProperty.getCollection(m_listOwner);
     }
 
     public List getList()
@@ -56,7 +51,7 @@ public class ListNodeContextImpl implements ListNodeContext
         return (List) getCollection();
     }
 
-    public ListProperty getListProperty()
+    public ContainerProperty getContainerProperty()
     {
         return m_listProperty;
     }
@@ -77,6 +72,16 @@ public class ListNodeContextImpl implements ListNodeContext
         {
             return m_listProperty.getContainedTypeClassModel().getValidImplementations();
         }
+    }
+
+    @Override
+    public boolean contains(Object instance) {
+        return m_listProperty.contains(m_listOwner, instance);
+    }
+
+    @Override
+    public void add(Object instance) {
+        m_listProperty.add(m_listOwner, instance);
     }
 
     public List<Command> createCommands(Node node, CommandContext commandContext)

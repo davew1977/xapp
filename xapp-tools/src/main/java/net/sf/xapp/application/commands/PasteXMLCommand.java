@@ -33,7 +33,7 @@ public class PasteXMLCommand extends NodeCommand
     public void execute(Node node)
     {
         ApplicationContainer applicationContainer = node.getApplicationContainer();
-        ClassModel containedTypeClassModel = node.getListNodeContext().getListProperty().getContainedTypeClassModel();
+        ClassModel containedTypeClassModel = node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
 
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
         Object clipboardObject = null;

@@ -232,7 +232,7 @@ public class Unmarshaller<T>
                 Enum enumValue = Enum.valueOf(propertyClass, nodeValue);
                 property.set(obj, enumValue);
             }
-            else if (property instanceof ListProperty)
+            else if (property instanceof ContainerProperty)
             {
                 unmarshalList(node, property, context, obj);
             }
@@ -281,8 +281,7 @@ public class Unmarshaller<T>
     private void unmarshalList(Node node, Property property, Context context, Object parentObj) throws Exception
     {
         ClassDatabase classDatabase = m_classModel.getClassDatabase();
-        ListProperty listProperty = (ListProperty) property;
-        Collection al = listProperty.createCollection();
+        ContainerProperty listProperty = (ContainerProperty) property;
         NodeList nl = node.getChildNodes();
         Class collectionClass = listProperty.getContainedType();
         ClassModel classModel = classDatabase.getClassModel(collectionClass);
@@ -324,10 +323,9 @@ public class Unmarshaller<T>
                         Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
                         nextObject = unmarshaller.unmarshal(listElement, context, parentObj);
                     }
-                    al.add(nextObject);
+                    listProperty.add(parentObj, nextObject);
                 }
             }
-            property.set(parentObj, al);
         }
         else
         {
@@ -513,11 +511,11 @@ public class Unmarshaller<T>
 
     private class SetReferenceListTask implements DelayedTask
     {
-        ListProperty m_listProperty;
+        ContainerProperty m_listProperty;
         Object m_target;
         List<String> m_references;
 
-        public SetReferenceListTask(ListProperty listProperty, Object target)
+        public SetReferenceListTask(ContainerProperty listProperty, Object target)
         {
             m_listProperty = listProperty;
             m_target = target;
@@ -526,15 +524,13 @@ public class Unmarshaller<T>
 
         public void execute()
         {
-            Collection list = m_listProperty.createCollection();
             for (String s : m_references)
             {
                 Class propertyClass = m_listProperty.getContainedType();
                 ClassModel classModel = m_classModel.getClassDatabase().getClassModel(propertyClass);
                 Object ref = classModel.getInstance(s);
-                list.add(ref);
+                m_listProperty.add(m_target, ref);
             }
-            m_listProperty.set(m_target, list);
         }
     }
 

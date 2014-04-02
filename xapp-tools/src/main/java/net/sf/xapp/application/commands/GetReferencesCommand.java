@@ -42,7 +42,7 @@ public class GetReferencesCommand extends NodeCommand
                 Collection before = new ArrayList(list);
                 list.clear();
                 list.addAll(gui.getData());
-                ListProperty listProperty = context.getListProperty();
+                ListProperty listProperty = (ListProperty) context.getContainerProperty();
                 listProperty.set(context.getListOwner(), list);
                 Node updatedNode = node.getObjectNodeContext() != null ? node : node.getParent();
                 Map<String, PropertyChangeTuple> map = new HashMap<String, PropertyChangeTuple>();

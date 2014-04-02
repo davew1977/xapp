@@ -13,7 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ListProperty;
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +33,7 @@ public interface ListNodeContext extends NodeContext
     /**
      * @return meta data about the actual list property from the data model
      */
-    ListProperty getListProperty();
+    ContainerProperty getContainerProperty();
 
     /**
      *
@@ -45,4 +45,8 @@ public interface ListNodeContext extends NodeContext
      * @return list of types that are allowed to be placed in the list
      */
     List<ClassModel> getValidImplementations();
+
+    boolean contains(Object instance);
+
+    void add(Object instance);
 }

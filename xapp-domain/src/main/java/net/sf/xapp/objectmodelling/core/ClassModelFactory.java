@@ -78,6 +78,7 @@ public class ClassModelFactory
                 aClass,
                 inspectionTuple.properties,
                 inspectionTuple.listProperties,
+                inspectionTuple.mapProperties,
                 validImplementations,
                 bcAnnotation,
                 boAnnotation,
@@ -136,14 +137,7 @@ public class ClassModelFactory
     private static void createProperty(ClassModelManager classModelManager, Class aClass, InspectionTuple inspectionTuple, PropertyAccess propertyAccess)
     {
         Property property = m_propFactory.createProperty(classModelManager, propertyAccess, aClass);
-        if (property instanceof ListProperty)
-        {
-            inspectionTuple.listProperties.add((ListProperty) property);
-        }
-        else
-        {
-            inspectionTuple.properties.add(property);
-        }
+        inspectionTuple.addProperty(property);
     }
 
     private static boolean isAccessor(Method method)
@@ -161,6 +155,20 @@ public class ClassModelFactory
     {
         List<Property> properties = new ArrayList<Property>();
         List<ListProperty> listProperties = new ArrayList<ListProperty>();
+        List<ContainerProperty> mapProperties = new ArrayList<ContainerProperty>();
         Method postInitMethod = null;
+
+        public void addProperty(Property property) {
+            if (property instanceof ListProperty)
+            {
+                listProperties.add((ListProperty) property);
+            } else if(property instanceof ContainerProperty) {
+                mapProperties.add((ContainerProperty) property);
+            }
+            else
+            {
+                properties.add(property);
+            }
+        }
     }
 }

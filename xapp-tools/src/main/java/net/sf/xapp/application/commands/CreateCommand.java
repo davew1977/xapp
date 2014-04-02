@@ -18,7 +18,6 @@ import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
-import java.util.Collection;
 import java.util.List;
 
 public class CreateCommand extends NodeCommand
@@ -37,16 +36,15 @@ public class CreateCommand extends NodeCommand
         final Object instance = m_createClass.newInstance(parentObj);
         final ApplicationContainer applicationContainer = parentNode.getApplicationContainer();
         final ListNodeContext listNodeContext = parentNode.getListNodeContext();
-        applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getListProperty(), listNodeContext.getListOwner(), instance);
+        applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), instance);
         EditableContext editableContext = new SingleTargetEditableContext(m_createClass, instance, SingleTargetEditableContext.Mode.CREATE);
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyChangeTuple> changes, boolean closeOnSave)
             {
-                Collection list = listNodeContext.getCollection();
-                if (!list.contains(instance))
+                if (!listNodeContext.contains(instance))
                 {
-                    list.add(instance);
+                    listNodeContext.add(instance);
                     NodeBuilder nodeBuilder = applicationContainer.getNodeBuilder();
                     Node newNode = nodeBuilder.createNode(null, instance, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
                     applicationContainer.getMainPanel().repaint();

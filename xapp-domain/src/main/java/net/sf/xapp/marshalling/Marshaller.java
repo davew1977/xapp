@@ -274,10 +274,11 @@ public class Marshaller<T>
         {
             out.writeSimpleTag(tagName, String.valueOf(value), property);
         }
-        else if (property instanceof ListProperty)
+        else if (property instanceof ContainerProperty)
         {
-            Collection col = (Collection) value;
-            ListProperty listProperty = (ListProperty) property;
+            ContainerProperty containerProperty = (ContainerProperty) property;
+
+            Collection col = containerProperty.getCollection(parentObject);
             boolean elementsExist = !col.isEmpty();
             out.writeOpeningTag(tagName, null, elementsExist);
 
@@ -291,7 +292,7 @@ public class Marshaller<T>
                         out.writeSimpleTag(aClass.getSimpleName(), String.valueOf(listItem), null);
                         continue;
                     }
-                    else if (listProperty.containsReferences())
+                    else if (containerProperty.containsReferences())
                     {
                         List<ComparableNameValuePair> anAttr = new ArrayList<ComparableNameValuePair>();
                         ClassModel classModel = m_classDatabase.getClassModel(aClass);

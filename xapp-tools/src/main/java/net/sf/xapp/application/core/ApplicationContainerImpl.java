@@ -510,7 +510,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if (node != null) throw new XappException("object " + obj + " is already added");
 
         final ListNodeContext listNodeContext = parentNode.getListNodeContext();
-        getApplication().nodeAboutToBeAdded(listNodeContext.getListProperty(), listNodeContext.getListOwner(), obj);
+        getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), obj);
         List list = (List) listNodeContext.getCollection();
         if (!list.contains(obj))
         {

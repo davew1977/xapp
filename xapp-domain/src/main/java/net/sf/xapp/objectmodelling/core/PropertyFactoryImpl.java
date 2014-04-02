@@ -23,7 +23,7 @@ import net.sf.xapp.utils.XappException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 
 public class PropertyFactoryImpl implements PropertyFactory
@@ -72,6 +72,12 @@ public class PropertyFactoryImpl implements PropertyFactory
                 listType = annotation.value();
             }
             return new ListProperty(classModelManager, propertyAccess, aclass, listType, editorWidgetAnnotation, parentClass, sharedInNamespace);
+        } else if(Map.class.isAssignableFrom(aclass)) {
+            ParameterizedType parameterizedType = (ParameterizedType) propertyAccess.getGenericType();
+            //support only string as key
+            assert parameterizedType.getActualTypeArguments()[0].equals(String.class);
+            Class varType = (Class) parameterizedType.getActualTypeArguments()[1];
+            return new ContainerProperty(classModelManager, propertyAccess, aclass, varType, editorWidgetAnnotation, parentClass, sharedInNamespace);
         }
         else
         {

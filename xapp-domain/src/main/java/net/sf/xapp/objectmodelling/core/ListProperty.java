@@ -16,39 +16,20 @@ import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
 import net.sf.xapp.marshalling.stringserializers.IntegerListSerializer;
 import net.sf.xapp.marshalling.stringserializers.LongListSerializer;
-import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
-import net.sf.xapp.annotations.objectmodelling.ReferenceScope;
-import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.utils.XappException;
 import net.sf.xapp.utils.StringUtils;
 
 import java.util.*;
 
 
-public class ListProperty extends Property
+public class ListProperty extends ContainerProperty
 {
-    private Class m_containedType;
-    private Class[] m_sharedInNamespace;
-    private List<Rights> m_restrictedRights;
 
     public ListProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
                         Class containedType, EditorWidget editorWidget,
                         Class parentClass, Class[] sharedInNamespace)
     {
-        super(classModelManager, propertyAccess, aClass, null, null, null/*list cannot be primary key*/, editorWidget, false, parentClass, "", true,null, false);
-        m_containedType = containedType;
-        m_sharedInNamespace = sharedInNamespace;
-        m_restrictedRights = new ArrayList<Rights>();
-    }
-
-    public Class getContainedType()
-    {
-        return m_containedType;
-    }
-
-    public ClassModel getContainedTypeClassModel()
-    {
-        return m_classDatabase.getClassModel(m_containedType);
+        super(classModelManager, propertyAccess, aClass, containedType, editorWidget, parentClass, sharedInNamespace);
     }
 
     public Collection get(Object target)
@@ -59,35 +40,6 @@ public class ListProperty extends Property
     public List castToList(Object target)
     {
         return (List) super.get(target); //note! will blow up if collection is set
-    }
-
-    public boolean containsReferences()
-    {
-        return getContainsRefsAnnotation() !=null;
-    }
-
-    private ContainsReferences getContainsRefsAnnotation()
-    {
-        return m_propertyAccess.getAnnotation(ContainsReferences.class);
-    }
-
-    public Class[] getSharedInNamespace()
-    {
-        return m_sharedInNamespace;
-    }
-
-    public boolean isNewNamespace()
-    {
-        return m_sharedInNamespace!=null;
-    }
-
-    public boolean isAllowed(Rights... rights)
-    {
-        for (Rights right : rights)
-        {
-            if(m_restrictedRights.contains(right)) return false;
-        }
-        return true;
     }
 
 
@@ -113,17 +65,6 @@ public class ListProperty extends Property
         throw new XappException(getName() + " list property is not string serializable");
     }
 
-    public void restrict(Rights... rights)
-    {
-        m_restrictedRights.addAll(Arrays.asList(rights));
-    }
-
-    @Override
-    public ReferenceScope getReferenceScope()
-    {
-        return getContainsRefsAnnotation().value();
-    }
-
     public Collection createCollection() {
         if(isList()) {
             return new ArrayList();
@@ -133,4 +74,21 @@ public class ListProperty extends Property
         }
         else throw new IllegalArgumentException("Collection of type "+m_class+" not supported");
     }
+
+    @Override
+    public boolean contains(Object container, Object instance) {
+        return get(container).contains(instance);
+    }
+
+    @Override
+    public void add(Object container, Object instance) {
+        get(container).add(instance);
+    }
+
+    @Override
+    public Collection getCollection(Object listOwner) {
+        return get(listOwner);
+    }
+
+
 }

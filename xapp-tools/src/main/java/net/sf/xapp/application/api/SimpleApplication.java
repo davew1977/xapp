@@ -14,6 +14,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 import net.sf.xapp.utils.XappException;
@@ -80,8 +81,8 @@ public class SimpleApplication<T> implements Application<T>
 
     }
 
-    public void nodeAboutToBeAdded(ListProperty listProperty, Object parent, Object newChild)
-    {
+    @Override
+    public void nodeAboutToBeAdded(ContainerProperty containerProperty, Object parent, Object newChild) {
 
     }
 

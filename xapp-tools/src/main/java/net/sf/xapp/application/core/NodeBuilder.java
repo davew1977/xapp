@@ -20,6 +20,7 @@ import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.PROPER
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.tree.Tree;
@@ -96,8 +97,10 @@ public class NodeBuilder
             populateListNodes(newNode);
         }
         //create child nodes for lists
+        List<ContainerProperty> containerProperties = classModel.getMapProperties();
         List<ListProperty> listProperties = classModel.getListProperties();
-        for (ListProperty listProperty : listProperties)
+        containerProperties.addAll(listProperties);
+        for (ContainerProperty listProperty : containerProperties)
         {
             if (!listProperty.isDisplayNodes()) continue;
             if (!listProperty.isVisibilityRestricted()) continue;
@@ -138,7 +141,7 @@ public class NodeBuilder
         return newNode;
     }
 
-    private Node createListNode(ListProperty listProperty, Node parentNode, int insertIndex)
+    private Node createListNode(ContainerProperty listProperty, Node parentNode, int insertIndex)
     {
         Object listOwner = parentNode.wrappedObject();
         Tree domainTreeRoot = parentNode.getDomainTreeRoot();
@@ -158,12 +161,9 @@ public class NodeBuilder
     {
         ListNodeContext listNodeContext = parentNode.getListNodeContext();
         Collection list = listNodeContext.getCollection();
-        if (list != null)
+        for (Object o : list)
         {
-            for (Object o : list)
-            {
-                createNode(null, o, parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
-            }
+            createNode(null, o, parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
         }
     }
 
@@ -185,7 +185,7 @@ public class NodeBuilder
             }
             else
             {
-                newNode = createListNode(node.getListNodeContext().getListProperty(), parent, oldIndex);
+                newNode = createListNode(node.getListNodeContext().getContainerProperty(), parent, oldIndex);
             }
         }
         m_applicationContainer.getMainPanel().repaint();
