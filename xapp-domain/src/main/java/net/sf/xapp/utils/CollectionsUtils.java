@@ -69,4 +69,8 @@ public class CollectionsUtils
         }
         return result;
     }
+
+    public static <T> T zeroOrOne(List<? extends T> items) {
+        return items==null || items.isEmpty() ? null : items.get(0);
+    }
 }
