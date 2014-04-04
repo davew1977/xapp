@@ -692,6 +692,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     {
         if (node.getParent()!=null) //parent can be null if the node has been filtered out
         {
+            getMainTree().clearSelection();//force a change in the tree listener
             getMainTree().setSelectionPath(node.getPath());
             getMainTree().scrollPathToVisible(node.getPath());
         }
