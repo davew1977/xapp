@@ -28,6 +28,7 @@ import net.sf.xapp.utils.XappException;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class NodeBuilder
             populateListNodes(newNode);
         }
         //create child nodes for lists
-        List<ContainerProperty> containerProperties = classModel.getMapProperties();
+        List<ContainerProperty> containerProperties =  new ArrayList<ContainerProperty>(classModel.getMapProperties());
         List<ListProperty> listProperties = classModel.getListProperties();
         containerProperties.addAll(listProperties);
         for (ContainerProperty listProperty : containerProperties)
