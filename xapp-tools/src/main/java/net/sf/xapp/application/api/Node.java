@@ -91,7 +91,7 @@ public interface Node
      *
      * @return as above, but if a list node, this will get the parent's wrapped object
      */
-    Object nearestWrappedObject();
+    <T> T nearestWrappedObject();
 
     /**
      * @return true if this is a list container whose items are references to other objects

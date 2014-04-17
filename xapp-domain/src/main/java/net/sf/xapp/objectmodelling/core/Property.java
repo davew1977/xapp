@@ -113,6 +113,7 @@ public class Property<T> implements Comparable
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             System.out.println("WARNING: property " + this + " in " + m_parentClass.getSimpleName() + " cannot be retrieved on " + target + " of class " + target.getClass().getSimpleName());
             return null;
         }

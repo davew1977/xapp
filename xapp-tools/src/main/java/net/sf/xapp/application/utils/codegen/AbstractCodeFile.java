@@ -170,6 +170,17 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         return this;
     }
 
+    public CodeFile constructors(List<String> types, List<String> paramNames) {
+        assert types.size() == paramNames.size();
+        for (int i = 0; i < types.size(); i++) {
+            String type = types.get(i);
+            String paramName = paramNames.get(i);
+
+
+        }
+        return this;
+    }
+
     public CodeFile defaultConstructor() {
         method(name, "");
         return this;

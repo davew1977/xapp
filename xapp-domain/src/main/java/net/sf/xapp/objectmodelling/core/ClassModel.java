@@ -909,6 +909,12 @@ public class ClassModel<T>
         return ReflectionUtils.hasMethodInHierarchy(m_class, methodName, parameterTypes);
     }
 
+    public void deleteAll() {
+        for (T m_instance : m_instances) {
+            delete(m_instance);
+        }
+    }
+
     private class PrimaryKeyChangedListener implements PropertyChangeListener
     {
         Marshaller m = new Marshaller(ChangeSet.class);
