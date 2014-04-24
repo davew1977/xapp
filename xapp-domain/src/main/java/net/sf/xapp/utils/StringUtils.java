@@ -333,4 +333,8 @@ public class StringUtils
         }
         return sb.toString();
     }
+
+    public static String join(Collection<? extends Object> items, String delim) {
+        return org.apache.commons.lang.StringUtils.join(items.toArray(), delim);
+    }
 }

@@ -197,4 +197,9 @@ public class NodeImpl implements Node
     {
         return m_objectNodeContext != null && m_objectNodeContext.canEdit();
     }
+
+    @Override
+    public int index() {
+        return getParent().indexOf(this);
+    }
 }

@@ -111,4 +111,5 @@ public interface Node
 
     boolean canEdit();
 
+    int index();
 }

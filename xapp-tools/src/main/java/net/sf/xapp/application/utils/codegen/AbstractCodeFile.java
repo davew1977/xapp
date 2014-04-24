@@ -211,6 +211,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         m_static = false;
         m_final = false;
         m_transient = false;
+        m_private = false;
         currentDocContext = field;
         return this;
     }
