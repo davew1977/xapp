@@ -81,8 +81,13 @@ public class ListProperty extends ContainerProperty
     }
 
     @Override
+    public void addToMapOrCollection(Object mapOrCollection, Object instance) {
+        ((Collection) mapOrCollection).add(instance);
+    }
+
+    @Override
     public void add(Object container, Object instance) {
-        get(container).add(instance);
+        addToMapOrCollection(get(container), instance);
     }
 
     @Override

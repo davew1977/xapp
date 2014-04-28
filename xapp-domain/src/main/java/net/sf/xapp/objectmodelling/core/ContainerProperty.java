@@ -116,9 +116,13 @@ public class ContainerProperty extends Property
         return map(container).containsValue(instance);
     }
 
-    public void add(Object container, Object instance) {
+    public void addToMapOrCollection(Object mapOrCollection, Object instance) {
         String key = getContainedTypeClassModel().getPrimaryKey(instance);
-        map(container).put(key, instance);
+        ((Map) mapOrCollection).put(key, instance);
+    }
+
+    public void add(Object container, Object instance) {
+        addToMapOrCollection(map(container), instance);
     }
 
     public Collection getCollection(Object listOwner) {

@@ -282,6 +282,7 @@ public class Unmarshaller<T>
     {
         ClassDatabase classDatabase = m_classModel.getClassDatabase();
         ContainerProperty listProperty = (ContainerProperty) property;
+        Object al = listProperty.createCollection();
         NodeList nl = node.getChildNodes();
         Class collectionClass = listProperty.getContainedType();
         ClassModel classModel = classDatabase.getClassModel(collectionClass);
@@ -323,9 +324,10 @@ public class Unmarshaller<T>
                         Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
                         nextObject = unmarshaller.unmarshal(listElement, context, parentObj);
                     }
-                    listProperty.add(parentObj, nextObject);
+                    listProperty.addToMapOrCollection(al, nextObject);
                 }
             }
+            property.set(parentObj, al);
         }
         else
         {
@@ -524,13 +526,15 @@ public class Unmarshaller<T>
 
         public void execute()
         {
+            Object mapOrCollection = m_listProperty.createCollection();
             for (String s : m_references)
             {
                 Class propertyClass = m_listProperty.getContainedType();
                 ClassModel classModel = m_classModel.getClassDatabase().getClassModel(propertyClass);
                 Object ref = classModel.getInstance(s);
-                m_listProperty.add(m_target, ref);
+                m_listProperty.addToMapOrCollection(mapOrCollection, ref);
             }
+            m_listProperty.set(m_target, mapOrCollection);
         }
     }
 
