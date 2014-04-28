@@ -21,7 +21,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface Reference
 {
-    ReferenceScope value() default ReferenceScope.GLOBAL;
     String select() default "";
     boolean strict() default true;
     String tooltipMethod() default "";

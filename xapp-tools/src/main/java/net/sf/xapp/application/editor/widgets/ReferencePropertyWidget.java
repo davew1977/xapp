@@ -14,12 +14,10 @@ package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.application.api.WidgetContext;
 import net.sf.xapp.application.utils.SwingUtils;
-import net.sf.xapp.annotations.objectmodelling.ReferenceScope;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.tree.TreeNode;
 import net.sf.xapp.utils.XappException;
-import net.sf.xapp.utils.StringUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -95,10 +93,6 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         {
             return null;
         }
-        if(getScope()!= ReferenceScope.GLOBAL)
-        {
-            key = getParentKey() + "." + key;
-        }
         return getClassModel().getInstanceNoCheck(key.toString());
     }
 
@@ -107,25 +101,10 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         return m_widgetContext.getPropertyClassModel();
     }
 
-    private ReferenceScope getScope()
-    {
-        return getProperty().getReferenceScope();
-    }
-
     public void setValue(T value, Object target)
     {
         init(m_widgetContext);
         m_parentObject = target;
-        if (getScope() == ReferenceScope.CHILDREN)
-        {
-            String parentKey = getParentKey() + ".";
-            Vector list = getClassModel().getAllInstancesInHierarchy(parentKey);
-            setComboValues(list);
-        }
-        else if(getScope()== ReferenceScope.SIBLINGS)
-        {
-            throw new UnsupportedOperationException();
-        }
         m_comboBox.setSelectedItem(getDisplayKey(value));
     }
 
@@ -135,14 +114,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         {
             return null;
         }
-        String displayKey = getClassModel().getPrimaryKey(value);
-        return getScope() == ReferenceScope.GLOBAL ? displayKey : StringUtils.leaf(displayKey, ".");
-    }
-
-    private String getParentKey()
-    {
-        ClassModel parentCM = m_widgetContext.getClassDatabase().getClassModel(m_parentObject.getClass());
-        return parentCM.getPrimaryKey(m_parentObject);
+        return getClassModel().getPrimaryKey(value);
     }
 
     public void init(WidgetContext<T> context)
@@ -214,11 +186,6 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         for (Object o : list)
         {
             String fullKey = getClassModel().getPrimaryKey((T) o);
-            if (getScope() == ReferenceScope.CHILDREN
-                    || getScope() == ReferenceScope.SIBLINGS)
-            {
-                fullKey = leaf(fullKey, ".");
-            }
             stringList.add(fullKey);
         }
 

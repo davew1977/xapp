@@ -30,6 +30,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface ContainsReferences
 {
-    ReferenceScope value() default ReferenceScope.GLOBAL;
     String select() default "";
 }

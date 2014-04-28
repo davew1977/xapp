@@ -36,9 +36,6 @@ public class PropertyFactoryImpl implements PropertyFactory
         boolean editable = propertyAccess.getAnnotation(NotEditable.class) == null;
         TreeMeta treeMeta = propertyAccess.getAnnotation(TreeMeta.class);
 
-        Class[] sharedInNamespace = null;
-        NewNamespace namespace = propertyAccess.getAnnotation(NewNamespace.class);
-        sharedInNamespace = namespace != null ? namespace.shared() : null;
         Class aclass = propertyAccess.getType();
         if (Collection.class.isAssignableFrom(aclass))
         {
@@ -71,13 +68,13 @@ public class PropertyFactoryImpl implements PropertyFactory
                 }
                 listType = annotation.value();
             }
-            return new ListProperty(classModelManager, propertyAccess, aclass, listType, editorWidgetAnnotation, parentClass, sharedInNamespace);
+            return new ListProperty(classModelManager, propertyAccess, aclass, listType, editorWidgetAnnotation, parentClass);
         } else if(Map.class.isAssignableFrom(aclass)) {
             ParameterizedType parameterizedType = (ParameterizedType) propertyAccess.getGenericType();
             //support only string as key
             assert parameterizedType.getActualTypeArguments()[0].equals(String.class);
             Class varType = (Class) parameterizedType.getActualTypeArguments()[1];
-            return new ContainerProperty(classModelManager, propertyAccess, aclass, varType, editorWidgetAnnotation, parentClass, sharedInNamespace);
+            return new ContainerProperty(classModelManager, propertyAccess, aclass, varType, editorWidgetAnnotation, parentClass);
         }
         else
         {

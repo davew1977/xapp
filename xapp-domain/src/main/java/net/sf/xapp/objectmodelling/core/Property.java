@@ -494,11 +494,6 @@ public class Property<T> implements Comparable
         return m_propertyAccess.getAnnotation(Hide.class)!=null;
     }
 
-    public ReferenceScope getReferenceScope()
-    {
-        return getReference().value();
-    }
-
     public EditorWidget getEditorWidget() {
         return m_editorWidget;
     }

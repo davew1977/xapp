@@ -27,9 +27,9 @@ public class ListProperty extends ContainerProperty
 
     public ListProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
                         Class containedType, EditorWidget editorWidget,
-                        Class parentClass, Class[] sharedInNamespace)
+                        Class parentClass)
     {
-        super(classModelManager, propertyAccess, aClass, containedType, editorWidget, parentClass, sharedInNamespace);
+        super(classModelManager, propertyAccess, aClass, containedType, editorWidget, parentClass);
     }
 
     public Collection get(Object target)

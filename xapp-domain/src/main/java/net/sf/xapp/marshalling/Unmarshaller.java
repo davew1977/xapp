@@ -294,12 +294,6 @@ public class Unmarshaller<T>
                 Node itNode = nl.item(j);
                 if (itNode.getNodeType() == Node.ELEMENT_NODE)
                 {
-                    //check for namespace
-                    if (listProperty.isNewNamespace())
-                    {
-                        ClassModelManager classModelManager = classModel.getClassDatabase().getMarshallerContext().createChildCMM(listProperty.getSharedInNamespace());
-                        classModel = classModelManager.getClassModel(classModel.getContainedClass());
-                    }
                     Element listElement = (Element) itNode;
                     Object nextObject = null;
                     Node includeResource = listElement.getAttributes().getNamedItem(DJW_INCLUDE_TAG);

@@ -14,13 +14,7 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
-import net.sf.xapp.annotations.objectmodelling.ReferenceScope;
-import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
-import net.sf.xapp.marshalling.stringserializers.IntegerListSerializer;
-import net.sf.xapp.marshalling.stringserializers.LongListSerializer;
 import net.sf.xapp.objectmodelling.api.Rights;
-import net.sf.xapp.utils.StringUtils;
-import net.sf.xapp.utils.XappException;
 
 import java.util.*;
 
@@ -28,28 +22,15 @@ import java.util.*;
 public class ContainerProperty extends Property
 {
     protected Class m_containedType;
-    private Class[] m_sharedInNamespace;
     private List<Rights> m_restrictedRights;
 
     public ContainerProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
                              Class containedType, EditorWidget editorWidget,
-                             Class parentClass, Class[] sharedInNamespace)
+                             Class parentClass)
     {
         super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, editorWidget, false, parentClass, "", true,null, false);
         m_containedType = containedType;
-        m_sharedInNamespace = sharedInNamespace;
         m_restrictedRights = new ArrayList<Rights>();
-    }
-
-
-    public Class[] getSharedInNamespace()
-    {
-        return m_sharedInNamespace;
-    }
-
-    public boolean isNewNamespace()
-    {
-        return m_sharedInNamespace!=null;
     }
 
     public boolean isAllowed(Rights... rights)
@@ -105,11 +86,6 @@ public class ContainerProperty extends Property
     protected ContainsReferences getContainsRefsAnnotation()
     {
         return m_propertyAccess.getAnnotation(ContainsReferences.class);
-    }
-    @Override
-    public ReferenceScope getReferenceScope()
-    {
-        return getContainsRefsAnnotation().value();
     }
 
     public boolean contains(Object container, Object instance) {
