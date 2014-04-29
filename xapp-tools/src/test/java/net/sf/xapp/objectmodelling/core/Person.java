@@ -4,7 +4,7 @@
  */
 package net.sf.xapp.objectmodelling.core;
 
-import net.sf.xapp.annotations.objectmodelling.PrimaryKey;
+import net.sf.xapp.annotations.objectmodelling.GlobalKey;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.marshalling.FormattedText;
 
@@ -37,7 +37,7 @@ public class Person
         m_description = description;
     }
 
-    @PrimaryKey
+    @GlobalKey
     public String getName()
     {
         return m_name;

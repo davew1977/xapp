@@ -93,7 +93,7 @@ public class ContainerProperty extends Property
     }
 
     public void addToMapOrCollection(Object mapOrCollection, Object instance) {
-        String key = getContainedTypeClassModel().getPrimaryKey(instance);
+        String key = getContainedTypeClassModel().getGlobalKey(instance);
         ((Map) mapOrCollection).put(key, instance);
     }
 

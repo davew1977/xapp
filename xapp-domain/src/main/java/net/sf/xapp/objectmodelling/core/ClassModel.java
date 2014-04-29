@@ -17,7 +17,6 @@ import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
-import net.sf.xapp.annotations.objectmodelling.PrimaryKeyScope;
 import net.sf.xapp.annotations.objectmodelling.Singleton;
 import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
@@ -58,9 +57,9 @@ public class ClassModel<T>
     private int m_nextId;
     private BoundObjectType boundObjectType;
     private EditorWidget editorWidget;
-    private Property m_primaryKeyProperty;
+    private Property globalKeyProperty;
     private List<T> m_instances;
-    private HashMap<Object, T> m_mapByPrimaryKey;
+    private HashMap<Object, T> mapByGlobalKey;
     private Method m_setClassModelMethod;
     private Method m_postInitMethod;
     private ListProperty m_containerListProperty;
@@ -106,7 +105,7 @@ public class ClassModel<T>
         addProperties(listProperties);
         addProperties(mapProperties);
         m_instances = new ArrayList<T>();
-        m_mapByPrimaryKey = new HashMap<Object, T>();
+        mapByGlobalKey = new HashMap<Object, T>();
         this.boundObjectType = boundObjectType;
         this.editorWidget = editorWidget;
         m_validImplementationMap = new HashMap<String, ClassModel>();
@@ -114,10 +113,10 @@ public class ClassModel<T>
         {
             putAllValidImpls();
         }
-        m_primaryKeyProperty = primaryKeyProperty;
-        if (m_primaryKeyProperty != null)
+        globalKeyProperty = primaryKeyProperty;
+        if (globalKeyProperty != null)
         {
-            m_primaryKeyProperty.addChangeListener(new PrimaryKeyChangedListener());
+            globalKeyProperty.addChangeListener(new PrimaryKeyChangedListener());
         }
         try
         {
@@ -359,41 +358,25 @@ public class ClassModel<T>
             registerInstance(obj, null);
         }
 
-        Object key = getPrimaryKey(obj);
-        Object o = m_mapByPrimaryKey.put(key, obj);
+        Object key = getGlobalKey(obj);
+        Object o = mapByGlobalKey.put(key, obj);
         //if (o != null)
         //    System.out.println("duplicate key for " + obj + " and " + o+ " key: "+key);
     }
 
-    public String getPrimaryKey(T obj)
+    public String getGlobalKey(T obj)
     {
-        PrimaryKeyScope uniqueScope = m_primaryKeyProperty.getUniqueScope();
-        String myKey = String.valueOf(m_primaryKeyProperty.get(obj));
-        switch (uniqueScope)
-        {
-            case GLOBAL:
-                return myKey;
-            case PARENT:
-                /*Object parentObj = m_parentMap.get(obj);
-                String path = "";
-                if (parentObj!=null)
-                {
-                    path = getClassDatabase().getClassModel(parentObj.getClass()).getPrimaryKey(parentObj) + ".";
-                }
-                return path + myKey;*/
-                throw new UnsupportedOperationException("Operation disabled because unreliable, needs re-work");
-        }
-        return null;
+        return String.valueOf(globalKeyProperty.get(obj));
     }
 
     public void dispose(Object instance)
     {
         m_instances.remove(instance);
         //m_parentMap.remove(instance);
-        if (m_primaryKeyProperty != null)
+        if (globalKeyProperty != null)
         {
-            Object key = m_primaryKeyProperty.get(instance);
-            m_mapByPrimaryKey.remove(key);
+            Object key = globalKeyProperty.get(instance);
+            mapByGlobalKey.remove(key);
             m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(getSimpleName(), key != null ? String.valueOf(key) : null, isTrackNewAndRemoved());
         }
     }
@@ -490,7 +473,7 @@ public class ClassModel<T>
         {
             for (T o : all)
             {
-                if(getPrimaryKey(o).startsWith(query))
+                if(getGlobalKey(o).startsWith(query))
                 {
                     filtered.add(o);
                 }
@@ -687,10 +670,10 @@ public class ClassModel<T>
 
     private T getInstanceInternal(Object primaryKey)
     {
-        if (m_primaryKeyProperty == null)
+        if (globalKeyProperty == null)
             throw new XappException("class " + m_class.getSimpleName() + " not annotated with @PrimaryKey");
 
-        T instance = m_mapByPrimaryKey.get(primaryKey);
+        T instance = mapByGlobalKey.get(primaryKey);
         if (instance != null) return instance;
 
         //try searching sub types
@@ -718,7 +701,7 @@ public class ClassModel<T>
 
     public Property getPrimaryKeyProperty()
     {
-        return m_primaryKeyProperty;
+        return globalKeyProperty;
     }
 
     public boolean isEnum()
@@ -921,12 +904,12 @@ public class ClassModel<T>
 
         public void propertyChanged(Property property, Object target, Object oldVal, Object newVal)
         {
-            m_mapByPrimaryKey.remove(oldVal);
-            if (m_mapByPrimaryKey.containsKey(newVal))
+            mapByGlobalKey.remove(oldVal);
+            if (mapByGlobalKey.containsKey(newVal))
             {
                 //throw new DJWastorException("obj already exists with key: "+newVal);
             }
-            m_mapByPrimaryKey.put(newVal, (T) target);
+            mapByGlobalKey.put(newVal, (T) target);
 
             /**
              * if the application is initializing (i.e. unmarshalling is happening) then we do not want to register
@@ -1014,8 +997,8 @@ public class ClassModel<T>
         }
         //check objects share the same primary key - could become an optional check
         ClassDatabase otherClassDatabase = otherClassModel.getClassDatabase();
-        String thisKey = m_primaryKeyProperty != null ? String.valueOf(m_primaryKeyProperty.get(o1)) : null;
-        String otherKey = m_primaryKeyProperty != null ? String.valueOf(otherClassModel.m_primaryKeyProperty.get(o1)) : null;
+        String thisKey = globalKeyProperty != null ? String.valueOf(globalKeyProperty.get(o1)) : null;
+        String otherKey = globalKeyProperty != null ? String.valueOf(otherClassModel.globalKeyProperty.get(o1)) : null;
         if (!Property.objEquals(thisKey, otherKey)) //note, it is fine if objects have no primary key
         {
             throw new XappException("primary keys not matching for objects: 1: " + thisKey + " 2: " + otherKey);
@@ -1035,8 +1018,8 @@ public class ClassModel<T>
             {   //compare only the keys if the property is a refers to another object
                 if (property.isReference())
                 {
-                    thisValue = thisValue != null ? property.getPropertyClassModel().getPrimaryKey(thisValue) : null;
-                    otherValue = otherValue != null ? property.getPropertyClassModel().getPrimaryKey(otherValue) : null;
+                    thisValue = thisValue != null ? property.getPropertyClassModel().getGlobalKey(thisValue) : null;
+                    otherValue = otherValue != null ? property.getPropertyClassModel().getGlobalKey(otherValue) : null;
                 }
                 if (!Property.objEquals(thisValue, otherValue))
                 {
@@ -1097,7 +1080,7 @@ public class ClassModel<T>
             List otherListOriginal = otherList;
             thisList = thisList == null ? new ArrayList() : thisList;
             otherList = otherList == null ? new ArrayList() : new ArrayList(otherList);//Copy the list coz we modify it
-            Property primaryKeyProperty = listProperty.getContainedTypeClassModel().m_primaryKeyProperty;
+            Property primaryKeyProperty = listProperty.getContainedTypeClassModel().globalKeyProperty;
             if (listProperty.containsReferences())
             {
                 if (thisList == null) thisList = new ArrayList();
@@ -1154,9 +1137,9 @@ public class ClassModel<T>
                 {
                     ClassModel itemClassModel = m_classDatabase.getClassModel(o.getClass());
                     ClassModel otherItemClassModel = otherClassDatabase.getClassModel(o.getClass());
-                    if (itemClassModel.m_primaryKeyProperty != null)
+                    if (itemClassModel.globalKeyProperty != null)
                     {
-                        Object key = itemClassModel.getPrimaryKey(o);
+                        Object key = itemClassModel.getGlobalKey(o);
                         Object otherO = otherKeys.get(key);
                         if (otherO != null) //if not removed
                         {
@@ -1300,7 +1283,7 @@ public class ClassModel<T>
             for (Iterator iterator = list.iterator(); iterator.hasNext();)
             {
                 Object o = iterator.next();
-                if (removedKeys.contains(containedTypeClassModel.getPrimaryKey(o)))
+                if (removedKeys.contains(containedTypeClassModel.getGlobalKey(o)))
                 {
                     iterator.remove();
                 }
@@ -1335,7 +1318,7 @@ public class ClassModel<T>
             for (int i = 0; i < list.size(); i++)
             {
                 Object o = list.get(i);
-                String oKey = (String) nodeCM.getPrimaryKey(o);
+                String oKey = (String) nodeCM.getGlobalKey(o);
                 if (oKey.equals(removedNodeDiff.getKey()))
                 {
                     index = i;

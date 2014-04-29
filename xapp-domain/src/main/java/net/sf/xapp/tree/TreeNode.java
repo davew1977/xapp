@@ -15,7 +15,7 @@ package net.sf.xapp.tree;
 import net.sf.xapp.annotations.application.Mandatory;
 import net.sf.xapp.annotations.application.NotEditable;
 import net.sf.xapp.annotations.marshalling.PropertyOrder;
-import net.sf.xapp.annotations.objectmodelling.PrimaryKey;
+import net.sf.xapp.annotations.objectmodelling.GlobalKey;
 import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
@@ -53,7 +53,7 @@ public abstract class TreeNode implements Comparable, Cloneable
     }
 
 
-    @PrimaryKey
+    @GlobalKey
     @NotEditable
     @Transient
     public String getKey()

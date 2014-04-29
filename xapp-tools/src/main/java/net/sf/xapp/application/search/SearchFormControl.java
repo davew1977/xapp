@@ -115,7 +115,7 @@ public class SearchFormControl
     {
         if (classModel.hasPrimaryKey())
         {
-            value = classModel.getPrimaryKey(value);
+            value = classModel.getGlobalKey(value);
         }
         else
         {

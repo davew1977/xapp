@@ -51,10 +51,9 @@ public class Property<T> implements Comparable
     private List<PropertyChangeListener> m_listeners;
     private boolean m_mandatory;
     private boolean m_visibilityRestricted = true; //defaults to visible in dynamic GUI
-    private PrimaryKeyScope m_uniqueScope;
 
     public Property(ClassModelManager classDatabase, PropertyAccess propertyAccess, Class aClass, Reference ref,
-                    String filterOnProperty, PrimaryKey primaryKey,
+                    String filterOnProperty, GlobalKey globalKey,
                     EditorWidget editorWidget, boolean isformattedText, Class parentClass, String query, boolean editable, TreeMeta treeMeta, boolean mandatory)
     {
         m_classDatabase = classDatabase;
@@ -63,8 +62,7 @@ public class Property<T> implements Comparable
         m_class = aClass;
         m_reference = ref;
         m_filterOnProperty = filterOnProperty;
-        m_primaryKey = primaryKey!=null;
-        m_uniqueScope = primaryKey!=null ? primaryKey.value() : null;
+        m_primaryKey = globalKey !=null;
         m_editorWidget = editorWidget;
         m_formattedText = isformattedText;
         m_parentClass = parentClass;
@@ -73,11 +71,6 @@ public class Property<T> implements Comparable
         m_editableOnCreation = editable;
         m_treeMeta = treeMeta;
         m_listeners = new ArrayList<PropertyChangeListener>();
-    }
-
-    public PrimaryKeyScope getUniqueScope()
-    {
-        return m_uniqueScope;
     }
 
     public void addChangeListener(PropertyChangeListener listener)
