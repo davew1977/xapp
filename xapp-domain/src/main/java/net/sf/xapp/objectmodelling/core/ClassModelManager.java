@@ -336,7 +336,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public <T> T newInstance(Class<T> aClass)
     {
-        return getClassModel(aClass).newInstance();
+        return getClassModel(aClass).newInstance().getInstance();
     }
 
     public MarshallingContext getMarshallerContext()

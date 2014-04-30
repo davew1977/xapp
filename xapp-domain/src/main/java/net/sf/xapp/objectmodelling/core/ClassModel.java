@@ -58,7 +58,7 @@ public class ClassModel<T> {
     private EditorWidget editorWidget;
     private Property globalKeyProperty;
     private Property localKeyProperty;
-    private Map<T, ObjectMeta> instanceMap;
+    private List<ObjectMeta<T>> instances;
     private HashMap<Object, T> mapByGlobalKey;
     private Method m_setClassModelMethod;
     private Method m_postInitMethod;
@@ -96,7 +96,7 @@ public class ClassModel<T> {
         addProperties(properties);
         addProperties(listProperties);
         addProperties(mapProperties);
-        instanceMap = new LinkedHashMap<T, ObjectMeta>();
+        instances = new ArrayList<ObjectMeta<T>>();
         mapByGlobalKey = new HashMap<Object, T>();
         this.boundObjectType = boundObjectType;
         this.editorWidget = editorWidget;
@@ -250,23 +250,23 @@ public class ClassModel<T> {
      *
      * @return the new instance or existing singleton instance.
      */
-    public synchronized T newInstance() {
+    public synchronized ObjectMeta<T> newInstance() {
         try {
             T obj = m_class.newInstance();
-            registerInstance(obj);
+            ObjectMeta<T> objectMeta = registerInstance(obj);
             injectClassModel(obj);
-            return obj;
+            return objectMeta;
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
         }
     }
 
-    private int registerInstance(T obj) {
+    private ObjectMeta<T> registerInstance(T obj) {
         int nextId = m_nextId++;
-        ObjectMeta objectMeta = namespace != null ? new ObjectMeta(namespace.value()) : null;
-        instanceMap.put(obj, objectMeta);
-        return nextId;
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(obj, namespace);
+        instances.add(objectMeta);
+        return objectMeta;
     }
 
     /**
@@ -283,7 +283,7 @@ public class ClassModel<T> {
         //assert m_primaryKeyProperty != null : m_class.getSimpleName() + " has no primary key";
 
         //register the instance if unknown to us
-        if (!instanceMap.containsKey(obj)) {
+        if (!isRegistered(obj)) {
             registerInstance(obj);
         }
 
@@ -302,7 +302,7 @@ public class ClassModel<T> {
     }
 
     public void dispose(T instance) {
-        instanceMap.remove(instance);
+        instances.remove(find(instance));
         if (globalKeyProperty != null) {
             Object key = globalKeyProperty.get(instance);
             mapByGlobalKey.remove(key);
@@ -401,7 +401,15 @@ public class ClassModel<T> {
                 result.addAll(validImpl.getAllInstancesInHierarchy());
             }
         }
-        result.addAll(instanceMap.keySet());
+        result.addAll(allInstances());
+        return result;
+    }
+
+    private Collection<T> allInstances() {
+        Collection<T> result = new ArrayList<T>(instances.size());
+        for (ObjectMeta<T> instance : instances) {
+            result.add(instance.getInstance());
+        }
         return result;
     }
 
@@ -593,7 +601,7 @@ public class ClassModel<T> {
     }
 
     public Collection getInstances() {
-        return instanceMap.keySet();
+        return allInstances();
     }
 
     public boolean isContainer() {
@@ -677,7 +685,7 @@ public class ClassModel<T> {
 
     public void mapAllByPrimaryKey() {
         if (hasPrimaryKey()) {
-            for (T instance : instanceMap.keySet()) {
+            for (T instance : allInstances()) {
                 mapByGlobalKey(instance);
             }
         }
@@ -688,13 +696,9 @@ public class ClassModel<T> {
     }
 
     public void deleteAll() {
-        for (T m_instance : instanceMap.keySet()) {
+        for (T m_instance : allInstances()) {
             delete(m_instance);
         }
-    }
-
-    public ObjectMeta getObjectMeta(T instance) {
-        return instanceMap.get(instance);
     }
 
     private class PrimaryKeyChangedListener implements PropertyChangeListener {
@@ -772,8 +776,8 @@ public class ClassModel<T> {
         if (this.m_class != otherClassModel.m_class)
             throw new XappException("objects of different types. " + o1 + " " + o2);
         //check objects are managed by these class models
-        if (!instanceMap.containsKey(o1)) throw new XappException("object " + o1 + " not found in " + this);
-        if (!otherClassModel.instanceMap.containsKey(o2)) {
+        if (!isRegistered(o1)) throw new XappException("object " + o1 + " not found in " + this);
+        if (!otherClassModel.isRegistered(o2)) {
             throw new XappException("object " + o2 + " not found in " + this);
         }
         //check objects share the same primary key - could become an optional check
@@ -919,6 +923,19 @@ public class ClassModel<T> {
             }
         }
         return diffSet;
+    }
+
+    private boolean isRegistered(T o1) {
+        return find(o1) != null;
+    }
+
+    private ObjectMeta<T> find(T o1) {
+        for (ObjectMeta<T> instance : instances) {
+            if(instance.getInstance().equals(o1)) {
+                return instance;
+            }
+        }
+        return null;
     }
 
     public boolean hasPrimaryKey() {

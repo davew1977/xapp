@@ -508,8 +508,7 @@ public class Unmarshaller<T>
 
     private static class LocalContext<T> extends Context{
         ClassModel<T> classModel;
-        T instance;
-        ObjectMeta objectMeta;
+        ObjectMeta<T> objectMeta;
         List<Object> childObjectsToMap = new ArrayList<Object>();
 
 
@@ -518,9 +517,8 @@ public class Unmarshaller<T>
         }
 
         public  T newInstance() {
-            instance = classModel.newInstance();
-            objectMeta = classModel.getObjectMeta(instance);
-            return instance;
+            objectMeta = classModel.newInstance();
+            return objectMeta.getInstance();
         }
 
         public void addChildObjectToMap(Object child) {
