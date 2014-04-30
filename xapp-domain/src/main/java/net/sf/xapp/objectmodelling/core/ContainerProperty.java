@@ -28,7 +28,7 @@ public class ContainerProperty extends Property
                              Class containedType, EditorWidget editorWidget,
                              Class parentClass)
     {
-        super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, editorWidget, false, parentClass, "", true,null, false);
+        super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, null, editorWidget, false, parentClass, "", true,null, false);
         m_containedType = containedType;
         m_restrictedRights = new ArrayList<Rights>();
     }

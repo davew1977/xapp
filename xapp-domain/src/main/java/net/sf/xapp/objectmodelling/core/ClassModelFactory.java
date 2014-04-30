@@ -64,14 +64,21 @@ public class ClassModelFactory
         Collections.sort(inspectionTuple.listProperties);
 
         //find the primary key
-        Property primaryKeyProperty = null;
+        Property globalKeyProperty = null;
+        Property localKeyProperty = null;
         for (Property property : inspectionTuple.properties)
         {
-            if (property.isPrimaryKey())
+            if (property.isGlobalKey())
             {
-                if (primaryKeyProperty != null)
-                    throw new XappException("There can only be one primary key!: " + property + " " + primaryKeyProperty);
-                primaryKeyProperty = property;
+                if (globalKeyProperty != null)
+                    throw new XappException("There can only be one global key!: " + property + " " + globalKeyProperty);
+                globalKeyProperty = property;
+            }
+            if(property.isLocalKey()) {
+                if(localKeyProperty != null) {
+                    throw new XappException("There can only be one local key!: " + property + " " + localKeyProperty);
+                }
+                localKeyProperty = property;
             }
         }
         ClassModel classModel = new ClassModel(classModelManager,
@@ -82,7 +89,8 @@ public class ClassModelFactory
                 validImplementations,
                 bcAnnotation,
                 boAnnotation,
-                primaryKeyProperty,
+                globalKeyProperty,
+                localKeyProperty,
                 containerListProp,
                 inspectionTuple.postInitMethod);
         return classModel;

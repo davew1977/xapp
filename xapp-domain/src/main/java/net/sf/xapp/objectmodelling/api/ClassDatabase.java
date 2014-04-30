@@ -62,7 +62,6 @@ public interface ClassDatabase<T>
 
     List<ClassModel> enumerateClassModels();
 
-    Object getSingleton(Class aClass);
 
     boolean hasClassModel(Class aClass);
     

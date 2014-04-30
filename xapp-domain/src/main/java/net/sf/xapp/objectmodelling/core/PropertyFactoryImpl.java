@@ -91,9 +91,10 @@ public class PropertyFactoryImpl implements PropertyFactory
             }
             //look for primary key
             GlobalKey globalKey = propertyAccess.getAnnotation(GlobalKey.class);
+            LocalKey localKey = propertyAccess.getAnnotation(LocalKey.class);
             return new Property(classModelManager, propertyAccess, aclass,
                     referenceAnno, filterOn != null ? filterOn.value() : null,
-                    globalKey, editorWidgetAnnotation, formattedText,
+                    globalKey, localKey, editorWidgetAnnotation, formattedText,
                     parentClass, referenceAnno != null ? referenceAnno.select() : null, editable, treeMeta, mandatory);
         }
     }

@@ -17,12 +17,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a property as a key for this class, with a namespace local to some object
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
-public @interface Reference
+public @interface LocalKey
 {
-    String select() default "";
-    boolean strict() default true;
-    String tooltipMethod() default "";
-    boolean local() default false;
 }

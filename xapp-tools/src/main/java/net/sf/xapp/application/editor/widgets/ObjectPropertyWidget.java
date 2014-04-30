@@ -155,7 +155,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final Object instance = validImpl.newInstance(m_parentObj);
+        final Object instance = validImpl.newInstance();
         EditableContext editableContext = new SingleTargetEditableContext(validImpl, instance, SingleTargetEditableContext.Mode.CREATE);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {

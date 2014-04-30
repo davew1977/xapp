@@ -336,7 +336,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public <T> T newInstance(Class<T> aClass)
     {
-        return getClassModel(aClass).newInstance(null);
+        return getClassModel(aClass).newInstance();
     }
 
     public MarshallingContext getMarshallerContext()
@@ -352,12 +352,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     public List<ClassModel> enumerateClassModels()
     {
         return new ArrayList<ClassModel>(m_classModelMap.values());
-    }
-
-    public Object getSingleton(Class aClass)
-    {
-        return getClassModel(aClass).getSingleton();
-
     }
 
     public boolean hasClassModel(Class aClass)
