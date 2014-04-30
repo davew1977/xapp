@@ -32,7 +32,7 @@ public class CreateCommand extends NodeCommand
 
     public void execute(final Node parentNode)
     {
-        final Object instance = m_createClass.newInstance();
+        final Object instance = m_createClass.newInstance().getInstance();
         final ApplicationContainer applicationContainer = parentNode.getApplicationContainer();
         final ListNodeContext listNodeContext = parentNode.getListNodeContext();
         applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), instance);
