@@ -99,7 +99,7 @@ public class Unmarshaller<T>
 
             Document doc = db.parse(is);
             if (m_verbose) System.out.println("trying to unmarshal: " + doc.getFirstChild());
-            GlobalContext context = new GlobalContext();
+            GlobalContext<T> context = new GlobalContext<T>(m_classModel);
             if (path != null) {
                 context.m_path = path;
             }
@@ -172,7 +172,7 @@ public class Unmarshaller<T>
      * @return the unmarshalled java object
      * @throws Exception any parse exception or java.reflect exception
      */
-    private T unmarshal(Element element, GlobalContext context) throws Exception
+    private T unmarshal(Element element, GlobalContext<T> context) throws Exception
     {
         ClassDatabase cdb = m_classModel.getClassDatabase();
 
@@ -239,7 +239,7 @@ public class Unmarshaller<T>
         {
             context.m_objectsWithPostInit.put(obj, m_classModel.getPostInitMethod());
         }
-        context.popLocal();
+        context.pop();
         if (m_verbose) System.out.println("unmarshalled " + obj);
         return obj;
     }
@@ -458,8 +458,15 @@ public class Unmarshaller<T>
         m_classModel = cdb.getClassModel(m_classModel.getContainedClass());
     }
 
-    private static class Context {
+    private static class Context<E> {
+        ObjectMeta<E> objectMeta;
+        ClassModel<E> classModel;
         List<DelayedTask> delayedTasks = new ArrayList<DelayedTask>();
+        List<Object> childObjectsToMap = new ArrayList<Object>();
+
+        private Context(ClassModel<E> classModel) {
+            this.classModel = classModel;
+        }
 
         void addDelayedTask(DelayedTask delayedTask) {
             delayedTasks.add(delayedTask);
@@ -468,64 +475,17 @@ public class Unmarshaller<T>
         public List<DelayedTask> getDelayedTasks() {
             return delayedTasks;
         }
-    }
-
-    private static class GlobalContext extends Context
-    {
-        boolean m_inTree;
-        public Map<Object, Method> m_objectsWithPostInit = new LinkedHashMap<Object, Method>();
-        public String m_path;
-        Stack<LocalContext> contextStack = new Stack<LocalContext>();
-
-        public <T> T newInstance(ClassModel<T> classModel) {
-
-            LocalContext<T> localContext = new LocalContext<T>(classModel);
-            contextStack.push(localContext);
-            return localContext.newInstance();
-        }
-
-        public void popLocal() {
-            LocalContext localContext = contextStack.pop();
-            localContext.mapAllByLocalKey();
-            localContext.setLocalRefs();
-        }
-
-        public void add(SetReferenceTask setReferenceTask) {
-            Context context = findNamespace(setReferenceTask);
-            context.addDelayedTask(setReferenceTask);
-        }
-
-        private Context findNamespace(SetReferenceTask setReferenceTask) {
-            for (int i = contextStack.size()-1; i >= 0; i--) {
-                LocalContext localContext = contextStack.get(i);
-                if(localContext.isNamespaceFor(setReferenceTask.m_property.getPropertyClass())) {
-                   return localContext;
-                }
-            }
-            return this;
-        }
-    }
-
-    private static class LocalContext<T> extends Context{
-        ClassModel<T> classModel;
-        ObjectMeta<T> objectMeta;
-        List<Object> childObjectsToMap = new ArrayList<Object>();
-
-
-        public LocalContext(ClassModel<T> classModel) {
-            this.classModel = classModel;
-        }
-
-        public  T newInstance() {
-            objectMeta = classModel.newInstance();
-            return objectMeta.getInstance();
-        }
 
         public void addChildObjectToMap(Object child) {
             childObjectsToMap.add(child);
         }
 
-        public void mapAllByLocalKey() {
+        public  E newInstance() {
+            objectMeta = classModel.newInstance();
+            return objectMeta.getInstance();
+        }
+
+        public void mapAllByKey() {
             ClassDatabase cdb = classModel.getClassDatabase();
             for (Object o : childObjectsToMap) {
                 Class<?> aClass = o.getClass();
@@ -533,10 +493,61 @@ public class Unmarshaller<T>
                 objectMeta.add(aClass, localKey, o);
             }
         }
+    }
 
-        public void setLocalRefs() {
+    private static class GlobalContext<T> extends Context<T>
+    {
+        List<DelayedTask> delayedTasks = new ArrayList<DelayedTask>();
+        boolean m_inTree;
+        public Map<Object, Method> m_objectsWithPostInit = new LinkedHashMap<Object, Method>();
+        public String m_path;
+        Stack<LocalContext> contextStack = new Stack<LocalContext>();
+
+        private GlobalContext(ClassModel<T> classModel) {
+            super(classModel);
+        }
+
+        public <E> E newInstance(ClassModel<E> classModel) {
+
+            LocalContext<E> localContext = new LocalContext<E>(this, classModel);
+            contextStack.push(localContext);
+            return (E) localContext.newInstance();
+        }
+
+        public void pop() {
+            LocalContext localContext = contextStack.pop();
+            localContext.postInit();
+        }
+
+        public void add(SetReferenceTask setReferenceTask) {
+            Context context = findNamespace(setReferenceTask.m_property.getPropertyClass());
+            context.addDelayedTask(setReferenceTask);
+        }
+
+        private Context findNamespace(Class aClass) {
+            for (int i = contextStack.size()-1; i >= 0; i--) {
+                LocalContext localContext = contextStack.get(i);
+                if(localContext.isNamespaceFor(aClass)) {
+                   return localContext;
+                }
+            }
+            //always fall back to root namespace
+            return this;
+        }
+    }
+
+    private static class LocalContext<E> extends Context<E>{
+        GlobalContext globalContext;
+
+
+        public LocalContext(GlobalContext globalContext, ClassModel<E> classModel) {
+            super(classModel);
+            this.globalContext = globalContext;
+        }
+
+        public void setRefs() {
             assert delayedTasks.isEmpty() || objectMeta!=null;
-            for (DelayedTask delayedTask : delayedTasks) {
+            for (DelayedTask delayedTask : getDelayedTasks()) {
                 delayedTask.execute(objectMeta);
             }
         }
@@ -544,9 +555,15 @@ public class Unmarshaller<T>
         public boolean isNamespaceFor(Class propertyClass) {
             return objectMeta != null && objectMeta.isNamespaceFor(propertyClass);
         }
+
+        public void postInit() {
+            globalContext.findNamespace(classModel.getContainedClass()).addChildObjectToMap(objectMeta.getInstance());
+            mapAllByKey();
+            setRefs();
+        }
     }
 
-    private static interface DelayedTask
+    public static interface DelayedTask
     {
         void execute(ObjectMeta objectMeta);
     }
