@@ -1,6 +1,6 @@
 package testmodel;
 
-import net.sf.xapp.annotations.objectmodelling.LocalKey;
+import net.sf.xapp.annotations.objectmodelling.Key;
 
 /**
  * © 2013 Newera Education Ltd
@@ -11,7 +11,7 @@ public class Person {
    private String firstName;
    private String secondName;
 
-    @LocalKey
+    @Key
     public String getUsername() {
         return username;
     }

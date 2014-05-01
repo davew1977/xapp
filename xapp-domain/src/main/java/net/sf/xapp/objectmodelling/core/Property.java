@@ -39,8 +39,7 @@ public class Property<T> implements Comparable
     protected Class m_class;//class of return type of accessor
     private Reference m_reference;//true if this should point to another object in the datamodel
     private String m_filterOnProperty;
-    private boolean globalKey;
-    private boolean localKey;
+    private boolean key;
     private EditorWidget m_editorWidget; //override the default bound component
     protected ClassDatabase m_classDatabase;
     private boolean m_formattedText;
@@ -54,7 +53,7 @@ public class Property<T> implements Comparable
     private boolean m_visibilityRestricted = true; //defaults to visible in dynamic GUI
 
     public Property(ClassModelManager classDatabase, PropertyAccess propertyAccess, Class aClass, Reference ref,
-                    String filterOnProperty, GlobalKey globalKey, LocalKey localKey,
+                    String filterOnProperty, Key key,
                     EditorWidget editorWidget, boolean isformattedText, Class parentClass, String query, boolean editable, TreeMeta treeMeta, boolean mandatory)
     {
         m_classDatabase = classDatabase;
@@ -63,8 +62,7 @@ public class Property<T> implements Comparable
         m_class = aClass;
         m_reference = ref;
         m_filterOnProperty = filterOnProperty;
-        this.globalKey = globalKey !=null;
-        this.localKey = localKey !=null;
+        this.key = key !=null;
         m_editorWidget = editorWidget;
         m_formattedText = isformattedText;
         m_parentClass = parentClass;
@@ -356,13 +354,9 @@ public class Property<T> implements Comparable
         return m_classDatabase.isSimpleType(m_class);
     }
 
-    public boolean isGlobalKey()
+    public boolean isKey()
     {
-        return globalKey;
-    }
-
-    public boolean isLocalKey() {
-        return localKey;
+        return key;
     }
 
     public boolean hasSpecialBoundComponent()

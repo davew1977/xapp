@@ -157,7 +157,7 @@ public class Marshaller<T>
                         //ok we just want to marshal the id of the object
                         //the id is the name
                         ClassModel classModel = m_classDatabase.getClassModel(property.getPropertyClass());
-                        writeAsAttr.add(new PropertyValuePair(property, classModel.getGlobalKey(value)));
+                        writeAsAttr.add(new PropertyValuePair(property, classModel.getKey(value)));
                     }
                     else if (property.isPrimitiveBoolean() && !m_marshalFalseBooleanValues && !(Boolean) value)
                     {
@@ -296,7 +296,7 @@ public class Marshaller<T>
                     {
                         List<ComparableNameValuePair> anAttr = new ArrayList<ComparableNameValuePair>();
                         ClassModel classModel = m_classDatabase.getClassModel(aClass);
-                        final String name = classModel.getGlobalKey(listItem).toString();
+                        final String name = classModel.getKey(listItem).toString();
                         anAttr.add(new SimpleNameValuePair("ref", name));
                         out.writeOpeningTag(aClass.getSimpleName(), anAttr, false);
                     }

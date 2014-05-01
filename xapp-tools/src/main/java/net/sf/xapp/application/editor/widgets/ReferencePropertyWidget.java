@@ -114,7 +114,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         {
             return null;
         }
-        return getClassModel().getGlobalKey(value);
+        return getClassModel().getKey(value);
     }
 
     public void init(WidgetContext<T> context)
@@ -185,7 +185,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         boolean sorted = preSort(list);
         for (Object o : list)
         {
-            String fullKey = getClassModel().getGlobalKey((T) o);
+            String fullKey = getClassModel().getKey((T) o);
             stringList.add(fullKey);
         }
 

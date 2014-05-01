@@ -89,12 +89,11 @@ public class PropertyFactoryImpl implements PropertyFactory
             {
                 throw new XappException("formatted text referenceAnno can only apply to String");
             }
-            //look for primary key
-            GlobalKey globalKey = propertyAccess.getAnnotation(GlobalKey.class);
-            LocalKey localKey = propertyAccess.getAnnotation(LocalKey.class);
+            //look for key
+            Key key = propertyAccess.getAnnotation(Key.class);
             return new Property(classModelManager, propertyAccess, aclass,
                     referenceAnno, filterOn != null ? filterOn.value() : null,
-                    globalKey, localKey, editorWidgetAnnotation, formattedText,
+                    key, editorWidgetAnnotation, formattedText,
                     parentClass, referenceAnno != null ? referenceAnno.select() : null, editable, treeMeta, mandatory);
         }
     }

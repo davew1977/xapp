@@ -57,7 +57,6 @@ public class ClassModel<T> {
     private BoundObjectType boundObjectType;
     private EditorWidget editorWidget;
     private Property globalKeyProperty;
-    private Property localKeyProperty;
     private List<ObjectMeta<T>> instances;
     private HashMap<Object, T> mapByGlobalKey;
     private Method m_setClassModelMethod;
@@ -81,7 +80,6 @@ public class ClassModel<T> {
                       EditorWidget editorWidget,
                       BoundObjectType boundObjectType,
                       Property globalKeyProperty,
-                      Property localKeyProperty,
                       String containerListProp, Method postInitMethod) {
         m_class = aClass;
 
@@ -108,7 +106,6 @@ public class ClassModel<T> {
         if (this.globalKeyProperty != null) {
             this.globalKeyProperty.addChangeListener(new PrimaryKeyChangedListener());
         }
-        this.localKeyProperty = localKeyProperty;
         try {
             m_setClassModelMethod = aClass.getMethod("setClassModel", ClassModel.class);
         } catch (NoSuchMethodException e) {
@@ -287,18 +284,14 @@ public class ClassModel<T> {
             registerInstance(obj);
         }
 
-        Object key = getGlobalKey(obj);
+        Object key = getKey(obj);
         Object o = mapByGlobalKey.put(key, obj);
         //if (o != null)
         //    System.out.println("duplicate key for " + obj + " and " + o+ " key: "+key);
     }
 
-    public String getGlobalKey(T obj) {
+    public String getKey(T obj) {
         return String.valueOf(globalKeyProperty.get(obj));
-    }
-
-    public String getLocalKey(T obj) {
-        return String.valueOf(localKeyProperty.get(obj));
     }
 
     public void dispose(T instance) {
@@ -380,7 +373,7 @@ public class ClassModel<T> {
         Vector<T> filtered = new Vector<T>();
         if (!query.contains("=")) {
             for (T o : all) {
-                if (getGlobalKey(o).startsWith(query)) {
+                if (getKey(o).startsWith(query)) {
                     filtered.add(o);
                 }
             }
@@ -800,8 +793,8 @@ public class ClassModel<T> {
             //if property is a simple type record the difference
             if (property.isStringPrimitiveOrEnum() || property.isReference() || property.isStringSerializable()) {   //compare only the keys if the property is a refers to another object
                 if (property.isReference()) {
-                    thisValue = thisValue != null ? property.getPropertyClassModel().getGlobalKey(thisValue) : null;
-                    otherValue = otherValue != null ? property.getPropertyClassModel().getGlobalKey(otherValue) : null;
+                    thisValue = thisValue != null ? property.getPropertyClassModel().getKey(thisValue) : null;
+                    otherValue = otherValue != null ? property.getPropertyClassModel().getKey(otherValue) : null;
                 }
                 if (!Property.objEquals(thisValue, otherValue)) {
                     String sValue1 = property.toString(thisValue);
@@ -897,7 +890,7 @@ public class ClassModel<T> {
                     ClassModel itemClassModel = m_classDatabase.getClassModel(o.getClass());
                     ClassModel otherItemClassModel = otherClassDatabase.getClassModel(o.getClass());
                     if (itemClassModel.globalKeyProperty != null) {
-                        Object key = itemClassModel.getGlobalKey(o);
+                        Object key = itemClassModel.getKey(o);
                         Object otherO = otherKeys.get(key);
                         if (otherO != null) //if not removed
                         {
@@ -1032,7 +1025,7 @@ public class ClassModel<T> {
             ClassModel containedTypeClassModel = listProperty.getContainedTypeClassModel();
             for (Iterator iterator = list.iterator(); iterator.hasNext(); ) {
                 Object o = iterator.next();
-                if (removedKeys.contains(containedTypeClassModel.getGlobalKey(o))) {
+                if (removedKeys.contains(containedTypeClassModel.getKey(o))) {
                     iterator.remove();
                 }
             }
@@ -1060,7 +1053,7 @@ public class ClassModel<T> {
             int index = 0;
             for (int i = 0; i < list.size(); i++) {
                 Object o = list.get(i);
-                String oKey = (String) nodeCM.getGlobalKey(o);
+                String oKey = (String) nodeCM.getKey(o);
                 if (oKey.equals(removedNodeDiff.getKey())) {
                     index = i;
                     break;

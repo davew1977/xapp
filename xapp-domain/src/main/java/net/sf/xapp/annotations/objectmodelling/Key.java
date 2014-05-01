@@ -18,10 +18,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a property as a key for this class, with a namespace local to some object
+ * Marks a property as the main key for this class
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
-public @interface LocalKey
+public @interface Key
 {
 }

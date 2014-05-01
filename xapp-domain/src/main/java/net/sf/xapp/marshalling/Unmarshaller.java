@@ -489,8 +489,8 @@ public class Unmarshaller<T>
             ClassDatabase cdb = classModel.getClassDatabase();
             for (Object o : childObjectsToMap) {
                 Class<?> aClass = o.getClass();
-                String localKey = cdb.getClassModel(aClass).getLocalKey(o);
-                objectMeta.add(aClass, localKey, o);
+                String key = cdb.getClassModel(aClass).getKey(o);
+                objectMeta.add(aClass, key, o);
             }
         }
     }

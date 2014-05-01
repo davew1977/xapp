@@ -4,7 +4,7 @@
  */
 package net.sf.xapp.objectmodelling.core;
 
-import net.sf.xapp.annotations.objectmodelling.GlobalKey;
+import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.ListType;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 
@@ -16,7 +16,7 @@ public class Group
     private List<Person> m_members;
     private List<Asset> m_assets;
 
-    @GlobalKey
+    @Key
     public String getName()
     {
         return m_name;
