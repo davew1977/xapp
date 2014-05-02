@@ -54,14 +54,6 @@ public class PropertyObjectPair
         return m_property.get(m_target);
     }
 
-    /**
-     * Sets the property after decoding it from the string value
-     * @param value the value as a string
-     */
-    public void setSpecial(String value)
-    {
-        m_property.setSpecial(m_target, value);
-    }
 
     public String toString()
     {

@@ -45,6 +45,22 @@ public class ReflectionUtils
             throw new RuntimeException(e);
         }
     }
+    public static <T> T tryCall(Object target, String methodName, Object... params)
+    {
+        try
+        {
+            Method method = findMatchingMethod(target.getClass(), methodName, params);
+            if(method == null) {
+                return null;
+            }
+            method.setAccessible(true);
+            return (T) method.invoke(target, params);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void checkMethodExists(Class cl, String method, Object... p)
     {

@@ -1,11 +1,13 @@
 package testmodel;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
 /**
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
+@ValidImplementations({Teacher.class, Pupil.class})
 public class Person {
    private String username;
    private String firstName;

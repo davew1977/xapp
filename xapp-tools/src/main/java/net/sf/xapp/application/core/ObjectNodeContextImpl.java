@@ -19,6 +19,7 @@ import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIS
 import net.sf.xapp.application.commands.*;
 import static net.sf.xapp.objectmodelling.api.Rights.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 import java.util.ArrayList;
@@ -27,15 +28,15 @@ import java.util.List;
 public class ObjectNodeContextImpl implements ObjectNodeContext
 {
     private ClassModel m_classModel;
-    private Object m_instance;
+    private ObjectMeta objectMeta;
     private ObjectContext m_objectContext;
     private Property property;
 
-    public ObjectNodeContextImpl(Property property, ClassModel classModel, Object instance, ObjectContext objectContext)
+    public ObjectNodeContextImpl(Property property, ClassModel classModel, ObjectMeta instance, ObjectContext objectContext)
     {
         this.property = property;
         m_classModel = classModel;
-        m_instance = instance;
+        objectMeta = instance;
         m_objectContext = objectContext;
     }
 
@@ -49,14 +50,19 @@ public class ObjectNodeContextImpl implements ObjectNodeContext
         return property;
     }
 
+    @Override
+    public Object instance() {
+        return objectMeta().getInstance();
+    }
+
     public ClassModel getClassModel()
     {
         return m_classModel;
     }
 
-    public Object getInstance()
+    public ObjectMeta objectMeta()
     {
-        return m_instance;
+        return objectMeta;
     }
 
     public ObjectContext getObjectContext()
@@ -85,7 +91,7 @@ public class ObjectNodeContextImpl implements ObjectNodeContext
             if (!parentNode.containsReferences())
             {
                 //COPY and COPY_XML
-                if (m_classModel.isAllowed(CUT_COPY) && m_instance instanceof Cloneable)
+                if (m_classModel.isAllowed(CUT_COPY) && objectMeta instanceof Cloneable)
                 {
                     commands.add(new CopyCommand());
                     commands.add(new CopyXMLCommand());

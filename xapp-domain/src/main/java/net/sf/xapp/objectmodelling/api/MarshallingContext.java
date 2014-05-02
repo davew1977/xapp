@@ -13,6 +13,7 @@
 package net.sf.xapp.objectmodelling.api;
 
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyObjectPair;
 import net.sf.xapp.objectmodelling.difftracking.KeyChangeHistory;
 
@@ -34,5 +35,5 @@ public interface MarshallingContext<T>
      *
      * @param obj the root datamodel object
      */
-    void setInitialized(T obj);
+    void setInitialized(ObjectMeta<T> obj);
 }

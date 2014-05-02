@@ -16,6 +16,7 @@ import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.core.NodeBuilder;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
 import java.util.List;
@@ -32,20 +33,20 @@ public class CreateCommand extends NodeCommand
 
     public void execute(final Node parentNode)
     {
-        final Object instance = m_createClass.newInstance().getInstance();
+        final ObjectMeta objMeta = m_createClass.newInstance(parentNode.objectMeta());
         final ApplicationContainer applicationContainer = parentNode.getApplicationContainer();
         final ListNodeContext listNodeContext = parentNode.getListNodeContext();
-        applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), instance);
-        EditableContext editableContext = new SingleTargetEditableContext(m_createClass, instance, SingleTargetEditableContext.Mode.CREATE);
+        applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), objMeta);
+        EditableContext editableContext = new SingleTargetEditableContext(m_createClass, objMeta, SingleTargetEditableContext.Mode.CREATE);
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyChangeTuple> changes, boolean closeOnSave)
             {
-                if (!listNodeContext.contains(instance))
+                if (!listNodeContext.contains(objMeta))
                 {
-                    listNodeContext.add(instance);
+                    listNodeContext.add(objMeta);
                     NodeBuilder nodeBuilder = applicationContainer.getNodeBuilder();
-                    Node newNode = nodeBuilder.createNode(null, instance, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
+                    Node newNode = nodeBuilder.createNode(null, objMeta, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
                     applicationContainer.getMainPanel().repaint();
                     parentNode.updateDomainTreeRoot();
                     applicationContainer.getApplication().nodeAdded(newNode);

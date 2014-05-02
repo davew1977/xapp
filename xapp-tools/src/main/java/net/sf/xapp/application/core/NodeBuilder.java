@@ -19,10 +19,7 @@ import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIS
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.PROPERTY;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ContainerProperty;
-import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.Property;
+import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.XappException;
 
@@ -51,25 +48,24 @@ public class NodeBuilder
         return node;
     }
 
-    public Node createNode(Property property, Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext)
+    public Node createNode(Property property, ObjectMeta instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext)
     {
         return createNode(property, instance, parentNode, domainTreeRoot, objectContext, parentNode.numChildren());
     }
 
-    public Node createNode(Property parentProperty, Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
+    public Node createNode(Property parentProperty, ObjectMeta objMeta, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
     {
         DefaultMutableTreeNode jtreeNode = new DefaultMutableTreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
 
-        ClassDatabase classDatabase = m_applicationContainer.getGuiContext().getClassDatabase();
-        ClassModel classModel = classDatabase.getClassModel(instance.getClass());
-        ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, instance, objectContext);
+        ClassModel classModel = objMeta.getClassModel();
+        ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, objMeta, objectContext);
         ListNodeContextImpl listNodeContext = null;
         ListProperty containerListProperty = classModel.getContainerListProperty();
         if (classModel.isContainer())
         {
             ListProperty listProp = containerListProperty;
-            Object listOwner = instance;
+            Object listOwner = objMeta;
             listNodeContext = new ListNodeContextImpl(listProp, listOwner);
         }
         Node newNode = new NodeImpl(m_applicationContainer, domainTreeRoot, jtreeNode, listNodeContext, objectNodeContext);
@@ -133,10 +129,10 @@ public class NodeBuilder
             if (domainTreeRoot != null && propertySubTreeMeta != null)
                 throw new XappException("cannot have nested tree properties " + property);
 
-            Object value = property.get(instance);
+            Object value = property.get(objMeta);
             if (value != null)
             {
-                createNode( property, value, newNode, propertySubTreeMeta!=null ? (Tree) value : domainTreeRoot, PROPERTY);
+                createNode(property, objMeta.globalObjMetaLookup(value), newNode, propertySubTreeMeta != null ? (Tree) value : domainTreeRoot, PROPERTY);
             }
         }
         return newNode;
@@ -164,7 +160,7 @@ public class NodeBuilder
         Collection list = listNodeContext.getCollection();
         for (Object o : list)
         {
-            createNode(null, o, parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
+            createNode(null, parentNode.objectMeta().globalObjMetaLookup(o), parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
         }
     }
 
@@ -182,7 +178,7 @@ public class NodeBuilder
             m_applicationContainer.removeNode(node);
             if(node.getObjectNodeContext()!=null)
             {
-                newNode = createNode(null, node.wrappedObject(), parent, node.getDomainTreeRoot(), node.getObjectNodeContext().getObjectContext(), oldIndex);
+                newNode = createNode(null, node.objectMeta(), parent, node.getDomainTreeRoot(), node.getObjectNodeContext().getObjectContext(), oldIndex);
             }
             else
             {

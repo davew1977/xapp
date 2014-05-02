@@ -1,1 +1,28 @@
-<a></a>
+<System>
+  <Schools>
+    <School headTeacher="etrevis" name="Alfriston School" starOfTheWeek="alicew">
+      <ClassRooms>
+        <ClassRoom name="Ruby">
+          <Pupils>
+            <Pupil ref="alicew"/>
+            <Pupil ref="eliasw"/>
+          </Pupils>
+        </ClassRoom>
+      </ClassRooms>
+      <People>
+        <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis"/>
+        <Pupil firstName="Elias" secondName="Webber" username="eliasw"/>
+        <Pupil firstName="Alice" secondName="Webber" username="alicew"/>
+      </People>
+    </School>
+    <School headTeacher="breid" name="Berwick School">
+      <ClassRooms/>
+      <People>
+        <Teacher firstName="beryl" secondName="reid" username="breid"/>
+        <Pupil firstName="elias" secondName="webber" username="eliasw"/>
+        <Pupil firstName="jerome" secondName="keeley" username="jkeeley"/>
+        <Pupil firstName="jamie" secondName="callum" username="jamiec"/>
+      </People>
+    </School>
+  </Schools>
+</System>

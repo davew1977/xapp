@@ -14,6 +14,7 @@ package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.commands.RefreshCommand;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.tree.Tree;
 
@@ -98,12 +99,25 @@ public class NodeImpl implements Node
 
     public Object wrappedObject()
     {
-        return m_objectNodeContext != null ? m_objectNodeContext.getInstance() : null;
+        return m_objectNodeContext != null ? m_objectNodeContext.instance():  null;
     }
 
     public Object nearestWrappedObject()
     {
-        return m_objectNodeContext != null ? m_objectNodeContext.getInstance() : getParent().wrappedObject();
+        return m_objectNodeContext != null ? m_objectNodeContext.instance() : getParent().wrappedObject();
+    }
+
+    public Node parentObjectNode() {
+        return getParent().getObjectNodeContext() != null ? getParent() : getParent().parentObjectNode();
+    }
+
+    public ObjectMeta parentObjectMeta() {
+        return parentObjectNode().objectMeta();
+    }
+
+    @Override
+    public ObjectMeta objectMeta() {
+        return m_objectNodeContext != null ? getObjectNodeContext().objectMeta() : getParent().objectMeta();
     }
 
     public ApplicationContainer getApplicationContainer()

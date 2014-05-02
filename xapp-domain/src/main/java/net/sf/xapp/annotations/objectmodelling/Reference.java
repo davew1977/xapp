@@ -24,5 +24,4 @@ public @interface Reference
     String select() default "";
     boolean strict() default true;
     String tooltipMethod() default "";
-    boolean local() default false;
 }

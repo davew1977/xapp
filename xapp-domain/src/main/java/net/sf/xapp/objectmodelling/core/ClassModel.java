@@ -16,7 +16,6 @@ import net.sf.xapp.annotations.application.BoundObjectType;
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.objectmodelling.Namespace;
 import net.sf.xapp.marshalling.Marshaller;
-import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
@@ -31,7 +30,6 @@ import net.sf.xapp.utils.FileUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -56,9 +54,8 @@ public class ClassModel<T> {
     private int m_nextId;
     private BoundObjectType boundObjectType;
     private EditorWidget editorWidget;
-    private Property globalKeyProperty;
+    private Property keyProperty;
     private List<ObjectMeta<T>> instances;
-    private HashMap<Object, T> mapByGlobalKey;
     private Method m_setClassModelMethod;
     private Method m_postInitMethod;
     private ListProperty m_containerListProperty;
@@ -79,7 +76,7 @@ public class ClassModel<T> {
                       List<ClassModel<? extends T>> validImplementations,
                       EditorWidget editorWidget,
                       BoundObjectType boundObjectType,
-                      Property globalKeyProperty,
+                      Property keyProperty,
                       String containerListProp, Method postInitMethod) {
         m_class = aClass;
 
@@ -95,16 +92,15 @@ public class ClassModel<T> {
         addProperties(listProperties);
         addProperties(mapProperties);
         instances = new ArrayList<ObjectMeta<T>>();
-        mapByGlobalKey = new HashMap<Object, T>();
         this.boundObjectType = boundObjectType;
         this.editorWidget = editorWidget;
         m_validImplementationMap = new HashMap<String, ClassModel>();
         if (m_validImplementations != null) {
             putAllValidImpls();
         }
-        this.globalKeyProperty = globalKeyProperty;
-        if (this.globalKeyProperty != null) {
-            this.globalKeyProperty.addChangeListener(new PrimaryKeyChangedListener());
+        this.keyProperty = keyProperty;
+        if (this.keyProperty != null) {
+            this.keyProperty.addChangeListener(new PrimaryKeyChangedListener());
         }
         try {
             m_setClassModelMethod = aClass.getMethod("setClassModel", ClassModel.class);
@@ -115,7 +111,7 @@ public class ClassModel<T> {
         m_restrictedRights = new HashSet<Rights>();
 
         m_trackKeyChanges = (TrackKeyChanges) ClassUtils.getAnnotationInHeirarchy(TrackKeyChanges.class, m_class);
-        if (m_trackKeyChanges != null && !hasPrimaryKey()) {
+        if (m_trackKeyChanges != null && !hasKey()) {
             throw new XappException("class " + getSimpleName() + " is annotated with @TrackKeyChanges but has no primary key");
         }
         namespace = m_class.getAnnotation(Namespace.class);
@@ -247,11 +243,10 @@ public class ClassModel<T> {
      *
      * @return the new instance or existing singleton instance.
      */
-    public synchronized ObjectMeta<T> newInstance() {
+    public synchronized ObjectMeta<T> newInstance(ObjectMeta parent) {
         try {
             T obj = m_class.newInstance();
-            ObjectMeta<T> objectMeta = registerInstance(obj);
-            injectClassModel(obj);
+            ObjectMeta<T> objectMeta = registerInstance(parent, obj);
             return objectMeta;
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
@@ -259,46 +254,22 @@ public class ClassModel<T> {
         }
     }
 
-    private ObjectMeta<T> registerInstance(T obj) {
-        int nextId = m_nextId++;
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(obj, namespace);
+    private ObjectMeta<T> registerInstance(ObjectMeta parent, T obj) {
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, namespace, parent);
         instances.add(objectMeta);
+        objectMeta.initInstance();
+
         return objectMeta;
     }
 
-    /**
-     * Maps the given object by its primary key. May be necessary to call this from outside if
-     * the object was created externally. This cannot currently have been called by {@link #newInstance()}
-     * because the primary key would not have been set.
-     *
-     * @param obj
-     */
-    public void mapByGlobalKey(T obj) {
-        if (!obj.getClass().equals(m_class))
-            throw new IllegalArgumentException(obj + " is not of class " + m_class.getSimpleName());
-
-        //assert m_primaryKeyProperty != null : m_class.getSimpleName() + " has no primary key";
-
-        //register the instance if unknown to us
-        if (!isRegistered(obj)) {
-            registerInstance(obj);
-        }
-
-        Object key = getKey(obj);
-        Object o = mapByGlobalKey.put(key, obj);
-        //if (o != null)
-        //    System.out.println("duplicate key for " + obj + " and " + o+ " key: "+key);
-    }
-
     public String getKey(T obj) {
-        return String.valueOf(globalKeyProperty.get(obj));
+        return String.valueOf(keyProperty.get(obj));
     }
 
     public void dispose(T instance) {
         instances.remove(find(instance));
-        if (globalKeyProperty != null) {
-            Object key = globalKeyProperty.get(instance);
-            mapByGlobalKey.remove(key);
+        if (keyProperty != null) {
+            Object key = keyProperty.get(instance);
             m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(getSimpleName(), key != null ? String.valueOf(key) : null, isTrackNewAndRemoved());
         }
     }
@@ -526,33 +497,6 @@ public class ClassModel<T> {
         return classModel;
     }
 
-    public T getInstance(Object primaryKey) {
-        T obj = getInstanceInternal(primaryKey);
-        if (obj == null) {
-            throw new XappException(this + " with key " + primaryKey + " does not exist");
-        }
-        return obj;
-    }
-
-    public T getInstanceNoCheck(Object primaryKey) {
-        return getInstanceInternal(primaryKey);
-    }
-
-    private T getInstanceInternal(Object globalKey) {
-        if (globalKeyProperty == null)
-            throw new XappException("class " + m_class.getSimpleName() + " not annotated with @PrimaryKey");
-
-        T instance = mapByGlobalKey.get(globalKey);
-        if (instance != null) return instance;
-
-        //try searching sub types
-        for (ClassModel<? extends T> validImpl : m_validImplementations) {
-            instance = validImpl.getInstanceInternal(globalKey);
-            if (instance != null) return instance;
-        }
-        return null;
-    }
-
     public Object createClone(Object instance) {
         if (!(instance instanceof Cloneable)) {
             throw new XappException("obj " + instance + " not cloneable");
@@ -565,8 +509,8 @@ public class ClassModel<T> {
         }
     }
 
-    public Property getPrimaryKeyProperty() {
-        return globalKeyProperty;
+    public Property getKeyProperty() {
+        return keyProperty;
     }
 
     public boolean isEnum() {
@@ -579,18 +523,6 @@ public class ClassModel<T> {
 
     public boolean isInstance(Object obj) {
         return m_class.isInstance(obj);
-    }
-
-    public void injectClassModel(Object obj) {
-        assert isInstance(obj);
-        if (m_setClassModelMethod == null) return;
-        try {
-            m_setClassModelMethod.invoke(obj, this);
-        } catch (IllegalAccessException e) {
-            throw new XappException(e);
-        } catch (InvocationTargetException e) {
-            throw new XappException(e);
-        }
     }
 
     public Collection getInstances() {
@@ -676,14 +608,6 @@ public class ClassModel<T> {
         return xmlMapping != null ? xmlMapping.value() : getSimpleName();
     }
 
-    public void mapAllByPrimaryKey() {
-        if (hasPrimaryKey()) {
-            for (T instance : allInstances()) {
-                mapByGlobalKey(instance);
-            }
-        }
-    }
-
     public boolean hasMethod(String methodName, Class<?>... parameterTypes) {
         return ReflectionUtils.hasMethodInHierarchy(m_class, methodName, parameterTypes);
     }
@@ -694,16 +618,14 @@ public class ClassModel<T> {
         }
     }
 
+    public ObjectMeta globalObjMetaLookup(Object obj) {
+        return getClassDatabase().getClassModel(obj.getClass()).find(obj);
+    }
+
     private class PrimaryKeyChangedListener implements PropertyChangeListener {
         Marshaller m = new Marshaller(ChangeSet.class);
 
         public void propertyChanged(Property property, Object target, Object oldVal, Object newVal) {
-            mapByGlobalKey.remove(oldVal);
-            if (mapByGlobalKey.containsKey(newVal)) {
-                //throw new DJWastorException("obj already exists with key: "+newVal);
-            }
-            mapByGlobalKey.put(newVal, (T) target);
-
             /**
              * if the application is initializing (i.e. unmarshalling is happening) then we do not want to register
              * primary key changes, because they are not really changes - they are caused by the unmarshaller creating
@@ -775,8 +697,8 @@ public class ClassModel<T> {
         }
         //check objects share the same primary key - could become an optional check
         ClassDatabase otherClassDatabase = otherClassModel.getClassDatabase();
-        String thisKey = globalKeyProperty != null ? String.valueOf(globalKeyProperty.get(o1)) : null;
-        String otherKey = globalKeyProperty != null ? String.valueOf(otherClassModel.globalKeyProperty.get(o1)) : null;
+        String thisKey = keyProperty != null ? String.valueOf(keyProperty.get(o1)) : null;
+        String otherKey = keyProperty != null ? String.valueOf(otherClassModel.keyProperty.get(o1)) : null;
         if (!Property.objEquals(thisKey, otherKey)) //note, it is fine if objects have no primary key
         {
             throw new XappException("primary keys not matching for objects: 1: " + thisKey + " 2: " + otherKey);
@@ -823,7 +745,7 @@ public class ClassModel<T> {
                     ClassModel otherPropertyClassModel = otherClassDatabase.getClassModel(otherValue.getClass());
                     ClassModel thisPropertyClassModel = m_classDatabase.getClassModel(thisValue.getClass());
                     DiffSet diffsetToMerge = thisPropertyClassModel.diff(otherPropertyClassModel, thisValue, otherValue);
-                    if (thisPropertyClassModel.hasPrimaryKey()) {
+                    if (thisPropertyClassModel.hasKey()) {
                         diffSet.merge(diffsetToMerge);
                     } else if (!diffsetToMerge.isEmpty()) {
                         diffSet.getComplexPropertyDiffs().add(new ComplexPropertyDiff(simpleClassName, otherKey, propertyName, null, null, false, diffsetToMerge, otherValue.getClass().getSimpleName()));
@@ -844,7 +766,7 @@ public class ClassModel<T> {
             List otherListOriginal = otherList;
             thisList = thisList == null ? new ArrayList() : thisList;
             otherList = otherList == null ? new ArrayList() : new ArrayList(otherList);//Copy the list coz we modify it
-            Property primaryKeyProperty = listProperty.getContainedTypeClassModel().globalKeyProperty;
+            Property primaryKeyProperty = listProperty.getContainedTypeClassModel().keyProperty;
             if (listProperty.containsReferences()) {
                 if (thisList == null) thisList = new ArrayList();
                 List<String> thisKeys = new ArrayList<String>();
@@ -889,7 +811,7 @@ public class ClassModel<T> {
                 for (Object o : thisList) {
                     ClassModel itemClassModel = m_classDatabase.getClassModel(o.getClass());
                     ClassModel otherItemClassModel = otherClassDatabase.getClassModel(o.getClass());
-                    if (itemClassModel.globalKeyProperty != null) {
+                    if (itemClassModel.keyProperty != null) {
                         Object key = itemClassModel.getKey(o);
                         Object otherO = otherKeys.get(key);
                         if (otherO != null) //if not removed
@@ -922,26 +844,28 @@ public class ClassModel<T> {
         return find(o1) != null;
     }
 
-    private ObjectMeta<T> find(T o1) {
+    public ObjectMeta<T> find(T o1) {
+        //todo try retrieve obj meta from object itself, otherwise resort to search
+        //todo map objects without equals/hashcode methods
         for (ObjectMeta<T> instance : instances) {
-            if(instance.getInstance().equals(o1)) {
+            if(instance.getInstance() == o1) {
                 return instance;
             }
         }
         return null;
     }
 
-    public boolean hasPrimaryKey() {
-        return getPrimaryKeyProperty() != null;
+    public boolean hasKey() {
+        return getKeyProperty() != null;
     }
 
     /**
      * Takes an object of this classmodel's class and makes all the changes to it specified by the diffset
      *
      * @param obj
-     * @param diffSet
+     * @param diffSet        //todo fix
      */
-    public void merge(Object obj, DiffSet diffSet) {
+    /*public void merge(Object obj, DiffSet diffSet) {
         if (obj.getClass() != m_class) throw new XappException("Object " + obj + " not of this class. " + this);
         //handle added nodes first in case there are other diffs refering to the new node
         for (NewNodeDiff newNodeDiff : diffSet.getNewNodeDiffs()) {
@@ -1061,5 +985,5 @@ public class ClassModel<T> {
             }
             list.remove(index);
         }
-    }
+    }*/
 }

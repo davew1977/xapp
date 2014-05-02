@@ -18,6 +18,7 @@ import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.utils.XappException;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.util.Date;
 public class DefaultGUIContext implements GUIContext
 {
     private File m_currentFile;
-    private Object m_instance;
+    private ObjectMeta m_instance;
     private ClassModel m_rootType;
     private Marshaller m_marshaller;
     private Unmarshaller m_unmarshaller;
@@ -38,12 +39,12 @@ public class DefaultGUIContext implements GUIContext
     private ApplicationContainer m_applicationContainer;
     private SimpleDateFormat m_dateFormat;
 
-    public DefaultGUIContext(File currentFile, ClassDatabase classDatabase, Object instance)
+    public DefaultGUIContext(File currentFile, ClassDatabase classDatabase, ObjectMeta instance)
     {
         this(currentFile, classDatabase, instance, "UTF-8");
     }
 
-    public DefaultGUIContext(File currentFile, ClassDatabase classDatabase, Object instance, String encoding)
+    public DefaultGUIContext(File currentFile, ClassDatabase classDatabase, ObjectMeta instance, String encoding)
     {
         m_currentFile = currentFile;
         m_instance = instance;
@@ -61,7 +62,7 @@ public class DefaultGUIContext implements GUIContext
         return m_currentFile;
     }
 
-    public Object getInstance()
+    public ObjectMeta getInstance()
     {
         return m_instance;
     }
@@ -73,7 +74,7 @@ public class DefaultGUIContext implements GUIContext
 
     public void newObjectInstance()
     {
-        m_instance = m_rootType.newInstance().getInstance();
+        m_instance = m_rootType.newInstance(null);
         m_currentFile = null;
     }
 

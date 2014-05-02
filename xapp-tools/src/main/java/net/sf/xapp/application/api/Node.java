@@ -13,6 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.core.CommandContext;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -69,6 +70,7 @@ public interface Node
      * @return null if the node is backed by a list property in the data model
      */
     ObjectNodeContext getObjectNodeContext();
+    Node parentObjectNode();
 
     /**
      * @return null if the node is backed by a non-container object
@@ -112,4 +114,7 @@ public interface Node
     boolean canEdit();
 
     int index();
+
+    ObjectMeta objectMeta();
+
 }

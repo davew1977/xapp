@@ -13,6 +13,7 @@
 package net.sf.xapp.application.editor;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
@@ -29,36 +30,34 @@ public class SingleTargetEditableContext implements EditableContext
         CREATE, EDIT
     }
 
-    private ClassModel m_classModel;
-    private Object m_target;
+    private ObjectMeta objMeta;
     private Mode m_mode;
 
-    public SingleTargetEditableContext(ClassModel classModel, Object target, Mode mode)
+    public SingleTargetEditableContext(ObjectMeta target, Mode mode)
     {
-        m_classModel = classModel;
-        m_target = target;
+        objMeta = target;
         m_mode = mode;
     }
 
     public String getTitle()
     {
-        return m_classModel.toString();
+        return objMeta.getClassModel().toString();
     }
 
     public List<Property> getVisibleProperties()
     {
-        return m_classModel.getVisibleProperties();
+        return objMeta.getClassModel().getVisibleProperties();
     }
 
     public Object getPropertyValue(Property property)
     {
-        return property.get(m_target);
+        return objMeta.getProp(property);
     }
 
     public List<PropertyChangeTuple> setPropertyValue(Property property, Object value)
     {
         List<PropertyChangeTuple> changes = new ArrayList<PropertyChangeTuple>();
-        PropertyChangeTuple propertyChangeTuple = property.set(m_target, value);
+        PropertyChangeTuple propertyChangeTuple = objMeta.setProp(property, value);
         if (propertyChangeTuple != null)
         {
             changes.add(propertyChangeTuple);
@@ -66,14 +65,14 @@ public class SingleTargetEditableContext implements EditableContext
         return changes;
     }
 
-    public Object getTarget()
+    public ObjectMeta getObjMeta()
     {
-        return m_target;
+        return objMeta;
     }
 
     public ClassModel getClassModel()
     {
-        return m_classModel;
+        return objMeta.getClassModel();
     }
 
     public boolean isCheckMandatoryFields()

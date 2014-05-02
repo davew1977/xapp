@@ -141,14 +141,14 @@ public class Property<T> implements Comparable
      * @param target
      * @param value
      */
-    public void setSpecial(T target, String value)
+    public void setSpecial(ObjectMeta<T> target, String value)
     {
-        Object obj = convert(value);
+        Object obj = convert(target, value);
 
-        set(target, obj);
+        set(target.getInstance(), obj);
     }
 
-    public Object convert(String value)
+    public Object convert(ObjectMeta objectMeta, String value)
     {
         Class propertyClass = getPropertyClass();
         StringSerializer strSerializer = getClassDatabase().getStringSerializer(propertyClass);
@@ -195,8 +195,7 @@ public class Property<T> implements Comparable
         }
         else if (isReference())
         {
-            ClassModel classModel = getClassDatabase().getClassModel(propertyClass);
-            obj = m_reference.strict() ? classModel.getInstance(value) : classModel.getInstanceNoCheck(value);
+            obj = objectMeta.get(propertyClass, value);
         }
         else if (strSerializer != null)
         {

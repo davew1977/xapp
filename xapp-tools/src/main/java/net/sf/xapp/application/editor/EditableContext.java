@@ -13,6 +13,7 @@
 package net.sf.xapp.application.editor;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
@@ -38,7 +39,7 @@ public interface EditableContext
      * The target is the object owning the modified properties.
      * @return
      */
-    Object getTarget();
+    ObjectMeta getObjMeta();
 
     ClassModel getClassModel();
 

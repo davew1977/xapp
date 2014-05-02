@@ -62,14 +62,14 @@ public class Unmarshaller<T>
         m_validate = validate;
     }
 
-    public T unmarshal(String fileName)
+    public ObjectMeta<T> unmarshal(String fileName)
     {
 
         File file = new File(fileName);
         return unmarshal(file);
     }
 
-    public T unmarshalURL(String url)
+    public ObjectMeta<T> unmarshalURL(String url)
     {
         if(url.startsWith("classpath://"))
         {
@@ -81,12 +81,12 @@ public class Unmarshaller<T>
         }
     }
 
-    public T unmarshal(InputStream is)
+    public ObjectMeta<T> unmarshal(InputStream is)
     {
         return unmarshal(is, null);
     }
 
-    public T unmarshal(InputStream is, String path) {
+    public ObjectMeta<T> unmarshal(InputStream is, String path) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             try {
@@ -99,12 +99,12 @@ public class Unmarshaller<T>
 
             Document doc = db.parse(is);
             if (m_verbose) System.out.println("trying to unmarshal: " + doc.getFirstChild());
-            GlobalContext<T> context = new GlobalContext<T>(m_classModel);
+            GlobalContext<T> context = new GlobalContext<T>();
             if (path != null) {
                 context.m_path = path;
             }
-            T obj = unmarshal(doc.getDocumentElement(), context);
-            //set primary keys
+            ObjectMeta<T> obj = unmarshal(doc.getDocumentElement(), context);
+            /*//set primary keys
             List<ClassModel> cms = m_classModel.getClassDatabase().getClassModels();
             for (ClassModel cm : cms) {
                 cm.mapAllByPrimaryKey();
@@ -112,7 +112,7 @@ public class Unmarshaller<T>
             //now resolve the references
             for (DelayedTask delayedTask : context.getDelayedTasks()) {
                 delayedTask.execute(null);
-            }
+            }*/
             //try and call post init
             for (Map.Entry<Object, Method> e : context.m_objectsWithPostInit.entrySet()) {
                 ClassModel.tryAndInvoke(e.getKey(), e.getValue());
@@ -129,7 +129,7 @@ public class Unmarshaller<T>
         }
     }
 
-    public T unmarshal(File file)
+    public ObjectMeta<T> unmarshal(File file)
     {
         try
         {
@@ -145,12 +145,12 @@ public class Unmarshaller<T>
         }
     }
 
-    public T unmarshalString(String xml)
+    public ObjectMeta<T> unmarshalString(String xml)
     {
         return unmarshalString(xml, Charset.defaultCharset());
     }
 
-    public T unmarshalString(String xml, Charset charset)
+    public ObjectMeta<T> unmarshalString(String xml, Charset charset)
     {
         try
         {
@@ -172,12 +172,12 @@ public class Unmarshaller<T>
      * @return the unmarshalled java object
      * @throws Exception any parse exception or java.reflect exception
      */
-    private T unmarshal(Element element, GlobalContext<T> context) throws Exception
+    private ObjectMeta<T> unmarshal(Element element, GlobalContext<T> context) throws Exception
     {
         ClassDatabase cdb = m_classModel.getClassDatabase();
 
         //if an element exists we should create an empty object instead of setting to null
-        T obj = context.newInstance(m_classModel);
+        ObjectMeta<T> objectMeta = context.newInstance(m_classModel);
 
         NodeList nodeList = element.getChildNodes();
         for (int n = 0; n < nodeList.getLength(); n++)
@@ -193,7 +193,7 @@ public class Unmarshaller<T>
             //handle changeModel
             if (nodeName.equals("ChangeModel"))
             {
-                ChangeModel changeModel = (ChangeModel) getUnmarshaller(ChangeModel.class).unmarshal((Element) node, context);
+                ChangeModel changeModel = (ChangeModel) getUnmarshaller(ChangeModel.class).unmarshal((Element) node, context).getInstance();
                 m_classModel.getClassDatabase().getMarshallerContext().getKeyChangeHistory().init(changeModel);
                 continue;
             }
@@ -213,38 +213,40 @@ public class Unmarshaller<T>
                 if (firstChild != null)
                 {
                     String nodeValue = firstChild.getNodeValue();
-                    setProperty(property, obj, nodeValue, context);
+                    setProperty(property, objectMeta, nodeValue, context);
                 }
             }
             else if (propertyClass.isEnum())
             {
                 String nodeValue = node.getFirstChild().getNodeValue();
                 Enum enumValue = Enum.valueOf(propertyClass, nodeValue);
-                property.set(obj, enumValue);
+                property.set(objectMeta.getInstance(), enumValue);
             }
             else if (property instanceof ContainerProperty)
             {
-                unmarshalList(node, property, context, obj);
+                unmarshalList(node, property, context, objectMeta);
             }
             else
             {
-                unmarshalComplexType(property, context, node, obj);
+                unmarshalComplexType(property, context, node, objectMeta);
             }
         }
 
         //now unmarshal attributes (will overwrite nested elements)
-        unmarshalAttributes(element, obj, context);
+        unmarshalAttributes(element, objectMeta, context);
 
         if (m_classModel.hasPostInitMethod())
         {
-            context.m_objectsWithPostInit.put(obj, m_classModel.getPostInitMethod());
+            context.m_objectsWithPostInit.put(objectMeta.getInstance(), m_classModel.getPostInitMethod());
         }
+
         context.pop();
-        if (m_verbose) System.out.println("unmarshalled " + obj);
-        return obj;
+
+        if (m_verbose) System.out.println("unmarshalled " + objectMeta);
+        return objectMeta;
     }
 
-    private void unmarshalAttributes(Element element, Object obj, GlobalContext context)
+    private void unmarshalAttributes(Element element, ObjectMeta objMeta, GlobalContext context)
             throws IllegalAccessException, InstantiationException
     {
         NamedNodeMap attributes = element.getAttributes();
@@ -259,11 +261,11 @@ public class Unmarshaller<T>
                     System.out.println("method set" + attrNode.getNodeName() + "() not found in " + m_classModel);
                 continue;
             }
-            setProperty(property, obj, attrNode.getNodeValue(), context);
+            setProperty(property, objMeta, attrNode.getNodeValue(), context);
         }
     }
 
-    private void unmarshalList(Node node, Property property, GlobalContext context, Object parentObj) throws Exception
+    private void unmarshalList(Node node, Property property, GlobalContext context, ObjectMeta parentOb) throws Exception
     {
         ClassDatabase classDatabase = m_classModel.getClassDatabase();
         ContainerProperty listProperty = (ContainerProperty) property;
@@ -306,11 +308,11 @@ public class Unmarshaller<T>
                     listProperty.addToMapOrCollection(al, nextObject);
                 }
             }
-            property.set(parentObj, al);
+            property.set(parentOb.getInstance(), al);
         }
         else
         {
-            SetReferenceListTask setReferenceListTask = new SetReferenceListTask(listProperty, parentObj);
+            SetReferenceListTask setReferenceListTask = new SetReferenceListTask(listProperty, parentOb);
             for (int j = 0; j < nl.getLength(); j++)
             {
                 Node itNode = nl.item(j);
@@ -321,11 +323,11 @@ public class Unmarshaller<T>
                     setReferenceListTask.m_references.add(refAttr);
                 }
             }
-            context.addDelayedTask(setReferenceListTask);
+            context.add(setReferenceListTask);
         }
     }
 
-    private void unmarshalComplexType(Property property, GlobalContext context, Node node, Object parentObj) throws Exception
+    private void unmarshalComplexType(Property property, GlobalContext context, Node node, ObjectMeta parentOb) throws Exception
     {
         ClassDatabase classDatabase = m_classModel.getClassDatabase();
         Class propertyClass = property.getPropertyClass();
@@ -355,14 +357,14 @@ public class Unmarshaller<T>
         else if (includeResource != null)
         {
             newObj = getIncludedResource(includeResource, classModel, context);
-            PropertyObjectPair reference = new PropertyObjectPair(property, parentObj);
+            PropertyObjectPair reference = new PropertyObjectPair(property, parentOb.getInstance());
             m_classModel.getClassDatabase().getMarshallerContext().mapIncludedResourceURLByReference(reference, includeResource.getNodeValue());
         }
         else
         {
             newObj = getUnmarshaller(classModel).unmarshal((Element) node, context);
         }
-        property.set(parentObj, newObj);
+        property.set(parentOb.getInstance(), newObj);
 
         //if property is a tree
         if (property.isTree() && newObj != null)
@@ -426,7 +428,7 @@ public class Unmarshaller<T>
         return unmarshaller;
     }
 
-    public void setProperty(Property property, Object target, String nodeValue, GlobalContext context) throws IllegalAccessException, InstantiationException
+    public void setProperty(Property property, ObjectMeta target, String nodeValue, GlobalContext context) throws IllegalAccessException, InstantiationException
     {
         if (property.isReference())
         {
@@ -458,60 +460,25 @@ public class Unmarshaller<T>
         m_classModel = cdb.getClassModel(m_classModel.getContainedClass());
     }
 
-    private static class Context<E> {
-        ObjectMeta<E> objectMeta;
-        ClassModel<E> classModel;
-        List<DelayedTask> delayedTasks = new ArrayList<DelayedTask>();
-        List<Object> childObjectsToMap = new ArrayList<Object>();
-
-        private Context(ClassModel<E> classModel) {
-            this.classModel = classModel;
-        }
-
-        void addDelayedTask(DelayedTask delayedTask) {
-            delayedTasks.add(delayedTask);
-        }
-
-        public List<DelayedTask> getDelayedTasks() {
-            return delayedTasks;
-        }
-
-        public void addChildObjectToMap(Object child) {
-            childObjectsToMap.add(child);
-        }
-
-        public  E newInstance() {
-            objectMeta = classModel.newInstance();
-            return objectMeta.getInstance();
-        }
-
-        public void mapAllByKey() {
-            ClassDatabase cdb = classModel.getClassDatabase();
-            for (Object o : childObjectsToMap) {
-                Class<?> aClass = o.getClass();
-                String key = cdb.getClassModel(aClass).getKey(o);
-                objectMeta.add(aClass, key, o);
-            }
-        }
-    }
-
-    private static class GlobalContext<T> extends Context<T>
+    private static class GlobalContext<T>
     {
-        List<DelayedTask> delayedTasks = new ArrayList<DelayedTask>();
         boolean m_inTree;
         public Map<Object, Method> m_objectsWithPostInit = new LinkedHashMap<Object, Method>();
         public String m_path;
         Stack<LocalContext> contextStack = new Stack<LocalContext>();
 
-        private GlobalContext(ClassModel<T> classModel) {
-            super(classModel);
+        private GlobalContext() {
         }
 
-        public <E> E newInstance(ClassModel<E> classModel) {
+        public <E> ObjectMeta<E> newInstance(ClassModel<E> classModel) {
 
-            LocalContext<E> localContext = new LocalContext<E>(this, classModel);
+            LocalContext<E> localContext = new LocalContext<E>(currentContext(), classModel);
             contextStack.push(localContext);
-            return (E) localContext.newInstance();
+            return localContext.newInstance();
+        }
+
+        private LocalContext currentContext() {
+            return !contextStack.isEmpty() ? contextStack.peek() : null;
         }
 
         public void pop() {
@@ -519,36 +486,52 @@ public class Unmarshaller<T>
             localContext.postInit();
         }
 
-        public void add(SetReferenceTask setReferenceTask) {
-            Context context = findNamespace(setReferenceTask.m_property.getPropertyClass());
+        public void add(SetRefTask setReferenceTask) {
+            LocalContext context = currentContext().getNamespace(setReferenceTask.getPropertyType());
             context.addDelayedTask(setReferenceTask);
-        }
-
-        private Context findNamespace(Class aClass) {
-            for (int i = contextStack.size()-1; i >= 0; i--) {
-                LocalContext localContext = contextStack.get(i);
-                if(localContext.isNamespaceFor(aClass)) {
-                   return localContext;
-                }
-            }
-            //always fall back to root namespace
-            return this;
         }
     }
 
-    private static class LocalContext<E> extends Context<E>{
-        GlobalContext globalContext;
+    private static class LocalContext<E> {
+        LocalContext parentContext;
+        ObjectMeta<E> objectMeta;
+        ClassModel<E> classModel;
+        List<SetRefTask> setRefTasks = new ArrayList<SetRefTask>();
+        List<Object> childObjectsToMap = new ArrayList<Object>();
 
-
-        public LocalContext(GlobalContext globalContext, ClassModel<E> classModel) {
-            super(classModel);
-            this.globalContext = globalContext;
+        public LocalContext(LocalContext parentContext, ClassModel<E> classModel) {
+            this.parentContext = parentContext;
+            this.classModel = classModel;
         }
 
+        void addDelayedTask(SetRefTask setRefTask) {
+            setRefTasks.add(setRefTask);
+        }
+
+        public List<SetRefTask> getSetRefTasks() {
+            return setRefTasks;
+        }
+
+        public void addChildObjectToMap(Object child) {
+            childObjectsToMap.add(child);
+        }
+
+        public void mapAllByKey() {
+            ClassDatabase cdb = classModel.getClassDatabase();
+            for (Object o : childObjectsToMap) {
+                Class<?> aClass = o.getClass();
+                ClassModel cm = cdb.getClassModel(aClass);
+                String key = cm.getKey(o);
+                objectMeta.add(aClass, key, o);
+            }
+            childObjectsToMap = null;
+        }
+
+
         public void setRefs() {
-            assert delayedTasks.isEmpty() || objectMeta!=null;
-            for (DelayedTask delayedTask : getDelayedTasks()) {
-                delayedTask.execute(objectMeta);
+            assert setRefTasks.isEmpty() || objectMeta!=null;
+            for (SetRefTask setRefTask : getSetRefTasks()) {
+                setRefTask.execute(objectMeta);
             }
         }
 
@@ -556,51 +539,73 @@ public class Unmarshaller<T>
             return objectMeta != null && objectMeta.isNamespaceFor(propertyClass);
         }
 
+        public LocalContext getNamespace(Class aClass) {
+            return isNamespaceFor(aClass) ? this : parentContext.getNamespace(aClass);
+        }
+
+
+        public  ObjectMeta<E> newInstance() {
+            objectMeta = classModel.newInstance(parentContext.objectMeta);
+
+            LocalContext namespace = getNamespace(classModel.getContainedClass());
+            if (classModel.hasKey()) {
+                namespace.addChildObjectToMap(objectMeta.getInstance());
+                //todo maybe store a reference to its namespace
+            }
+            return objectMeta;
+        }
+
         public void postInit() {
-            globalContext.findNamespace(classModel.getContainedClass()).addChildObjectToMap(objectMeta.getInstance());
             mapAllByKey();
             setRefs();
         }
     }
 
-    public static interface DelayedTask
+    public static abstract class SetRefTask
     {
-        void execute(ObjectMeta objectMeta);
+        Property property;
+        ObjectMeta target;
+
+        protected SetRefTask(Property property, ObjectMeta m_target) {
+            this.property = property;
+            this.target = m_target;
+        }
+
+        abstract void execute(ObjectMeta objectMeta);
+
+        abstract Class getPropertyType();
     }
 
-    private static class SetReferenceTask implements DelayedTask
+    private static class SetReferenceTask extends SetRefTask
     {
-        Property m_property;
-        Object m_target;
         String m_reference;
 
-        public SetReferenceTask(Property property, Object target, String reference)
+        public SetReferenceTask(Property property, ObjectMeta target, String reference)
         {
-            m_property = property;
-            m_target = target;
+            super(property, target);
             m_reference = reference;
         }
 
         public void execute(ObjectMeta objectMeta)
         {
-            if(m_property.getReference().local()) {
-                m_property.set(m_target, objectMeta.get(m_property.getPropertyClass(), m_reference));
-            } else {
-                m_property.setSpecial(m_target, m_reference);
-            }
+            property.set(target.getInstance(), objectMeta.get(property.getPropertyClass(), m_reference));
+        }
+
+        @Override
+        Class getPropertyType() {
+            return property.getPropertyClass();
         }
     }
 
-    private class SetReferenceListTask implements DelayedTask
+    private class SetReferenceListTask extends SetRefTask
     {
         ContainerProperty m_listProperty;
-        Object m_target;
         List<String> m_references;
 
-        public SetReferenceListTask(ContainerProperty listProperty, Object target)
+        public SetReferenceListTask(ContainerProperty listProperty, ObjectMeta target)
         {
+            super(listProperty, target);
             m_listProperty = listProperty;
-            m_target = target;
             m_references = new ArrayList<String>();
         }
 
@@ -610,11 +615,15 @@ public class Unmarshaller<T>
             for (String s : m_references)
             {
                 Class propertyClass = m_listProperty.getContainedType();
-                ClassModel classModel = m_classModel.getClassDatabase().getClassModel(propertyClass);
-                Object ref = classModel.getInstance(s);
+                Object ref = objectMeta.get(propertyClass, s);
                 m_listProperty.addToMapOrCollection(mapOrCollection, ref);
             }
-            m_listProperty.set(m_target, mapOrCollection);
+            m_listProperty.set(target.getInstance(), mapOrCollection);
+        }
+
+        @Override
+        Class getPropertyType() {
+            return m_listProperty.getContainedType();
         }
     }
 
@@ -626,7 +635,7 @@ public class Unmarshaller<T>
     }
     public static <E> E load(ClassDatabase<?> cdb, Class<E> aClass, InputStream is)
     {
-        return cdb.createUnmarshaller(aClass).unmarshal(is);
+        return cdb.createUnmarshaller(aClass).unmarshal(is).getInstance();
     }
 
     /**
@@ -639,7 +648,7 @@ public class Unmarshaller<T>
     public static <E> E  load(ClassDatabase<?> cdb, Class<E> aClass, String url)
     {
         Unmarshaller<E> u = cdb.createUnmarshaller(aClass);
-        return u.unmarshalURL(url);
+        return u.unmarshalURL(url).getInstance();
     }
 
     public static <E> E load(Class<E> aClass, String url)

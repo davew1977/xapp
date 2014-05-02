@@ -19,6 +19,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.utils.Credentials;
 import net.sf.xapp.utils.svn.SVNFacade;
 import net.sf.xapp.utils.svn.SVNKitFacade;
@@ -56,22 +57,11 @@ public class Launcher
     {
         final ClassDatabase classDatabase = new ClassModelManager(rootClass, inspectionType);
         ClassModel classModel = classDatabase.getRootClassModel();
-        final Object rootObj;
+        final ObjectMeta rootObj;
         File file = null;
         if (fileNameOrURL == null)
         {
-            try
-            {
-                rootObj = rootClass.newInstance();
-            }
-            catch (InstantiationException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
-            }
+            rootObj = classModel.newInstance(null);
         }
         else
         {
@@ -84,7 +74,8 @@ public class Launcher
 
     public static ApplicationContainer edit(Object obj, File file, Application application)
     {
-        return run(application, new ClassModelManager(obj.getClass(), InspectionType.FIELD), obj, file);
+        throw new UnsupportedOperationException(); //todo fix
+        //return run(application, new ClassModelManager(obj.getClass(), InspectionType.FIELD), obj, file);
     }
     public static ApplicationContainer edit(Object obj)
     {
@@ -95,7 +86,7 @@ public class Launcher
         return edit(obj, null, application);
     }
 
-    public static ApplicationContainer run(final Application application, final ClassDatabase classDatabase, final Object rootObj, File file)
+    public static ApplicationContainer run(final Application application, final ClassDatabase classDatabase, final ObjectMeta rootObj, File file)
     {
         try
         {

@@ -44,7 +44,7 @@ public class ListProperty extends ContainerProperty
 
 
     @Override
-    public Object convert(String value)
+    public Object convert(ObjectMeta target, String value)
     {
         if(m_containedType==Integer.class)
         {

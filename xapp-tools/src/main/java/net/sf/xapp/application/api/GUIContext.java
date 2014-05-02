@@ -14,6 +14,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.io.File;
 
@@ -21,7 +22,7 @@ public interface GUIContext<T>
 {
     File getCurrentFile();
 
-    T getInstance();
+    ObjectMeta<T> getInstance();
 
     ClassModel<T> getRootType();
 

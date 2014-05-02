@@ -13,6 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 /**
@@ -25,13 +26,15 @@ public interface ObjectNodeContext extends NodeContext
 
     Property getProperty();
 
+    Object instance();
+
     enum ObjectContext {
         IN_LIST,
         PROPERTY
     }
 
     ClassModel getClassModel();
-    Object getInstance();
+    ObjectMeta objectMeta();
     ObjectContext getObjectContext();
     boolean canEdit();
 }

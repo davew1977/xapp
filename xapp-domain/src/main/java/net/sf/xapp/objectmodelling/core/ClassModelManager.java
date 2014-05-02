@@ -55,7 +55,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      * this flag is false until the root unmarshaller has finished unmarshalling the root document
      */
     private boolean m_initializing;
-    private T m_rootInstance;
+    private ObjectMeta<T> m_rootInstance;
     private InspectionType m_inspectionType;
 
     public ClassModelManager(Class<T> rootType)
@@ -111,7 +111,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return getClassModel(m_rootType);
     }
 
-    public T getRootInstance()
+    public ObjectMeta<T> getRootInstance()
     {
         return m_rootInstance;
     }
@@ -276,7 +276,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return m_keyChangeHistory;
     }
 
-    public void setInitialized(T obj)
+    public void setInitialized(ObjectMeta<T> obj)
     {
         m_initializing = false;
         m_rootInstance = obj;
@@ -334,11 +334,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         }
     }
 
-    public <T> T newInstance(Class<T> aClass)
-    {
-        return getClassModel(aClass).newInstance().getInstance();
-    }
-
     public MarshallingContext getMarshallerContext()
     {
         return this;
@@ -372,12 +367,12 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public <E> E getInstanceNoCheck(Class<E> aClass, String key)
     {
-        return getClassModel(aClass).getInstanceNoCheck(key);
+        return m_rootInstance.get(aClass, key);
     }
 
     public <E> E getInstance(Class<E> aClass, String key)
     {
-        return getClassModel(aClass).getInstance(key);
+        return m_rootInstance.get(aClass, key);  //todo implement version that don't throw exception
     }
 
     public InspectionType getInspectionType()
@@ -398,7 +393,8 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public Object resolveInstance(ClassModel classModel, String key)
     {
-        if (!m_classModelMap.containsValue(classModel))
+        throw new UnsupportedOperationException();
+        /*if (!m_classModelMap.containsValue(classModel))
         {
             throw new XappException("classModel: " + classModel + " not managed by this Class Database");
         }
@@ -414,7 +410,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
                 System.out.println("WARNING: could not resolve object with key: "+newKey);
             }
         }
-        return o;
+        return o;*/
     }
 
     public boolean isInitializing()

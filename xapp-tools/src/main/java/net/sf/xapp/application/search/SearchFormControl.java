@@ -113,7 +113,7 @@ public class SearchFormControl
 
     private String toStringSpecial(Object value, ClassModel classModel)
     {
-        if (classModel.hasPrimaryKey())
+        if (classModel.hasKey())
         {
             value = classModel.getKey(value);
         }

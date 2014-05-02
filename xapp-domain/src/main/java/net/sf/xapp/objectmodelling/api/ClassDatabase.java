@@ -16,6 +16,7 @@ import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface ClassDatabase<T>
     Unmarshaller<T> getRootUnmarshaller();
     Marshaller<T> getRootMarshaller();
     ClassModel<T> getRootClassModel();
-    T getRootInstance();
+    ObjectMeta<T> getRootInstance();
 
     <E> ClassModel<E> getClassModel(Class<E> aClass);
 
@@ -54,7 +55,6 @@ public interface ClassDatabase<T>
 
     Unmarshaller createUnmarshaller(String className);
 
-    <T> T newInstance(Class<T> aClass);
 
     MarshallingContext getMarshallerContext();
 
