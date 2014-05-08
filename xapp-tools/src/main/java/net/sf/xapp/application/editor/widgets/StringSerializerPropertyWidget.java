@@ -13,9 +13,7 @@
 package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.marshalling.api.StringSerializer;
-import net.sf.xapp.marshalling.stringserializers.StringListSerializer;
-
-import java.util.List;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 public class StringSerializerPropertyWidget extends FreeTextPropertyWidget
 {
@@ -35,7 +33,7 @@ public class StringSerializerPropertyWidget extends FreeTextPropertyWidget
 
 
     @Override
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         if(value!=null)
         {

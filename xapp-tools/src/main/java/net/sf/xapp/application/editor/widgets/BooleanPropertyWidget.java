@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.editor.widgets;
 
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+
 import javax.swing.*;
 
 public class BooleanPropertyWidget extends AbstractPropertyWidget
@@ -37,7 +39,7 @@ public class BooleanPropertyWidget extends AbstractPropertyWidget
         m_checkBox.setEnabled(editable);
     }
 
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         boolean v = value!=null && (Boolean) value;
         m_checkBox.setSelected(v);

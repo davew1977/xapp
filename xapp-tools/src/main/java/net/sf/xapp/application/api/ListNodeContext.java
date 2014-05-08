@@ -14,6 +14,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +47,7 @@ public interface ListNodeContext extends NodeContext
      */
     List<ClassModel> getValidImplementations();
 
-    boolean contains(Object instance);
+    boolean contains(ObjectMeta instance);
 
-    void add(Object instance);
+    void add(ObjectMeta instance);
 }

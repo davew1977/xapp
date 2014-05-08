@@ -8,6 +8,7 @@ package net.sf.xapp.application.editor.widgets;
 
 import com.toedter.calendar.JDateChooser;
 import net.sf.xapp.application.utils.SwingUtils;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.util.Date;
@@ -33,7 +34,7 @@ public class DatePropertyWidget extends AbstractPropertyWidget<Date>
     }
 
     @Override
-    public void setValue(Date value, Object target)
+    public void setValue(Date value, ObjectMeta target)
     {
         dateChooser.setDate(value);
     }

@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+
 import javax.swing.*;
 
 /**
@@ -32,13 +34,13 @@ public interface ObjectWidget<T>
      * Instruct the editor to set its displayed values into the object
      * @param instance
      */
-    void setToObject(T instance);
+    void save(ObjectMeta<T> instance);
 
     /**
      * Instruct the editor to display the values stored in the object
      * @param instance
      */
-    void getFromObject(T instance);
+    void init(ObjectMeta<T> instance);
 
     /**
      * Called when the framework creates the ObjectWidget

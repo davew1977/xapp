@@ -1,6 +1,7 @@
 package testmodel;
 
 import net.sf.xapp.application.api.Launcher;
+import net.sf.xapp.application.api.SimpleApplication;
 
 import java.util.Map;
 
@@ -20,6 +21,11 @@ public class System {
     }
 
     public static void main(String[] args) {
-        Launcher.run(System.class, "db-system.xml");
+        Launcher.run(System.class, new SimpleApplication() {
+            @Override
+            public void handleUncaughtException(Throwable e) {
+                e.printStackTrace();
+            }
+        }, "db-system.xml");
     }
 }

@@ -18,6 +18,7 @@ import net.sf.xapp.annotations.objectmodelling.Namespace;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
+import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.objectmodelling.difftracking.*;
@@ -30,6 +31,7 @@ import net.sf.xapp.utils.FileUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -246,19 +248,17 @@ public class ClassModel<T> {
     public synchronized ObjectMeta<T> newInstance(ObjectMeta parent) {
         try {
             T obj = m_class.newInstance();
-            ObjectMeta<T> objectMeta = registerInstance(parent, obj);
-            return objectMeta;
+            return registerInstance(parent, obj);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
         }
     }
 
-    private ObjectMeta<T> registerInstance(ObjectMeta parent, T obj) {
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, namespace, parent);
+    public ObjectMeta<T> registerInstance(ObjectMeta parent, T obj) {
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, parent);
         instances.add(objectMeta);
         objectMeta.initInstance();
-
         return objectMeta;
     }
 
@@ -865,8 +865,8 @@ public class ClassModel<T> {
      * @param obj
      * @param diffSet        //todo fix
      */
-    /*public void merge(Object obj, DiffSet diffSet) {
-        if (obj.getClass() != m_class) throw new XappException("Object " + obj + " not of this class. " + this);
+    public void merge(Object obj, DiffSet diffSet) {
+        /*if (obj.getClass() != m_class) throw new XappException("Object " + obj + " not of this class. " + this);
         //handle added nodes first in case there are other diffs refering to the new node
         for (NewNodeDiff newNodeDiff : diffSet.getNewNodeDiffs()) {
             //find object with the list
@@ -984,6 +984,6 @@ public class ClassModel<T> {
                 }
             }
             list.remove(index);
-        }
-    }*/
+        }*/
+    }
 }

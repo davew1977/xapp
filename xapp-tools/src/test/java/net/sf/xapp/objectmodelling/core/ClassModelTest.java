@@ -39,7 +39,7 @@ public class ClassModelTest extends TestCase
     {
         m_classDatabase = new ClassModelManager(Database.class);
         m_classModel = m_classDatabase.getRootClassModel();
-        return (Database) m_classDatabase.getRootUnmarshaller().unmarshal(getClass().getResourceAsStream("Database.xml"));
+        return (Database) m_classDatabase.getRootUnmarshaller().unmarshal(getClass().getResourceAsStream("Database.xml")).getInstance();
     }
 
 

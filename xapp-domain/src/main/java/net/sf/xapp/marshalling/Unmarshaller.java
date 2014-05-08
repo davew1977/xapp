@@ -293,7 +293,7 @@ public class Unmarshaller<T>
                         //need to find implementation type
                         ClassModel validImplementation = classModel.getValidImplementation(listElement.getNodeName());
                         Unmarshaller unmarshaller = getUnmarshaller(validImplementation);
-                        nextObject = unmarshaller.unmarshal(listElement, context);
+                        nextObject = unmarshaller.unmarshal(listElement, context).getInstance();
                     }
                     else if (includeResource != null)
                     {
@@ -303,7 +303,7 @@ public class Unmarshaller<T>
                     else
                     {
                         Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
-                        nextObject = unmarshaller.unmarshal(listElement, context);
+                        nextObject = unmarshaller.unmarshal(listElement, context).getInstance();
                     }
                     listProperty.addToMapOrCollection(al, nextObject);
                 }
@@ -545,7 +545,7 @@ public class Unmarshaller<T>
 
 
         public  ObjectMeta<E> newInstance() {
-            objectMeta = classModel.newInstance(parentContext.objectMeta);
+            objectMeta = classModel.newInstance(parentObjMeta());
 
             LocalContext namespace = getNamespace(classModel.getContainedClass());
             if (classModel.hasKey()) {
@@ -555,9 +555,17 @@ public class Unmarshaller<T>
             return objectMeta;
         }
 
+        private ObjectMeta parentObjMeta() {
+            return !isRoot() ? parentContext.objectMeta : null;
+        }
+
         public void postInit() {
             mapAllByKey();
             setRefs();
+        }
+
+        public boolean isRoot() {
+            return parentContext == null;
         }
     }
 

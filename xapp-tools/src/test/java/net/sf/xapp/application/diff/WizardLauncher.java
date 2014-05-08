@@ -14,9 +14,9 @@ public class WizardLauncher
     public static void main(String[] args)
     {
         Unmarshaller un = new Unmarshaller(DiffSet.class);
-        DiffSet baseToMine = (DiffSet) un.unmarshal(WizardLauncher.class.getResourceAsStream("BaseToMine.xml"));
-        DiffSet baseToTheirs = (DiffSet) un.unmarshal(WizardLauncher.class.getResourceAsStream("BaseToTheirs.xml"));
-        DiffSet mineToTheirs = (DiffSet) un.unmarshal(WizardLauncher.class.getResourceAsStream("MineToTheirs.xml"));
+        DiffSet baseToMine = (DiffSet) un.unmarshal(WizardLauncher.class.getResourceAsStream("BaseToMine.xml")).getInstance();
+        DiffSet baseToTheirs = (DiffSet) un.unmarshal(WizardLauncher.class.getResourceAsStream("BaseToTheirs.xml")).getInstance();
+        DiffSet mineToTheirs = (DiffSet) un.unmarshal(WizardLauncher.class.getResourceAsStream("MineToTheirs.xml")).getInstance();
 
         DiffModel diffModel = new DiffModel(baseToMine, baseToTheirs, mineToTheirs);
 

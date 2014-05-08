@@ -14,6 +14,7 @@ package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.annotations.application.Validate;
 import net.sf.xapp.application.api.WidgetContext;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +33,7 @@ public class StringPropertyWidget extends AbstractPropertyWidget
         return m_textField.getText().equals("") ? null : m_textField.getText();
     }
 
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         m_textField.setText(value!=null ? value.toString() : null);
     }

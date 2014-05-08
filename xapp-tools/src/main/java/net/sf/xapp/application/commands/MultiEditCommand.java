@@ -17,6 +17,7 @@ import net.sf.xapp.application.api.MultiNodeCommand;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
 import javax.swing.tree.TreePath;
@@ -39,7 +40,7 @@ public class MultiEditCommand extends MultiNodeCommand
 
     public void execute(List<Node> nodes)
     {
-        List<Object> targets = extractTargets();
+        List<ObjectMeta> targets = extractTargets();
         EditableContext editableContext = new MultiTargetEditableContext(m_commonClassModel, targets);
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
@@ -64,12 +65,12 @@ public class MultiEditCommand extends MultiNodeCommand
         editor.getMainFrame().setVisible(true);
     }
 
-    private List<Object> extractTargets()
+    private List<ObjectMeta> extractTargets()
     {
-        ArrayList<Object> targets = new ArrayList<Object>();
+        ArrayList<ObjectMeta> targets = new ArrayList<ObjectMeta>();
         for (Node node : m_nodes)
         {
-            targets.add(node.wrappedObject());
+            targets.add(node.objectMeta());
         }
         return targets;
     }

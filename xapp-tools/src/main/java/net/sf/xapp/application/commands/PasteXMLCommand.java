@@ -17,6 +17,7 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -36,7 +37,7 @@ public class PasteXMLCommand extends NodeCommand
         ClassModel containedTypeClassModel = node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
 
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        Object clipboardObject = null;
+        ObjectMeta clipboardObject = null;
 
         try
         {
@@ -60,7 +61,7 @@ public class PasteXMLCommand extends NodeCommand
         }
 
         //add object to data model
-        node.getListNodeContext().getCollection().add(clipboardObject);
+        node.getListNodeContext().getCollection().add(clipboardObject.getInstance());
         //create new node
         Node newNode = applicationContainer.getNodeBuilder().createNode(null, clipboardObject, node, node.getDomainTreeRoot(), null);
 

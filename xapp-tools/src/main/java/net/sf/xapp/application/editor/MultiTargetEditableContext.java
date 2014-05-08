@@ -13,6 +13,7 @@
 package net.sf.xapp.application.editor;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
@@ -22,15 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Used when the GUI is editing one object only
+ * Used when the GUI is editing multiple objects
  */
 public class MultiTargetEditableContext implements EditableContext
 {
     private ClassModel m_classModel;
-    private List<Object> m_targets;
+    private List<ObjectMeta> m_targets;
     private Map<Property, Object> m_latestValueMap = new HashMap<Property, Object>();
 
-    public MultiTargetEditableContext(ClassModel classModel, List<Object> targets)
+    public MultiTargetEditableContext(ClassModel classModel, List<ObjectMeta> targets)
     {
         m_classModel = classModel;
         m_targets = targets;
@@ -49,10 +50,10 @@ public class MultiTargetEditableContext implements EditableContext
     public Object getPropertyValue(Property property)
     {
         //if the property value for all instances is the same then return that value
-        Object controlValue = property.get(getTarget());
+        Object controlValue = getObjMeta().get(property);
         for (int i = 1; i < m_targets.size(); i++)
         {
-            Object o = property.get(m_targets.get(i));
+            Object o = m_targets.get(i).get(property);
             if (!Property.objEquals(controlValue, o))
             {
                 controlValue = null;
@@ -70,9 +71,9 @@ public class MultiTargetEditableContext implements EditableContext
         //if the value has changed then set it to all instances in list
         if (!Property.objEquals(value, m_latestValueMap.get(property)))
         {
-            for (Object target : m_targets)
+            for (ObjectMeta target : m_targets)
             {
-                PropertyChangeTuple changeTuple = property.set(target, value);
+                PropertyChangeTuple changeTuple = target.set(property, value);
                 if (changeTuple!=null)
                 {
                     changes.add(changeTuple);
@@ -83,7 +84,7 @@ public class MultiTargetEditableContext implements EditableContext
         return changes;
     }
 
-    public Object getTarget()
+    public ObjectMeta getObjMeta()
     {
         return m_targets.get(0);
     }

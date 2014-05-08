@@ -76,8 +76,8 @@ public class ListProperty extends ContainerProperty
     }
 
     @Override
-    public boolean contains(Object container, Object instance) {
-        return get(container).contains(instance);
+    public boolean contains(Object container, ObjectMeta objectMeta) {
+        return get(container).contains(objectMeta);
     }
 
     @Override
@@ -86,8 +86,8 @@ public class ListProperty extends ContainerProperty
     }
 
     @Override
-    public void add(Object container, Object instance) {
-        addToMapOrCollection(get(container), instance);
+    public void add(Object container, ObjectMeta objMeta) {
+        addToMapOrCollection(get(container), objMeta.getInstance());
     }
 
     @Override

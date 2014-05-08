@@ -24,6 +24,7 @@ import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.XappException;
@@ -200,7 +201,8 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     public Editor getEditor(Object instance, EditorListener listener)
     {
         ClassModel classModel = m_guiContext.getClassDatabase().getClassModel(instance.getClass());
-        EditableContext editableContext = new SingleTargetEditableContext(classModel, instance, SingleTargetEditableContext.Mode.EDIT);
+        EditableContext editableContext = new SingleTargetEditableContext(
+                classModel.find(instance), SingleTargetEditableContext.Mode.EDIT);
         return EditorManager.getInstance().getEditor(editableContext, listener);
     }
 
@@ -521,7 +523,9 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
             else {
                 list.add(index, obj);
             }
-            Node newNode = m_nodeBuilder.createNode(null, obj, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
+            ObjectMeta objectMeta = getClassDatabase().getClassModel(obj.getClass()).registerInstance(parentNode.objectMeta(), obj);
+            Node newNode = m_nodeBuilder.createNode(null, objectMeta, parentNode, parentNode.getDomainTreeRoot(),
+                    ObjectNodeContext.ObjectContext.IN_LIST);
             getMainPanel().repaint();
             parentNode.updateDomainTreeRoot();
             getApplication().nodeAdded(newNode);

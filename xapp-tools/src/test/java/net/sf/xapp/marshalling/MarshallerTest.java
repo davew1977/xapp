@@ -101,7 +101,7 @@ public class MarshallerTest extends TestCase
     {
         ClassModelManager<TestModel> cmm = new ClassModelManager<TestModel>(TestModel.class);
         Unmarshaller<TestModel> u = cmm.getRootUnmarshaller();
-        TestModel t = u.unmarshalString("<TestModel enums=\"one,two,four\"/>");
+        TestModel t = u.unmarshalString("<TestModel enums=\"one,two,four\"/>").getInstance();
         assertEquals(3, t.getEnums().size());
         assertEquals(TestEnum.one, t.getEnums().get(0));
         assertEquals(TestEnum.two, t.getEnums().get(1));

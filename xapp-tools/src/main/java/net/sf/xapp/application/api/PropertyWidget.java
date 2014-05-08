@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.*;
@@ -43,7 +44,7 @@ public interface PropertyWidget<T>
      * @param value the property value. Can be null
      * @param target the object whose property's value it is
      */
-    void setValue(T value, Object target);
+    void setValue(T value, ObjectMeta target);
 
     /**
      * Get the property object currently associated with 

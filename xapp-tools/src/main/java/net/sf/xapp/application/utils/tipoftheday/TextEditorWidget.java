@@ -15,6 +15,7 @@ package net.sf.xapp.application.utils.tipoftheday;
 import net.sf.xapp.application.api.WidgetContext;
 import net.sf.xapp.application.editor.widgets.AbstractPropertyWidget;
 import net.sf.xapp.application.editor.text.TextEditor;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
@@ -125,7 +126,7 @@ public class TextEditorWidget extends AbstractPropertyWidget
         return m_textEditor.getText();
     }
 
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         getTextEditor().setText((String) value);
     }

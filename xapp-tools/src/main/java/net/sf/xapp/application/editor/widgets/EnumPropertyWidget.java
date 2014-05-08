@@ -14,11 +14,10 @@ package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.application.api.WidgetContext;
 import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
-import net.sf.xapp.utils.XappException;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Method;
 
 public class EnumPropertyWidget extends AbstractPropertyWidget
 {
@@ -39,7 +38,7 @@ public class EnumPropertyWidget extends AbstractPropertyWidget
         return m_comboBox.getSelectedItem();
     }
 
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         m_comboBox.setSelectedItem(value);
 

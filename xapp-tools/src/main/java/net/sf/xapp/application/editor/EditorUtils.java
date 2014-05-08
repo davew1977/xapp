@@ -30,7 +30,7 @@ public class EditorUtils {
         }
     }
 
-    public static ObjectWidget createBoundObject(ClassModel classModel, Object instance)
+    public static ObjectWidget createBoundObject(ClassModel classModel)
     {
         if (classModel.getBoundObjectType() == null) return null;
         try

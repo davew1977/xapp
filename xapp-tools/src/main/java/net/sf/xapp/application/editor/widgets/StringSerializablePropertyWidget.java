@@ -13,6 +13,7 @@
 package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.marshalling.api.StringSerializer;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.*;
@@ -46,7 +47,7 @@ public class StringSerializablePropertyWidget extends AbstractPropertyWidget
         return "".equals(text) ? null : m_stringSerializer.read(text);
     }
                                                                                                                      
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         m_textField.setText(value != null ? m_stringSerializer.write(value) : null);
     }

@@ -14,6 +14,7 @@ package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class EnumListPropertyWidget<T extends Enum> extends AbstractPropertyWidg
     }
 
     @Override
-    public void setValue(List<T> values, Object target)
+    public void setValue(List<T> values, ObjectMeta target)
     {
         List<Enum> enumValues = Arrays.asList(EnumListSerializer.getEnumValues(enumClass));
         if (values!=null)

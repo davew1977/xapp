@@ -1,12 +1,12 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.Namespace;
+import net.sf.xapp.utils.CollectionsUtils;
+import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.XappException;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * additional data per instance
@@ -17,10 +17,11 @@ public class ObjectMeta<T> {
     private final T instance;
     private final Map<Class, Map<String, Object>> lookupMap = new HashMap<Class, Map<String, Object>>();
 
-    public ObjectMeta(ClassModel classModel, T obj, Namespace namespace, ObjectMeta<?> parent) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectMeta<?> parent) {
         this.classModel = classModel;
         this.instance = obj;
         this.parent = parent;
+        Namespace namespace = classModel.getNamespace();
         if (namespace != null) {
             for (Class aClass : namespace.value()) {
                 lookupMap.put(aClass, new HashMap<String, Object>());
@@ -57,6 +58,23 @@ public class ObjectMeta<T> {
     }
 
     private <E> Map<String, E> findMatchingMap(Class<E> aClass) {
+
+        Map<String, E> internalMatch = findMatchingMap_internal(aClass);
+        if (internalMatch != null) {
+            return internalMatch;
+        }
+        if(isRoot()) {
+            while(aClass.getSuperclass() != Object.class) {
+                aClass = (Class<E>) aClass.getSuperclass();
+            }
+            LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+            lookupMap.put(aClass, map);
+            return (Map<String, E>) map;
+        }
+        return parent.findMatchingMap(aClass);
+    }
+
+    private <E> Map<String, E> findMatchingMap_internal(Class<E> aClass) {
         if(lookupMap.containsKey(aClass)) {
             return (Map<String, E>) lookupMap.get(aClass);
         }
@@ -67,17 +85,8 @@ public class ObjectMeta<T> {
                 return (Map<String, E>) entry.getValue();
             }
         }
-        if(isRoot()) {
-            while(aClass.getSuperclass() != Object.class) {
-                aClass = (Class<E>) aClass.getSuperclass();
-            }
-            LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-            lookupMap.put(aClass, map);
-            return (Map<String, E>) map;
-        }
         return null;
     }
-
 
 
     /**
@@ -88,23 +97,32 @@ public class ObjectMeta<T> {
     }
 
     public boolean isNamespaceFor(Class aClass) {
-        return findMatchingMap(aClass)!=null;
+        return isRoot() || findMatchingMap_internal(aClass)!=null;
     }
 
     public ClassModel getClassModel() {
         return classModel;
     }
 
-    public Object getProp(Property property) {
+    public Object get(Property property) {
         return property.get(getInstance());
     }
 
-    public PropertyChangeTuple setProp(Property property, Object value) {
+    public PropertyChangeTuple set(Property property, Object value) {
         return property.set(getInstance(), value);
     }
 
 
     public ObjectMeta globalObjMetaLookup(Object value) {
         return getClassModel().globalObjMetaLookup(value);
+    }
+
+    public <E> Collection<E> getAll(final Class<E> containedClass) {
+        return CollectionsUtils.filter(findMatchingMap(containedClass).values(), new Filter<E>() {
+            @Override
+            public boolean matches(E e) {
+                return containedClass.isAssignableFrom(e.getClass());
+            }
+        });
     }
 }

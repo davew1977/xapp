@@ -84,7 +84,7 @@ public class ListReferenceGUI extends JFrame
             ClassModel cm = m_node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
             m_referenceProperty = new ReferencePropertyWidget(true);
             m_referenceProperty.init(new DummyWidgetContext(cm, (ListProperty) m_node.getListNodeContext().getContainerProperty()));
-            m_referenceProperty.setValue(null, m_node.getParent().wrappedObject());
+            m_referenceProperty.setValue(null, m_node.getParent().objectMeta());
             m_mainBox.add(m_referenceProperty.getComponent());
 
             m_midBox = new Box(BoxLayout.X_AXIS);

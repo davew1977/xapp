@@ -37,7 +37,7 @@ public class CreateCommand extends NodeCommand
         final ApplicationContainer applicationContainer = parentNode.getApplicationContainer();
         final ListNodeContext listNodeContext = parentNode.getListNodeContext();
         applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), objMeta);
-        EditableContext editableContext = new SingleTargetEditableContext(m_createClass, objMeta, SingleTargetEditableContext.Mode.CREATE);
+        EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE);
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyChangeTuple> changes, boolean closeOnSave)

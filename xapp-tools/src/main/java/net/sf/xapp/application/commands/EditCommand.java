@@ -16,6 +16,7 @@ import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.editor.*;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 
 import java.awt.*;
@@ -34,9 +35,9 @@ public class EditCommand extends NodeCommand
     {
         //open edit defaultGui
         final ApplicationContainer appContainer = node.getApplicationContainer();
-        final Object objectToEdit = node.wrappedObject();
+        final ObjectMeta objectToEdit = node.objectMeta();
         EditableContext editableContext = new SingleTargetEditableContext(
-                node.getObjectNodeContext().getClassModel(), objectToEdit, SingleTargetEditableContext.Mode.EDIT);
+                objectToEdit, SingleTargetEditableContext.Mode.EDIT);
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyChangeTuple> changes, boolean closing)

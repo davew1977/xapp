@@ -49,7 +49,7 @@ public class KeyChangeDictionaryImplTest extends TestCase
 
     public void testFindByOldAndNew()
     {
-        ChangeModel cm = (ChangeModel) new Unmarshaller(ChangeModel.class).unmarshal(getClass().getResourceAsStream("TestChangeModel.xml"));
+        ChangeModel cm = (ChangeModel) new Unmarshaller(ChangeModel.class).unmarshal(getClass().getResourceAsStream("TestChangeModel.xml")).getInstance();
         KeyChangeDictionary k = new KeyChangeDictionaryImpl();
         k.init(cm.getChangeSets().get(0));
         assertEquals("k", k.findByOld("A", "j").getNew());

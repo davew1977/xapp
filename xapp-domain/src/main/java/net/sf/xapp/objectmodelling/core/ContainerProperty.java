@@ -88,8 +88,8 @@ public class ContainerProperty extends Property
         return m_propertyAccess.getAnnotation(ContainsReferences.class);
     }
 
-    public boolean contains(Object container, Object instance) {
-        return map(container).containsValue(instance);
+    public boolean contains(Object container, ObjectMeta objMeta) {
+        return map(container).containsValue(objMeta.getInstance());
     }
 
     public void addToMapOrCollection(Object mapOrCollection, Object instance) {
@@ -97,8 +97,8 @@ public class ContainerProperty extends Property
         ((Map) mapOrCollection).put(key, instance);
     }
 
-    public void add(Object container, Object instance) {
-        addToMapOrCollection(map(container), instance);
+    public void add(Object container, ObjectMeta instance) {
+        addToMapOrCollection(map(container), instance.getInstance());
     }
 
     public Collection getCollection(Object listOwner) {

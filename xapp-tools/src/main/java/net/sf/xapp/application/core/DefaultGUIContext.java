@@ -30,7 +30,7 @@ import java.util.Date;
 public class DefaultGUIContext implements GUIContext
 {
     private File m_currentFile;
-    private ObjectMeta m_instance;
+    private ObjectMeta objMeta;
     private ClassModel m_rootType;
     private Marshaller m_marshaller;
     private Unmarshaller m_unmarshaller;
@@ -44,12 +44,12 @@ public class DefaultGUIContext implements GUIContext
         this(currentFile, classDatabase, instance, "UTF-8");
     }
 
-    public DefaultGUIContext(File currentFile, ClassDatabase classDatabase, ObjectMeta instance, String encoding)
+    public DefaultGUIContext(File currentFile, ClassDatabase classDatabase, ObjectMeta objMeta, String encoding)
     {
         m_currentFile = currentFile;
-        m_instance = instance;
+        this.objMeta = objMeta;
         m_classDatabase = classDatabase;
-        Class containedClass = instance.getClass();
+        Class containedClass = objMeta.getInstance().getClass();
         m_rootType = classDatabase.getClassModel(containedClass);
         m_marshaller =  new Marshaller(containedClass, m_classDatabase, true);
         m_unmarshaller = new Unmarshaller(classDatabase.getClassModel(containedClass));
@@ -64,7 +64,7 @@ public class DefaultGUIContext implements GUIContext
 
     public ObjectMeta getInstance()
     {
-        return m_instance;
+        return objMeta;
     }
 
     public ClassModel getRootType()
@@ -74,7 +74,7 @@ public class DefaultGUIContext implements GUIContext
 
     public void newObjectInstance()
     {
-        m_instance = m_rootType.newInstance(null);
+        objMeta = m_rootType.newInstance(null);
         m_currentFile = null;
     }
 
@@ -85,7 +85,7 @@ public class DefaultGUIContext implements GUIContext
         {              //TODO marshaller now default file marshalling to UTF-8 so this code could be shortened
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fos, m_encoding );
-            m_marshaller.marshal(osw, m_instance);
+            m_marshaller.marshal(osw, objMeta.getInstance());
             osw.flush();
             osw.close();
             m_applicationContainer.setStatusMessage("saved to file: "+file + " "+m_dateFormat.format(new Date(System.currentTimeMillis())));
@@ -110,13 +110,13 @@ public class DefaultGUIContext implements GUIContext
         m_currentFile = selectedFile;
         try
         {
-            m_instance = m_unmarshaller.unmarshal(selectedFile.getAbsolutePath());
+            objMeta = m_unmarshaller.unmarshal(selectedFile.getAbsolutePath());
         }
         catch (Exception e)
         {
             throw new XappException(e);
         }
-        return m_instance;
+        return objMeta;
     }
 
     public ClassDatabase getClassDatabase()

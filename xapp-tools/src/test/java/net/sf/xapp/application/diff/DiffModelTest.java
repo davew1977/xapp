@@ -17,9 +17,9 @@ public class DiffModelTest extends TestCase
     public void testConstructor()
     {
         Unmarshaller un = new Unmarshaller(DiffSet.class);
-        DiffSet baseToMine = (DiffSet) un.unmarshal(getClass().getResourceAsStream("BaseToMine.xml"));
-        DiffSet baseToTheirs = (DiffSet) un.unmarshal(getClass().getResourceAsStream("BaseToTheirs.xml"));
-        DiffSet mineToTheirs = (DiffSet) un.unmarshal(getClass().getResourceAsStream("MineToTheirs.xml"));
+        DiffSet baseToMine = (DiffSet) un.unmarshal(getClass().getResourceAsStream("BaseToMine.xml")).getInstance();
+        DiffSet baseToTheirs = (DiffSet) un.unmarshal(getClass().getResourceAsStream("BaseToTheirs.xml")).getInstance();
+        DiffSet mineToTheirs = (DiffSet) un.unmarshal(getClass().getResourceAsStream("MineToTheirs.xml")).getInstance();
 
         doTestForIllegalArgException(baseToMine, mineToTheirs, baseToTheirs);
 

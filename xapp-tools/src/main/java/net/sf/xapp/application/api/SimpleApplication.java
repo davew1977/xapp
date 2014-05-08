@@ -29,6 +29,7 @@ public class SimpleApplication<T> implements Application<T>
     protected ApplicationContainer<T> appContainer;
     protected JComponent userPanel;
     private boolean needsScrollPane;
+    //todo add list of plugins
 
     public JScrollPane setUserPanel(JComponent panel) {
         return setUserPanel(panel, true);
@@ -117,7 +118,7 @@ public class SimpleApplication<T> implements Application<T>
     }
 
     public T model() {
-        return appContainer.getGuiContext().getInstance();
+        return appContainer.getGuiContext().getInstance().getInstance();
     }
 
     public ClassDatabase<T> classDatabase() {

@@ -12,16 +12,12 @@
  */
 package net.sf.xapp.application.editor;
 
-import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.application.api.PropertyWidget;
 import net.sf.xapp.application.api.WidgetContext;
 import net.sf.xapp.application.editor.widgets.*;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.Property;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -345,7 +341,7 @@ public class DefaultEditor implements Editor
     {
         for (PropertyWidget propertyWidget : m_components.values())
         {
-            propertyWidget.setValue(m_editableContext.getPropertyValue(propertyWidget.getProperty()), m_editableContext.getTarget());
+            propertyWidget.setValue(m_editableContext.getPropertyValue(propertyWidget.getProperty()), m_editableContext.getObjMeta());
             propertyWidget.setEditable(m_editableContext.isPropertyEditable(propertyWidget.getProperty()));
             if (propertyWidget.getComponent().getBackground().equals(ERROR_COLOR))
             {
@@ -374,7 +370,7 @@ public class DefaultEditor implements Editor
             return m_value;
         }
 
-        public void setValue(Object value, Object target)
+        public void setValue(Object value, ObjectMeta target)
         {
             m_value = value;
         }

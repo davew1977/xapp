@@ -15,6 +15,7 @@ package net.sf.xapp.application.editor;
 import net.sf.xapp.application.api.ObjectWidget;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ import java.awt.event.ActionListener;
 public class SpecialEditor implements Editor
 {
     private ClassModel m_classModel;
-    private Object m_instance;
+    private ObjectMeta m_instance;
 
     private ObjectWidget m_objectWidget;
     private JPanel m_mainPanel;
@@ -47,16 +48,16 @@ public class SpecialEditor implements Editor
         m_editorListener = editorListener;
     }
 
-    public void setTarget(Object instance)
+    public void setTarget(ObjectMeta instance)
     {
         m_instance = instance;
-        m_objectWidget.getFromObject(instance);
+        m_objectWidget.init(instance);
         updateFields();
     }
 
     public void setEditableContext(EditableContext editableContext)
     {
-        setTarget(editableContext.getTarget());
+        setTarget(editableContext.getObjMeta());
     }
 
     public void setCloseOnSave(boolean closeOnSave)
@@ -145,7 +146,7 @@ public class SpecialEditor implements Editor
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    m_objectWidget.setToObject(m_instance);
+                    m_objectWidget.save(m_instance);
                     m_editorListener.save(null, true);
                     getMainFrame().setVisible(false);
                 }

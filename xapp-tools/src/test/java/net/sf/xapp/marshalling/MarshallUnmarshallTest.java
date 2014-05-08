@@ -52,8 +52,8 @@ public class MarshallUnmarshallTest extends TestCase
         // Make sure we stat with an empty StringWriter
         m_resultVerification = new StringWriter();
 
-        DummyModel unorderedModel = (DummyModel) m_unmarshaller.unmarshal(getClass().getResourceAsStream(unorderedFilePath));
-        DummyModel expectedModel = (DummyModel) m_unmarshaller.unmarshal(getClass().getResourceAsStream(expectedFilePath));
+        DummyModel unorderedModel = (DummyModel) m_unmarshaller.unmarshal(getClass().getResourceAsStream(unorderedFilePath)).getInstance();
+        DummyModel expectedModel = (DummyModel) m_unmarshaller.unmarshal(getClass().getResourceAsStream(expectedFilePath)).getInstance();
 
         String unordered;
         String expected;
@@ -82,7 +82,7 @@ public class MarshallUnmarshallTest extends TestCase
 
         // Marshall the expected model to disc and then read it back into a new model
         m_formatedMarshaller.marshal(TEST_RESULT_FILE_NAME, expectedModel);
-        DummyModel readModel = (DummyModel) m_unmarshaller.unmarshal(TEST_RESULT_FILE_NAME);
+        DummyModel readModel = (DummyModel) m_unmarshaller.unmarshal(TEST_RESULT_FILE_NAME).getInstance();
 
         // Assert that they are equal
         assertEquals(expectedModel.getDummy(), readModel.getDummy());
@@ -96,7 +96,7 @@ public class MarshallUnmarshallTest extends TestCase
     public void testWriteAfterRead() throws FileNotFoundException
     {
         // Read the values from disc and parse
-        DummyModel model = (DummyModel) m_unmarshaller.unmarshal(getClass().getResourceAsStream("dummy/expectedSimple.xml"));
+        DummyModel model = (DummyModel) m_unmarshaller.unmarshal(getClass().getResourceAsStream("dummy/expectedSimple.xml")).getInstance();
         m_formatedMarshaller.marshal(TEST_RESULT_FILE_NAME, model);
 
         // Read the saved file form disc and compare it to the expected result.

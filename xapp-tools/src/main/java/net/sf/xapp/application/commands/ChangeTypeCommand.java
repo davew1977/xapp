@@ -18,6 +18,7 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.*;
@@ -49,11 +50,12 @@ public class ChangeTypeCommand extends NodeCommand
                 public void actionPerformed(ActionEvent e)
                 {
                     ClassModel srcClassModel = node.getObjectNodeContext().getClassModel();
-                    Object oldInstance = node.wrappedObject();
+                    ObjectMeta oldInstance = node.wrappedObject();
                     List<Property> properties = srcClassModel.getAllProperties();
-                    Object newInstance = targetClassModel.newInstance().getInstance();
+                    ObjectMeta newInstance = targetClassModel.newInstance(node.parentObjectNode().objectMeta());
                     for (Property property : properties)
                     {
+                        newInstance.set(property, oldInstance.get(property));
                         property.set(newInstance, property.get(oldInstance));
                     }
                     appContainer.getMainFrame().repaint();

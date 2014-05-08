@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.editor.widgets;
 
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -67,7 +69,7 @@ public class FreeTextPropertyWidget extends AbstractPropertyWidget
         return m_textArea.getText().equals("")? null : m_textArea.getText();
     }
 
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         getTextArea().setFont(getTextArea().getFont().deriveFont(m_fontSize));
         getTextArea().setText((String) value);

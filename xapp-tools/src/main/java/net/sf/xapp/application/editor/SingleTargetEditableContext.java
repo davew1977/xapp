@@ -51,13 +51,13 @@ public class SingleTargetEditableContext implements EditableContext
 
     public Object getPropertyValue(Property property)
     {
-        return objMeta.getProp(property);
+        return objMeta.get(property);
     }
 
     public List<PropertyChangeTuple> setPropertyValue(Property property, Object value)
     {
         List<PropertyChangeTuple> changes = new ArrayList<PropertyChangeTuple>();
-        PropertyChangeTuple propertyChangeTuple = objMeta.setProp(property, value);
+        PropertyChangeTuple propertyChangeTuple = objMeta.set(property, value);
         if (propertyChangeTuple != null)
         {
             changes.add(propertyChangeTuple);

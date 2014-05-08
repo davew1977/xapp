@@ -16,6 +16,7 @@ import net.sf.xapp.application.editor.*;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
 import net.sf.xapp.tree.Tree;
 
@@ -34,7 +35,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
     private JButton m_removeButton;
     private JPopupMenu m_popUp;
     private boolean m_editable;
-    private Object m_parentObj;
+    private ObjectMeta parentObj;
 
     public ObjectPropertyWidget()
     {
@@ -91,7 +92,8 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
                 public void actionPerformed(ActionEvent e)
                 {
                     ClassModel propertyClassModel = m_widgetContext.getClassDatabase().getClassModel(m_propertyValue.getClass());
-                    EditableContext editableContext = new SingleTargetEditableContext(propertyClassModel, m_propertyValue, SingleTargetEditableContext.Mode.EDIT);
+                    ObjectMeta objValue = propertyClassModel.find(m_propertyValue);
+                    EditableContext editableContext = new SingleTargetEditableContext(objValue, SingleTargetEditableContext.Mode.EDIT);
                     Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
                     {
                         public void save(java.util.List<PropertyChangeTuple> changes, boolean closing)
@@ -155,8 +157,8 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final Object instance = validImpl.newInstance().getInstance();
-        EditableContext editableContext = new SingleTargetEditableContext(validImpl, instance, SingleTargetEditableContext.Mode.CREATE);
+        final ObjectMeta instance = validImpl.newInstance(parentObj);
+        EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyChangeTuple> changes, boolean closing)
@@ -166,8 +168,8 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
                 TreeMeta treeMeta = m_widgetContext.getProperty().getTreeMeta();
                 if (treeMeta != null)
                 {
-                    ((Tree) instance).setPathSeparator(treeMeta.pathSeparator());
-                    ((Tree) instance).setLeafTypes(treeMeta.leafTypes());
+                    ((Tree) instance.getInstance()).setPathSeparator(treeMeta.pathSeparator());
+                    ((Tree) instance.getInstance()).setLeafTypes(treeMeta.leafTypes());
                 }
                 updateState();
             }
@@ -186,10 +188,10 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
         return m_propertyValue;
     }
 
-    public void setValue(Object value, Object target)
+    public void setValue(Object value, ObjectMeta target)
     {
         m_propertyValue = value;
-        m_parentObj = target;
+        parentObj = target;
         updateState();
     }
 

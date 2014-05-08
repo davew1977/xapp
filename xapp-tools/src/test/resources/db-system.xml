@@ -8,11 +8,13 @@
             <Pupil ref="eliasw"/>
           </Pupils>
         </ClassRoom>
+        <ClassRoom name="Emerald" teacher="etrevis"/>
       </ClassRooms>
       <People>
         <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis"/>
         <Pupil firstName="Elias" secondName="Webber" username="eliasw"/>
         <Pupil firstName="Alice" secondName="Webber" username="alicew"/>
+        <Teacher firstName="alison" secondName="carver" username="acarver"/>
       </People>
     </School>
     <School headTeacher="breid" name="Berwick School">

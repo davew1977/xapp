@@ -57,9 +57,9 @@ public class ClassModelDiffTest extends TestCase
 
         //test merge
         ClassDatabase<Database> cdb = loadDatabase("Database.xml");
-        Database mergeInstance = cdb.getRootInstance();
+        Database mergeInstance = cdb.getRootInstance().getInstance();
         cdb.getRootClassModel().merge(mergeInstance, diffSet);
-        Database controlInstance = loadDatabase("Database_2.xml").getRootInstance();
+        Database controlInstance = loadDatabase("Database_2.xml").getRootInstance().getInstance();
         //the following commented out test does not work because the merge does not guarantee
         //that the merged object will match the order
         String realString = Marshaller.toXML(controlInstance);
@@ -71,7 +71,7 @@ public class ClassModelDiffTest extends TestCase
     {
         DiffSet diffSet = diffset("Database_3.xml", "Database_4.xml");
         String s = Marshaller.toXML(diffSet);
-        diffSet = (DiffSet) new Unmarshaller(DiffSet.class).unmarshalString(s);
+        diffSet = (DiffSet) new Unmarshaller(DiffSet.class).unmarshalString(s).getInstance();
         System.out.println(s);
         ClassDatabase<Database> cdb = loadDatabase("Database_3.xml");
         cdb.getRootClassModel().merge(cdb.getRootInstance(), diffSet);

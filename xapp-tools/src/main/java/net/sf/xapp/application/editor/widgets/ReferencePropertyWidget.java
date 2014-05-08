@@ -15,6 +15,7 @@ package net.sf.xapp.application.editor.widgets;
 import net.sf.xapp.application.api.WidgetContext;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.tree.TreeNode;
 import net.sf.xapp.utils.XappException;
@@ -23,20 +24,18 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Vector;
 
 import static net.sf.xapp.utils.StringUtils.*;
 
 public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
 {
     protected JComboBox m_comboBox;
-    protected Object m_target;
     protected Tree m_root; //has a value if contained type is tree
 
     public final String NULL = "null";
-    private Object m_parentObject;
+    private ObjectMeta m_parentObject;
 
     private final boolean containedByListReferenceGUI;
 
@@ -62,7 +61,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         {
             return null;
         }
-        Object obj = getClassModel().getInstanceNoCheck(item.toString());
+        Object obj = getObj(item.toString());
         if (obj == null)
         {
             return getClassModel() + " with key " + item + " does not exist";
@@ -93,7 +92,11 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         {
             return null;
         }
-        return getClassModel().getInstanceNoCheck(key.toString());
+        return getObj(key);
+    }
+
+    private T getObj(Object key) {
+        return key.equals(NULL) ? null : (T) m_parentObject.get(getClassModel().getContainedClass(), key.toString());
     }
 
     private ClassModel<T> getClassModel()
@@ -101,32 +104,19 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         return m_widgetContext.getPropertyClassModel();
     }
 
-    public void setValue(T value, Object target)
+    public void setValue(T value, ObjectMeta target)
     {
         init(m_widgetContext);
         m_parentObject = target;
-        m_comboBox.setSelectedItem(getDisplayKey(value));
-    }
 
-    private String getDisplayKey(T value)
-    {
-        if(value==null)
-        {
-            return null;
-        }
-        return getClassModel().getKey(value);
-    }
 
-    public void init(WidgetContext<T> context)
-    {
-        super.init(context);
-        Vector list = getClassModel().getAllInstancesInHierarchy(getQuery());
-        setComboValues(list);
+        Collection list = m_parentObject.getAll(getClassModel().getContainedClass());
+        setComboValues(new ArrayList(list));
         m_comboBox.setRenderer(new DefaultListCellRenderer()
         {
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
             {
-                T obj = m_widgetContext.getPropertyClassModel().getInstanceNoCheck(value);
+                T obj = getObj(value);
                 setToolTipText(getTooltip(obj));
                 String t = getLabelText(obj);
                 value = t != null ? t : value;
@@ -146,6 +136,23 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         {
             m_comboBox.setEditable(false);
         }
+
+
+        m_comboBox.setSelectedItem(getDisplayKey(value));
+    }
+
+    private String getDisplayKey(T value)
+    {
+        if(value==null)
+        {
+            return null;
+        }
+        return getClassModel().getKey(value);
+    }
+
+    public void init(WidgetContext<T> context)
+    {
+        super.init(context);
     }
 
     private void setComboValues(List list)

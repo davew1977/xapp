@@ -21,6 +21,7 @@ import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,12 +76,12 @@ public class ListNodeContextImpl implements ListNodeContext
     }
 
     @Override
-    public boolean contains(Object instance) {
+    public boolean contains(ObjectMeta instance) {
         return m_listProperty.contains(m_listOwner, instance);
     }
 
     @Override
-    public void add(Object instance) {
+    public void add(ObjectMeta instance) {
         m_listProperty.add(m_listOwner, instance);
     }
 
