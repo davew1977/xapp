@@ -56,6 +56,7 @@ public class NodeBuilder
 
     public Node createNode(Property parentProperty, Object instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
     {
+        System.out.println(instance);
         DefaultMutableTreeNode jtreeNode = new DefaultMutableTreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
 

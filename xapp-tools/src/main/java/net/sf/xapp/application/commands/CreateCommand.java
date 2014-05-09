@@ -51,6 +51,12 @@ public class CreateCommand extends NodeCommand
                     Node newNode = nodeBuilder.createNode(null, instance, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
                     applicationContainer.getMainPanel().repaint();
                     parentNode.updateDomainTreeRoot();
+                    /**
+                     * the following is required when the new instance is part of a tree, for other cases, the object
+                     * will be mapped twice. This is an issue when the key property is read-only, i.e. derived from
+                     * other data in the object
+                     */
+                    m_createClass.mapByPrimaryKey(instance);
                     applicationContainer.getApplication().nodeAdded(newNode);
                 }
             }
