@@ -10,7 +10,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * Time: 7:24 AM
  * To change this template use File | Settings | File Templates.
  */
-@ValidImplementations({DirMeta.class})
+@ValidImplementations({DirMeta.class, TextFile.class})
 public class FileMeta {
     private String name;
 
@@ -28,5 +28,10 @@ public class FileMeta {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

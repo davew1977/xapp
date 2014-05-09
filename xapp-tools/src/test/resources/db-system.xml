@@ -2,7 +2,7 @@
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" starOfTheWeek="alicew">
       <ClassRooms>
-        <ClassRoom name="Ruby">
+        <ClassRoom name="Ruby" teacher="acarver">
           <Pupils>
             <Pupil ref="alicew"/>
             <Pupil ref="eliasw"/>
@@ -11,19 +11,57 @@
         <ClassRoom name="Emerald" teacher="etrevis"/>
       </ClassRooms>
       <People>
-        <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis"/>
-        <Pupil firstName="Elias" secondName="Webber" username="eliasw"/>
-        <Pupil firstName="Alice" secondName="Webber" username="alicew"/>
-        <Teacher firstName="alison" secondName="carver" username="acarver"/>
+        <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis">
+          <HomeDir name="/"/>
+        </Teacher>
+        <Pupil firstName="Elias" secondName="Webber" username="eliasw">
+          <HomeDir name="/"/>
+        </Pupil>
+        <Pupil firstName="Alice" secondName="Webber" username="alicew">
+          <HomeDir name="/"/>
+        </Pupil>
+        <Teacher firstName="alison" secondName="carver" username="acarver">
+          <HomeDir name="/"/>
+        </Teacher>
       </People>
     </School>
     <School headTeacher="breid" name="Berwick School">
       <ClassRooms/>
       <People>
-        <Teacher firstName="beryl" secondName="reid" username="breid"/>
-        <Pupil firstName="elias" secondName="woojah" username="eliasw"/>
-        <Pupil firstName="jerome" secondName="keeley" username="jkeeley"/>
-        <Pupil firstName="jamie" secondName="callum" username="jamiec"/>
+        <Teacher firstName="beryl" secondName="reid" username="breid">
+          <HomeDir name="/">
+            <Files>
+              <DirMeta name="pictures">
+                <Files>
+                  <DirMeta name="private"/>
+                </Files>
+              </DirMeta>
+              <DirMeta name="text files">
+                <Files>
+                  <TextFile name="chocolate cake recipe">
+                    <Text><![CDATA[chocolate, flour, sugar, eggs
+pinch of salt]]></Text>
+                  </TextFile>
+                </Files>
+              </DirMeta>
+              <TextFile name="profile">
+                <Text><![CDATA[i am 26 years old
+i always wanted to be a teacher
+
+my hobbies are knitting and tennis]]></Text>
+              </TextFile>
+            </Files>
+          </HomeDir>
+        </Teacher>
+        <Pupil firstName="elias" secondName="woojah" username="eliasw">
+          <HomeDir name="/"/>
+        </Pupil>
+        <Pupil firstName="jerome" secondName="keeley" username="jkeeley">
+          <HomeDir name="/"/>
+        </Pupil>
+        <Pupil firstName="jamie" secondName="callum" username="jamiec">
+          <HomeDir name="/"/>
+        </Pupil>
       </People>
     </School>
   </Schools>

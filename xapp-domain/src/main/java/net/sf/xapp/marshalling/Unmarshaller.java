@@ -352,7 +352,7 @@ public class Unmarshaller<T>
             ClassModel validImplementation = className != null ?
                     classModel.getValidImplementation(className.getNodeValue()) : classModel;
             Unmarshaller unmarshaller = getUnmarshaller(validImplementation);
-            newObj = unmarshaller.unmarshal((Element) node, context);
+            newObj = unmarshaller.unmarshal((Element) node, context).getInstance();
         }
         else if (includeResource != null)
         {
@@ -362,7 +362,7 @@ public class Unmarshaller<T>
         }
         else
         {
-            newObj = getUnmarshaller(classModel).unmarshal((Element) node, context);
+            newObj = getUnmarshaller(classModel).unmarshal((Element) node, context).getInstance();
         }
         parentOb.set(property, newObj);
 

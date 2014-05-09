@@ -36,6 +36,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
 
     public final String NULL = "null";
     private ObjectMeta m_parentObject;
+    private Map<String, T> valueMap;
 
     private final boolean containedByListReferenceGUI;
 
@@ -96,7 +97,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
     }
 
     private T getObj(Object key) {
-        return key == null || key.equals(NULL) ? null : (T) m_parentObject.get(getClassModel().getContainedClass(), key.toString());
+        return valueMap.get(key);
     }
 
     private ClassModel<T> getClassModel()
@@ -110,8 +111,8 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
         m_parentObject = target;
 
 
-        Collection list = m_parentObject.getAll(getClassModel().getContainedClass());
-        setComboValues(new ArrayList(list));
+        valueMap = m_parentObject.getAll(getClassModel().getContainedClass());
+        setComboValues(new ArrayList(valueMap.keySet()));
         m_comboBox.setRenderer(new DefaultListCellRenderer()
         {
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
@@ -185,16 +186,11 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
     }
     }
 
-    public DefaultComboBoxModel createListModel(List list)
+    public DefaultComboBoxModel createListModel(List<String> keys)
     {
         //convert to a list of strings
-        Vector<String> stringList = new Vector<String>();
-        boolean sorted = preSort(list);
-        for (Object o : list)
-        {
-            String fullKey = getClassModel().getKey((T) o);
-            stringList.add(fullKey);
-        }
+        Vector<String> stringList = new Vector<String>(keys);
+        boolean sorted = preSort(stringList);
 
         if (!sorted)
         {
