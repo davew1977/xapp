@@ -267,9 +267,11 @@ public class ClassModel<T> {
     }
 
     public void dispose(T instance) {
-        instances.remove(find(instance));
+        ObjectMeta<T> objectMeta = find(instance);
+        instances.remove(objectMeta);
         if (keyProperty != null) {
-            Object key = keyProperty.get(instance);
+            PropertyChange change = objectMeta.set(keyProperty, null);
+            Object key = change.oldVal;
             m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(getSimpleName(), key != null ? String.valueOf(key) : null, isTrackNewAndRemoved());
         }
     }
@@ -618,12 +620,11 @@ public class ClassModel<T> {
         }
     }
 
-    public ObjectMeta globalObjMetaLookup(Object obj) {
-        return getClassDatabase().getClassModel(obj.getClass()).find(obj);
+    public ObjectMeta globalObjMetaLookup(ObjectMeta parent, Object obj) {
+        return getClassDatabase().getClassModel(obj.getClass()).findOrCreate(parent, obj);
     }
 
     private class PrimaryKeyChangedListener implements PropertyChangeListener {
-        Marshaller m = new Marshaller(ChangeSet.class);
 
         public void propertyChanged(Property property, Object target, Object oldVal, Object newVal) {
             /**
@@ -844,6 +845,13 @@ public class ClassModel<T> {
         return find(o1) != null;
     }
 
+    public ObjectMeta<T> findOrCreate(ObjectMeta parent, T o1) {
+        ObjectMeta<T> objectMeta = find(o1);
+        if(objectMeta==null) {
+            objectMeta = registerInstance(parent, o1);
+        }
+        return objectMeta;
+    }
     public ObjectMeta<T> find(T o1) {
         //todo try retrieve obj meta from object itself, otherwise resort to search
         //todo map objects without equals/hashcode methods

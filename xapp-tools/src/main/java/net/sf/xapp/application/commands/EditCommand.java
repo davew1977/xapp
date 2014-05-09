@@ -17,7 +17,8 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class EditCommand extends NodeCommand
                 objectToEdit, SingleTargetEditableContext.Mode.EDIT);
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChangeTuple> changes, boolean closing)
+            public void save(List<PropertyChange> changes, boolean closing)
             {
                 Node newNode = node;
                 if (closing)
@@ -57,8 +58,8 @@ public class EditCommand extends NodeCommand
                     }
                 }
 
-                Map<String, PropertyChangeTuple> changeMap = new HashMap<String, PropertyChangeTuple>();
-                for (PropertyChangeTuple change : changes)
+                Map<String, PropertyChange> changeMap = new HashMap<String, PropertyChange>();
+                for (PropertyChange change : changes)
                 {
                     changeMap.put(change.property.getName(), change);
                 }

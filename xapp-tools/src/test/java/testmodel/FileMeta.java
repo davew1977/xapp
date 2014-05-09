@@ -1,6 +1,7 @@
 package testmodel;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,8 +10,16 @@ import net.sf.xapp.annotations.objectmodelling.Key;
  * Time: 7:24 AM
  * To change this template use File | Settings | File Templates.
  */
+@ValidImplementations({DirMeta.class})
 public class FileMeta {
     private String name;
+
+    public FileMeta(String name) {
+        this.name = name;
+    }
+
+    public FileMeta() {
+    }
 
     @Key
     public String getName() {

@@ -412,7 +412,7 @@ public class DefaultEditor implements Editor
             if (m_editableContext.isCheckMandatoryFields() && !areMandatoryFieldsFilled()) return; // short circuit
 
 
-            List<PropertyChangeTuple> changes = new ArrayList<PropertyChangeTuple>();
+            List<PropertyChange> changes = new ArrayList<PropertyChange>();
 
             for (PropertyWidget propertyWidget : m_components.values())
             {
@@ -425,7 +425,7 @@ public class DefaultEditor implements Editor
                     }
 
                 }
-                List<PropertyChangeTuple> changeTuples = m_editableContext.setPropertyValue(propertyWidget.getProperty(), propertyWidget.getValue());
+                List<PropertyChange> changeTuples = m_editableContext.setPropertyValue(propertyWidget.getProperty(), propertyWidget.getValue());
                 changes.addAll(changeTuples);
             }
 

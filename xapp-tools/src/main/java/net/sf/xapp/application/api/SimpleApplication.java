@@ -16,7 +16,8 @@ import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.utils.XappException;
 
 import javax.swing.*;
@@ -87,7 +88,7 @@ public class SimpleApplication<T> implements Application<T>
 
     }
 
-    public void nodeUpdated(Node objectNode, Map<String,PropertyChangeTuple> changes)
+    public void nodeUpdated(Node objectNode, Map<String,PropertyChange> changes)
     {
 
     }
@@ -107,7 +108,7 @@ public class SimpleApplication<T> implements Application<T>
         appContainer = applicationContainer;
     }
 
-    public void nodesUpdated(List<PropertyChangeTuple> changes)
+    public void nodesUpdated(List<PropertyChange> changes)
     {
 
     }

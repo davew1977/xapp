@@ -15,7 +15,8 @@ package net.sf.xapp.application.editor;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,15 +66,15 @@ public class MultiTargetEditableContext implements EditableContext
         return controlValue;
     }
 
-    public List<PropertyChangeTuple> setPropertyValue(Property property, Object value)
+    public List<PropertyChange> setPropertyValue(Property property, Object value)
     {
-        ArrayList<PropertyChangeTuple> changes = new ArrayList<PropertyChangeTuple>();
+        ArrayList<PropertyChange> changes = new ArrayList<PropertyChange>();
         //if the value has changed then set it to all instances in list
         if (!Property.objEquals(value, m_latestValueMap.get(property)))
         {
             for (ObjectMeta target : m_targets)
             {
-                PropertyChangeTuple changeTuple = target.set(property, value);
+                PropertyChange changeTuple = target.set(property, value);
                 if (changeTuple!=null)
                 {
                     changes.add(changeTuple);

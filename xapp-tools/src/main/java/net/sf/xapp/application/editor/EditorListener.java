@@ -12,20 +12,21 @@
  */
 package net.sf.xapp.application.editor;
 
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.List;
 
 public interface EditorListener
 {
-    void save(List<PropertyChangeTuple> changes, boolean closeOnSave);
+    void save(List<PropertyChange> changes, boolean closeOnSave);
 
     void close();
 
     public static class NullEditorListener implements EditorListener
     {
 
-        public void save(List<PropertyChangeTuple> changes, boolean closeOnSave)
+        public void save(List<PropertyChange> changes, boolean closeOnSave)
         {
 
         }

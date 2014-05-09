@@ -29,8 +29,14 @@ public class ObjectMeta<T> {
         }
     }
 
+    public void add(ClassModel classModel, String key, Object obj) {
+        add(classModel.getContainedClass(), key, obj);
+    }
     public void add(Class aClass, String key, Object obj) {
         findMatchingMap(aClass).put(key, obj);
+    }
+    public void remove(ClassModel aClass, String key) {
+        findMatchingMap(aClass.getContainedClass()).remove(key);
     }
 
     public <E> E get(Class<E> aClass, String key) {
@@ -41,6 +47,9 @@ public class ObjectMeta<T> {
         return obj;
     }
 
+    public ObjectMeta<?> getNamespace(ClassModel classModel) {
+        return getNamespace(classModel.getContainedClass());
+    }
     public ObjectMeta<?> getNamespace(Class aClass) {
         return isNamespaceFor(aClass) ? this : getParent().getNamespace(aClass);
     }
@@ -108,13 +117,22 @@ public class ObjectMeta<T> {
         return property.get(getInstance());
     }
 
-    public PropertyChangeTuple set(Property property, Object value) {
-        return property.set(getInstance(), value);
+    public PropertyChange set(Property property, Object value) {
+        PropertyChange change = property.set(getInstance(), value);
+        if(property.isKey() && change != null) {
+            if(change.oldVal != null) {
+                remove(classModel, (String) change.oldVal);
+            }
+            if(change.newVal != null) {
+                add(classModel, (String) change.newVal, instance);
+            }
+        }
+        return change;
     }
 
 
-    public ObjectMeta globalObjMetaLookup(Object value) {
-        return getClassModel().globalObjMetaLookup(value);
+    public ObjectMeta findOrCreateObjMeta(Object value) {
+        return getClassModel().globalObjMetaLookup(this, value);
     }
 
     public <E> Collection<E> getAll(final Class<E> containedClass) {

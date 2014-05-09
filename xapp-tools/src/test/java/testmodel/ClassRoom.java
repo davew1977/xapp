@@ -1,5 +1,6 @@
 package testmodel;
 
+import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.Reference;
@@ -10,6 +11,7 @@ import java.util.List;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
+@Container(listProperty = "Pupils")
 public class ClassRoom {
     private String name;
     private Teacher teacher;

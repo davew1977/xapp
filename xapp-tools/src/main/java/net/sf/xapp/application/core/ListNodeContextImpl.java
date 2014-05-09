@@ -23,6 +23,7 @@ import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,10 +34,10 @@ import java.util.List;
 public class ListNodeContextImpl implements ListNodeContext
 {
     private ContainerProperty m_listProperty;
-    private Object m_listOwner;
+    private ObjectMeta m_listOwner;
     private Node m_node;
 
-    public ListNodeContextImpl(ContainerProperty listProperty, Object listOwner)
+    public ListNodeContextImpl(ContainerProperty listProperty, ObjectMeta listOwner)
     {
         m_listProperty = listProperty;
         m_listOwner = listOwner;
@@ -44,7 +45,7 @@ public class ListNodeContextImpl implements ListNodeContext
 
     public Collection getCollection()
     {
-        return m_listProperty.getCollection(m_listOwner);
+        return m_listProperty.getCollection(m_listOwner.getInstance());
     }
 
     public List getList()
@@ -57,7 +58,7 @@ public class ListNodeContextImpl implements ListNodeContext
         return m_listProperty;
     }
 
-    public Object getListOwner()
+    public ObjectMeta getListOwner()
     {
         return m_listOwner;
     }
@@ -77,12 +78,12 @@ public class ListNodeContextImpl implements ListNodeContext
 
     @Override
     public boolean contains(ObjectMeta instance) {
-        return m_listProperty.contains(m_listOwner, instance);
+        return m_listProperty.contains(m_listOwner.getInstance(), instance);
     }
 
     @Override
     public void add(ObjectMeta instance) {
-        m_listProperty.add(m_listOwner, instance);
+        m_listProperty.add(m_listOwner.getInstance(), instance);
     }
 
     public List<Command> createCommands(Node node, CommandContext commandContext)
@@ -100,6 +101,9 @@ public class ListNodeContextImpl implements ListNodeContext
             {
                 List<ClassModel> validImplementations = getValidImplementations();
                 List<CreateCommand> createCommands = new ArrayList<CreateCommand>();
+                if(!Modifier.isAbstract(classModel.getContainedClass().getModifiers())) {
+                    createCommands.add(new CreateCommand(classModel));
+                }
                 for (ClassModel validImpl : validImplementations)
                 {
                     createCommands.add(new CreateCommand(validImpl));

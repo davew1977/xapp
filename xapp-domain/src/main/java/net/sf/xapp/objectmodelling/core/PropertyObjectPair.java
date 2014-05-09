@@ -44,16 +44,6 @@ public class PropertyObjectPair
         return m_target;
     }
 
-    public void set(Object value)
-    {
-        m_property.set(m_target, value);
-    }
-
-    public Object get()
-    {
-        return m_property.get(m_target);
-    }
-
 
     public String toString()
     {

@@ -17,7 +17,8 @@ import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.tree.Tree;
 
 import javax.swing.*;
@@ -96,7 +97,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
                     EditableContext editableContext = new SingleTargetEditableContext(objValue, SingleTargetEditableContext.Mode.EDIT);
                     Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
                     {
-                        public void save(java.util.List<PropertyChangeTuple> changes, boolean closing)
+                        public void save(java.util.List<PropertyChange> changes, boolean closing)
                         {
                             updateState();
                         }
@@ -161,7 +162,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
         EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChangeTuple> changes, boolean closing)
+            public void save(List<PropertyChange> changes, boolean closing)
             {
                 m_propertyValue = instance;
                 //special handling for domain tree roots

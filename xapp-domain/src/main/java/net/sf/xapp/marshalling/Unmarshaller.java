@@ -220,7 +220,7 @@ public class Unmarshaller<T>
             {
                 String nodeValue = node.getFirstChild().getNodeValue();
                 Enum enumValue = Enum.valueOf(propertyClass, nodeValue);
-                property.set(objectMeta.getInstance(), enumValue);
+                objectMeta.set(property, enumValue);
             }
             else if (property instanceof ContainerProperty)
             {
@@ -308,7 +308,7 @@ public class Unmarshaller<T>
                     listProperty.addToMapOrCollection(al, nextObject);
                 }
             }
-            property.set(parentOb.getInstance(), al);
+            parentOb.set(property, al);
         }
         else
         {
@@ -357,14 +357,14 @@ public class Unmarshaller<T>
         else if (includeResource != null)
         {
             newObj = getIncludedResource(includeResource, classModel, context);
-            PropertyObjectPair reference = new PropertyObjectPair(property, parentOb.getInstance());
+            PropertyObjectPair reference = new PropertyObjectPair(property, parentOb);
             m_classModel.getClassDatabase().getMarshallerContext().mapIncludedResourceURLByReference(reference, includeResource.getNodeValue());
         }
         else
         {
             newObj = getUnmarshaller(classModel).unmarshal((Element) node, context);
         }
-        property.set(parentOb.getInstance(), newObj);
+        parentOb.set(property, newObj);
 
         //if property is a tree
         if (property.isTree() && newObj != null)
@@ -497,7 +497,7 @@ public class Unmarshaller<T>
         ObjectMeta<E> objectMeta;
         ClassModel<E> classModel;
         List<SetRefTask> setRefTasks = new ArrayList<SetRefTask>();
-        List<Object> childObjectsToMap = new ArrayList<Object>();
+        //List<Object> childObjectsToMap = new ArrayList<Object>();
 
         public LocalContext(LocalContext parentContext, ClassModel<E> classModel) {
             this.parentContext = parentContext;
@@ -512,11 +512,11 @@ public class Unmarshaller<T>
             return setRefTasks;
         }
 
-        public void addChildObjectToMap(Object child) {
+        /*public void addChildObjectToMap(Object child) {
             childObjectsToMap.add(child);
-        }
+        }*/
 
-        public void mapAllByKey() {
+        /*public void mapAllByKey() {
             ClassDatabase cdb = classModel.getClassDatabase();
             for (Object o : childObjectsToMap) {
                 Class<?> aClass = o.getClass();
@@ -525,7 +525,7 @@ public class Unmarshaller<T>
                 objectMeta.add(aClass, key, o);
             }
             childObjectsToMap = null;
-        }
+        }*/
 
 
         public void setRefs() {
@@ -547,11 +547,11 @@ public class Unmarshaller<T>
         public  ObjectMeta<E> newInstance() {
             objectMeta = classModel.newInstance(parentObjMeta());
 
-            LocalContext namespace = getNamespace(classModel.getContainedClass());
-            if (classModel.hasKey()) {
+            /*if (classModel.hasKey()) {
+                LocalContext namespace = getNamespace(classModel.getContainedClass());
                 namespace.addChildObjectToMap(objectMeta.getInstance());
                 //todo maybe store a reference to its namespace
-            }
+            }*/
             return objectMeta;
         }
 
@@ -560,7 +560,7 @@ public class Unmarshaller<T>
         }
 
         public void postInit() {
-            mapAllByKey();
+            //mapAllByKey();
             setRefs();
         }
 
@@ -596,7 +596,7 @@ public class Unmarshaller<T>
 
         public void execute(ObjectMeta objectMeta)
         {
-            property.set(target.getInstance(), objectMeta.get(property.getPropertyClass(), m_reference));
+            target.set(property, objectMeta.get(property.getPropertyClass(), m_reference));
         }
 
         @Override
@@ -626,7 +626,7 @@ public class Unmarshaller<T>
                 Object ref = objectMeta.get(propertyClass, s);
                 m_listProperty.addToMapOrCollection(mapOrCollection, ref);
             }
-            m_listProperty.set(target.getInstance(), mapOrCollection);
+            target.set(m_listProperty, mapOrCollection);
         }
 
         @Override

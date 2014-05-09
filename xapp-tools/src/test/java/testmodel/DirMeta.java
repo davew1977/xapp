@@ -1,5 +1,6 @@
 package testmodel;
 
+import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.Namespace;
 
 import java.util.List;
@@ -12,8 +13,16 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Namespace(FileMeta.class)
+@Container(listProperty = "Files")
 public class DirMeta extends FileMeta {
     private List<FileMeta> files;
+
+    public DirMeta(String name) {
+        super(name);
+    }
+
+    public DirMeta() {
+    }
 
     public List<FileMeta> getFiles() {
         return files;

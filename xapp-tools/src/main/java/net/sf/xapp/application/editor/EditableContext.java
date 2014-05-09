@@ -15,7 +15,8 @@ package net.sf.xapp.application.editor;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public interface EditableContext
      * @param value
      * @return changes, or empty of no changes
      */
-    List<PropertyChangeTuple> setPropertyValue(Property property, Object value);
+    List<PropertyChange> setPropertyValue(Property property, Object value);
 
     /**
      * The target is the object owning the modified properties.

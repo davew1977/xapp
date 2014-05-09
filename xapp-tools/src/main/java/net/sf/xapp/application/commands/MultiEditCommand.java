@@ -18,7 +18,8 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class MultiEditCommand extends MultiNodeCommand
         EditableContext editableContext = new MultiTargetEditableContext(m_commonClassModel, targets);
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChangeTuple> changes, boolean closing)
+            public void save(List<PropertyChange> changes, boolean closing)
             {
                 if(changes.isEmpty())
                 {

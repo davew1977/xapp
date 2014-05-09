@@ -56,7 +56,6 @@ public class ChangeTypeCommand extends NodeCommand
                     for (Property property : properties)
                     {
                         newInstance.set(property, oldInstance.get(property));
-                        property.set(newInstance, property.get(oldInstance));
                     }
                     appContainer.getMainFrame().repaint();
 

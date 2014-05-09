@@ -96,7 +96,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T>
     }
 
     private T getObj(Object key) {
-        return key.equals(NULL) ? null : (T) m_parentObject.get(getClassModel().getContainedClass(), key.toString());
+        return key == null || key.equals(NULL) ? null : (T) m_parentObject.get(getClassModel().getContainedClass(), key.toString());
     }
 
     private ClassModel<T> getClassModel()

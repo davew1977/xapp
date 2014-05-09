@@ -19,7 +19,8 @@ import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.editor.EditorAdaptor;
 import net.sf.xapp.application.editor.widgets.ListReferenceGUI;
 import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class GetReferencesCommand extends NodeCommand
         final ListReferenceGUI gui = new ListReferenceGUI(node);
         gui.setGuiListener(new EditorAdaptor()
         {
-            public void save(List<PropertyChangeTuple> changes, boolean closing)
+            public void save(List<PropertyChange> changes, boolean closing)
             {
                 ListNodeContext context = node.getListNodeContext();
                 Collection list = context.getCollection();
@@ -43,10 +44,10 @@ public class GetReferencesCommand extends NodeCommand
                 list.clear();
                 list.addAll(gui.getData());
                 ListProperty listProperty = (ListProperty) context.getContainerProperty();
-                listProperty.set(context.getListOwner(), list);
+                context.getListOwner().set(listProperty, list);
                 Node updatedNode = node.getObjectNodeContext() != null ? node : node.getParent();
-                Map<String, PropertyChangeTuple> map = new HashMap<String, PropertyChangeTuple>();
-                map.put(listProperty.getName(), new PropertyChangeTuple(listProperty, updatedNode.wrappedObject(), before, list));
+                Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
+                map.put(listProperty.getName(), new PropertyChange(listProperty, updatedNode.wrappedObject(), before, list));
                 node.getApplicationContainer().getNodeBuilder().refresh(node);
                 if (!before.equals(list))
                 {

@@ -11,7 +11,7 @@ import java.util.Map;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-@Namespace(Person.class)
+@Namespace({Person.class, FileMeta.class})
 public class School {
     private String name;
     private Teacher headTeacher;

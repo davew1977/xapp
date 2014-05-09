@@ -1,6 +1,7 @@
 package testmodel;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.Namespace;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
 /**
@@ -8,10 +9,12 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * Created by dwebber
  */
 @ValidImplementations({Teacher.class, Pupil.class})
+@Namespace(FileMeta.class)
 public class Person {
-   private String username;
-   private String firstName;
-   private String secondName;
+    private String username;
+    private String firstName;
+    private String secondName;
+    private DirMeta homeDir = new DirMeta("/");
 
     @Key
     public String getUsername() {
@@ -36,6 +39,14 @@ public class Person {
 
     public void setSecondName(String secondName) {
         this.secondName = secondName;
+    }
+
+    public DirMeta getHomeDir() {
+        return homeDir;
+    }
+
+    public void setHomeDir(DirMeta homeDir) {
+        this.homeDir = homeDir;
     }
 
     @Override

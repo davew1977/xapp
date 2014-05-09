@@ -15,7 +15,8 @@ package net.sf.xapp.application.editor;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,13 +55,13 @@ public class SingleTargetEditableContext implements EditableContext
         return objMeta.get(property);
     }
 
-    public List<PropertyChangeTuple> setPropertyValue(Property property, Object value)
+    public List<PropertyChange> setPropertyValue(Property property, Object value)
     {
-        List<PropertyChangeTuple> changes = new ArrayList<PropertyChangeTuple>();
-        PropertyChangeTuple propertyChangeTuple = objMeta.set(property, value);
-        if (propertyChangeTuple != null)
+        List<PropertyChange> changes = new ArrayList<PropertyChange>();
+        PropertyChange propertyChange = objMeta.set(property, value);
+        if (propertyChange != null)
         {
-            changes.add(propertyChangeTuple);
+            changes.add(propertyChange);
         }
         return changes;
     }

@@ -18,7 +18,6 @@ import net.sf.xapp.application.api.ObjectNodeContext;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIST;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.PROPERTY;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
-import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.XappException;
@@ -65,7 +64,7 @@ public class NodeBuilder
         if (classModel.isContainer())
         {
             ListProperty listProp = containerListProperty;
-            Object listOwner = objMeta;
+            ObjectMeta listOwner = objMeta;
             listNodeContext = new ListNodeContextImpl(listProp, listOwner);
         }
         Node newNode = new NodeImpl(m_applicationContainer, domainTreeRoot, jtreeNode, listNodeContext, objectNodeContext);
@@ -129,10 +128,12 @@ public class NodeBuilder
             if (domainTreeRoot != null && propertySubTreeMeta != null)
                 throw new XappException("cannot have nested tree properties " + property);
 
-            Object value = property.get(objMeta);
-            if (value != null)
+            Object value = objMeta.get(property);
+            ObjectMeta propValueObjMeta = objMeta.findOrCreateObjMeta(value);
+            //todo register the obj if the obj meta is null
+            if (value != null && propValueObjMeta != null)
             {
-                createNode(property, objMeta.globalObjMetaLookup(value), newNode, propertySubTreeMeta != null ? (Tree) value : domainTreeRoot, PROPERTY);
+                createNode(property, propValueObjMeta, newNode, propertySubTreeMeta != null ? (Tree) value : domainTreeRoot, PROPERTY);
             }
         }
         return newNode;
@@ -140,7 +141,7 @@ public class NodeBuilder
 
     private Node createListNode(ContainerProperty listProperty, Node parentNode, int insertIndex)
     {
-        Object listOwner = parentNode.wrappedObject();
+        ObjectMeta listOwner = parentNode.objectMeta();
         Tree domainTreeRoot = parentNode.getDomainTreeRoot();
         DefaultMutableTreeNode parentJTreeNode = parentNode.getJtreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
@@ -160,7 +161,8 @@ public class NodeBuilder
         Collection list = listNodeContext.getCollection();
         for (Object o : list)
         {
-            createNode(null, parentNode.objectMeta().globalObjMetaLookup(o), parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
+            ObjectMeta parentObjMeta = parentNode.objectMeta();
+            createNode(null, parentObjMeta.findOrCreateObjMeta(o), parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
         }
     }
 

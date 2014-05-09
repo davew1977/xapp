@@ -17,7 +17,8 @@ import net.sf.xapp.application.core.NodeBuilder;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class CreateCommand extends NodeCommand
         EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE);
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChangeTuple> changes, boolean closeOnSave)
+            public void save(List<PropertyChange> changes, boolean closeOnSave)
             {
                 if (!listNodeContext.contains(objMeta))
                 {

@@ -12,21 +12,20 @@
  */
 package net.sf.xapp.objectmodelling.core;
 
-public class PropertyChangeTuple
+public class PropertyChange
 {
     public Property property;
     public Object target;
     public Object oldVal;
     public Object newVal;
 
-    public PropertyChangeTuple(Property property, Object target, Object oldVal, Object newVal)
+    public PropertyChange(Property property, Object target, Object oldVal, Object newVal)
     {
         this.property = property;
         this.target = target;
         this.oldVal = oldVal;
         this.newVal = newVal;
     }
-
 
     @Override
     public String toString()

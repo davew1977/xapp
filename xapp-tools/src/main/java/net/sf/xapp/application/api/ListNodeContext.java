@@ -40,7 +40,7 @@ public interface ListNodeContext extends NodeContext
      *
      * @return the actual object from the data model that has this list as a property
      */
-    Object getListOwner();
+    ObjectMeta getListOwner();
 
     /**
      * @return list of types that are allowed to be placed in the list

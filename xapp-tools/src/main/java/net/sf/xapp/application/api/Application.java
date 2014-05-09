@@ -14,7 +14,8 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.PropertyChangeTuple;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.List;
 import java.util.Map;
@@ -103,14 +104,14 @@ public interface Application<T>
      * @param objectNode
      * @param changes
      */
-    void nodeUpdated(Node objectNode, Map<String,PropertyChangeTuple> changes);
+    void nodeUpdated(Node objectNode, Map<String,PropertyChange> changes);
 
     /**
      * A notification that a set of objects in the underlying data model have been edited. The user hit the
      * save button in the "multi editor"
      * @param changes
      */
-    void nodesUpdated(List<PropertyChangeTuple> changes);
+    void nodesUpdated(List<PropertyChange> changes);
 
     /**
      * The node was moved up in its parent's child list

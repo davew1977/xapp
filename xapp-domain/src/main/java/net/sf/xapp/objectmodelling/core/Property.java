@@ -112,7 +112,7 @@ public class Property<T> implements Comparable
         }
     }
 
-    public PropertyChangeTuple set(T target, Object newVal)
+    public PropertyChange set(T target, Object newVal)
     {
         try
         {
@@ -124,8 +124,8 @@ public class Property<T> implements Comparable
                 {
                     listener.propertyChanged(this, target, oldVal, newVal);
                 }
-                return new PropertyChangeTuple(this, target, oldVal, newVal);
             }
+            return new PropertyChange(this, target, oldVal, newVal);
         }
         catch (Exception e)
         {
@@ -145,7 +145,7 @@ public class Property<T> implements Comparable
     {
         Object obj = convert(target, value);
 
-        set(target.getInstance(), obj);
+        target.set(this, obj);
     }
 
     public Object convert(ObjectMeta objectMeta, String value)
