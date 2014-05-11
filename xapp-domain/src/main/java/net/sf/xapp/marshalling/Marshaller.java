@@ -32,6 +32,8 @@ import net.sf.xapp.utils.StringUtils;
 import java.io.*;
 import java.util.*;
 
+import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
+
 public class Marshaller<T>
 {
     private Class m_class;
@@ -124,6 +126,7 @@ public class Marshaller<T>
     private void marshalInternal(XMLWriter xmlWriter, final T object, String rootNodeName, boolean includeTypeAttribute)
     {
         Class oClazz = object.getClass();
+        ObjectMeta objectMeta = m_classDatabase.getClassModel(oClazz).find(object);
         if (!oClazz.equals(m_class))
         {
             System.out.println("WARNING!: Wrong type for this marshaller. Object's class is " + object.getClass() + ", required class is " + m_class);
@@ -157,7 +160,9 @@ public class Marshaller<T>
                         //ok we just want to marshal the id of the object
                         //the id is the name
                         ClassModel classModel = m_classDatabase.getClassModel(property.getPropertyClass());
-                        writeAsAttr.add(new PropertyValuePair(property, classModel.getKey(value)));
+                        ObjectMeta refObjMeta = classModel.find(value);
+                        ObjectMeta namespace = objectMeta.getNamespace(classModel);
+                        writeAsAttr.add(new PropertyValuePair(property, fullPath(namespace, refObjMeta)));
                     }
                     else if (property.isPrimitiveBoolean() && !m_marshalFalseBooleanValues && !(Boolean) value)
                     {
@@ -266,6 +271,8 @@ public class Marshaller<T>
 
     private void writeNode(PropertyValuePair propertyValuePair, XMLWriter out, Object parentObject) throws IOException
     {
+        ObjectMeta objectMeta = m_classDatabase.getClassModel(parentObject.getClass()).find(parentObject);
+
         Object value = propertyValuePair.getValue();
         String tagName = propertyValuePair.getName();
         Property property = propertyValuePair.getProperty();
@@ -295,9 +302,10 @@ public class Marshaller<T>
                     else if (containerProperty.containsReferences())
                     {
                         List<ComparableNameValuePair> anAttr = new ArrayList<ComparableNameValuePair>();
-                        ClassModel classModel = m_classDatabase.getClassModel(aClass);
-                        final String name = classModel.getKey(listItem).toString();
-                        anAttr.add(new SimpleNameValuePair("ref", name));
+                        ClassModel classModel = containerProperty.getContainedTypeClassModel();
+                        ObjectMeta refObjMeta = classModel.find(listItem);
+                        ObjectMeta namespace = objectMeta.getNamespace(classModel);
+                        anAttr.add(new SimpleNameValuePair("ref", fullPath(namespace, refObjMeta)));
                         out.writeOpeningTag(aClass.getSimpleName(), anAttr, false);
                     }
                     else if (getResourceURL(listItem) != null)

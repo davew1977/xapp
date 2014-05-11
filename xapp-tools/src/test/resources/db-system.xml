@@ -12,24 +12,24 @@
       </ClassRooms>
       <People>
         <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis">
-          <HomeDir name="/"/>
+          <HomeDir name="docs"/>
         </Teacher>
         <Pupil firstName="Elias" secondName="Webber" username="eliasw">
-          <HomeDir name="/"/>
+          <HomeDir name="docs"/>
         </Pupil>
         <Pupil firstName="Alice" secondName="Webber" username="alicew">
-          <HomeDir name="/"/>
+          <HomeDir name="docs"/>
         </Pupil>
         <Teacher firstName="alison" secondName="carver" username="acarver">
-          <HomeDir name="/"/>
+          <HomeDir name="docs"/>
         </Teacher>
       </People>
     </School>
-    <School headTeacher="breid" name="Berwick School">
+    <School headTeacher="breid" name="Berwick School" schoolDescription="eliasw/docs/About Berwick School">
       <ClassRooms/>
       <People>
-        <Teacher firstName="beryl" secondName="reid" username="breid">
-          <HomeDir name="/">
+        <Teacher aboutMe="docs/profile" firstName="beryl" secondName="reid" username="breid">
+          <HomeDir name="docs">
             <Files>
               <DirMeta name="pictures">
                 <Files>
@@ -54,15 +54,41 @@ my hobbies are knitting and tennis]]></Text>
           </HomeDir>
         </Teacher>
         <Pupil firstName="elias" secondName="woojah" username="eliasw">
-          <HomeDir name="/"/>
+          <HomeDir name="docs">
+            <Files>
+              <TextFile name="About Berwick School">
+                <Text><![CDATA[this is a great little school!]]></Text>
+              </TextFile>
+              <DirMeta name="pictures">
+                <Files>
+                  <DirMeta name="home">
+                    <Files>
+                      <ImageFile name="mum.jpg"/>
+                      <ImageFile name="alice.jpg"/>
+                    </Files>
+                  </DirMeta>
+                  <DirMeta name="school">
+                    <Files>
+                      <ImageFile name="playground.jpg"/>
+                      <ImageFile name="Ms Reid.jpg"/>
+                    </Files>
+                  </DirMeta>
+                </Files>
+              </DirMeta>
+            </Files>
+          </HomeDir>
         </Pupil>
         <Pupil firstName="jerome" secondName="keeley" username="jkeeley">
-          <HomeDir name="/"/>
+          <HomeDir name="docs"/>
         </Pupil>
         <Pupil firstName="jamie" secondName="callum" username="jamiec">
-          <HomeDir name="/"/>
+          <HomeDir name="docs"/>
         </Pupil>
       </People>
+      <PicturesOfTheWeek>
+        <ImageFile ref="eliasw/docs/pictures/home/mum.jpg"/>
+        <ImageFile ref="eliasw/docs/pictures/school/Ms Reid.jpg"/>
+      </PicturesOfTheWeek>
     </School>
   </Schools>
 </System>

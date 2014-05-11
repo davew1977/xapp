@@ -124,8 +124,8 @@ public class Property<T> implements Comparable
                 {
                     listener.propertyChanged(this, target, oldVal, newVal);
                 }
+                return new PropertyChange(this, target, oldVal, newVal);
             }
-            return new PropertyChange(this, target, oldVal, newVal);
         }
         catch (Exception e)
         {

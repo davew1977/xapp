@@ -1,12 +1,12 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.Namespace;
-import net.sf.xapp.utils.CollectionsUtils;
-import net.sf.xapp.utils.Filter;
-import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
+
+import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
+import static net.sf.xapp.utils.ReflectionUtils.*;
 
 /**
  * additional data per instance
@@ -15,7 +15,8 @@ public class ObjectMeta<T> {
     private final ClassModel classModel;
     private final ObjectMeta<?> parent;
     private final T instance;
-    private final Map<Class, Map<String, Object>> lookupMap = new HashMap<Class, Map<String, Object>>();
+    private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
+    private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
     private String key;
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectMeta<?> parent) {
@@ -25,27 +26,57 @@ public class ObjectMeta<T> {
         Namespace namespace = classModel.getNamespace();
         if (namespace != null) {
             for (Class aClass : namespace.value()) {
-                lookupMap.put(aClass, new HashMap<String, Object>());
+                lookupMap.put(aClass, new HashMap<String, ObjectMeta>());
+                lookupSets.put(aClass, new HashSet<ObjectMeta>());
             }
         }
     }
 
-    public void add(ClassModel classModel, String key, Object obj) {
+    public void mapByKey(ClassModel classModel, String key, ObjectMeta obj) {
         assert isNamespaceFor(classModel);
-        findMatchingMap(classModel.getContainedClass()).put(key, obj);
+        findMatchingMap_internal(classModel.getContainedClass()).put(key, obj);
     }
 
-    public void remove(ClassModel aClass, String key) {
+    public void remove(ClassModel classModel, String key) {
         assert isNamespaceFor(classModel);
-        findMatchingMap(aClass.getContainedClass()).remove(key);
+        findMatchingMap_internal(classModel.getContainedClass()).remove(key);
+    }
+
+    public void storeRef(ObjectMeta objectMeta) {
+        assert isNamespaceFor(objectMeta.getClassModel());
+        findMatchingSet(objectMeta.classModel.getContainedClass()).add(objectMeta);
+    }
+
+    public void removeRef(ObjectMeta objectMeta) {
+        assert isNamespaceFor(objectMeta.getClassModel());
+        findMatchingSet(objectMeta.classModel.getContainedClass()).remove(objectMeta);
+
     }
 
     public <E> E get(Class<E> aClass, String key) {
-        E obj = findMatchingMap(aClass).get(key);
-        if (obj == null) {
-            throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), key, instance));
+        ObjectMeta<?> namespace = getNamespace(aClass);
+        return namespace.find(aClass, key);
+    }
+
+    private <E> E find(Class<E> aClass, String path) {
+        String[] p = path.split(NamespacePath.PATH_SEPARATOR, 2);
+        if(p.length==1) {
+            ObjectMeta<E> obj = findMatchingMap(aClass).get(p[0]);
+            if (obj == null) {
+                throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
+            }
+            return obj.getInstance();
+        } else {
+            //loop all lookup maps, path element must be unique across all classes otherwise more information would be
+            //required in the path
+            for (Map<String, ObjectMeta> objectMap : lookupMap.values()) {
+                ObjectMeta<E> objectMeta = objectMap.get(p[0]);
+                if(objectMeta != null) {
+                    return objectMeta.find(aClass, p[1]);
+                }
+            }
+            throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
         }
-        return obj;
     }
 
     public ObjectMeta<?> getNamespace(ClassModel classModel) {
@@ -61,7 +92,7 @@ public class ObjectMeta<T> {
         ObjectMeta objectMeta = this;
         while(objectMeta != null) {
             if (objectMeta.isNamespaceFor(aClass)) {
-                path.add(objectMeta);
+                path.addFirst(objectMeta);
             }
             objectMeta = objectMeta.getParent();
         }
@@ -80,33 +111,39 @@ public class ObjectMeta<T> {
         return getParent() == null;
     }
 
-    private <E> Map<String, E> findMatchingMap(Class<E> aClass) {
+    private Map<String, ObjectMeta> findMatchingMap(Class aClass) {
 
-        Map<String, E> internalMatch = findMatchingMap_internal(aClass);
+        Map<String, ObjectMeta> internalMatch = findMatchingMap_internal(aClass);
         if (internalMatch != null) {
             return internalMatch;
-        }
-        if (isRoot()) {
-            while (aClass.getSuperclass() != Object.class) {
-                aClass = (Class<E>) aClass.getSuperclass();
-            }
-            LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-            lookupMap.put(aClass, map);
-            return (Map<String, E>) map;
         }
         return parent.findMatchingMap(aClass);
     }
 
-    private <E> Map<String, E> findMatchingMap_internal(Class<E> aClass) {
-        if (lookupMap.containsKey(aClass)) {
-            return (Map<String, E>) lookupMap.get(aClass);
-        }
-        Map<String, Object> match = null;
-        for (Map.Entry<Class, Map<String, Object>> entry : lookupMap.entrySet()) {
+    private Map<String, ObjectMeta> findMatchingMap_internal(Class<?> aClass) {
+        for (Map.Entry<Class<?>, Map<String, ObjectMeta>> entry : lookupMap.entrySet()) {
             if (entry.getKey().isAssignableFrom(aClass)) {
-                assert match == null : this + " " + aClass;
-                return (Map<String, E>) entry.getValue();
+                return entry.getValue();
             }
+        }
+        if (isRoot()) { //root is the implicit namespace for everything
+            LinkedHashMap<String, ObjectMeta> map = new LinkedHashMap<String, ObjectMeta>();
+            lookupMap.put(mostGenericClass(aClass), map);
+            return map;
+        }
+        return null;
+    }
+
+    private Set<ObjectMeta> findMatchingSet(Class aClass) {
+        for (Map.Entry<Class<?>, Set<ObjectMeta>> entry : lookupSets.entrySet()) {
+            if (entry.getKey().isAssignableFrom(aClass)) {
+                return entry.getValue();
+            }
+        }
+        if (isRoot()) { //root is the implicit namespace for everything
+            Set<ObjectMeta> map = new LinkedHashSet<ObjectMeta>();
+            lookupSets.put(mostGenericClass(aClass), map);
+            return map;
         }
         return null;
     }
@@ -116,7 +153,7 @@ public class ObjectMeta<T> {
      * optionally initialize the instance with this object meta
      */
     public void initInstance() {
-        ReflectionUtils.tryCall(instance, "setObjectMeta", this);
+        tryCall(instance, "setObjectMeta", this);
     }
 
     public boolean isNamespaceFor(ClassModel classModel) {
@@ -143,21 +180,31 @@ public class ObjectMeta<T> {
             this.key = newVal;
 
             NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
-            for (ObjectMeta namespace : namespacePath) {
-                if (oldVal != null) {
-                    namespace.remove(classModel, oldVal);
-                    oldVal = namespace.getKey() + "." +oldVal;
-                }
-                if (newVal != null) {
-                    namespace.add(classModel, newVal, instance);
-                    newVal = namespace.getKey() + "." + newVal;
+            //if last element is this object, then remove it
+            if(namespacePath.getLast() == this) {
+                namespacePath.removeLast();
+            }
+            ObjectMeta closestNamespace = namespacePath.removeLast();
+            if (oldVal != null) {
+                closestNamespace.remove(classModel, oldVal);
+                if(newVal == null) { //like deleting object
+                    for (ObjectMeta objectMeta : namespacePath) {
+                        objectMeta.removeRef(this);
+                    }
                 }
             }
-
+            if (newVal != null) {
+                closestNamespace.mapByKey(classModel, newVal, this);
+                for (ObjectMeta objectMeta : namespacePath) {
+                    objectMeta.storeRef(this);
+                }
+            }
         }
         return change;
     }
-
+    public NamespacePath getPath() {
+        return namespacePath(classModel.getContainedClass());
+    }
     public String getKey() {
         return key;
     }
@@ -166,14 +213,25 @@ public class ObjectMeta<T> {
         return getClassModel().globalObjMetaLookup(this, value);
     }
 
-    public <E> Map<String, E> getAll(final Class<E> containedClass) {
-        Map<String, E> matchingMap = findMatchingMap(containedClass);
-        LinkedHashMap<String, E> result = new LinkedHashMap<String, E>();
-        for (Map.Entry<String, E> e : matchingMap.entrySet()) {
-            if(containedClass.isAssignableFrom(e.getValue().getClass())) {
-                result.put(e.getKey(), e.getValue());
+    public Map<String, Object> getAll(final Class<?> containedClass) {
+        Map<String, ObjectMeta> matchingMap = findMatchingMap(containedClass);
+        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
+        for (Map.Entry<String, ObjectMeta> e : matchingMap.entrySet()) {
+            if(containedClass.isAssignableFrom(e.getValue().getClassModel().getContainedClass())) {
+                result.put(e.getKey(), e.getValue().getInstance());
+            }
+        }
+        Set<ObjectMeta> objectMetas = findMatchingSet(containedClass);
+        for (ObjectMeta objectMeta : objectMetas) {
+            if(containedClass.isAssignableFrom(objectMeta.getClassModel().getContainedClass())) {
+                result.put(fullPath(this, objectMeta), objectMeta.getInstance());
             }
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return key;
     }
 }

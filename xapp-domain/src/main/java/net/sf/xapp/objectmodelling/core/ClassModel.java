@@ -28,6 +28,7 @@ import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.XappException;
 import net.sf.xapp.utils.FileUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -120,7 +121,15 @@ public class ClassModel<T> {
     }
 
     public Namespace getNamespace() {
-        return namespace;
+        Class aClass = m_class;
+        while(aClass != Object.class) {
+            Namespace namespace = (Namespace) aClass.getAnnotation(Namespace.class);
+            if(namespace != null) {
+                return namespace;
+            }
+            aClass = aClass.getSuperclass();
+        }
+        return null;
     }
 
     private void addProperties(List<? extends Property> properties) {

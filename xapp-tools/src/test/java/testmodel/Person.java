@@ -16,7 +16,7 @@ public class Person {
     private String firstName;
     private String secondName;
     private TextFile aboutMe;
-    private DirMeta homeDir = new DirMeta("/");
+    private DirMeta homeDir = new DirMeta("docs");
 
     @Key
     public String getUsername() {

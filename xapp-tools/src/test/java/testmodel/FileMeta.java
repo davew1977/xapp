@@ -10,7 +10,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * Time: 7:24 AM
  * To change this template use File | Settings | File Templates.
  */
-@ValidImplementations({DirMeta.class, TextFile.class})
+@ValidImplementations({DirMeta.class, TextFile.class, ImageFile.class})
 public class FileMeta {
     private String name;
 

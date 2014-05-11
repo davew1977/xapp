@@ -145,4 +145,11 @@ public class ReflectionUtils
             throw new RuntimeException(e);
         }
     }
+
+    public static Class mostGenericClass(Class aClass) {
+        while (aClass.getSuperclass() != Object.class) {
+            aClass = aClass.getSuperclass();
+        }
+        return aClass;
+    }
 }
