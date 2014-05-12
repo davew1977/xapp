@@ -65,6 +65,7 @@ my hobbies are knitting and tennis]]></Text>
                     <Files>
                       <ImageFile name="mum.jpg"/>
                       <ImageFile name="alice.jpg"/>
+                      <DirMeta name="2013"/>
                     </Files>
                   </DirMeta>
                   <DirMeta name="school">
