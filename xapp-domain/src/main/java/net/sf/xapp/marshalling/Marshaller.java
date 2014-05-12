@@ -388,7 +388,9 @@ public class Marshaller<T>
 
     public static String toXML(Object obj)
     {
-        return new Marshaller(obj.getClass()).toXMLString(obj);
+        Marshaller marshaller = new Marshaller(obj.getClass());
+        marshaller.getClassDatabase().getRootClassModel().registerInstance(obj);
+        return marshaller.toXMLString(obj);
     }
 
     public static <E> String toXML(E obj, InspectionType inspectionType)

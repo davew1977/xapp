@@ -28,7 +28,6 @@ import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.XappException;
 import net.sf.xapp.utils.FileUtils;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -48,7 +47,7 @@ public class ClassModel<T> {
     private final List<ContainerProperty> mapProperties;
     private Class<T> m_class;
     private ClassDatabase m_classDatabase;
-    private List<Property> m_properties;
+    private List<Property> properties;
     private Map<String, Property> m_propertyMap;
     private Map<String, Property> m_propertyMapByXMLMapping;
     private List<ListProperty> m_listProperties;
@@ -85,7 +84,7 @@ public class ClassModel<T> {
 
         m_postInitMethod = postInitMethod;
         m_classDatabase = classDatabase;
-        m_properties = properties;
+        this.properties = properties;
         m_listProperties = listProperties;
         this.mapProperties = mapProperties;
         m_validImplementations = validImplementations;
@@ -161,12 +160,12 @@ public class ClassModel<T> {
     }
 
     public List<Property> getProperties() {
-        return m_properties;
+        return properties;
     }
 
     public List<Property> getNonTransientProperties() {
         List<Property> list = new ArrayList<Property>();
-        for (Property property : m_properties) {
+        for (Property property : properties) {
             if (!property.isTransient()) {
                 list.add(property);
             }
@@ -240,7 +239,7 @@ public class ClassModel<T> {
     }
 
     public int getNoOfProperties() {
-        return m_listProperties.size() + m_properties.size();
+        return m_listProperties.size() + properties.size();
     }
 
     /**
@@ -293,7 +292,7 @@ public class ClassModel<T> {
      * @param instance
      */
     public void delete(T instance) {
-        for (Property property : m_properties) {
+        for (Property property : properties) {
             if (property.isTransient()) continue;
             if (property.isImmutable()) continue;
             if (property.isReference()) continue;
@@ -400,7 +399,7 @@ public class ClassModel<T> {
 
         boolean patternMatches = matchPattern == null;
         boolean propertiesMatch = propMatch == null;
-        for (Property property : m_properties) {
+        for (Property property : properties) {
             if (property.isTransient()) continue;
             if (property.isReference()) continue;
             Object propValue = property.get(instance);
@@ -470,7 +469,7 @@ public class ClassModel<T> {
                 }
             }
         }
-        for (Property property : m_properties) {
+        for (Property property : properties) {
             Object o = property.get(instance);
             if (o == null) continue;
             if (property.getPropertyClass().isAssignableFrom(type)) {
@@ -492,7 +491,7 @@ public class ClassModel<T> {
      */
     public Set<Property> filterProperties(String regexp) {
         Set<Property> matches = new HashSet<Property>();
-        for (Property property : m_properties) {
+        for (Property property : properties) {
             if (property.getName().toLowerCase().matches(regexp.toLowerCase())) matches.add(property);
         }
         return matches;
@@ -716,7 +715,7 @@ public class ClassModel<T> {
         }
         DiffSet diffSet = new DiffSet();
         //go through properties recording the diffs
-        for (Property property : otherClassModel.m_properties) {
+        for (Property property : otherClassModel.properties) {
             if (property.isTransient()) continue;
             //get the property values
             Object thisValue = property.get(o1);
@@ -862,6 +861,32 @@ public class ClassModel<T> {
         }
         return objectMeta;
     }
+
+    public ObjectMeta<T> registerInstance(T o1) {
+        assert find(o1) == null;
+        ObjectMeta<T> objectMeta = registerInstance(null, o1);
+        for (Property property : properties) {
+            if(property.isComplexNonReference()) {
+                Object value = objectMeta.get(property);
+                if(value != null) {
+                    property.getPropertyClassModel().registerInstance(objectMeta, value);
+                }
+            }
+        }
+        List<ContainerProperty> containerProperties = new ArrayList<ContainerProperty>(m_listProperties);
+        containerProperties.addAll(mapProperties);
+        for (ContainerProperty containerProperty : containerProperties) {
+
+            if(!containerProperty.containsReferences() && containerProperty.getContainedTypeClassModel().hasKey()) {
+                Collection col = containerProperty.getCollection(o1);
+                for (Object o : col) {
+                    containerProperty.getContainedTypeClassModel().registerInstance(objectMeta, o);
+                }
+            }
+        }
+        return objectMeta;
+    }
+
     public ObjectMeta<T> find(T o1) {
         //todo try retrieve obj meta from object itself, otherwise resort to search
         //todo map objects without equals/hashcode methods
@@ -883,15 +908,16 @@ public class ClassModel<T> {
      * @param obj
      * @param diffSet        //todo fix
      */
-    public void merge(Object obj, DiffSet diffSet) {
-        /*if (obj.getClass() != m_class) throw new XappException("Object " + obj + " not of this class. " + this);
+    public void merge(T obj, DiffSet diffSet) {
+        if (obj.getClass() != m_class) throw new XappException("Object " + obj + " not of this class. " + this);
+        ObjectMeta objectMeta = find(obj);
         //handle added nodes first in case there are other diffs refering to the new node
         for (NewNodeDiff newNodeDiff : diffSet.getNewNodeDiffs()) {
             //find object with the list
             String containerKey = newNodeDiff.getContainerKey();
             ClassModel containerCM = m_classDatabase.getClassModelBySimpleName(newNodeDiff.getContainerClass());
             ClassModel nodeCM = m_classDatabase.getClassModelBySimpleName(newNodeDiff.getNodeClass());
-            Object target = containerKey == null ? obj : containerCM.getInstance(containerKey);
+            Object target = containerKey == null ? obj : objectMeta.get(containerCM.getContainedClass(), containerKey);
             ListProperty listProperty = (ListProperty) containerCM.getProperty(newNodeDiff.getListProperty());
             List list = listProperty.castToList(target);
             if (list == null) {
@@ -902,6 +928,8 @@ public class ClassModel<T> {
             String xml = newNodeDiff.getNewValue();
             xml = xml.replace(NESTED_CDATA_START, CDATA_START);
             xml = xml.replace(NESTED_CDATA_END, CDATA_END);
+            //TODO unmarshalling a new node like this will now require passing some context to the unmarshaller
+            //TODO otherwise the creation of the objmeta will fail
             Object newNode = un.unmarshalString(xml, Charset.forName("UTF-8"));
             list.add(newNodeDiff.getOriginalIndex(), newNode);
         }
@@ -909,11 +937,11 @@ public class ClassModel<T> {
             //find object to change
             String key = propertyDiff.getKey();
             ClassModel classModel = m_classDatabase.getClassModelBySimpleName(propertyDiff.getClazz());
-            Object target = null;
+            ObjectMeta target = null;
             if (key == null) {
-                target = obj;
+                target = objectMeta;
             } else {
-                target = m_classDatabase.getClassModelContext().resolveInstance(classModel, key);
+                target = objectMeta.getObjMeta(classModel.getContainedClass(), key);
             }
             if (target != null) {
                 Property property = classModel.getProperty(propertyDiff.getProperty());
@@ -926,26 +954,26 @@ public class ClassModel<T> {
         for (ComplexPropertyDiff complexPropertyDiff : diffSet.getComplexPropertyDiffs()) {
             String key = complexPropertyDiff.getKey();
             ClassModel classModel = m_classDatabase.getClassModelBySimpleName(complexPropertyDiff.getClazz());
-            Object target = null;
+            ObjectMeta target = null;
             if (key == null) {
-                target = obj;
+                target = objectMeta;
             } else {
-                target = m_classDatabase.getClassModelContext().resolveInstance(classModel, key);
+                target = objectMeta.getObjMeta(classModel.getContainedClass(), key);
             }
             Property property = classModel.getProperty(complexPropertyDiff.getProperty());
             if (complexPropertyDiff.isRemoved()) {
-                property.set(target, null);
+                target.set(property, null);
             }
             //added
             else if (complexPropertyDiff.getNewValue() != null) {
                 String xml = complexPropertyDiff.getNewValue();
                 ClassModel newNodeCM = m_classDatabase.getClassModelByName(complexPropertyDiff.getPropertyClass());
                 Unmarshaller unmarshaller = new Unmarshaller(newNodeCM);
-                property.set(target, unmarshaller.unmarshalString(xml, Charset.forName("UTF-8")));
+                target.set(property, unmarshaller.unmarshalString(xml, Charset.forName("UTF-8")));
             }
             //changed
             else {
-                Object o = property.get(target);
+                Object o = target.get(property);
                 ClassModel nodeCM = m_classDatabase.getClassModelBySimpleName(complexPropertyDiff.getPropertyClass());
                 nodeCM.merge(o, complexPropertyDiff.getDiffSet());
             }
@@ -954,12 +982,12 @@ public class ClassModel<T> {
         for (ReferenceListDiff referenceListDiff : diffSet.getReferenceListDiffs()) {
             String containerKey = referenceListDiff.getContainerKey();
             ClassModel containerCM = m_classDatabase.getClassModelBySimpleName(referenceListDiff.getContainerClass());
-            Object target = containerKey == null ? obj : containerCM.getInstance(containerKey);
+            ObjectMeta target = containerKey == null ? objectMeta : objectMeta.getObjMeta(containerCM.getContainedClass(), containerKey);
             ListProperty listProperty = (ListProperty) containerCM.getProperty(referenceListDiff.getListProperty());
             List list = listProperty.castToList(target);
             if (list == null) {
                 list = new ArrayList();
-                listProperty.set(target, list);//must set the list ref back in the merged object
+                target.set(listProperty, list);
             }
             List<String> removedKeys = referenceListDiff.getRemovedNodes();
             List<String> addedKeys = referenceListDiff.getAddedNodes();
@@ -973,7 +1001,7 @@ public class ClassModel<T> {
             }
             for (int i = 0; i < addedKeys.size(); i++) {
                 String addedKey = addedKeys.get(i);
-                Object addedObj = containedTypeClassModel.getInstance(addedKey);
+                Object addedObj = objectMeta.get(containedTypeClassModel.getContainedClass(), addedKey);
                 int index = addedNodeIndexes != null ? addedNodeIndexes.get(i) : Integer.MAX_VALUE;
                 if (index <= list.size()) {
                     list.add(index, addedObj);
@@ -989,9 +1017,9 @@ public class ClassModel<T> {
             String containerKey = removedNodeDiff.getContainerKey();
             ClassModel containerCM = m_classDatabase.getClassModelBySimpleName(removedNodeDiff.getContainerClass());
             ClassModel nodeCM = m_classDatabase.getClassModelBySimpleName(removedNodeDiff.getNodeClass());
-            Object target = containerKey == null ? obj : containerCM.getInstance(containerKey);
+            ObjectMeta target = containerKey == null ? objectMeta : objectMeta.getObjMeta(containerCM.getContainedClass(), containerKey);
             ListProperty listProperty = (ListProperty) containerCM.getProperty(removedNodeDiff.getListProperty());
-            List list = listProperty.castToList(target);
+            List list = listProperty.castToList(target.getInstance());
             int index = 0;
             for (int i = 0; i < list.size(); i++) {
                 Object o = list.get(i);
@@ -1002,6 +1030,6 @@ public class ClassModel<T> {
                 }
             }
             list.remove(index);
-        }*/
+        }
     }
 }

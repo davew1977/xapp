@@ -71,6 +71,7 @@ public class ContainerProperty extends Property
         }
         return map;
     }
+
     public Object createCollection() {
         return new LinkedHashMap();
     }

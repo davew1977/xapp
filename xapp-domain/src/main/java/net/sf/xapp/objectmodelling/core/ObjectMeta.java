@@ -23,7 +23,7 @@ public class ObjectMeta<T> {
         this.classModel = classModel;
         this.instance = obj;
         this.parent = parent;
-        Namespace namespace = classModel.getNamespace();
+        Namespace namespace = classModel !=null ? classModel.getNamespace() : null;
         if (namespace != null) {
             for (Class aClass : namespace.value()) {
                 lookupMap.put(aClass, new HashMap<String, ObjectMeta>());
@@ -54,18 +54,22 @@ public class ObjectMeta<T> {
     }
 
     public <E> E get(Class<E> aClass, String key) {
+        return getObjMeta(aClass, key).getInstance();
+    }
+
+    public <E> ObjectMeta<E> getObjMeta(Class<E> aClass, String key) {
         ObjectMeta<?> namespace = getNamespace(aClass);
         return namespace.find(aClass, key);
     }
 
-    private <E> E find(Class<E> aClass, String path) {
+    private <E> ObjectMeta<E> find(Class<E> aClass, String path) {
         String[] p = path.split(NamespacePath.PATH_SEPARATOR, 2);
         if(p.length==1) {
             ObjectMeta<E> obj = findMatchingMap(aClass).get(p[0]);
             if (obj == null) {
                 throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
             }
-            return obj.getInstance();
+            return obj;
         } else {
             //loop all lookup maps, path element must be unique across all classes otherwise more information would be
             //required in the path

@@ -7,6 +7,7 @@ package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.Node;
 import junit.framework.TestCase;
+import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;

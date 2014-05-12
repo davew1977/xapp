@@ -55,7 +55,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      * this flag is false until the root unmarshaller has finished unmarshalling the root document
      */
     private boolean m_initializing;
-    private ObjectMeta<T> m_rootInstance;
+    private ObjectMeta<T> rootObjMeta;
     private InspectionType m_inspectionType;
 
     public ClassModelManager(Class<T> rootType)
@@ -111,9 +111,14 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return getClassModel(m_rootType);
     }
 
-    public ObjectMeta<T> getRootInstance()
+    public T getRootInstance()
     {
-        return m_rootInstance;
+        return rootObjMeta.getInstance();
+    }
+
+    @Override
+    public ObjectMeta<T> getRootObjMeta() {
+        return rootObjMeta;
     }
 
     /**
@@ -279,7 +284,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     public void setInitialized(ObjectMeta<T> obj)
     {
         m_initializing = false;
-        m_rootInstance = obj;
+        rootObjMeta = obj;
     }
 
     /**
@@ -367,12 +372,12 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public <E> E getInstanceNoCheck(Class<E> aClass, String key)
     {
-        return m_rootInstance.get(aClass, key);
+        return rootObjMeta.get(aClass, key);
     }
 
     public <E> E getInstance(Class<E> aClass, String key)
     {
-        return m_rootInstance.get(aClass, key);  //todo implement version that don't throw exception
+        return rootObjMeta.get(aClass, key);  //todo implement version that don't throw exception
     }
 
     public InspectionType getInspectionType()

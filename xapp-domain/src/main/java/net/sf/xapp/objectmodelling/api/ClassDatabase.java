@@ -31,7 +31,8 @@ public interface ClassDatabase<T>
     Unmarshaller<T> getRootUnmarshaller();
     Marshaller<T> getRootMarshaller();
     ClassModel<T> getRootClassModel();
-    ObjectMeta<T> getRootInstance();
+    T getRootInstance();
+    ObjectMeta<T> getRootObjMeta();
 
     <E> ClassModel<E> getClassModel(Class<E> aClass);
 

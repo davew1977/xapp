@@ -493,4 +493,8 @@ public class Property<T> implements Comparable
     public Validate getValidate() {
         return m_propertyAccess.getAnnotation(Validate.class);
     }
+
+    public boolean isComplexNonReference() {
+        return !(isReference() || isStringPrimitiveOrEnum() || isTransient());
+    }
 }
