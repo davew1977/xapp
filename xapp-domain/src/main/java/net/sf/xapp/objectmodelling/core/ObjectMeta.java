@@ -157,7 +157,7 @@ public class ObjectMeta<T> {
     public void initInstance() {
         String key = (String) get(classModel.getKeyProperty());
         if (key != null) {
-           initKey(null, key);
+           updateMetaHierarchy(null, key);
         }
         tryCall(instance, "setObjectMeta", this);
     }
@@ -183,13 +183,13 @@ public class ObjectMeta<T> {
         if (property.isKey() && change != null) {
             String oldVal = (String) change.oldVal;
             String newVal = (String) change.newVal;
-            initKey(oldVal, newVal);
+            updateMetaHierarchy(oldVal, newVal);
         }
         return change;
     }
 
-    private void initKey(String oldVal, String newVal) {
-        this.key = newVal;
+    public void updateMetaHierarchy(String oldKeyVal, String newKeyVal) {
+        this.key = newKeyVal;
 
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
         //if last element is this object, then remove it
@@ -197,16 +197,16 @@ public class ObjectMeta<T> {
             namespacePath.removeLast();
         }
         ObjectMeta closestNamespace = namespacePath.removeLast();
-        if (oldVal != null) {
-            closestNamespace.remove(classModel, oldVal);
-            if(newVal == null) { //like deleting object
+        if (oldKeyVal != null) {
+            closestNamespace.remove(classModel, oldKeyVal);
+            if(newKeyVal == null) { //like deleting object
                 for (ObjectMeta objectMeta : namespacePath) {
                     objectMeta.removeRef(this);
                 }
             }
         }
-        if (newVal != null) {
-            closestNamespace.mapByKey(classModel, newVal, this);
+        if (newKeyVal != null) {
+            closestNamespace.mapByKey(classModel, newKeyVal, this);
             for (ObjectMeta objectMeta : namespacePath) {
                 objectMeta.storeRef(this);
             }

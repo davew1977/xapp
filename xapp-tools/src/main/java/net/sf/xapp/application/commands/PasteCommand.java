@@ -74,7 +74,7 @@ public class PasteCommand extends NodeCommand
                 }
 
                 //register so we get new object meta
-                newObjMeta = classModel.registerInstance(node.parentObjectNode().objectMeta(), clipboardObject);
+                newObjMeta = classModel.registerInstance(node.objectMeta(), clipboardObject);
                 applicationContainer.getApplication().nodeAboutToBeAdded(
                         node.getListNodeContext().getContainerProperty(),
                         node.getListNodeContext().getListOwner(), clipboardObject);

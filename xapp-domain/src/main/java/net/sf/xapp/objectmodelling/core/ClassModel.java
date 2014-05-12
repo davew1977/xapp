@@ -279,9 +279,10 @@ public class ClassModel<T> {
         ObjectMeta<T> objectMeta = find(instance);
         instances.remove(objectMeta);
         if (keyProperty != null) {
-            PropertyChange change = objectMeta.set(keyProperty, null);
-            Object key = change.oldVal;
-            m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(getSimpleName(), key != null ? String.valueOf(key) : null, isTrackNewAndRemoved());
+            String oldKeyVal = (String) objectMeta.get(keyProperty);
+            objectMeta.updateMetaHierarchy(oldKeyVal, null);
+            m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(
+                    getSimpleName(), oldKeyVal != null ? String.valueOf(oldKeyVal) : null, isTrackNewAndRemoved());
         }
     }
 

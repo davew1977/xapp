@@ -63,9 +63,12 @@ my hobbies are knitting and tennis]]></Text>
                 <Files>
                   <DirMeta name="home">
                     <Files>
-                      <ImageFile name="mum.jpg"/>
                       <ImageFile name="alice.jpg"/>
-                      <DirMeta name="2013"/>
+                      <DirMeta name="2013">
+                        <Files>
+                          <ImageFile name="mum.jpg"/>
+                        </Files>
+                      </DirMeta>
                     </Files>
                   </DirMeta>
                   <DirMeta name="school">
@@ -87,7 +90,7 @@ my hobbies are knitting and tennis]]></Text>
         </Pupil>
       </People>
       <PicturesOfTheWeek>
-        <ImageFile ref="eliasw/docs/pictures/home/mum.jpg"/>
+        <ImageFile ref="eliasw/docs/pictures/home/2013/mum.jpg"/>
         <ImageFile ref="eliasw/docs/pictures/school/Ms Reid.jpg"/>
       </PicturesOfTheWeek>
     </School>
