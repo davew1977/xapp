@@ -18,6 +18,7 @@ import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.api.ObjectNodeContext;
 import net.sf.xapp.application.core.Clipboard;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,39 +48,44 @@ public class PasteCommand extends NodeCommand
         Clipboard clipboard = applicationContainer.getClipboard();
         List<Object> list = clipboard.getClipboardObjects();
         List<Object> clones = new ArrayList<Object>();
-        for (Object clipboardObject : list)
-        {
+        for (Object clipboardObject : list) {
             ClassModel classModel = applicationContainer.getGuiContext().getClassDatabase().getClassModel(clipboardObject.getClass());
 
+            ObjectMeta newObjMeta = null;
             if (!node.containsReferences()) //don't remove or clone if we're only pasting references
             {
                 //remove if action was CUT
-                if (clipboard.getAction() == Clipboard.Action.CUT)
-                {
+                if (clipboard.getAction() == Clipboard.Action.CUT) {
                     //remove from data model
                     Node clipboardNode = applicationContainer.getNode(clipboardObject);
                     Node parentNode = clipboardNode.getParent();
                     parentNode.getListNodeContext().getCollection().remove(clipboardObject);
+                    //remove from object meta model (dispose, not delete because we don't want to delete any child objects
+                    classModel.dispose(clipboardObject);
                     //remove the node
                     applicationContainer.removeNode(clipboardNode);
 
                     applicationContainer.getApplication().nodeRemoved(clipboardNode, true);
                 }
                 //if cloneable then create new clone for clipboard
-                if (clipboardObject instanceof Cloneable)
-                {
+                if (clipboardObject instanceof Cloneable) {
                     Object clone = classModel.createClone(clipboardObject);
                     clones.add(clone);
                 }
+
+                //register so we get new object meta
+                newObjMeta = classModel.registerInstance(node.parentObjectNode().objectMeta(), clipboardObject);
                 applicationContainer.getApplication().nodeAboutToBeAdded(
                         node.getListNodeContext().getContainerProperty(),
                         node.getListNodeContext().getListOwner(), clipboardObject);
+            } else {
+                newObjMeta = classModel.find(clipboardObject);
             }
             //add object to data model
             node.getListNodeContext().getCollection().add(clipboardObject);
             //create new node
             Node newNode = applicationContainer.getNodeBuilder().createNode(null,
-                    classModel.find(clipboardObject), node, node.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
+                    newObjMeta, node, node.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
 
             applicationContainer.getMainPanel().repaint();
             node.updateDomainTreeRoot();

@@ -151,8 +151,14 @@ public class ObjectMeta<T> {
 
     /**
      * optionally initialize the instance with this object meta
+     * if the object already has primary key then we need to update
+     * parent object metas
      */
     public void initInstance() {
+        String key = (String) get(classModel.getKeyProperty());
+        if (key != null) {
+           initKey(null, key);
+        }
         tryCall(instance, "setObjectMeta", this);
     }
 
@@ -169,7 +175,7 @@ public class ObjectMeta<T> {
     }
 
     public Object get(Property property) {
-        return property.get(getInstance());
+        return property != null ? property.get(getInstance()) : null;
     }
 
     public PropertyChange set(Property property, Object value) {
@@ -177,31 +183,36 @@ public class ObjectMeta<T> {
         if (property.isKey() && change != null) {
             String oldVal = (String) change.oldVal;
             String newVal = (String) change.newVal;
-            this.key = newVal;
-
-            NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
-            //if last element is this object, then remove it
-            if(namespacePath.getLast() == this) {
-                namespacePath.removeLast();
-            }
-            ObjectMeta closestNamespace = namespacePath.removeLast();
-            if (oldVal != null) {
-                closestNamespace.remove(classModel, oldVal);
-                if(newVal == null) { //like deleting object
-                    for (ObjectMeta objectMeta : namespacePath) {
-                        objectMeta.removeRef(this);
-                    }
-                }
-            }
-            if (newVal != null) {
-                closestNamespace.mapByKey(classModel, newVal, this);
-                for (ObjectMeta objectMeta : namespacePath) {
-                    objectMeta.storeRef(this);
-                }
-            }
+            initKey(oldVal, newVal);
         }
         return change;
     }
+
+    private void initKey(String oldVal, String newVal) {
+        this.key = newVal;
+
+        NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
+        //if last element is this object, then remove it
+        if(namespacePath.getLast() == this) {
+            namespacePath.removeLast();
+        }
+        ObjectMeta closestNamespace = namespacePath.removeLast();
+        if (oldVal != null) {
+            closestNamespace.remove(classModel, oldVal);
+            if(newVal == null) { //like deleting object
+                for (ObjectMeta objectMeta : namespacePath) {
+                    objectMeta.removeRef(this);
+                }
+            }
+        }
+        if (newVal != null) {
+            closestNamespace.mapByKey(classModel, newVal, this);
+            for (ObjectMeta objectMeta : namespacePath) {
+                objectMeta.storeRef(this);
+            }
+        }
+    }
+
     public NamespacePath getPath() {
         return namespacePath(classModel.getContainedClass());
     }
