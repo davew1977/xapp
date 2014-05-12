@@ -145,11 +145,11 @@ public class ObjectMeta<T> {
             }
         }
         if (isRoot()) { //root is the implicit namespace for everything
-            Set<ObjectMeta> map = new LinkedHashSet<ObjectMeta>();
-            lookupSets.put(mostGenericClass(aClass), map);
-            return map;
+            Set<ObjectMeta> set = new LinkedHashSet<ObjectMeta>();
+            lookupSets.put(mostGenericClass(aClass), set);
+            return set;
         }
-        return null;
+        return new LinkedHashSet<ObjectMeta>();
     }
 
 

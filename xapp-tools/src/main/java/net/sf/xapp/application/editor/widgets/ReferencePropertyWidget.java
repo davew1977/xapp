@@ -170,7 +170,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
         Vector<String> stringList = new Vector<String>(keys);
         boolean sorted = preSort(stringList);
 
-        if (!sorted) {
+        if (!sorted && Comparable.class.isAssignableFrom(getClassModel().getContainedClass())) {
             Collections.sort(stringList);
         }
 
