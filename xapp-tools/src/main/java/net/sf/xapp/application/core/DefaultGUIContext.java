@@ -62,9 +62,14 @@ public class DefaultGUIContext implements GUIContext
         return m_currentFile;
     }
 
-    public ObjectMeta getInstance()
+    public ObjectMeta getObjectMeta()
     {
         return objMeta;
+    }
+
+    @Override
+    public Object getInstance() {
+        return getObjectMeta().getInstance();
     }
 
     public ClassModel getRootType()

@@ -22,7 +22,8 @@ public interface GUIContext<T>
 {
     File getCurrentFile();
 
-    ObjectMeta<T> getInstance();
+    ObjectMeta<T> getObjectMeta();
+    T getInstance();
 
     ClassModel<T> getRootType();
 

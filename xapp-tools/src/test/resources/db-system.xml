@@ -1,4 +1,4 @@
-<System pupilOfTheYear="Berwick School/jamiec" teacherOfTheYear="Berwick School/breid">
+<System pupilOfTheYear="Alfriston School/jamiec" teacherOfTheYear="Alfriston School/etrevis">
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" starOfTheWeek="alicew">
       <ClassRooms>
@@ -12,7 +12,20 @@
       </ClassRooms>
       <People>
         <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis">
-          <HomeDir name="docs"/>
+          <HomeDir name="docs">
+            <Files>
+              <DirMeta name="documents">
+                <Files>
+                  <TextFile name="The Flea">
+                    <Text><![CDATA[I had a little flea,
+It didn't like me,
+It jumped in my tea,
+And lived inside me]]></Text>
+                  </TextFile>
+                </Files>
+              </DirMeta>
+            </Files>
+          </HomeDir>
         </Teacher>
         <Pupil firstName="Elias" secondName="Webber" username="eliasw">
           <HomeDir name="docs"/>
@@ -23,6 +36,9 @@
         <Teacher firstName="alison" secondName="carver" username="acarver">
           <HomeDir name="docs"/>
         </Teacher>
+        <Pupil firstName="jamie" secondName="callum" username="jamiec">
+          <HomeDir name="docs"/>
+        </Pupil>
       </People>
     </School>
     <School headTeacher="breid" name="Berwick School" schoolDescription="eliasw/docs/About Berwick School">
@@ -83,9 +99,6 @@ my hobbies are knitting and tennis]]></Text>
           </HomeDir>
         </Pupil>
         <Pupil firstName="jerome" secondName="keeley" username="jkeeley">
-          <HomeDir name="docs"/>
-        </Pupil>
-        <Pupil firstName="jamie" secondName="callum" username="jamiec">
           <HomeDir name="docs"/>
         </Pupil>
       </People>

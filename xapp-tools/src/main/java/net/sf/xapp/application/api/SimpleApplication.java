@@ -15,8 +15,6 @@ package net.sf.xapp.application.api;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
-import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.utils.XappException;
 
@@ -119,7 +117,7 @@ public class SimpleApplication<T> implements Application<T>
     }
 
     public T model() {
-        return appContainer.getGuiContext().getInstance().getInstance();
+        return appContainer.getGuiContext().getObjectMeta().getInstance();
     }
 
     public ClassDatabase<T> classDatabase() {

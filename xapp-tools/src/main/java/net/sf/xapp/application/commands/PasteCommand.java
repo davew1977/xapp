@@ -21,6 +21,7 @@ import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class PasteCommand extends NodeCommand
@@ -82,7 +83,7 @@ public class PasteCommand extends NodeCommand
                 newObjMeta = classModel.find(clipboardObject);
             }
             //add object to data model
-            node.getListNodeContext().getCollection().add(clipboardObject);
+            node.getListNodeContext().add(newObjMeta);
             //create new node
             Node newNode = applicationContainer.getNodeBuilder().createNode(null,
                     newObjMeta, node, node.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
