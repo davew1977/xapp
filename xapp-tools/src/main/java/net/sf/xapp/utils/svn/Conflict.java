@@ -42,4 +42,14 @@ public class Conflict
     {
         return m_theirs;
     }
+
+    @Override
+    public String toString() {
+        return "Conflict{" +
+                "m_conflictedFile=" + m_conflictedFile +
+                ", m_mine=" + m_mine +
+                ", m_base=" + m_base +
+                ", m_theirs=" + m_theirs +
+                '}';
+    }
 }

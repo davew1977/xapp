@@ -12,7 +12,7 @@
  */
 package net.sf.xapp.utils.svn;
 
-import java.io.CharArrayWriter;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +23,9 @@ public interface SVNFacade
 	/**
 	 * Updates to head
 	 *
-	 * @param filepath the local filepath to update
+	 * @param files the local filepath to update
 	 */
-	UpdateResult update(String filepath);
+	UpdateResult update(File... files);
 
 	/**
 	 * Gets the latest time of change for the given file/directory. Note that this is dependent on server time.
@@ -72,11 +72,10 @@ public interface SVNFacade
 
 	/**
 	 * Commits to svn
-	 * @param filepath local filepath
      * @param message commit message to svn
      */
-	long commit(String filepath, String message, boolean keepLocks);
-	long commit(String filepath, String message);
+	long commit(boolean keepLocks, String message, File... files);
+	long commit(String message, File... files);
 
 
 	/**
@@ -96,7 +95,7 @@ public interface SVNFacade
 	 * Reverts the given target recursively
 	 * @param path The path to revert
 	 */
-	void revert(String path);
+	void revert(File... path);
 
     /**
      * adds some files directly to svn. No working copies
@@ -213,7 +212,7 @@ public interface SVNFacade
     String getBranchName(String workingcopy);
     long getBranchCreationRevision(String workingPath);
 
-	boolean hasLocalChanges(String dir);
+	boolean hasLocalChanges(File dir);
 
     String getPassword();
 }

@@ -11,31 +11,41 @@ import java.util.ArrayList;
 
 public class UpdateResult
 {
-    private long m_rev;
-    private List<Conflict> m_conflicts;
+    private long rev;
+    private List<Conflict> conflicts;
 
     public UpdateResult()
     {
-        m_conflicts = new ArrayList<Conflict>();
+        conflicts = new ArrayList<Conflict>();
     }
 
     public void setRev(long rev)
     {
-        m_rev = rev;
+        this.rev = rev;
     }
 
     public long getRev()
     {
-        return m_rev;
+        return rev;
     }
 
     public List<Conflict> getConflicts()
     {
-        return m_conflicts;
+        return conflicts;
     }
 
     public boolean isConflict()
     {
-        return !m_conflicts.isEmpty();
+        return !conflicts.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("rev: "+rev +"\n");
+        for (Conflict m_conflict : conflicts) {
+           sb.append(m_conflict);
+        }
+        return sb.toString();
     }
 }

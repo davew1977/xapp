@@ -15,6 +15,9 @@ import org.tmatesoft.svn.core.SVNException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.*;
+import java.util.List;
 
 import static net.sf.xapp.application.api.SimpleTreeGraphics.loadImage;
 
@@ -81,7 +84,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         public void actionPerformed(ActionEvent e)
         {
             trySave();
-            if(m_svnFacade.hasLocalChanges(currentFilePath())) {
+            if(m_svnFacade.hasLocalChanges(currentFile())) {
                 String commitMessage = getCommitMessage();
                 if (commitMessage!=null)
                 {
@@ -118,7 +121,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         {
             if (SwingUtils.askUser(appContainer.getMainFrame(), "Are you sure you want to undo all changes\nsince your last commit?"))
             {
-                m_svnFacade.revert(currentFilePath());
+                m_svnFacade.revert(svnFiles());
 
                 reloadFile();
             }
@@ -137,11 +140,12 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         public void actionPerformed(ActionEvent e)
         {
             trySave();
-            UpdateResult result = m_svnFacade.update(currentFilePath());
+            UpdateResult result = m_svnFacade.update(svnFiles());
             if (result.isConflict())
             {
-                SwingUtils.warnUser(appContainer.getMainFrame(), "You have a conflict. You should close Novello and fix it manually\n" +
+                SwingUtils.warnUser(appContainer.getMainFrame(), "You have a conflict. You should close the application and fix it manually\n" +
                         "You can revert the file, but then you will lose your changes");
+                System.out.println(result);
             }
             else
             {
@@ -159,9 +163,9 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         return m_svnFacade!=null ? m_svnFacade.getUsername() : "";
     }
 
-    private String currentFilePath()
+    private File currentFile()
     {
-        return appContainer.getGuiContext().getCurrentFile().getAbsolutePath();
+        return appContainer.getGuiContext().getCurrentFile();
     }
 
     private class ExitCommitHook implements ApplicationContainer.Hook
@@ -169,7 +173,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         public void execute()
         {
             trySave();
-            if(m_svnFacade.hasLocalChanges(currentFilePath())) {
+            if(m_svnFacade.hasLocalChanges(currentFile())) {
                 int i = JOptionPane.showOptionDialog(appContainer.getMainFrame(),
                         "Would you like to commit your changes?", "SVN Commit",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -189,13 +193,16 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
     }
 
     protected abstract void trySave();
+    protected java.util.List<File> extraSvnFiles() {
+        return new ArrayList<File>();
+    }
 
     private void commit(String message)
     {
         trySave();
         try
         {
-            m_svnFacade.commit(currentFilePath(), message);
+            m_svnFacade.commit(message, svnFiles());
         }
         catch (RuntimeException e)
         {
@@ -209,5 +216,11 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
                 throw e;
             }
         }
+    }
+
+    private File[] svnFiles() {
+        List<File> files = extraSvnFiles();
+        files.add(currentFile());
+        return (File[]) files.toArray();
     }
 }

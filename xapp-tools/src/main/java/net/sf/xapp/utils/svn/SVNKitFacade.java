@@ -12,7 +12,6 @@
  */
 package net.sf.xapp.utils.svn;
 
-import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.wc.*;
@@ -68,12 +67,10 @@ public class SVNKitFacade implements SVNFacade
     /**
 	 * Updates to head
 	 *
-	 * @param filepath the local filepath to update
+	 * @param files the local filepath to update
 	 */
-	public UpdateResult update(String filepath)
+	public UpdateResult update(File... files)
 	{
-		File file = new File(filepath);
-
 		try
 		{
 
@@ -81,8 +78,8 @@ public class SVNKitFacade implements SVNFacade
             UpdateEventHandler eventHandler = new UpdateEventHandler(result);
             m_svnManager.setEventHandler(eventHandler);
             //update file, to revision, recursively, don't allow files not under version control to obstruct update, depth is not sticky
-            long rev = m_svnManager.getUpdateClient().doUpdate(file, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
-            result.setRev(rev);
+            long[] rev = m_svnManager.getUpdateClient().doUpdate(files, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+            result.setRev(rev[0]);
             m_svnManager.setEventHandler(null);
             return result;
 		}
@@ -234,14 +231,13 @@ public class SVNKitFacade implements SVNFacade
 		}
 	}
 
-	public void revert(String filepath)
+	public void revert(File... files)
 	{
-		File[] path = new File[]{new File(filepath)};
 
 		try
 		{
 			//revert the path, recursively, without changelist
-			m_svnManager.getWCClient().doRevert(path, SVNDepth.INFINITY, null);
+			m_svnManager.getWCClient().doRevert(files, SVNDepth.INFINITY, null);
 		}
 		catch(SVNException svne)
 		{
@@ -368,12 +364,12 @@ public class SVNKitFacade implements SVNFacade
 		}
 	}
 
-	public boolean hasLocalChanges(String dir)
+	public boolean hasLocalChanges(File dir)
 	{
 		try
 		{
 			SimpleStatusHandler handler = new SimpleStatusHandler();
-			m_svnManager.getStatusClient().doStatus(new File(dir), null, SVNDepth.INFINITY, false, false, false, false, handler, null);
+			m_svnManager.getStatusClient().doStatus(dir, null, SVNDepth.INFINITY, false, false, false, false, handler, null);
 			return handler.isModified();
 		}
 		catch(Exception e)
@@ -400,22 +396,20 @@ public class SVNKitFacade implements SVNFacade
 
     /**
 	 * Commits to svn
-	 * @param filepath local filepath
      * @param message commit message to svn
+     * @param files
      */
-	public long commit(String filepath, String message)
+	public long commit(String message, File... files)
     {
-        return commit(filepath, message, true);
+        return commit(true, message, files);
     }
 
-    public long commit(String filepath, String message, boolean keepLocks)
+    public long commit(boolean keepLocks, String message, File... files)
 	{
-		File[] path = new File[]{new File(filepath)};
-
 		try
 		{
 			//commit path, keep locks, assign message, don't force it, no revision properties, no changelist, don't keep changelist, don't force, commit recursively
-            SVNCommitInfo commitInfo = m_svnManager.getCommitClient().doCommit(path, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
+            SVNCommitInfo commitInfo = m_svnManager.getCommitClient().doCommit(files, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
             return commitInfo.getNewRevision();
         }
 		catch(SVNException svne)
@@ -425,7 +419,8 @@ public class SVNKitFacade implements SVNFacade
     }
 
 
-	/**
+
+    /**
 	 * Checks out head from svn
 	 *
 	 * @param svnpath where to check out from
