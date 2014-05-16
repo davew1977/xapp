@@ -1,4 +1,4 @@
-<System pupilOfTheYear="Alfriston School/jamiec" teacherOfTheYear="Alfriston School/etrevis">
+<System personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis">
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" starOfTheWeek="alicew">
       <ClassRooms>
@@ -104,7 +104,7 @@ my hobbies are knitting and tennis]]></Text>
       </People>
       <PicturesOfTheWeek>
         <ImageFile ref="eliasw/docs/pictures/home/2013/mum.jpg"/>
-        <ImageFile ref="eliasw/docs/pictures/school/Ms Reid.jpg"/>
+        <ImageFile ref="eliasw/docs/pictures/home/alice.jpg"/>
       </PicturesOfTheWeek>
     </School>
   </Schools>

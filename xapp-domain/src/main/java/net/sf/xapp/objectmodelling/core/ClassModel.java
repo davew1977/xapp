@@ -895,6 +895,12 @@ public class ClassModel<T> {
                 return instance;
             }
         }
+        for (ClassModel classModel : m_validImplementationMap.values()) {
+            ObjectMeta objectMeta = classModel.find(o1);
+            if(objectMeta != null) {
+                return objectMeta;
+            }
+        }
         return null;
     }
 

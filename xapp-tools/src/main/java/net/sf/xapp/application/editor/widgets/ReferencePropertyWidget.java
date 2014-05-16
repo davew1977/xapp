@@ -35,7 +35,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
 
     public final String NULL = "null";
     private ObjectMeta m_parentObject;
-    private Map<String, T> valueMap;
+    private Map<String, ObjectMeta<T>> valueMap;
 
     private final boolean containedByListReferenceGUI;
 
@@ -83,11 +83,12 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
         if (key == null || key.equals(NULL)) {
             return null;
         }
-        return getObj(key);
+        return getObj((String) key);
     }
 
-    private T getObj(Object key) {
-        return valueMap.get(key);
+    private T getObj(String key) {
+        ObjectMeta<T> objectMeta = valueMap.get(key);
+        return objectMeta != null ? objectMeta.getInstance() : null;
     }
 
     private ClassModel<T> getClassModel() {
@@ -103,10 +104,12 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
         setComboValues(new ArrayList(valueMap.keySet()));
         m_comboBox.setRenderer(new DefaultListCellRenderer() {
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                T obj = getObj(value);
-                setToolTipText(getTooltip(obj));
-                String t = getLabelText(obj);
-                value = t != null ? t : value;
+                if (value instanceof String) {
+                    T obj = getObj((String) value);
+                    setToolTipText(getTooltip(obj));
+                    String t = getLabelText(obj);
+                    value = t != null ? t : value;
+                }
                 return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             }
         });
@@ -122,14 +125,14 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
             m_comboBox.setEditable(false);
         }
 
-        m_comboBox.setSelectedItem(getKeyByValue(valueMap, value));
+        m_comboBox.setSelectedItem(getKeyByValue(value));
     }
 
-    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+    public String getKeyByValue(T value) {
         if (value != null) {
-            for (Map.Entry<T, E> entry : map.entrySet()) {
-                if (value.equals(entry.getValue())) {
-                    return entry.getKey();
+            for (Map.Entry<String, ObjectMeta<T>> e : valueMap.entrySet()) {
+                if(e.getValue().getInstance().equals(value)) {
+                    return e.getKey();
                 }
             }
         }
@@ -165,6 +168,14 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
         }
     }
 
+    public DefaultComboBoxModel createKeyListModel(List<Object> objects) {
+        List<String> keys = new ArrayList<String>();
+        for (Object object : objects) {
+            keys.add(getKeyByValue((T) object));
+        }
+        return createListModel(keys);
+
+    }
     public DefaultComboBoxModel createListModel(List<String> keys) {
         //convert to a list of strings
         Vector<String> stringList = new Vector<String>(keys);

@@ -230,21 +230,48 @@ public class ObjectMeta<T> implements Namespace{
         return getClassModel().globalObjMetaLookup(this, value);
     }
 
-    public Map<String, Object> getAll(final Class<?> containedClass) {
-        Map<String, ObjectMeta> matchingMap = findMatchingMap(containedClass);
-        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
-        for (Map.Entry<String, ObjectMeta> e : matchingMap.entrySet()) {
-            if(containedClass.isAssignableFrom(e.getValue().getType())) {
-                result.put(e.getKey(), e.getValue().getInstance());
+    public Map<String, ObjectMeta> getAll(final Class containedClass) {
+        return getNamespace(containedClass).all(containedClass);
+    }
+
+    @Override
+    public <E> Map<String, ObjectMeta<E>> all(Class<E> aClass) {
+        Map<String, ObjectMeta<E>> result = new LinkedHashMap<String, ObjectMeta<E>>();
+        if(aClass.isInterface()) { //search entire namespace, anything could implement it
+            for (Map.Entry<Class<?>, Map<String, ObjectMeta>> e : lookupMap.entrySet()) {
+                Map<String, ObjectMeta> map = e.getValue();
+                for (ObjectMeta objectMeta : map.values()) {
+                    if(objectMeta.isInstance(aClass)) {
+                        result.put(objectMeta.getKey(), objectMeta);
+                    }
+                }
             }
-        }
-        Set<ObjectMeta> objectMetas = findMatchingSet(containedClass);
-        for (ObjectMeta objectMeta : objectMetas) {
-            if(containedClass.isAssignableFrom(objectMeta.getType())) {
-                result.put(fullPath(this, objectMeta), objectMeta.getInstance());
+            for (Map.Entry<Class<?>, Set<ObjectMeta>> e : lookupSets.entrySet()) {
+                for (ObjectMeta objectMeta : e.getValue()) {
+                    if(objectMeta.isInstance(aClass)) {
+                        result.put(fullPath(this, objectMeta), objectMeta);
+                    }
+                }
+            }
+        } else { //optimization: we only have to search the single matching map in the hierarchy
+            Map<String, ObjectMeta> matchingMap = findMatchingMap(aClass);
+            for (Map.Entry<String, ObjectMeta> e : matchingMap.entrySet()) {
+                if(aClass.isAssignableFrom(e.getValue().getType())) {
+                    result.put(e.getKey(), e.getValue());
+                }
+            }
+            Set<ObjectMeta> objectMetas = findMatchingSet(aClass);
+            for (ObjectMeta objectMeta : objectMetas) {
+                if(aClass.isAssignableFrom(objectMeta.getType())) {
+                    result.put(fullPath(this, objectMeta), objectMeta);
+                }
             }
         }
         return result;
+    }
+
+    private <E> boolean isInstance(Class<E> aClass) {
+        return aClass.isInstance(instance);
     }
 
     @Override

@@ -122,7 +122,7 @@ public class ListReferenceGUI extends JFrame
             m_midBox.add(Box.createHorizontalStrut(5));
 
             m_selectionList = new JList();
-            m_selectionList.setModel(m_referenceProperty.createListModel(m_node.getListNodeContext().getList()));
+            m_selectionList.setModel(m_referenceProperty.createKeyListModel(m_node.getListNodeContext().getList()));
             m_selectionList.setCellRenderer(cb.getRenderer());
 
             jsp = new JScrollPane(m_selectionList);
