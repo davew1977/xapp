@@ -32,24 +32,24 @@ public class ObjectMeta<T> {
         }
     }
 
-    public void mapByKey(ClassModel classModel, String key, ObjectMeta obj) {
-        assert isNamespaceFor(classModel);
-        findMatchingMap_internal(classModel.getContainedClass()).put(key, obj);
+    public void mapByKey(ObjectMeta obj) {
+        assert isNamespaceFor(obj.getType());
+        findMatchingMap(obj.getType()).put(obj.getKey(), obj);
     }
 
-    public void remove(ClassModel classModel, String key) {
-        assert isNamespaceFor(classModel);
-        findMatchingMap_internal(classModel.getContainedClass()).remove(key);
+    public void remove(ObjectMeta obj) {
+        assert isNamespaceFor(obj.getType());
+        findMatchingMap(obj.getType()).remove(obj.getKey());
     }
 
     public void storeRef(ObjectMeta objectMeta) {
-        assert isNamespaceFor(objectMeta.getClassModel());
-        findMatchingSet(objectMeta.classModel.getContainedClass()).add(objectMeta);
+        assert isNamespaceFor(objectMeta.getType());
+        findMatchingSet(objectMeta.getType()).add(objectMeta);
     }
 
     public void removeRef(ObjectMeta objectMeta) {
-        assert isNamespaceFor(objectMeta.getClassModel());
-        findMatchingSet(objectMeta.classModel.getContainedClass()).remove(objectMeta);
+        assert isNamespaceFor(objectMeta.getType());
+        findMatchingSet(objectMeta.getType()).remove(objectMeta);
 
     }
 
@@ -115,25 +115,28 @@ public class ObjectMeta<T> {
         return getParent() == null;
     }
 
-    private Map<String, ObjectMeta> findMatchingMap(Class aClass) {
-
-        Map<String, ObjectMeta> internalMatch = findMatchingMap_internal(aClass);
-        if (internalMatch != null) {
-            return internalMatch;
+    /**
+     * find the right place to put this object. It should have one home location, which in the simple case where
+     * there are not explicit namespaces defined, will be in the root object meta
+     */
+    private Map<String, ObjectMeta> findMatchingMap(Class<?> aClass) {
+        Map<String, ObjectMeta> map = matchingMap(aClass);
+        if(map !=null) {
+            return map;
+        }
+        if (isRoot()) { //root is the implicit namespace for everything
+            map = new LinkedHashMap<String, ObjectMeta>();
+            lookupMap.put(mostGenericClass(aClass), map);
+            return map;
         }
         return parent.findMatchingMap(aClass);
     }
 
-    private Map<String, ObjectMeta> findMatchingMap_internal(Class<?> aClass) {
+    private Map<String, ObjectMeta> matchingMap(Class<?> aClass) {
         for (Map.Entry<Class<?>, Map<String, ObjectMeta>> entry : lookupMap.entrySet()) {
             if (entry.getKey().isAssignableFrom(aClass)) {
                 return entry.getValue();
             }
-        }
-        if (isRoot()) { //root is the implicit namespace for everything
-            LinkedHashMap<String, ObjectMeta> map = new LinkedHashMap<String, ObjectMeta>();
-            lookupMap.put(mostGenericClass(aClass), map);
-            return map;
         }
         return null;
     }
@@ -166,12 +169,8 @@ public class ObjectMeta<T> {
         tryCall(instance, "setObjectMeta", this);
     }
 
-    public boolean isNamespaceFor(ClassModel classModel) {
-        return isNamespaceFor(classModel.getContainedClass());
-    }
-
     public boolean isNamespaceFor(Class aClass) {
-        return isRoot() || findMatchingMap_internal(aClass) != null;
+        return isRoot() || matchingMap(aClass) != null;
     }
 
     public ClassModel getClassModel() {
@@ -193,7 +192,6 @@ public class ObjectMeta<T> {
     }
 
     public void updateMetaHierarchy(String oldKeyVal, String newKeyVal) {
-        this.key = newKeyVal;
 
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
         //if last element is this object, then remove it
@@ -202,15 +200,16 @@ public class ObjectMeta<T> {
         }
         ObjectMeta closestNamespace = namespacePath.removeLast();
         if (oldKeyVal != null) {
-            closestNamespace.remove(classModel, oldKeyVal);
+            closestNamespace.remove(this);
             if(newKeyVal == null) { //like deleting object
                 for (ObjectMeta objectMeta : namespacePath) {
                     objectMeta.removeRef(this);
                 }
             }
         }
+        this.key = newKeyVal;
         if (newKeyVal != null) {
-            closestNamespace.mapByKey(classModel, newKeyVal, this);
+            closestNamespace.mapByKey(this);
             for (ObjectMeta objectMeta : namespacePath) {
                 objectMeta.storeRef(this);
             }
@@ -232,13 +231,13 @@ public class ObjectMeta<T> {
         Map<String, ObjectMeta> matchingMap = findMatchingMap(containedClass);
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         for (Map.Entry<String, ObjectMeta> e : matchingMap.entrySet()) {
-            if(containedClass.isAssignableFrom(e.getValue().getClassModel().getContainedClass())) {
+            if(containedClass.isAssignableFrom(e.getValue().getType())) {
                 result.put(e.getKey(), e.getValue().getInstance());
             }
         }
         Set<ObjectMeta> objectMetas = findMatchingSet(containedClass);
         for (ObjectMeta objectMeta : objectMetas) {
-            if(containedClass.isAssignableFrom(objectMeta.getClassModel().getContainedClass())) {
+            if(containedClass.isAssignableFrom(objectMeta.getType())) {
                 result.put(fullPath(this, objectMeta), objectMeta.getInstance());
             }
         }
@@ -248,5 +247,9 @@ public class ObjectMeta<T> {
     @Override
     public String toString() {
         return key;
+    }
+
+    public Class<T> getType() {
+        return classModel.getContainedClass();
     }
 }

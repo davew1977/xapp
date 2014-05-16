@@ -147,7 +147,7 @@ public class ReflectionUtils
     }
 
     public static Class mostGenericClass(Class aClass) {
-        while (aClass.getSuperclass() != Object.class) {
+        while (aClass.getSuperclass()!=null && aClass.getSuperclass() != Object.class) {
             aClass = aClass.getSuperclass();
         }
         return aClass;

@@ -11,7 +11,7 @@
         <ClassRoom name="Emerald" teacher="etrevis"/>
       </ClassRooms>
       <People>
-        <Teacher firstName="Elizabeth" secondName="Trevis" username="etrevis">
+        <Teacher aboutMe="docs/documents/The Flea" firstName="Elizabeth" secondName="Trevis" username="etrevis">
           <HomeDir name="docs">
             <Files>
               <DirMeta name="documents">
