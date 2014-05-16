@@ -65,8 +65,13 @@ public class ObjectMeta<T> implements Namespace{
     public <E> ObjectMeta<E> find(Class<E> aClass, String path) {
         String[] p = path.split(NamespacePath.PATH_SEPARATOR, 2);
         if(p.length==1) {
-            assert isNamespaceFor(aClass);
-            ObjectMeta<E> obj = matchingMap(aClass).get(p[0]);
+            ObjectMeta<E> obj;
+            if(aClass.isInterface()) {
+                obj = allDirectDescendants(aClass).get(p[0]);
+            } else {
+                assert isNamespaceFor(aClass);
+                obj = matchingMap(aClass).get(p[0]);
+            }
             if (obj == null) {
                 throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
             }
@@ -238,14 +243,7 @@ public class ObjectMeta<T> implements Namespace{
     public <E> Map<String, ObjectMeta<E>> all(Class<E> aClass) {
         Map<String, ObjectMeta<E>> result = new LinkedHashMap<String, ObjectMeta<E>>();
         if(aClass.isInterface()) { //search entire namespace, anything could implement it
-            for (Map.Entry<Class<?>, Map<String, ObjectMeta>> e : lookupMap.entrySet()) {
-                Map<String, ObjectMeta> map = e.getValue();
-                for (ObjectMeta objectMeta : map.values()) {
-                    if(objectMeta.isInstance(aClass)) {
-                        result.put(objectMeta.getKey(), objectMeta);
-                    }
-                }
-            }
+            result.putAll(allDirectDescendants(aClass));
             for (Map.Entry<Class<?>, Set<ObjectMeta>> e : lookupSets.entrySet()) {
                 for (ObjectMeta objectMeta : e.getValue()) {
                     if(objectMeta.isInstance(aClass)) {
@@ -264,6 +262,19 @@ public class ObjectMeta<T> implements Namespace{
             for (ObjectMeta objectMeta : objectMetas) {
                 if(aClass.isAssignableFrom(objectMeta.getType())) {
                     result.put(fullPath(this, objectMeta), objectMeta);
+                }
+            }
+        }
+        return result;
+    }
+
+    private <E> Map<String, ObjectMeta<E>> allDirectDescendants(Class<E> aClass) {
+        Map<String, ObjectMeta<E>> result = new LinkedHashMap<String, ObjectMeta<E>>();
+        for (Map.Entry<Class<?>, Map<String, ObjectMeta>> e : lookupMap.entrySet()) {
+            Map<String, ObjectMeta> map = e.getValue();
+            for (ObjectMeta objectMeta : map.values()) {
+                if(objectMeta.isInstance(aClass)) {
+                    result.put(objectMeta.getKey(), objectMeta);
                 }
             }
         }

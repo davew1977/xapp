@@ -1,14 +1,30 @@
 <System personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis">
   <Schools>
-    <School headTeacher="etrevis" name="Alfriston School" starOfTheWeek="alicew">
+    <School headTeacher="etrevis" name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
       <ClassRooms>
         <ClassRoom name="Ruby" teacher="acarver">
+          <HomeDir name="docs">
+            <Files>
+              <DirMeta name="bestwork">
+                <Files>
+                  <TextFile name="class rules">
+                    <Text><![CDATA[no smoking
+no chewing
+no swearing
+no spitting]]></Text>
+                  </TextFile>
+                </Files>
+              </DirMeta>
+            </Files>
+          </HomeDir>
           <Pupils>
             <Pupil ref="alicew"/>
             <Pupil ref="eliasw"/>
           </Pupils>
         </ClassRoom>
-        <ClassRoom name="Emerald" teacher="etrevis"/>
+        <ClassRoom name="Emerald" teacher="etrevis">
+          <HomeDir name="docs"/>
+        </ClassRoom>
       </ClassRooms>
       <People>
         <Teacher aboutMe="docs/documents/The Flea" firstName="Elizabeth" secondName="Trevis" username="etrevis">
@@ -69,7 +85,7 @@ my hobbies are knitting and tennis]]></Text>
             </Files>
           </HomeDir>
         </Teacher>
-        <Pupil firstName="elias" secondName="woojah" username="eliasw">
+        <Pupil anotherFileSystem="Alfriston School/jamiec" firstName="elias" secondName="woojah" username="eliasw">
           <HomeDir name="docs">
             <Files>
               <TextFile name="About Berwick School">

@@ -61,6 +61,6 @@ public class System {
         }, "db-system.xml");
 
         System instance = (System) appContainer.getGuiContext().getInstance();
-        java.lang.System.out.println(instance.getPersonOfTheYear());
+        java.lang.System.out.println(instance.getSchools().get("Alfriston School").getClassRooms().get("Ruby").getHomeDir().getFiles());
     }
 }

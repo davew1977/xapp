@@ -196,7 +196,7 @@ public class NodeImpl implements Node
 
     public boolean isReference()
     {
-        return !isRoot() && getParent().containsReferences();
+        return !isRoot() && getParent().containsReferences();  //todo get parent can return true if parent type is a "Container" for another list property which "ContainsReferences"
     }
 
     public void updateDomainTreeRoot()

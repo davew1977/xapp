@@ -3,6 +3,7 @@ package testmodel;
 import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 
 import java.util.List;
@@ -11,11 +12,12 @@ import java.util.List;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-@Container(listProperty = "Pupils")
-public class ClassRoom {
+@NamespaceFor(FileMeta.class)
+public class ClassRoom implements FileSystem{
     private String name;
     private Teacher teacher;
     private List<Pupil> pupils;
+    private DirMeta homeDir = new DirMeta("docs");
 
     @Key
     public String getName() {
@@ -42,6 +44,14 @@ public class ClassRoom {
 
     public void setPupils(List<Pupil> pupils) {
         this.pupils = pupils;
+    }
+
+    public DirMeta getHomeDir() {
+        return homeDir;
+    }
+
+    public void setHomeDir(DirMeta homeDir) {
+        this.homeDir = homeDir;
     }
 
     @Override
