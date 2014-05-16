@@ -1,7 +1,7 @@
 package testmodel;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
-import net.sf.xapp.annotations.objectmodelling.Namespace;
+import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
@@ -10,7 +10,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * Created by dwebber
  */
 @ValidImplementations({Teacher.class, Pupil.class})
-@Namespace(FileMeta.class)
+@NamespaceFor(FileMeta.class)
 public class Person {
     private String username;
     private String firstName;

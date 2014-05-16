@@ -14,7 +14,7 @@ import java.util.LinkedList;
 public class NamespacePath extends LinkedList<ObjectMeta> {
     public static final String PATH_SEPARATOR = "/";
 
-    public String getPathFrom(ObjectMeta namespace) {
+    public String getPathFrom(Namespace namespace) {
         return StringUtils.join(subList(indexOf(namespace) + 1, size()), PATH_SEPARATOR);
     }
 
@@ -23,7 +23,7 @@ public class NamespacePath extends LinkedList<ObjectMeta> {
         return getPathFrom(getFirst());
     }
 
-    public static String fullPath(ObjectMeta namespace, ObjectMeta obj) {
+    public static String fullPath(Namespace namespace, ObjectMeta obj) {
         NamespacePath path = obj.getPath();
         String pathString = path.getPathFrom(namespace);
         String key = obj.getKey();

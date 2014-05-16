@@ -161,7 +161,7 @@ public class Marshaller<T>
                         //the id is the name
                         ClassModel classModel = m_classDatabase.getClassModel(property.getPropertyClass());
                         ObjectMeta refObjMeta = classModel.find(value);
-                        ObjectMeta namespace = objectMeta.getNamespace(classModel);
+                        Namespace namespace = objectMeta.getNamespace(classModel);
                         writeAsAttr.add(new PropertyValuePair(property, fullPath(namespace, refObjMeta)));
                     }
                     else if (property.isPrimitiveBoolean() && !m_marshalFalseBooleanValues && !(Boolean) value)
@@ -304,7 +304,7 @@ public class Marshaller<T>
                         List<ComparableNameValuePair> anAttr = new ArrayList<ComparableNameValuePair>();
                         ClassModel classModel = containerProperty.getContainedTypeClassModel();
                         ObjectMeta refObjMeta = classModel.find(listItem);
-                        ObjectMeta namespace = objectMeta.getNamespace(classModel);
+                        Namespace namespace = objectMeta.getNamespace(classModel);
                         anAttr.add(new SimpleNameValuePair("ref", fullPath(namespace, refObjMeta)));
                         out.writeOpeningTag(aClass.getSimpleName(), anAttr, false);
                     }

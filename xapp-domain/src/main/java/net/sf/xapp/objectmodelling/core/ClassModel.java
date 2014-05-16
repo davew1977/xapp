@@ -14,7 +14,7 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.BoundObjectType;
 import net.sf.xapp.annotations.application.EditorWidget;
-import net.sf.xapp.annotations.objectmodelling.Namespace;
+import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
@@ -63,7 +63,7 @@ public class ClassModel<T> {
     private ListProperty m_containerListProperty;
     private Set<Rights> m_restrictedRights;
     private TrackKeyChanges m_trackKeyChanges;
-    private Namespace namespace;
+    private NamespaceFor namespaceFor;
 
     public final String NESTED_CDATA_START = "]ATADC]!>";
     public final String NESTED_CDATA_END = ">]]";
@@ -116,15 +116,15 @@ public class ClassModel<T> {
         if (m_trackKeyChanges != null && !hasKey()) {
             throw new XappException("class " + getSimpleName() + " is annotated with @TrackKeyChanges but has no primary key");
         }
-        namespace = m_class.getAnnotation(Namespace.class);
+        namespaceFor = m_class.getAnnotation(NamespaceFor.class);
     }
 
-    public Namespace getNamespace() {
+    public NamespaceFor getNamespaceFor() {
         Class aClass = m_class;
         while(aClass != Object.class) {
-            Namespace namespace = (Namespace) aClass.getAnnotation(Namespace.class);
-            if(namespace != null) {
-                return namespace;
+            NamespaceFor namespaceFor = (NamespaceFor) aClass.getAnnotation(NamespaceFor.class);
+            if(namespaceFor != null) {
+                return namespaceFor;
             }
             aClass = aClass.getSuperclass();
         }

@@ -1,6 +1,6 @@
 package net.sf.xapp.objectmodelling.core;
 
-import net.sf.xapp.annotations.objectmodelling.Namespace;
+import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
@@ -11,7 +11,7 @@ import static net.sf.xapp.utils.ReflectionUtils.*;
 /**
  * additional data per instance
  */
-public class ObjectMeta<T> {
+public class ObjectMeta<T> implements Namespace{
     private final ClassModel classModel;
     private final ObjectMeta<?> parent;
     private final T instance;
@@ -23,9 +23,9 @@ public class ObjectMeta<T> {
         this.classModel = classModel;
         this.instance = obj;
         this.parent = parent;
-        Namespace namespace = classModel !=null ? classModel.getNamespace() : null;
-        if (namespace != null) {
-            for (Class aClass : namespace.value()) {
+        NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
+        if (namespaceFor != null) {
+            for (Class aClass : namespaceFor.value()) {
                 lookupMap.put(aClass, new HashMap<String, ObjectMeta>());
                 lookupSets.put(aClass, new HashSet<ObjectMeta>());
             }
@@ -58,14 +58,15 @@ public class ObjectMeta<T> {
     }
 
     public <E> ObjectMeta<E> getObjMeta(Class<E> aClass, String key) {
-        ObjectMeta<?> namespace = getNamespace(aClass);
+        Namespace namespace = getNamespace(aClass);
         return namespace.find(aClass, key);
     }
 
-    private <E> ObjectMeta<E> find(Class<E> aClass, String path) {
+    public <E> ObjectMeta<E> find(Class<E> aClass, String path) {
         String[] p = path.split(NamespacePath.PATH_SEPARATOR, 2);
         if(p.length==1) {
-            ObjectMeta<E> obj = findMatchingMap(aClass).get(p[0]);
+            assert isNamespaceFor(aClass);
+            ObjectMeta<E> obj = matchingMap(aClass).get(p[0]);
             if (obj == null) {
                 throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
             }
@@ -83,11 +84,11 @@ public class ObjectMeta<T> {
         }
     }
 
-    public ObjectMeta<?> getNamespace(ClassModel classModel) {
+    public Namespace getNamespace(ClassModel classModel) {
         return getNamespace(classModel.getContainedClass());
     }
 
-    public ObjectMeta<?> getNamespace(Class aClass) {
+    public Namespace getNamespace(Class aClass) {
         return isNamespaceFor(aClass) ? this : getParent().getNamespace(aClass);
     }
 
@@ -124,12 +125,14 @@ public class ObjectMeta<T> {
         if(map !=null) {
             return map;
         }
-        if (isRoot()) { //root is the implicit namespace for everything
+        if(parent != null) {
+            return parent.findMatchingMap(aClass);
+        } else {
+            assert isRoot();  //root is the implicit namespace for everything
             map = new LinkedHashMap<String, ObjectMeta>();
             lookupMap.put(mostGenericClass(aClass), map);
             return map;
         }
-        return parent.findMatchingMap(aClass);
     }
 
     private Map<String, ObjectMeta> matchingMap(Class<?> aClass) {

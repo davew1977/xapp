@@ -2,7 +2,7 @@ package testmodel;
 
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 import net.sf.xapp.annotations.objectmodelling.Key;
-import net.sf.xapp.annotations.objectmodelling.Namespace;
+import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Map;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-@Namespace({Person.class, FileMeta.class})
+@NamespaceFor({Person.class, FileMeta.class})
 public class School {
     private String name;
     private Teacher headTeacher;
