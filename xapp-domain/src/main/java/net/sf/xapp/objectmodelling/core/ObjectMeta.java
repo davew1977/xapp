@@ -67,7 +67,7 @@ public class ObjectMeta<T> implements Namespace{
         if(p.length==1) {
             ObjectMeta<E> obj;
             if(aClass.isInterface()) {
-                obj = allDirectDescendants(aClass).get(p[0]);
+                obj = allDirectDescendants(aClass).get(p[0]); //todo optimize
             } else {
                 assert isNamespaceFor(aClass);
                 obj = matchingMap(aClass).get(p[0]);

@@ -129,8 +129,11 @@ public class NodeBuilder
                 throw new XappException("cannot have nested tree properties " + property);
 
             Object value = objMeta.get(property);
-            ObjectMeta propValueObjMeta = objMeta.findOrCreateObjMeta(value);
-            //todo register the obj if the obj meta is null
+            //register the obj if the obj meta is null
+            ObjectMeta propValueObjMeta = null;
+            if (value != null) {
+                propValueObjMeta = objMeta.findOrCreateObjMeta(value);
+            }
             if (value != null && propValueObjMeta != null)
             {
                 createNode(property, propValueObjMeta, newNode, propertySubTreeMeta != null ? (Tree) value : domainTreeRoot, PROPERTY);

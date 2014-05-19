@@ -23,7 +23,18 @@ no spitting]]></Text>
           </Pupils>
         </ClassRoom>
         <ClassRoom name="Emerald" teacher="etrevis">
-          <HomeDir name="docs"/>
+          <HomeDir name="docs">
+            <Files>
+              <DirMeta name="class_pics">
+                <Files>
+                  <ImageFile name="jamie.jpg"/>
+                </Files>
+              </DirMeta>
+            </Files>
+          </HomeDir>
+          <Pupils>
+            <Pupil ref="jamiec"/>
+          </Pupils>
         </ClassRoom>
       </ClassRooms>
       <People>
@@ -56,9 +67,20 @@ And lived inside me]]></Text>
           <HomeDir name="docs"/>
         </Pupil>
       </People>
+      <PicturesOfTheWeek>
+        <ImageFile ref="Emerald/docs/class_pics/jamie.jpg"/>
+      </PicturesOfTheWeek>
     </School>
     <School headTeacher="breid" name="Berwick School" schoolDescription="eliasw/docs/About Berwick School">
-      <ClassRooms/>
+      <ClassRooms>
+        <ClassRoom name="Exceat Class" teacher="breid">
+          <HomeDir name="docs"/>
+          <Pupils>
+            <Pupil ref="jkeeley"/>
+            <Pupil ref="eliasw"/>
+          </Pupils>
+        </ClassRoom>
+      </ClassRooms>
       <People>
         <Teacher aboutMe="docs/profile" firstName="beryl" secondName="reid" username="breid">
           <HomeDir name="docs">
