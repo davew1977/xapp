@@ -56,7 +56,9 @@ public class CreateCommand extends NodeCommand
                      * will be mapped twice. This is an issue when the key property is read-only, i.e. derived from
                      * other data in the object
                      */
-                    m_createClass.mapByPrimaryKey(instance);
+                    if (m_createClass.hasPrimaryKey()) {
+                        m_createClass.mapByPrimaryKey(instance);
+                    }
                     applicationContainer.getApplication().nodeAdded(newNode);
                 }
             }
