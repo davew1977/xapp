@@ -221,6 +221,6 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
     private File[] svnFiles() {
         List<File> files = extraSvnFiles();
         files.add(currentFile());
-        return (File[]) files.toArray();
+        return files.toArray(new File[files.size()]);
     }
 }
