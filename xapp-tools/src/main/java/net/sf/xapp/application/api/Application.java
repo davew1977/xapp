@@ -13,8 +13,6 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
-import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.List;

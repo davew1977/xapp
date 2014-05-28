@@ -12,10 +12,7 @@
  */
 package net.sf.xapp.application.editor;
 
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.Property;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.ArrayList;
@@ -53,6 +50,16 @@ public class SingleTargetEditableContext implements EditableContext
     public Object getPropertyValue(Property property)
     {
         return objMeta.get(property);
+    }
+
+    @Override
+    public List<PropertyUpdate> potentialUpdates(Property property, Object value) {
+        List<PropertyUpdate> updates = new ArrayList<PropertyUpdate>();
+        Object oldVal = objMeta.get(property);
+        if(!Property.objEquals(oldVal, value)) {
+            updates.add(new PropertyUpdate(property, objMeta, oldVal, value));
+        }
+        return updates;
     }
 
     public List<PropertyChange> setPropertyValue(Property property, Object value)

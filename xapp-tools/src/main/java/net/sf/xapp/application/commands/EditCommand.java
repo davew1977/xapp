@@ -18,7 +18,7 @@ import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -41,29 +41,9 @@ public class EditCommand extends NodeCommand
                 objectToEdit, SingleTargetEditableContext.Mode.EDIT);
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChange> changes, boolean closing)
+            public void save(List<PropertyUpdate> potentialUpdates, boolean closing)
             {
-                Node newNode = node;
-                if (closing)
-                {
-                    newNode = appContainer.getNodeBuilder().refresh(node);
-                    if(newNode.isReference())
-                    {
-                        Node referee = appContainer.getNode(newNode.wrappedObject());
-                        referee.updateDomainTreeRoot();
-                    }
-                    else
-                    {
-                        newNode.updateDomainTreeRoot();
-                    }
-                }
-
-                Map<String, PropertyChange> changeMap = new HashMap<String, PropertyChange>();
-                for (PropertyChange change : changes)
-                {
-                    changeMap.put(change.property.getName(), change);
-                }
-                appContainer.getApplication().nodeUpdated(newNode, changeMap);
+                appContainer.getNodeUpdateApi().updateNode(node, potentialUpdates);
             }
         });
 

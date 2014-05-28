@@ -233,6 +233,8 @@ public interface ApplicationContainer<T>
 
     List<Node> getSelectedNodes();
 
+    NodeUpdateApi getNodeUpdateApi();
+
     /**
      * Interface for application specific hooks.
      * 

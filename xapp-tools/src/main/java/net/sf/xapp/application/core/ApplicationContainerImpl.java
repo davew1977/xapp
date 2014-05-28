@@ -460,6 +460,11 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return getNodes(m_mainTree.getSelectionPaths());
     }
 
+    @Override
+    public NodeUpdateApi getNodeUpdateApi() {
+        throw new UnsupportedOperationException();
+    }
+
     private List<Command> getCommands(Node node, CommandContext commandContext)
     {
         List<Command> commands = new ArrayList<Command>();
