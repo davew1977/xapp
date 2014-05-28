@@ -91,7 +91,7 @@ public class ObjectNodeContextImpl implements ObjectNodeContext
             if (!parentNode.containsReferences())
             {
                 //COPY and COPY_XML
-                if (m_classModel.isAllowed(CUT_COPY) && objectMeta instanceof Cloneable)
+                if (m_classModel.isAllowed(CUT_COPY) && objectMeta.isCloneable())
                 {
                     commands.add(new CopyCommand());
                     commands.add(new CopyXMLCommand());

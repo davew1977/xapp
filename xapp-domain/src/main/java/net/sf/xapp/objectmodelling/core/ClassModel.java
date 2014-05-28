@@ -633,6 +633,10 @@ public class ClassModel<T> {
         return getClassDatabase().getClassModel(obj.getClass()).findOrCreate(parent, obj);
     }
 
+    public Long registerWithClassDatabase(ObjectMeta objectMeta) {
+        return getClassDatabase().registerInstance(objectMeta);
+    }
+
     private class PrimaryKeyChangedListener implements PropertyChangeListener {
 
         public void propertyChanged(Property property, Object target, Object oldVal, Object newVal) {

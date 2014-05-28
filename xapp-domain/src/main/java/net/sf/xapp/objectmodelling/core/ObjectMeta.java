@@ -3,6 +3,7 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.utils.XappException;
 
+import javax.sound.sampled.Control;
 import java.util.*;
 
 import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
@@ -18,6 +19,7 @@ public class ObjectMeta<T> implements Namespace{
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
     private String key;
+    private Long id;
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectMeta<?> parent) {
         this.classModel = classModel;
@@ -30,6 +32,7 @@ public class ObjectMeta<T> implements Namespace{
                 lookupSets.put(aClass, new HashSet<ObjectMeta>());
             }
         }
+        this.id = classModel.registerWithClassDatabase(this);
     }
 
     public void mapByKey(ObjectMeta obj) {
@@ -203,7 +206,7 @@ public class ObjectMeta<T> implements Namespace{
 
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
         //if last element is this object, then remove it
-        if(namespacePath.getLast() == this) {
+        if(!isRoot() && namespacePath.getLast() == this) {
             namespacePath.removeLast();
         }
         ObjectMeta closestNamespace = namespacePath.removeLast();
@@ -292,5 +295,26 @@ public class ObjectMeta<T> implements Namespace{
 
     public Class<T> getType() {
         return classModel.getContainedClass();
+    }
+
+    public boolean isCloneable() {
+        return instance instanceof Cloneable;
+    }
+
+    public Object get(String propertyName) {
+        return get(classModel.getProperty(propertyName));
+    }
+
+    public void set(String propertyName, Object value) {
+        Property property = classModel.getProperty(propertyName);
+        if(value instanceof String) {
+            property.setSpecial(this, (String) value);
+        } else {
+            set(property, value);
+        }
+    }
+
+    public Long getId() {
+        return id;
     }
 }

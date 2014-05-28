@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContext<T>, ClassModelContext
 {
     private Class m_rootType;
-    private AtomicLong m_idSequence;
+    private AtomicLong m_idSequence = new AtomicLong(0);
     private Map<Long, Object> m_instanceMap;
     private Map<Object, Long> m_idMap;
     private HashMap<Class, ClassModel> m_classModelMap;
@@ -94,6 +94,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public void setMarshalDatesAsLongs() {
         m_ssMap.put(Date.class, new DateLongSerializer());
+    }
+
+    @Override
+    public Long registerInstance(ObjectMeta objectMeta) {
+        return m_idSequence.getAndIncrement();
     }
 
     public Unmarshaller getRootUnmarshaller()

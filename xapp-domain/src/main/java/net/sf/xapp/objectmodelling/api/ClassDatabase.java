@@ -75,4 +75,7 @@ public interface ClassDatabase<T>
 
     InspectionType getInspectionType();
     void setMarshalDatesAsLongs();
+
+    Long registerInstance(ObjectMeta objectMeta);
+
 }

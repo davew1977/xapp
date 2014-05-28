@@ -54,7 +54,13 @@ public class Property<T> implements Comparable
 
     public Property(ClassModelManager classDatabase, PropertyAccess propertyAccess, Class aClass, Reference ref,
                     String filterOnProperty, Key key,
-                    EditorWidget editorWidget, boolean isformattedText, Class parentClass, String query, boolean editable, TreeMeta treeMeta, boolean mandatory)
+                    EditorWidget editorWidget,
+                    boolean isformattedText,
+                    Class parentClass,
+                    String query,
+                    boolean editable,
+                    TreeMeta treeMeta,
+                    boolean mandatory)
     {
         m_classDatabase = classDatabase;
         m_mandatory = mandatory;
