@@ -124,6 +124,10 @@ public class ObjectMeta<T> implements Namespace{
         return getParent() == null;
     }
 
+    public ObjectMeta root() {
+        return isRoot() ? this : getParent().root();
+    }
+
     /**
      * find the right place to put this object. It should have one home location, which in the simple case where
      * there are not explicit namespaces defined, will be in the root object meta
@@ -291,6 +295,10 @@ public class ObjectMeta<T> implements Namespace{
     @Override
     public String toString() {
         return key;
+    }
+
+    public String meta() {
+        return String.format("id: %s, class: %s, key: %s, global key: %s", id, getType(), key, fullPath(root(), this));
     }
 
     public Class<T> getType() {

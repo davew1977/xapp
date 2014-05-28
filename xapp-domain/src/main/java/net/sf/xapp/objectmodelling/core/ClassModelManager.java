@@ -39,17 +39,16 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContext<T>, ClassModelContext
 {
-    private Class m_rootType;
-    private AtomicLong m_idSequence = new AtomicLong(0);
-    private Map<Long, Object> m_instanceMap;
-    private Map<Object, Long> m_idMap;
-    private HashMap<Class, ClassModel> m_classModelMap;
-    private HashMap<String, ClassModel> m_classModelBySimpleClassNameMap;//e.g. "Config" -> Config Class Model
-    private HashMap<Class, StringSerializer> m_ssMap;
-    private HashMap<Object, String> m_resourceMap;
-    private HashMap<PropertyObjectPair, String> m_resourceMapByReference;
-    private HashSet<Class> m_simpleTypes;
-    private KeyChangeHistory m_keyChangeHistory;
+    private Class rootType;
+    private AtomicLong idSequence = new AtomicLong(0);
+    private Map<Long, ObjectMeta> instanceMap;
+    private HashMap<Class, ClassModel> classModelMap;
+    private HashMap<String, ClassModel> classModelBySimpleClassNameMap;//e.g. "Config" -> Config Class Model
+    private HashMap<Class, StringSerializer> ssMap;
+    private HashMap<Object, String> resourceMap;
+    private HashMap<PropertyObjectPair, String> resourceMapByReference;
+    private HashSet<Class> simpleTypes;
+    private KeyChangeHistory keyChangeHistory;
 
     /**
      * this flag is false until the root unmarshaller has finished unmarshalling the root document
@@ -65,55 +64,63 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     public <T> ClassModelManager(Class<T> rootType, InspectionType inspectionType)
     {
         m_inspectionType = inspectionType;
-        m_rootType = rootType;
-        m_classModelMap = new HashMap<Class, ClassModel>();
-        m_classModelBySimpleClassNameMap = new HashMap<String, ClassModel>();
-        m_ssMap = new HashMap<Class, StringSerializer>();
-        m_resourceMap = new HashMap<Object, String>();
-        m_resourceMapByReference = new HashMap<PropertyObjectPair, String>();
-        m_simpleTypes = new HashSet<Class>();
-        m_simpleTypes.add(Integer.class);
-        m_simpleTypes.add(Long.class);
-        m_simpleTypes.add(Boolean.class);
-        m_simpleTypes.add(Double.class);
-        m_simpleTypes.add(Float.class);
-        m_simpleTypes.add(Character.class);
-        m_simpleTypes.add(Byte.class);
-        m_simpleTypes.add(Short.class);
-        m_simpleTypes.add(String.class);
+        instanceMap = new LinkedHashMap<Long, ObjectMeta>();
+        this.rootType = rootType;
+        classModelMap = new HashMap<Class, ClassModel>();
+        classModelBySimpleClassNameMap = new HashMap<String, ClassModel>();
+        ssMap = new HashMap<Class, StringSerializer>();
+        resourceMap = new HashMap<Object, String>();
+        resourceMapByReference = new HashMap<PropertyObjectPair, String>();
+        simpleTypes = new HashSet<Class>();
+        simpleTypes.add(Integer.class);
+        simpleTypes.add(Long.class);
+        simpleTypes.add(Boolean.class);
+        simpleTypes.add(Double.class);
+        simpleTypes.add(Float.class);
+        simpleTypes.add(Character.class);
+        simpleTypes.add(Byte.class);
+        simpleTypes.add(Short.class);
+        simpleTypes.add(String.class);
 
-        m_ssMap.put(String[].class, new StringArraySerializer());
-        m_ssMap.put(int[].class, new IntegerArraySerializer());
-        m_ssMap.put(long[].class, new LongListSerializer());
-        m_ssMap.put(Date.class, new DateStringSerializer());
+        ssMap.put(String[].class, new StringArraySerializer());
+        ssMap.put(int[].class, new IntegerArraySerializer());
+        ssMap.put(long[].class, new LongListSerializer());
+        ssMap.put(Date.class, new DateStringSerializer());
 
-        m_keyChangeHistory = new KeyChangeHistoryImpl();
+        keyChangeHistory = new KeyChangeHistoryImpl();
 
         m_initializing = true;
     }
 
     public void setMarshalDatesAsLongs() {
-        m_ssMap.put(Date.class, new DateLongSerializer());
+        ssMap.put(Date.class, new DateLongSerializer());
     }
 
     @Override
     public Long registerInstance(ObjectMeta objectMeta) {
-        return m_idSequence.getAndIncrement();
+        long id = idSequence.getAndIncrement();
+        instanceMap.put(id, objectMeta);
+        return id;
+    }
+
+    @Override
+    public Collection<ObjectMeta> allManagedObjects() {
+        return instanceMap.values();
     }
 
     public Unmarshaller getRootUnmarshaller()
     {
-        return createUnmarshaller(m_rootType);
+        return createUnmarshaller(rootType);
     }
 
     public Marshaller<T> getRootMarshaller()
     {
-        return createMarshaller(m_rootType);
+        return createMarshaller(rootType);
     }
 
     public ClassModel getRootClassModel()
     {
-        return getClassModel(m_rootType);
+        return getClassModel(rootType);
     }
 
     public T getRootInstance()
@@ -136,12 +143,12 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public <E> ClassModel<E> getClassModel(Class<E> aClass)
     {
-        ClassModel classModel = m_classModelMap.get(aClass);
+        ClassModel classModel = classModelMap.get(aClass);
         if (classModel == null)
         {
             classModel = ClassModelFactory.createClassModel(this, aClass);
-            m_classModelMap.put(aClass, classModel);
-            ClassModel cm = m_classModelBySimpleClassNameMap.put(aClass.getSimpleName(), classModel);
+            classModelMap.put(aClass, classModel);
+            ClassModel cm = classModelBySimpleClassNameMap.put(aClass.getSimpleName(), classModel);
             if (cm != null)
             {
                 System.out.println("WARNING: 2 classes registered with simple name " + aClass.getSimpleName());
@@ -160,7 +167,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public ClassModel getClassModelBySimpleName(String className)
     {
-        return m_classModelBySimpleClassNameMap.get(className);
+        return classModelBySimpleClassNameMap.get(className);
     }
 
     /**
@@ -190,12 +197,12 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public void addStringSerializerMapping(Class aClass, StringSerializer ss)
     {
-        m_ssMap.put(aClass, ss);
+        ssMap.put(aClass, ss);
     }
 
     public StringSerializer getStringSerializer(Class aClass)
     {
-        return m_ssMap.get(aClass);
+        return ssMap.get(aClass);
     }
 
     /**
@@ -207,7 +214,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public void mapIncludedResourceURL(Object unmarshalledObj, String resourceURL)
     {
-        m_resourceMap.put(unmarshalledObj, resourceURL);
+        resourceMap.put(unmarshalledObj, resourceURL);
     }
 
     /**
@@ -218,17 +225,17 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public void mapIncludedResourceURLByReference(PropertyObjectPair propertyObjectPair, String resourceURL)
     {
-        m_resourceMapByReference.put(propertyObjectPair, resourceURL);
+        resourceMapByReference.put(propertyObjectPair, resourceURL);
     }
 
     public String getIncludedResourceURL(Object unmarshalledObject)
     {
-        return m_resourceMap.get(unmarshalledObject);
+        return resourceMap.get(unmarshalledObject);
     }
 
     public String getIncludedResourceURLByReference(PropertyObjectPair propertyObjectPair)
     {
-        return m_resourceMapByReference.get(propertyObjectPair);
+        return resourceMapByReference.get(propertyObjectPair);
     }
 
     /**
@@ -237,18 +244,18 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public void reset()
     {
-        m_classModelMap.clear();
-        m_classModelBySimpleClassNameMap.clear();
+        classModelMap.clear();
+        classModelBySimpleClassNameMap.clear();
         //m_idMap.clear(); //not yet used
         //m_instanceMap.clear(); //not yet used
-        m_resourceMap.clear();
-        m_resourceMapByReference.clear();
+        resourceMap.clear();
+        resourceMapByReference.clear();
         clearKeyChangeHistory();
     }
 
     public boolean isSimpleType(Class aClass)
     {
-        return aClass.isPrimitive() || m_simpleTypes.contains(aClass)
+        return aClass.isPrimitive() || simpleTypes.contains(aClass)
                 || aClass.getAnnotation(SimpleType.class) != null;
     }
 
@@ -265,16 +272,16 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      */
     public ClassModelManager createChildCMM(Class[] retainList)
     {
-        ClassModelManager cmm = new ClassModelManager(m_rootType, m_inspectionType);
-        cmm.m_ssMap = (HashMap<Class, StringSerializer>) m_ssMap.clone();
-        cmm.m_resourceMap = (HashMap<Object, String>) m_resourceMap.clone();
+        ClassModelManager cmm = new ClassModelManager(rootType, m_inspectionType);
+        cmm.ssMap = (HashMap<Class, StringSerializer>) ssMap.clone();
+        cmm.resourceMap = (HashMap<Object, String>) resourceMap.clone();
         for (Class cl : retainList)
         {
             ClassModel retainCM = getClassModel(cl);
             List<ClassModel> list = retainCM.getClassModelHeirarchy();
             for (ClassModel classModel : list)
             {
-                cmm.m_classModelMap.put(classModel.getContainedClass(), classModel);
+                cmm.classModelMap.put(classModel.getContainedClass(), classModel);
             }
         }
         return cmm;
@@ -283,7 +290,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public KeyChangeHistory getKeyChangeHistory()
     {
-        return m_keyChangeHistory;
+        return keyChangeHistory;
     }
 
     public void setInitialized(ObjectMeta<T> obj)
@@ -356,23 +363,23 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public List<ClassModel> enumerateClassModels()
     {
-        return new ArrayList<ClassModel>(m_classModelMap.values());
+        return new ArrayList<ClassModel>(classModelMap.values());
     }
 
     public boolean hasClassModel(Class aClass)
     {
-        return m_classModelMap.containsKey(aClass);
+        return classModelMap.containsKey(aClass);
     }
 
     public void clearKeyChangeHistory()
     {
-        m_keyChangeHistory = new KeyChangeHistoryImpl();
+        keyChangeHistory = new KeyChangeHistoryImpl();
 
     }
 
     public List<ClassModel> getClassModels()
     {
-        return new ArrayList<ClassModel>(m_classModelMap.values());
+        return new ArrayList<ClassModel>(classModelMap.values());
     }
 
     public <E> E getInstanceNoCheck(Class<E> aClass, String key)
@@ -398,7 +405,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public KeyChangeDictionary getKeyChangeDictionary()
     {
-        return m_keyChangeHistory.getCurrentKeyChangeDictionary();
+        return keyChangeHistory.getCurrentKeyChangeDictionary();
     }
 
     public Object resolveInstance(ClassModel classModel, String key)

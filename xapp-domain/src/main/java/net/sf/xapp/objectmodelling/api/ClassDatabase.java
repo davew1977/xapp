@@ -18,6 +18,7 @@ import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -77,5 +78,7 @@ public interface ClassDatabase<T>
     void setMarshalDatesAsLongs();
 
     Long registerInstance(ObjectMeta objectMeta);
+
+    Collection<ObjectMeta> allManagedObjects();
 
 }

@@ -15,11 +15,14 @@ package net.sf.xapp.application.api;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.utils.XappException;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -101,9 +104,22 @@ public class SimpleApplication<T> implements Application<T>
 
     }
 
-    public void init(ApplicationContainer<T> applicationContainer)
+    public void init(final ApplicationContainer<T> applicationContainer)
     {
         appContainer = applicationContainer;
+
+        JMenu metaMenu = new JMenu("Meta");
+        metaMenu.add(new AbstractAction("print all objects") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Collection<ObjectMeta> objects = applicationContainer.getGuiContext().getClassDatabase().allManagedObjects();
+                for (ObjectMeta object : objects) {
+                    System.out.println(object.meta());
+                }
+            }
+        });
+        SwingUtils.setFont(metaMenu);
+        applicationContainer.getMenuBar().add(metaMenu);
     }
 
     public void nodesUpdated(List<PropertyChange> changes)
