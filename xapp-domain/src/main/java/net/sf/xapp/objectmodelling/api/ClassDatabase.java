@@ -17,6 +17,7 @@ import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objectmodelling.core.Property;
 
 import java.util.Collection;
 import java.util.List;
@@ -81,4 +82,5 @@ public interface ClassDatabase<T>
 
     Collection<ObjectMeta> allManagedObjects();
 
+    ObjectMeta findOrCreateObjMeta(ObjectMeta parent, Property property, Object value);
 }

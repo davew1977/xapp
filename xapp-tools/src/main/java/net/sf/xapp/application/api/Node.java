@@ -13,6 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.core.CommandContext;
+import net.sf.xapp.objectmodelling.core.ObjRef;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 
@@ -48,17 +49,10 @@ public interface Node
     int numChildren();
     TreePath getPath();
 
-    //APPLICATION API
-    /**
-     * @return null if the node is not backed by part of a {@link net.sf.xapp.tree.Tree} in the
-     * underlying model
-     */
-    Tree getDomainTreeRoot();
-
     /**
      * @return a handle to the entire application
      */
-    ApplicationContainer getApplicationContainer();
+    ApplicationContainer getAppContainer();
 
     /**
      * @param commandContext shows whether the commands are for execution in a pop up menu, assigned to key combinations or in the search window
@@ -105,16 +99,19 @@ public interface Node
      */
     boolean isReference();
 
-    /**
-     * if the user object is a {@link Tree} node then this will refresh the root node.
-     * That means updating all the node keys if they have changed
-     */
-    void updateDomainTreeRoot();
-
     boolean canEdit();
 
     int index();
 
     ObjectMeta objectMeta();
 
+    void add(ObjectMeta newObjMeta);
+
+    void refresh();
+
+    /**
+     * will combine this obj with its nearest list property to form an objref (needed to create a new objmeta)
+     * @return
+     */
+    ObjRef objRef();
 }

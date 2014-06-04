@@ -32,7 +32,7 @@ public class MultiCutCommand extends MultiNodeCommand
 
     public void execute(List<Node> params)
     {
-        Clipboard clipboard = params.get(0).getApplicationContainer().getClipboard();
+        Clipboard clipboard = params.get(0).getAppContainer().getClipboard();
         clipboard.setAction(Clipboard.Action.CUT);
         for (Node node : params)
         {

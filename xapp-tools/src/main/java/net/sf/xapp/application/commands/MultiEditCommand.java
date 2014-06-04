@@ -18,51 +18,37 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
-import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MultiEditCommand extends MultiNodeCommand
 {
-    private ApplicationContainer m_applicationContainer;
+    private ApplicationContainer appContainer;
     private ClassModel m_commonClassModel;
     private List<Node> m_nodes;
 
     public MultiEditCommand(ApplicationContainer applicationContainer, List<Node> nodes, ClassModel commonClassModel)
     {
         super("Edit "+nodes.size()+ " items", "edit these nodes", "ctrl E");
-        m_applicationContainer = applicationContainer;
+        appContainer = applicationContainer;
         m_commonClassModel = commonClassModel;
         m_nodes = nodes;
     }
 
     public void execute(List<Node> nodes)
     {
-        List<ObjectMeta> targets = extractTargets();
-        EditableContext editableContext = new MultiTargetEditableContext(m_commonClassModel, targets);
+        final List<ObjectMeta> targets = extractTargets();
+        EditableContext editableContext = new MultiTargetEditableContext(m_commonClassModel, targets, appContainer.getNodeUpdateApi());
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChange> changes, boolean closing)
+            public void save(List<PropertyUpdate> updates, boolean closing)
             {
-                if(changes.isEmpty())
-                {
-                    return; //nothing was changed
-                }
-                List<TreePath> newSelectionPaths = new ArrayList<TreePath>();
-                for (Node node : m_nodes)
-                {
-                    Node newNode = m_applicationContainer.getNodeBuilder().refresh(node);
-                    newSelectionPaths.add(newNode.getPath());
-                    newNode.updateDomainTreeRoot();                  
-                }
-                m_applicationContainer.getApplication().nodesUpdated(changes);
-                m_applicationContainer.getMainTree().setSelectionPaths(newSelectionPaths.toArray(new TreePath[newSelectionPaths.size()]));
+                appContainer.getNodeUpdateApi().updateObjects(targets, updates);
             }
         });
-        editor.getMainFrame().setLocationRelativeTo(m_applicationContainer.getMainPanel());
+        editor.getMainFrame().setLocationRelativeTo(appContainer.getMainPanel());
         editor.getMainFrame().setVisible(true);
     }
 

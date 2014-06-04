@@ -13,12 +13,10 @@
 package net.sf.xapp.application.commands;
 
 import net.sf.xapp.application.api.*;
-import net.sf.xapp.application.core.NodeBuilder;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.util.List;
 
@@ -34,27 +32,22 @@ public class CreateCommand extends NodeCommand
 
     public void execute(final Node parentNode)
     {
-        final ObjectMeta objMeta = m_createClass.newInstance(parentNode.objectMeta());
-        final ApplicationContainer applicationContainer = parentNode.getApplicationContainer();
-        final ListNodeContext listNodeContext = parentNode.getListNodeContext();
-        applicationContainer.getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), objMeta);
-        EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE);
+        final ApplicationContainer appContainer = parentNode.getAppContainer();
+        final ObjectMeta objMeta = appContainer.getNodeUpdateApi().createObject(parentNode, m_createClass);
+        EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE, appContainer.getNodeUpdateApi());
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChange> changes, boolean closeOnSave)
+            public void save(List<PropertyUpdate> updates, boolean closeOnSave)
             {
-                if (!listNodeContext.contains(objMeta))
-                {
-                    listNodeContext.add(objMeta);
-                    NodeBuilder nodeBuilder = applicationContainer.getNodeBuilder();
-                    Node newNode = nodeBuilder.createNode(null, objMeta, parentNode, parentNode.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
-                    applicationContainer.getMainPanel().repaint();
-                    parentNode.updateDomainTreeRoot();
-                    applicationContainer.getApplication().nodeAdded(newNode);
-                }
+                appContainer.getNodeUpdateApi().addObject(parentNode, objMeta, updates);
+            }
+
+            @Override
+            public void close() {
+                appContainer.getNodeUpdateApi().cancelObject(objMeta);
             }
         });
-        defaultEditor.getMainFrame().setLocationRelativeTo(applicationContainer.getMainPanel());
+        defaultEditor.getMainFrame().setLocationRelativeTo(appContainer.getMainPanel());
         defaultEditor.getMainFrame().setVisible(true);
     }
 }

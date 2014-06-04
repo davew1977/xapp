@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.editor;
 
+import net.sf.xapp.application.api.ApplicationContainer;
+import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
@@ -30,11 +32,13 @@ public class SingleTargetEditableContext implements EditableContext
 
     private ObjectMeta objMeta;
     private Mode m_mode;
+    private NodeUpdateApi nodeUpdateApi;
 
-    public SingleTargetEditableContext(ObjectMeta target, Mode mode)
+    public SingleTargetEditableContext(ObjectMeta target, Mode mode, NodeUpdateApi nodeUpdateApi)
     {
         objMeta = target;
         m_mode = mode;
+        this.nodeUpdateApi = nodeUpdateApi;
     }
 
     public String getTitle()
@@ -57,7 +61,7 @@ public class SingleTargetEditableContext implements EditableContext
         List<PropertyUpdate> updates = new ArrayList<PropertyUpdate>();
         Object oldVal = objMeta.get(property);
         if(!Property.objEquals(oldVal, value)) {
-            updates.add(new PropertyUpdate(property, objMeta, oldVal, value));
+            updates.add(new PropertyUpdate(property, oldVal, value));
         }
         return updates;
     }
@@ -97,6 +101,11 @@ public class SingleTargetEditableContext implements EditableContext
     {
         return property.isEditableOnCreation() && m_mode == Mode.CREATE
                 || property.isEditable() && m_mode == Mode.EDIT;
+    }
+
+    @Override
+    public NodeUpdateApi getNodeUpdateApi() {
+        return nodeUpdateApi;
     }
 
     public Mode getMode()

@@ -12,10 +12,9 @@
  */
 package net.sf.xapp.application.editor;
 
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.Property;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.application.api.ApplicationContainer;
+import net.sf.xapp.application.api.NodeUpdateApi;
+import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.ArrayList;
@@ -31,11 +30,13 @@ public class MultiTargetEditableContext implements EditableContext
     private ClassModel m_classModel;
     private List<ObjectMeta> m_targets;
     private Map<Property, Object> m_latestValueMap = new HashMap<Property, Object>();
+    private NodeUpdateApi nodeUpdateApi;
 
-    public MultiTargetEditableContext(ClassModel classModel, List<ObjectMeta> targets)
+    public MultiTargetEditableContext(ClassModel classModel, List<ObjectMeta> targets, NodeUpdateApi nodeUpdateApi)
     {
         m_classModel = classModel;
         m_targets = targets;
+        this.nodeUpdateApi = nodeUpdateApi;
     }
 
     public String getTitle()
@@ -64,6 +65,27 @@ public class MultiTargetEditableContext implements EditableContext
         //put value in map
         m_latestValueMap.put(property, controlValue);
         return controlValue;
+    }
+
+    @Override
+    public List<PropertyUpdate> potentialUpdates(Property property, Object value) {
+
+        ArrayList<PropertyUpdate> changes = new ArrayList<PropertyUpdate>();
+        //if the value has changed then set it to all instances in list
+        if (!Property.objEquals(value, m_latestValueMap.get(property)))
+        {
+            for (ObjectMeta target : m_targets)
+            {
+                Object oldVal = target.get(property);
+                PropertyUpdate changeTuple = new PropertyUpdate(property, oldVal, value);
+                if (!Property.objEquals(oldVal, value))
+                {
+                    changes.add(changeTuple);
+                }
+            }
+        }
+        //else do nothing
+        return changes;
     }
 
     public List<PropertyChange> setPropertyValue(Property property, Object value)
@@ -113,5 +135,10 @@ public class MultiTargetEditableContext implements EditableContext
     public boolean isPropertyEditable(Property property)
     {
         return property.isEditable();
+    }
+
+    @Override
+    public NodeUpdateApi getNodeUpdateApi() {
+        return nodeUpdateApi;
     }
 }

@@ -13,6 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
 import java.util.List;
@@ -92,10 +93,10 @@ public interface Application<T>
      * veto this, but it can manipulate the data model as it wishes.
      *
      * The notification is made before the Editor for the newChild is presented on the screen
-     * @param parent
+     * @param parentNode
      * @param newChild
      */
-    void nodeAboutToBeAdded(ContainerProperty containerProperty, Object parent, Object newChild);
+    void nodeAboutToBeAdded(Node parentNode, ObjectMeta newChild);
 
     /**
      * A notification that a datamodel object has been edited. The user hit the save button in an editor
@@ -103,6 +104,8 @@ public interface Application<T>
      * @param changes
      */
     void nodeUpdated(Node objectNode, Map<String,PropertyChange> changes);
+    void objectUpdated(ObjectMeta objectMeta, Map<String,PropertyChange> changes);
+    void objectUpdated(Node objectNode, ObjectMeta objectMeta, Map<String,PropertyChange> changes);
 
     /**
      * A notification that a set of objects in the underlying data model have been edited. The user hit the

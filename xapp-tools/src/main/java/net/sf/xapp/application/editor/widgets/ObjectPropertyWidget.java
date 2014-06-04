@@ -12,14 +12,10 @@
  */
 package net.sf.xapp.application.editor.widgets;
 
+import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.application.utils.SwingUtils;
-import net.sf.xapp.annotations.objectmodelling.TreeMeta;
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.tree.Tree;
+import net.sf.xapp.objectmodelling.core.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +25,7 @@ import java.util.List;
 
 public class ObjectPropertyWidget extends AbstractPropertyWidget
 {
+    private NodeUpdateApi nodeUpdateApi;
     private Object m_propertyValue;
     private JPanel m_mainPanel;
     private JButton m_editButton;
@@ -38,8 +35,9 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
     private boolean m_editable;
     private ObjectMeta parentObj;
 
-    public ObjectPropertyWidget()
+    public ObjectPropertyWidget(NodeUpdateApi nodeUpdateApi)
     {
+        this.nodeUpdateApi = nodeUpdateApi;
         m_mainPanel = getMainPanel();
         updateState();
     }
@@ -93,13 +91,14 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
                 public void actionPerformed(ActionEvent e)
                 {
                     ClassModel propertyClassModel = m_widgetContext.getClassDatabase().getClassModel(m_propertyValue.getClass());
-                    ObjectMeta objValue = propertyClassModel.find(m_propertyValue);
-                    EditableContext editableContext = new SingleTargetEditableContext(objValue, SingleTargetEditableContext.Mode.EDIT);
+                    final ObjectMeta objValue = propertyClassModel.find(m_propertyValue);
+                    EditableContext editableContext = new SingleTargetEditableContext(objValue, SingleTargetEditableContext.Mode.EDIT, nodeUpdateApi);
                     Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
                     {
-                        public void save(java.util.List<PropertyChange> changes, boolean closing)
+                        public void save(java.util.List<PropertyUpdate> changes, boolean closing)
                         {
                             updateState();
+                            nodeUpdateApi.updateObject(objValue, changes);
                         }
                     });
                     defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);
@@ -158,21 +157,15 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final ObjectMeta instance = validImpl.newInstance(parentObj);
-        EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE);
+        final ObjectMeta instance = validImpl.newInstance(new ObjRef(parentObj, getProperty()));
+        EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
-            public void save(List<PropertyChange> changes, boolean closing)
+            public void save(List<PropertyUpdate> changes, boolean closing)
             {
-                m_propertyValue = instance;
-                //special handling for domain tree roots
-                TreeMeta treeMeta = m_widgetContext.getProperty().getTreeMeta();
-                if (treeMeta != null)
-                {
-                    ((Tree) instance.getInstance()).setPathSeparator(treeMeta.pathSeparator());
-                    ((Tree) instance.getInstance()).setLeafTypes(treeMeta.leafTypes());
-                }
                 updateState();
+                nodeUpdateApi.addObject(instance, changes);
+
             }
         });
         defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);

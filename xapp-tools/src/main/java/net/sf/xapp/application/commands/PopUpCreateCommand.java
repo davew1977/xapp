@@ -49,7 +49,7 @@ public class PopUpCreateCommand extends NodeCommand
                 public void actionPerformed(ActionEvent e)
                 {
                     command.execute(node);
-                    node.getApplicationContainer().getMainFrame().repaint();
+                    node.getAppContainer().getMainFrame().repaint();
                 }
             });
             menuItem.setToolTipText(command.getDescription());
@@ -58,7 +58,7 @@ public class PopUpCreateCommand extends NodeCommand
         }
         if (invoker == null)
         {
-            JTree tree = node.getApplicationContainer().getMainTree();
+            JTree tree = node.getAppContainer().getMainTree();
             int row = tree.getRowForPath(node.getPath());
             Rectangle rowBounds = tree.getRowBounds(row);
             int y = (int) rowBounds.getY();

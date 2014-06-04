@@ -10,39 +10,35 @@ import java.util.List;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-public class StandaloneNodeUpdate implements NodeUpdateApi {
-    private final ApplicationContainer appContainer;
-
-    public StandaloneNodeUpdate(ApplicationContainer appContainer) {
-        this.appContainer = appContainer;
-    }
-
+public class NullNodeUpdateApi implements NodeUpdateApi {
     @Override
     public void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        //find node
-        Node node = (Node) objectMeta.getAttachment();
-        if(node != null) {
-            node.refresh();
-        }
-        appContainer.getApplication().objectUpdated(objectMeta, PropertyUpdate.execute(objectMeta, potentialUpdates));
+
     }
 
     @Override
     public void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates) {
-        for (ObjectMeta objectMeta : objectMetas) {
-            updateObject(objectMeta, potentialUpdates);
-        }
+
     }
 
     @Override
     public void addObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        PropertyUpdate.execute(objectMeta, potentialUpdates);
-        addObject(parentNode, objectMeta);
+
     }
 
     @Override
     public void addObject(Node parentNode, ObjectMeta objectMeta) {
-        parentNode.add(objectMeta);
+
+    }
+
+    @Override
+    public void removeObject(ObjectMeta objectMeta) {
+
+    }
+
+    @Override
+    public void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex) {
+
     }
 
     @Override
@@ -62,20 +58,16 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public ObjectMeta createObject(Node parentNode, ClassModel type) {
-        final ObjectMeta objMeta = type.newInstance(parentNode.objectMeta());
-        appContainer.getApplication().nodeAboutToBeAdded(parentNode, objMeta);
-        return objMeta;
+        return null;
     }
 
     @Override
     public ObjectMeta registerObject(Node parentNode, ClassModel type, Object obj) {
-        final ObjectMeta objMeta = type.findOrCreate(parentNode.objectMeta(), obj);
-        appContainer.getApplication().nodeAboutToBeAdded(parentNode, objMeta);
-        return objMeta;
+        return null;
     }
 
     @Override
     public void cancelObject(ObjectMeta objMeta) {
-        objMeta.dispose();
+
     }
 }

@@ -18,8 +18,6 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objectmodelling.difftracking.ChangeModel;
-import net.sf.xapp.tree.Tree;
-import net.sf.xapp.tree.TreeNode;
 import net.sf.xapp.utils.XappException;
 import org.w3c.dom.*;
 
@@ -172,12 +170,15 @@ public class Unmarshaller<T>
      * @return the unmarshalled java object
      * @throws Exception any parse exception or java.reflect exception
      */
-    private ObjectMeta<T> unmarshal(Element element, GlobalContext<T> context) throws Exception
+    private ObjectMeta<T> unmarshal(Element element, GlobalContext<T> context) throws Exception{
+        return unmarshal(element, context, null);
+    }
+    private ObjectMeta<T> unmarshal(Element element, GlobalContext<T> context, Property parentProperty) throws Exception
     {
         ClassDatabase cdb = m_classModel.getClassDatabase();
 
         //if an element exists we should create an empty object instead of setting to null
-        ObjectMeta<T> objectMeta = context.newInstance(m_classModel);
+        ObjectMeta<T> objectMeta = context.newInstance(parentProperty, m_classModel);
 
         NodeList nodeList = element.getChildNodes();
         for (int n = 0; n < nodeList.getLength(); n++)
@@ -293,7 +294,7 @@ public class Unmarshaller<T>
                         //need to find implementation type
                         ClassModel validImplementation = classModel.getValidImplementation(listElement.getNodeName());
                         Unmarshaller unmarshaller = getUnmarshaller(validImplementation);
-                        nextObject = unmarshaller.unmarshal(listElement, context).getInstance();
+                        nextObject = unmarshaller.unmarshal(listElement, context, property).getInstance();
                     }
                     else if (includeResource != null)
                     {
@@ -303,7 +304,7 @@ public class Unmarshaller<T>
                     else
                     {
                         Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
-                        nextObject = unmarshaller.unmarshal(listElement, context).getInstance();
+                        nextObject = unmarshaller.unmarshal(listElement, context, property).getInstance();
                     }
                     listProperty.addToMapOrCollection(al, nextObject);
                 }
@@ -331,16 +332,6 @@ public class Unmarshaller<T>
     {
         ClassDatabase classDatabase = m_classModel.getClassDatabase();
         Class propertyClass = property.getPropertyClass();
-        //if this is a tree property then add to valid implementations
-        if (property.isTree())
-        {
-            if (context.m_inTree)
-                throw new XappException("nested tree not supported, property: " + property);
-            context.m_inTree = true;
-            List<ClassModel> extraTypes = classDatabase.getClassModels(property.getTreeMeta().leafTypes());
-            //extraTypes.add(cmm.getClassModel(property.getTreeMeta().nodeSetType()));
-            classDatabase.getClassModel(TreeNode.class).addValidImplementations(extraTypes);
-        }
 
         ClassModel classModel = classDatabase.getClassModel(propertyClass);
         Object newObj = null;
@@ -352,7 +343,7 @@ public class Unmarshaller<T>
             ClassModel validImplementation = className != null ?
                     classModel.getValidImplementation(className.getNodeValue()) : classModel;
             Unmarshaller unmarshaller = getUnmarshaller(validImplementation);
-            newObj = unmarshaller.unmarshal((Element) node, context).getInstance();
+            newObj = unmarshaller.unmarshal((Element) node, context, property).getInstance();
         }
         else if (includeResource != null)
         {
@@ -362,18 +353,10 @@ public class Unmarshaller<T>
         }
         else
         {
-            newObj = getUnmarshaller(classModel).unmarshal((Element) node, context).getInstance();
+            newObj = getUnmarshaller(classModel).unmarshal((Element) node, context, property).getInstance();
         }
         parentOb.set(property, newObj);
 
-        //if property is a tree
-        if (property.isTree() && newObj != null)
-        {
-            Tree tree = (Tree) newObj;
-            tree.updateTree(property.getTreeMeta().pathSeparator()); //updates key property
-            tree.setLeafTypes(property.getTreeMeta().leafTypes());
-            context.m_inTree = false;
-        }
     }
 
     private Object getIncludedResource(Node includeResource, ClassModel classModel, GlobalContext context)
@@ -462,7 +445,6 @@ public class Unmarshaller<T>
 
     private static class GlobalContext<T>
     {
-        boolean m_inTree;
         public Map<Object, Method> m_objectsWithPostInit = new LinkedHashMap<Object, Method>();
         public String m_path;
         Stack<LocalContext> contextStack = new Stack<LocalContext>();
@@ -470,11 +452,11 @@ public class Unmarshaller<T>
         private GlobalContext() {
         }
 
-        public <E> ObjectMeta<E> newInstance(ClassModel<E> classModel) {
+        public <E> ObjectMeta<E> newInstance(Property property, ClassModel<E> classModel) {
 
             LocalContext<E> localContext = new LocalContext<E>(currentContext(), classModel);
             contextStack.push(localContext);
-            return localContext.newInstance();
+            return localContext.newInstance(property);
         }
 
         private LocalContext currentContext() {
@@ -544,8 +526,8 @@ public class Unmarshaller<T>
         }
 
 
-        public  ObjectMeta<E> newInstance() {
-            objectMeta = classModel.newInstance(parentObjMeta());
+        public  ObjectMeta<E> newInstance(Property property) {
+            objectMeta = classModel.newInstance(parentObjRef(property));
 
             /*if (classModel.hasKey()) {
                 LocalContext namespace = getNamespace(classModel.getContainedClass());
@@ -555,8 +537,8 @@ public class Unmarshaller<T>
             return objectMeta;
         }
 
-        private ObjectMeta parentObjMeta() {
-            return !isRoot() ? parentContext.objectMeta : null;
+        private ObjRef parentObjRef(Property property) {
+            return !isRoot() ? new ObjRef(parentContext.objectMeta , property): null;
         }
 
         public void postInit() {

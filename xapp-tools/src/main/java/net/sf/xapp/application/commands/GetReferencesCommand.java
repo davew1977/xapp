@@ -20,7 +20,7 @@ import net.sf.xapp.application.editor.EditorAdaptor;
 import net.sf.xapp.application.editor.widgets.ListReferenceGUI;
 import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
+import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class GetReferencesCommand extends NodeCommand
         final ListReferenceGUI gui = new ListReferenceGUI(node);
         gui.setGuiListener(new EditorAdaptor()
         {
-            public void save(List<PropertyChange> changes, boolean closing)
+            public void save(List<PropertyUpdate> changes, boolean closing)
             {
                 ListNodeContext context = node.getListNodeContext();
                 Collection list = context.getCollection();
@@ -48,14 +48,14 @@ public class GetReferencesCommand extends NodeCommand
                 Node updatedNode = node.getObjectNodeContext() != null ? node : node.getParent();
                 Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
                 map.put(listProperty.getName(), new PropertyChange(listProperty, updatedNode.wrappedObject(), before, list));
-                node.getApplicationContainer().getNodeBuilder().refresh(node);
+                node.getAppContainer().getNodeBuilder().refresh(node);
                 if (!before.equals(list))
                 {
-                    node.getApplicationContainer().getApplication().nodeUpdated(updatedNode, map);
+                    node.getAppContainer().getApplication().nodeUpdated(updatedNode, map);
                 }
             }
         });
-        gui.setLocationRelativeTo(node.getApplicationContainer().getMainPanel());
+        gui.setLocationRelativeTo(node.getAppContainer().getMainPanel());
         gui.setVisible(true);
     }
 }

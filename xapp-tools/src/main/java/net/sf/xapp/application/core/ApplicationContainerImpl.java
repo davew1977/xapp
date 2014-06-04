@@ -24,6 +24,7 @@ import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjRef;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
@@ -202,7 +203,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     {
         ClassModel classModel = m_guiContext.getClassDatabase().getClassModel(instance.getClass());
         EditableContext editableContext = new SingleTargetEditableContext(
-                classModel.find(instance), SingleTargetEditableContext.Mode.EDIT);
+                classModel.find(instance), SingleTargetEditableContext.Mode.EDIT, getNodeUpdateApi());
         return EditorManager.getInstance().getEditor(editableContext, listener);
     }
 
@@ -517,7 +518,6 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if (node != null) throw new XappException("object " + obj + " is already added");
 
         final ListNodeContext listNodeContext = parentNode.getListNodeContext();
-        getApplication().nodeAboutToBeAdded(listNodeContext.getContainerProperty(), listNodeContext.getListOwner(), obj);
         List list = (List) listNodeContext.getCollection();
         if (!list.contains(obj))
         {
@@ -528,11 +528,11 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
             else {
                 list.add(index, obj);
             }
-            ObjectMeta objectMeta = getClassDatabase().getClassModel(obj.getClass()).registerInstance(parentNode.objectMeta(), obj);
-            Node newNode = m_nodeBuilder.createNode(null, objectMeta, parentNode, parentNode.getDomainTreeRoot(),
-                    ObjectNodeContext.ObjectContext.IN_LIST);
+            ObjectMeta objectMeta = getClassDatabase().getClassModel(obj.getClass()).registerInstance(
+                    new ObjRef(parentNode.objectMeta(), listNodeContext.getContainerProperty()), obj);
+            getApplication().nodeAboutToBeAdded(parentNode, objectMeta);
+            Node newNode = m_nodeBuilder.createNode(null, objectMeta, parentNode, ObjectNodeContext.ObjectContext.IN_LIST);
             getMainPanel().repaint();
-            parentNode.updateDomainTreeRoot();
             getApplication().nodeAdded(newNode);
         }
     }

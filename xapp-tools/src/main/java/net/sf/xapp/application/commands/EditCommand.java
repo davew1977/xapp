@@ -17,13 +17,10 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EditCommand extends NodeCommand
 {
@@ -35,15 +32,15 @@ public class EditCommand extends NodeCommand
     public void execute(final Node node)
     {
         //open edit defaultGui
-        final ApplicationContainer appContainer = node.getApplicationContainer();
+        final ApplicationContainer appContainer = node.getAppContainer();
         final ObjectMeta objectToEdit = node.objectMeta();
         EditableContext editableContext = new SingleTargetEditableContext(
-                objectToEdit, SingleTargetEditableContext.Mode.EDIT);
+                objectToEdit, SingleTargetEditableContext.Mode.EDIT, appContainer.getNodeUpdateApi());
         Editor editor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyUpdate> potentialUpdates, boolean closing)
             {
-                appContainer.getNodeUpdateApi().updateNode(node, potentialUpdates);
+                appContainer.getNodeUpdateApi().updateObject(objectToEdit, potentialUpdates);
             }
         });
 

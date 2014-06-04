@@ -40,7 +40,7 @@ public class ChangeTypeCommand extends NodeCommand
         ListNodeContext parentListNodeContext = node.getParent().getListNodeContext();
         List<ClassModel> classOptions = parentListNodeContext.getValidImplementations();
         final List containingList = parentListNodeContext.getList();
-        final ApplicationContainer appContainer = node.getApplicationContainer();
+        final ApplicationContainer appContainer = node.getAppContainer();
         for (final ClassModel targetClassModel : classOptions)
         {
             JMenuItem menuItem = new JMenuItem(targetClassModel.toString());
@@ -52,7 +52,7 @@ public class ChangeTypeCommand extends NodeCommand
                     ClassModel srcClassModel = node.getObjectNodeContext().getClassModel();
                     ObjectMeta oldInstance = node.wrappedObject();
                     List<Property> properties = srcClassModel.getAllProperties();
-                    ObjectMeta newInstance = targetClassModel.newInstance(node.parentObjectNode().objectMeta());
+                    ObjectMeta newInstance = targetClassModel.newInstance(node.getParent().objRef());
                     for (Property property : properties)
                     {
                         newInstance.set(property, oldInstance.get(property));

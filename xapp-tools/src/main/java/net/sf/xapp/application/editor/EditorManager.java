@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.application.editor;
 
+import net.sf.xapp.application.api.NullNodeUpdateApi;
 import net.sf.xapp.application.api.ObjectWidget;
 import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.objectmodelling.core.ClassModel;
@@ -114,7 +115,7 @@ public class EditorManager
         ObjectMeta objectMeta = rootClassModel.registerInstance(null, p);
         Editor editor = getEditor(new SingleTargetEditableContext(
                 objectMeta,
-                SingleTargetEditableContext.Mode.EDIT), editorListener);
+                SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), editorListener);
         editor.getMainFrame().setVisible(true);
     }
 
@@ -128,7 +129,7 @@ public class EditorManager
     public boolean edit(Frame comp, ClassModel classModel, Object p)
     {
         ObjectMeta objectMeta = classModel.registerInstance(null, p);
-        Editor editor = getEditor(new SingleTargetEditableContext(objectMeta, SingleTargetEditableContext.Mode.EDIT),
+        Editor editor = getEditor(new SingleTargetEditableContext(objectMeta, SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()),
                 new EditorListener.NullEditorListener());
         editor.getMainDialog(comp, true).setVisible(true);
         return !editor.wasCancelled();

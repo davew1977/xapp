@@ -25,7 +25,7 @@ public class CutCommand extends NodeCommand
 
     public void execute(Node node)
     {
-        node.getApplicationContainer().getClipboard().setAction(Clipboard.Action.CUT);
-        node.getApplicationContainer().getClipboard().addClipboardObject(node.wrappedObject());
+        node.getAppContainer().getClipboard().setAction(Clipboard.Action.CUT);
+        node.getAppContainer().getClipboard().addClipboardObject(node.wrappedObject());
     }
 }

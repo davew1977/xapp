@@ -20,7 +20,7 @@ public class FakeNode extends NodeImpl
 
     public FakeNode(Object obj)
     {
-        super(null, null, null, null, null);
+        super(null, null, null, null);
         m_obj = obj;
     }
 

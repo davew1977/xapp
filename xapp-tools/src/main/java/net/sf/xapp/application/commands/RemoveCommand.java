@@ -28,7 +28,7 @@ public class RemoveCommand extends NodeCommand
 
     public void execute(Node node)
     {
-        ApplicationContainer appContainer = node.getApplicationContainer();
+        ApplicationContainer appContainer = node.getAppContainer();
         if(node.isRoot())
         {
             System.out.println("cannot remove root!");

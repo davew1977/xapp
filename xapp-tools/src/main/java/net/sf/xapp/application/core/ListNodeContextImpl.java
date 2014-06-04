@@ -12,15 +12,12 @@
  */
 package net.sf.xapp.application.core;
 
-import net.sf.xapp.application.api.Command;
-import net.sf.xapp.application.api.ListNodeContext;
-import net.sf.xapp.application.api.Node;
+import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.commands.*;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
-import net.sf.xapp.objectmodelling.core.ListProperty;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.lang.reflect.Modifier;
@@ -35,7 +32,7 @@ public class ListNodeContextImpl implements ListNodeContext
 {
     private ContainerProperty m_listProperty;
     private ObjectMeta m_listOwner;
-    private Node m_node;
+    private Node node;
 
     public ListNodeContextImpl(ContainerProperty listProperty, ObjectMeta listOwner)
     {
@@ -65,15 +62,7 @@ public class ListNodeContextImpl implements ListNodeContext
 
     public List<ClassModel> getValidImplementations()
     {
-        if (m_node.getObjectNodeContext() != null && m_node.getDomainTreeRoot()!=null)
-        {
-            Class[] leafTypes = m_node.getDomainTreeRoot().leafTypes();
-            return m_listProperty.getClassDatabase().getClassModels(leafTypes);
-        }
-        else //I am a simple list node
-        {
-            return m_listProperty.getContainedTypeClassModel().getValidImplementations();
-        }
+        return m_listProperty.getContainedTypeClassModel().getValidImplementations();
     }
 
     @Override
@@ -130,7 +119,7 @@ public class ListNodeContextImpl implements ListNodeContext
             }
         }
         //maybe add a paste option
-        Clipboard clipboard = node.getApplicationContainer().getClipboard();
+        Clipboard clipboard = node.getAppContainer().getClipboard();
         List<Object> clipboardObjects= clipboard.getClipboardObjects();
         if (!clipboardObjects.isEmpty() &&
                 clipboard.areAllInstanceOf(classModel.getContainedClass()) &&
@@ -144,6 +133,6 @@ public class ListNodeContextImpl implements ListNodeContext
 
     public void setNode(Node node)
     {
-        m_node = node;
+        this.node = node;
     }
 }

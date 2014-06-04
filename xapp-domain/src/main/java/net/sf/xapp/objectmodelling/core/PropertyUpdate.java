@@ -22,14 +22,12 @@ import java.util.Map;
 public class PropertyUpdate
 {
     public Property property;
-    public ObjectMeta target;
     public Object oldVal;
     public Object newVal;
 
-    public PropertyUpdate(Property property, ObjectMeta target, Object oldVal, Object newVal)
+    public PropertyUpdate(Property property, Object oldVal, Object newVal)
     {
         this.property = property;
-        this.target = target;
         this.oldVal = oldVal;
         this.newVal = newVal;
     }
@@ -37,19 +35,18 @@ public class PropertyUpdate
     @Override
     public String toString()
     {
-        return "property "+property+" to change from "+oldVal +" to "+newVal + " in " + target;
-
+        return "property "+property+" to change from "+oldVal +" to "+newVal;
     }
 
-    public static Map<String, PropertyChange> execute(List<PropertyUpdate> potentialUpdates) {
+    public static Map<String, PropertyChange> execute(ObjectMeta obj, List<PropertyUpdate> potentialUpdates) {
         Map<String, PropertyChange> result = new LinkedHashMap<String, PropertyChange>();
         for (PropertyUpdate potentialUpdate : potentialUpdates) {
-            result.put(potentialUpdate.property.getName(), potentialUpdate.execute());
+            result.put(potentialUpdate.property.getName(), potentialUpdate.execute(obj));
         }
         return result;
     }
 
-    private PropertyChange execute() {
-        return target.set(property, newVal);
+    private PropertyChange execute(ObjectMeta obj) {
+        return obj.set(property, newVal);
     }
 }

@@ -26,7 +26,7 @@ public class ExpandReferenceCommand extends NodeCommand
     public void execute(final Node node)
     {
         assert node.isReference();
-        ApplicationContainer ac = node.getApplicationContainer();
+        ApplicationContainer ac = node.getAppContainer();
         ac.collapseAll();
         ac.expand(node);
         ac.expand(node.wrappedObject());

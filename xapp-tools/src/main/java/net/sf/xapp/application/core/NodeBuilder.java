@@ -18,6 +18,7 @@ import net.sf.xapp.application.api.ObjectNodeContext;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIST;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.PROPERTY;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.XappException;
@@ -42,22 +43,23 @@ public class NodeBuilder
 
     public Node createTree()
     {
-        Node node = createNode(null, m_applicationContainer.getGuiContext().getObjectMeta(), null, null, null, 0);
+        Node node = createNode(null, m_applicationContainer.getGuiContext().getObjectMeta(), null, null, 0);
         m_applicationContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }
 
-    public Node createNode(Property property, ObjectMeta instance, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext)
+    public Node createNode(Property property, ObjectMeta instance, Node parentNode, ObjectNodeContext.ObjectContext objectContext)
     {
-        return createNode(property, instance, parentNode, domainTreeRoot, objectContext, parentNode.numChildren());
+        return createNode(property, instance, parentNode, objectContext, parentNode.numChildren());
     }
 
-    public Node createNode(Property parentProperty, ObjectMeta objMeta, Node parentNode, Tree domainTreeRoot, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
+    public Node createNode(Property parentProperty, ObjectMeta objMeta, Node parentNode, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
     {
         DefaultMutableTreeNode jtreeNode = new DefaultMutableTreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
 
         ClassModel classModel = objMeta.getClassModel();
+        ClassDatabase cdb = classModel.getClassDatabase();
         ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, objMeta, objectContext);
         ListNodeContextImpl listNodeContext = null;
         ListProperty containerListProperty = classModel.getContainerListProperty();
@@ -67,7 +69,8 @@ public class NodeBuilder
             ObjectMeta listOwner = objMeta;
             listNodeContext = new ListNodeContextImpl(listProp, listOwner);
         }
-        Node newNode = new NodeImpl(m_applicationContainer, domainTreeRoot, jtreeNode, listNodeContext, objectNodeContext);
+        Node newNode = new NodeImpl(m_applicationContainer, jtreeNode, listNodeContext, objectNodeContext);
+        objMeta.setAttachment(newNode);
         if(listNodeContext!=null)
         {
             listNodeContext.setNode(newNode);
@@ -122,21 +125,17 @@ public class NodeBuilder
             //skip if has been made invisible
             if (!property.isVisibilityRestricted()) continue;
             //skip if there is a string serializer for this property
-            if (property.getClassDatabase().getStringSerializer(property.getPropertyClass()) != null) continue;
-
-            TreeMeta propertySubTreeMeta = property.getTreeMeta();
-            if (domainTreeRoot != null && propertySubTreeMeta != null)
-                throw new XappException("cannot have nested tree properties " + property);
+            if (cdb.getStringSerializer(property.getPropertyClass()) != null) continue;
 
             Object value = objMeta.get(property);
             //register the obj if the obj meta is null
             ObjectMeta propValueObjMeta = null;
             if (value != null) {
-                propValueObjMeta = objMeta.findOrCreateObjMeta(value);
+                propValueObjMeta = cdb.findOrCreateObjMeta(objMeta, property, value);
             }
             if (value != null && propValueObjMeta != null)
             {
-                createNode(property, propValueObjMeta, newNode, propertySubTreeMeta != null ? (Tree) value : domainTreeRoot, PROPERTY);
+                createNode(property, propValueObjMeta, newNode, PROPERTY);
             }
         }
         return newNode;
@@ -145,12 +144,11 @@ public class NodeBuilder
     private Node createListNode(ContainerProperty listProperty, Node parentNode, int insertIndex)
     {
         ObjectMeta listOwner = parentNode.objectMeta();
-        Tree domainTreeRoot = parentNode.getDomainTreeRoot();
         DefaultMutableTreeNode parentJTreeNode = parentNode.getJtreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
         ListNodeContextImpl lnc = new ListNodeContextImpl(listProperty, listOwner);
         DefaultMutableTreeNode jListNode = new DefaultMutableTreeNode();
-        Node listNode = new NodeImpl(m_applicationContainer, domainTreeRoot, jListNode, lnc, null);
+        Node listNode = new NodeImpl(m_applicationContainer, jListNode, lnc, null);
         lnc.setNode(listNode);
         jListNode.setUserObject(listNode);
         treeModel.insertNodeInto(jListNode, parentJTreeNode, insertIndex);
@@ -165,7 +163,7 @@ public class NodeBuilder
         for (Object o : list)
         {
             ObjectMeta parentObjMeta = parentNode.objectMeta();
-            createNode(null, parentObjMeta.findOrCreateObjMeta(o), parentNode, parentNode.getDomainTreeRoot(), IN_LIST);
+            createNode(null, parentObjMeta.getClassDatabase().findOrCreateObjMeta(parentObjMeta, listNodeContext.getContainerProperty(), o), parentNode, IN_LIST);
         }
     }
 
@@ -183,7 +181,7 @@ public class NodeBuilder
             m_applicationContainer.removeNode(node);
             if(node.getObjectNodeContext()!=null)
             {
-                newNode = createNode(null, node.objectMeta(), parent, node.getDomainTreeRoot(), node.getObjectNodeContext().getObjectContext(), oldIndex);
+                newNode = createNode(null, node.objectMeta(), parent, node.getObjectNodeContext().getObjectContext(), oldIndex);
             }
             else
             {

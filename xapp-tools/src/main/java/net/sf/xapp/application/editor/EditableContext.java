@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.editor;
 
+import net.sf.xapp.application.api.ApplicationContainer;
+import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
@@ -46,5 +48,7 @@ public interface EditableContext
     boolean isValidateFields();
 
     boolean isPropertyEditable(Property property);
+
+    NodeUpdateApi getNodeUpdateApi();
 
 }

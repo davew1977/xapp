@@ -15,13 +15,11 @@ package net.sf.xapp.application.commands;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
-import net.sf.xapp.application.api.ObjectNodeContext;
 import net.sf.xapp.application.core.Clipboard;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class PasteCommand extends NodeCommand
@@ -34,7 +32,7 @@ public class PasteCommand extends NodeCommand
 
     private static String name(Node node)
     {
-        int noOfObjects = node.getApplicationContainer().getClipboard().getClipboardObjects().size();
+        int noOfObjects = node.getAppContainer().getClipboard().getClipboardObjects().size();
         String suffix = noOfObjects != 0 ? " (" + noOfObjects + " items)" : "";
         if(node.containsReferences())
         {
@@ -45,7 +43,7 @@ public class PasteCommand extends NodeCommand
 
     public void execute(Node node)
     {
-        ApplicationContainer applicationContainer = node.getApplicationContainer();
+        ApplicationContainer applicationContainer = node.getAppContainer();
         Clipboard clipboard = applicationContainer.getClipboard();
         List<Object> list = clipboard.getClipboardObjects();
         List<Object> clones = new ArrayList<Object>();
@@ -75,22 +73,13 @@ public class PasteCommand extends NodeCommand
                 }
 
                 //register so we get new object meta
-                newObjMeta = classModel.registerInstance(node.objectMeta(), clipboardObject);
-                applicationContainer.getApplication().nodeAboutToBeAdded(
-                        node.getListNodeContext().getContainerProperty(),
-                        node.getListNodeContext().getListOwner(), clipboardObject);
+                newObjMeta = applicationContainer.getNodeUpdateApi().registerObject(node, classModel, clipboardObject);
             } else {
                 newObjMeta = classModel.find(clipboardObject);
             }
             //add object to data model
-            node.getListNodeContext().add(newObjMeta);
-            //create new node
-            Node newNode = applicationContainer.getNodeBuilder().createNode(null,
-                    newObjMeta, node, node.getDomainTreeRoot(), ObjectNodeContext.ObjectContext.IN_LIST);
-
-            applicationContainer.getMainPanel().repaint();
-            node.updateDomainTreeRoot();
-            applicationContainer.getApplication().nodeAdded(newNode);
+            applicationContainer.getNodeUpdateApi().addObject(node, newObjMeta);
+            node.add(newObjMeta);
         }
 
         clipboard.setAction(clones.isEmpty() ? Clipboard.Action.CUT : Clipboard.Action.COPY);

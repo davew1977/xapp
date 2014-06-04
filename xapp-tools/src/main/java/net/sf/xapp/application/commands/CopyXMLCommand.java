@@ -29,7 +29,7 @@ public class CopyXMLCommand extends NodeCommand
     public void execute(Node node)
     {
         Object obj = node.wrappedObject();
-        Marshaller marshaller = node.getApplicationContainer().getGuiContext().getClassDatabase().createMarshaller(obj.getClass());
+        Marshaller marshaller = node.getAppContainer().getGuiContext().getClassDatabase().createMarshaller(obj.getClass());
         String data = marshaller.toXMLString(obj);
         StringSelection s = new StringSelection(data);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);

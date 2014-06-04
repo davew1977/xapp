@@ -427,20 +427,6 @@ public class Property<T> implements Comparable
         return m_editable && !isReadOnly();
     }
 
-    public TreeMeta getTreeMeta()
-    {
-        return m_treeMeta;
-    }
-
-    /**
-     * @return true if this property has extra meta data to describe the hierarchical data it contains
-     * @see TreeMeta
-     */
-    public boolean isTree()
-    {
-        return m_treeMeta != null;
-    }
-
     public boolean isMandatory()
     {
         return m_mandatory;

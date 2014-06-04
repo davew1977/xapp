@@ -1,9 +1,9 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.utils.XappException;
 
-import javax.sound.sampled.Control;
 import java.util.*;
 
 import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
@@ -14,17 +14,19 @@ import static net.sf.xapp.utils.ReflectionUtils.*;
  */
 public class ObjectMeta<T> implements Namespace{
     private final ClassModel classModel;
-    private final ObjectMeta<?> parent;
     private final T instance;
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
-    private String key;
-    private Long id;
+    private final Long id;
+    private String key; //can change
+    private ObjRef homeReference; //the parent obj and the property where this is stored
+    private Object attachment;//an arbitrary object to associate with this object meta
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectMeta<?> parent) {
+
+    public ObjectMeta(ClassModel classModel, T obj, ObjRef parent) {
         this.classModel = classModel;
         this.instance = obj;
-        this.parent = parent;
+        this.homeReference = parent;
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
         if (namespaceFor != null) {
             for (Class aClass : namespaceFor.value()) {
@@ -116,8 +118,12 @@ public class ObjectMeta<T> implements Namespace{
         return instance;
     }
 
-    public ObjectMeta<?> getParent() {
-        return parent;
+    public ObjRef getHomeReference() {
+        return homeReference;
+    }
+
+    public ObjectMeta getParent() {
+        return homeReference !=null ? homeReference.getObj() : null;
     }
 
     public boolean isRoot() {
@@ -137,8 +143,8 @@ public class ObjectMeta<T> implements Namespace{
         if(map !=null) {
             return map;
         }
-        if(parent != null) {
-            return parent.findMatchingMap(aClass);
+        if(getParent()!= null) {
+            return getParent().findMatchingMap(aClass);
         } else {
             assert isRoot();  //root is the implicit namespace for everything
             map = new LinkedHashMap<String, ObjectMeta>();
@@ -238,10 +244,6 @@ public class ObjectMeta<T> implements Namespace{
         return key;
     }
 
-    public ObjectMeta findOrCreateObjMeta(Object value) {
-        return getClassModel().globalObjMetaLookup(this, value);
-    }
-
     public Map<String, ObjectMeta> getAll(final Class containedClass) {
         return getNamespace(containedClass).all(containedClass);
     }
@@ -324,5 +326,26 @@ public class ObjectMeta<T> implements Namespace{
 
     public Long getId() {
         return id;
+    }
+
+    public Object getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Object attachment) {
+        this.attachment = attachment;
+    }
+
+    public void dispose() {
+        classModel.dispose(this);
+    }
+
+    public void setHomeReference(ObjRef homeReference) {
+        this.homeReference = homeReference;
+        updateMetaHierarchy(key, key);
+    }
+
+    public ClassDatabase getClassDatabase() {
+        return classModel.getClassDatabase();
     }
 }

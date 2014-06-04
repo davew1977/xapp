@@ -33,7 +33,7 @@ public class PasteXMLCommand extends NodeCommand
 
     public void execute(Node node)
     {
-        ApplicationContainer applicationContainer = node.getApplicationContainer();
+        ApplicationContainer applicationContainer = node.getAppContainer();
         ClassModel containedTypeClassModel = node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
 
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -59,14 +59,13 @@ public class PasteXMLCommand extends NodeCommand
             System.out.println("WARNING: cannot paste a " + clipboardObject.getClass().getSimpleName() + " here!");
             return;
         }
-
+                 //todo rewire to node update api
         //add object to data model
         node.getListNodeContext().getCollection().add(clipboardObject.getInstance());
         //create new node
-        Node newNode = applicationContainer.getNodeBuilder().createNode(null, clipboardObject, node, node.getDomainTreeRoot(), null);
+        Node newNode = applicationContainer.getNodeBuilder().createNode(null, clipboardObject, node, null);
 
         applicationContainer.getMainPanel().repaint();
-        node.updateDomainTreeRoot();
         applicationContainer.getApplication().nodeAdded(newNode);
     }
 }

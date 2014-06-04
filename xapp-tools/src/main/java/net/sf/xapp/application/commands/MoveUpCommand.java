@@ -30,7 +30,7 @@ public class MoveUpCommand extends NodeCommand
     {
         //get the parent list node
         Node parentNode = node.getParent();
-        TreePath selectionPath = node.getApplicationContainer().getMainTree().getSelectionPath();
+        TreePath selectionPath = node.getAppContainer().getMainTree().getSelectionPath();
         //move up the object in the real model
         List list = parentNode.getListNodeContext().getList();
         Object wrappedObject = node.wrappedObject();
@@ -40,10 +40,10 @@ public class MoveUpCommand extends NodeCommand
         int newIndex = i - 1;
         list.add(newIndex, wrappedObject);
         //do to tree model
-        DefaultTreeModel treeModel = (DefaultTreeModel) node.getApplicationContainer().getMainTree().getModel();
+        DefaultTreeModel treeModel = (DefaultTreeModel) node.getAppContainer().getMainTree().getModel();
         treeModel.removeNodeFromParent(node.getJtreeNode());
         treeModel.insertNodeInto(node.getJtreeNode(), parentNode.getJtreeNode(), newIndex);
-        node.getApplicationContainer().getMainTree().setSelectionPath(selectionPath);
-        node.getApplicationContainer().getApplication().nodeMovedUp(node);
+        node.getAppContainer().getMainTree().setSelectionPath(selectionPath);
+        node.getAppContainer().getApplication().nodeMovedUp(node);
     }
 }

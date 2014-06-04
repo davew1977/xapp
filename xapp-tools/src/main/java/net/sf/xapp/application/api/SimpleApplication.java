@@ -85,7 +85,7 @@ public class SimpleApplication<T> implements Application<T>
     }
 
     @Override
-    public void nodeAboutToBeAdded(ContainerProperty containerProperty, Object parent, Object newChild) {
+    public void nodeAboutToBeAdded(Node parentNode, ObjectMeta newChild) {
 
     }
 

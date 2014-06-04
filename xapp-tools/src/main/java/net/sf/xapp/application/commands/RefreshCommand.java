@@ -24,6 +24,6 @@ public class RefreshCommand extends NodeCommand
 
     public void execute(Node node)
     {
-        node.getApplicationContainer().getNodeBuilder().refresh(node);
+        node.getAppContainer().getNodeBuilder().refresh(node);
     }
 }

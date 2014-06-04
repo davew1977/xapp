@@ -334,7 +334,7 @@ public class DefaultEditor implements Editor
         if (propertyWidget != null) return propertyWidget;
 
         //now create a bound component
-        return new ObjectPropertyWidget();
+        return new ObjectPropertyWidget(property, m_editableContext.getNodeUpdateApi());
     }
 
     public void updateFields()

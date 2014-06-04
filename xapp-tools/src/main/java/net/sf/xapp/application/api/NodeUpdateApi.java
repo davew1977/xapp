@@ -1,5 +1,7 @@
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.util.List;
@@ -11,7 +13,18 @@ import java.util.List;
  */
 public interface NodeUpdateApi {
 
-    void updateNode(Node node, List<PropertyUpdate> potentialUpdates);
+    /**
+     * called when the object has no node
+     * @param objectMeta object that has changed
+     * @param potentialUpdates updates
+     */
+    void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+    void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates);
+
+    void addObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+    void addObject(ObjectMeta objectMeta);
+    void removeObject(ObjectMeta objectMeta);
+    void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex);
     /**
      * index has a value if the containing property is a list (null if map or set)
      */
@@ -20,5 +33,11 @@ public interface NodeUpdateApi {
     /**
      * Node was moved up or down in a list
      */
-    void changeNodeIndex(Node node, int oldIndex, int newIndex);
+    void moveNode(Node node, int oldIndex, int newIndex);
+
+    ObjectMeta createObject(Node parentNode, ClassModel type);
+    ObjectMeta registerObject(Node parentNode, ClassModel type, Object obj);
+
+    void cancelObject(ObjectMeta objMeta);
+
 }
