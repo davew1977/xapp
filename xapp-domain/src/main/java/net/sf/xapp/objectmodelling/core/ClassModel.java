@@ -262,7 +262,6 @@ public class ClassModel<T> {
             throw new XappException(e);
         }
     }
-
     public ObjectMeta<T> registerInstance(ObjectMeta parent, Property property, T obj) {
         ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, parent, property);
         instances.add(objectMeta);
@@ -868,12 +867,12 @@ public class ClassModel<T> {
 
     public ObjectMeta<T> registerInstance(T o1) {
         assert find(o1) == null;
-        ObjectMeta<T> objectMeta = registerInstance(null, o1);
+        ObjectMeta<T> objectMeta = registerInstance(null, null, o1);
         for (Property property : properties) {
             if(property.isComplexNonReference()) {
                 Object value = objectMeta.get(property);
                 if(value != null) {
-                    property.getPropertyClassModel().registerInstance(new ObjRef(objectMeta, property, ref), value);
+                    property.getPropertyClassModel().registerInstance(objectMeta, property, value);
                 }
             }
         }
@@ -884,7 +883,7 @@ public class ClassModel<T> {
             if(!containerProperty.containsReferences() && containerProperty.getContainedTypeClassModel().hasKey()) {
                 Collection col = containerProperty.getCollection(o1);
                 for (Object o : col) {
-                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjRef(objectMeta, containerProperty, ref), o);
+                    containerProperty.getContainedTypeClassModel().registerInstance(objectMeta, containerProperty, o);
                 }
             }
         }

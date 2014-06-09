@@ -123,7 +123,7 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public ObjectMeta getParent() {
-        return homeReference !=null ? homeReference.getParent() : null;
+        return homeReference.getParent(); //may return null if root obj
     }
 
     public boolean isRoot() {

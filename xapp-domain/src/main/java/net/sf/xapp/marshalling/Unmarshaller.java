@@ -527,7 +527,7 @@ public class Unmarshaller<T>
 
 
         public  ObjectMeta<E> newInstance(Property property) {
-            objectMeta = classModel.newInstance(parentObjRef(property));
+            objectMeta = classModel.newInstance(parentObjMeta(), property);
 
             /*if (classModel.hasKey()) {
                 LocalContext namespace = getNamespace(classModel.getContainedClass());
@@ -537,8 +537,8 @@ public class Unmarshaller<T>
             return objectMeta;
         }
 
-        private ObjRef parentObjRef(Property property) {
-            return !isRoot() ? new ObjRef(parentContext.objectMeta , property, ref): null;
+        private ObjectMeta parentObjMeta() {
+            return !isRoot() ? parentContext.objectMeta : null;
         }
 
         public void postInit() {

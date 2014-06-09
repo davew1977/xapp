@@ -26,11 +26,13 @@ public class ObjRef {
      * nullify the underlying reference
      */
     public void dispose() {
-        if(property.isContainer()) {
-            ContainerProperty cp = (ContainerProperty) property;
-            cp.remove(parent, ref);
-        } else {
-            parent.set(property, null);
+        if (parent != null) {
+            if(property.isContainer()) {
+                ContainerProperty cp = (ContainerProperty) property;
+                cp.remove(parent, ref);
+            } else {
+                parent.set(property, null);
+            }
         }
     }
 
@@ -38,11 +40,13 @@ public class ObjRef {
      * set the underlying reference (add if collection, put if map, set if one to one)
      */
     public void init() {
-        if(property.isContainer()) {
-            ContainerProperty cp = (ContainerProperty) property;
-            cp.add(parent, ref);
-        } else {
-            parent.set(property, this);
+        if (parent!=null) {
+            if(property.isContainer()) {
+                ContainerProperty cp = (ContainerProperty) property;
+                cp.add(parent, ref);
+            } else {
+                parent.set(property, this);
+            }
         }
     }
 }
