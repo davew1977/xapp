@@ -1,8 +1,6 @@
 package net.sf.xapp.application.api;
 
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyUpdate;
+import net.sf.xapp.objectmodelling.core.*;
 
 import java.util.List;
 
@@ -35,6 +33,26 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
+    public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+        objectMeta.initialize(potentialUpdates);
+    }
+
+    @Override
+    public void addObject(ObjectMeta objectMeta) {
+
+    }
+
+    @Override
+    public void removeObject(ObjectMeta objectMeta) {
+
+    }
+
+    @Override
+    public void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex) {
+
+    }
+
+    @Override
     public void addObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         PropertyUpdate.execute(objectMeta, potentialUpdates);
         addObject(parentNode, objectMeta);
@@ -61,8 +79,8 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(Node parentNode, ClassModel type) {
-        final ObjectMeta objMeta = type.newInstance(parentNode.objectMeta());
+    public ObjectMeta createObject(ObjectMeta parent, Property property, ClassModel type) {
+        final ObjectMeta objMeta = type.newInstance(new ObjRef(parent, property, ));
         appContainer.getApplication().nodeAboutToBeAdded(parentNode, objMeta);
         return objMeta;
     }

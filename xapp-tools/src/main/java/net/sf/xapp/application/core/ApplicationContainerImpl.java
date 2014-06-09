@@ -529,7 +529,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
                 list.add(index, obj);
             }
             ObjectMeta objectMeta = getClassDatabase().getClassModel(obj.getClass()).registerInstance(
-                    new ObjRef(parentNode.objectMeta(), listNodeContext.getContainerProperty()), obj);
+                    new ObjRef(parentNode.objectMeta(), listNodeContext.getContainerProperty(), ref), obj);
             getApplication().nodeAboutToBeAdded(parentNode, objectMeta);
             Node newNode = m_nodeBuilder.createNode(null, objectMeta, parentNode, ObjectNodeContext.ObjectContext.IN_LIST);
             getMainPanel().repaint();

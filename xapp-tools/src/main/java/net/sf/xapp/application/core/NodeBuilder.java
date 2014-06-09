@@ -149,7 +149,6 @@ public class NodeBuilder
         ListNodeContextImpl lnc = new ListNodeContextImpl(listProperty, listOwner);
         DefaultMutableTreeNode jListNode = new DefaultMutableTreeNode();
         Node listNode = new NodeImpl(m_applicationContainer, jListNode, lnc, null);
-        lnc.setNode(listNode);
         jListNode.setUserObject(listNode);
         treeModel.insertNodeInto(jListNode, parentJTreeNode, insertIndex);
         populateListNodes(listNode);

@@ -1,0 +1,32 @@
+add simple object to list
+add simple object to set
+add simple object to map
+
+enum prop edit
+ref prop edit
+ref prop edit when referenced type is a tree
+
+edit references dialog
+edit references dialog when referenced type is a tree
+
+school system serialize/deserialize {
+    ensure sample includes trees, references, list of references, maps, sets
+}
+
+move up/move down node
+move up/move down reference node
+
+remove object {
+    object with references (they should be cleaned up)
+    simple object
+    reference from ref list
+}
+
+copy/paste reference
+
+copy xml/paste xml
+
+edit/create/remove object not in a list (embedded object)
+
+
+

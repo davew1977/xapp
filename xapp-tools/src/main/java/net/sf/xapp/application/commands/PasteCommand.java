@@ -57,8 +57,6 @@ public class PasteCommand extends NodeCommand
                 if (clipboard.getAction() == Clipboard.Action.CUT) {
                     //remove from data model
                     Node clipboardNode = applicationContainer.getNode(clipboardObject);
-                    Node parentNode = clipboardNode.getParent();
-                    parentNode.getListNodeContext().getCollection().remove(clipboardObject);
                     //remove from object meta model (dispose, not delete because we don't want to delete any child objects
                     classModel.dispose(clipboardObject);
                     //remove the node
@@ -78,8 +76,7 @@ public class PasteCommand extends NodeCommand
                 newObjMeta = classModel.find(clipboardObject);
             }
             //add object to data model
-            applicationContainer.getNodeUpdateApi().addObject(node, newObjMeta);
-            node.add(newObjMeta);
+            applicationContainer.getNodeUpdateApi().addObject(newObjMeta);
         }
 
         clipboard.setAction(clones.isEmpty() ? Clipboard.Action.CUT : Clipboard.Action.COPY);

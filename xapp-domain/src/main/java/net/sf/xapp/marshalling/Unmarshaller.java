@@ -538,7 +538,7 @@ public class Unmarshaller<T>
         }
 
         private ObjRef parentObjRef(Property property) {
-            return !isRoot() ? new ObjRef(parentContext.objectMeta , property): null;
+            return !isRoot() ? new ObjRef(parentContext.objectMeta , property, ref): null;
         }
 
         public void postInit() {

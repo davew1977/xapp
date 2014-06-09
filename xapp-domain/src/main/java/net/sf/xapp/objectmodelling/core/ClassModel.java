@@ -253,18 +253,18 @@ public class ClassModel<T> {
      *
      * @return the new instance or existing singleton instance.
      */
-    public synchronized ObjectMeta<T> newInstance(ObjRef objRef) {
+    public synchronized ObjectMeta<T> newInstance(ObjectMeta objectMeta, Property property) {
         try {
             T obj = m_class.newInstance();
-            return registerInstance(objRef, obj);
+            return registerInstance(objectMeta, property, obj);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
         }
     }
 
-    public ObjectMeta<T> registerInstance(ObjRef homeRef, T obj) {
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, homeRef);
+    public ObjectMeta<T> registerInstance(ObjectMeta parent, Property property, T obj) {
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, parent, property);
         instances.add(objectMeta);
         objectMeta.initInstance();
         return objectMeta;
@@ -275,13 +275,12 @@ public class ClassModel<T> {
     }
 
     public void dispose(T instance) {
-        dispose(find(instance));
+        find(instance).dispose();
     }
     public void dispose(ObjectMeta objectMeta) {
         instances.remove(objectMeta);
         if (keyProperty != null) {
             String oldKeyVal = (String) objectMeta.get(keyProperty);
-            objectMeta.updateMetaHierarchy(oldKeyVal, null);
             m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(
                     getSimpleName(), oldKeyVal != null ? String.valueOf(oldKeyVal) : null, isTrackNewAndRemoved());
         }
@@ -856,13 +855,13 @@ public class ClassModel<T> {
         return find(o1) != null;
     }
 
-    public ObjectMeta<T> findOrCreate(ObjRef homeRef, Object o1) {
+    public ObjectMeta<T> findOrCreate(ObjectMeta parent, Property property, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = registerInstance(homeRef, (T) o1);
+            objectMeta = registerInstance(parent, property, (T) o1);
         } else {
             //update the parent
-            objectMeta.setHomeReference(homeRef);
+            objectMeta.setHomeReference(parent, property);
         }
         return objectMeta;
     }
@@ -874,7 +873,7 @@ public class ClassModel<T> {
             if(property.isComplexNonReference()) {
                 Object value = objectMeta.get(property);
                 if(value != null) {
-                    property.getPropertyClassModel().registerInstance(new ObjRef(objectMeta, property), value);
+                    property.getPropertyClassModel().registerInstance(new ObjRef(objectMeta, property, ref), value);
                 }
             }
         }
@@ -885,7 +884,7 @@ public class ClassModel<T> {
             if(!containerProperty.containsReferences() && containerProperty.getContainedTypeClassModel().hasKey()) {
                 Collection col = containerProperty.getCollection(o1);
                 for (Object o : col) {
-                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjRef(objectMeta, containerProperty), o);
+                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjRef(objectMeta, containerProperty, ref), o);
                 }
             }
         }

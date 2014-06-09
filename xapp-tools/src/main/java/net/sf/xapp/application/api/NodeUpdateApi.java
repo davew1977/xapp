@@ -21,7 +21,12 @@ public interface NodeUpdateApi {
     void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
     void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates);
 
-    void addObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+    /**
+     * initialize a recently created object with properties entered by the user
+     * @param objectMeta
+     * @param potentialUpdates
+     */
+    void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
     void addObject(ObjectMeta objectMeta);
     void removeObject(ObjectMeta objectMeta);
     void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex);
@@ -35,6 +40,13 @@ public interface NodeUpdateApi {
      */
     void moveNode(Node node, int oldIndex, int newIndex);
 
+    /**
+     * creates the initial raw instance of the object
+     * will be shortly followed with either an initialize or a cancel
+     * @param parentNode
+     * @param type
+     * @return
+     */
     ObjectMeta createObject(Node parentNode, ClassModel type);
     ObjectMeta registerObject(Node parentNode, ClassModel type, Object obj);
 

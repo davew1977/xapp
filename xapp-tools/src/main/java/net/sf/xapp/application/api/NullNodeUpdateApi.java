@@ -22,12 +22,12 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void addObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+    public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
 
     }
 
     @Override
-    public void addObject(Node parentNode, ObjectMeta objectMeta) {
+    public void addObject(ObjectMeta objectMeta) {
 
     }
 

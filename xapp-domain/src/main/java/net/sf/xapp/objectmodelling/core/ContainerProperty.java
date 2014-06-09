@@ -97,9 +97,17 @@ public class ContainerProperty extends Property
         String key = getContainedTypeClassModel().getKey(instance);
         ((Map) mapOrCollection).put(key, instance);
     }
+    public boolean removeFromMapOrCollection(Object mapOrCollection, Object instance) {
+        String key = getContainedTypeClassModel().getKey(instance);
+        return ((Map) mapOrCollection).remove(key) != null;
+    }
 
-    public void add(Object container, ObjectMeta instance) {
-        addToMapOrCollection(map(container), instance.getInstance());
+    public final void add(ObjectMeta container, ObjectMeta instance) {
+        addToMapOrCollection(get(container.getInstance()), instance.getInstance());
+    }
+
+    public final boolean remove(ObjectMeta container, ObjectMeta instance) {
+        return removeFromMapOrCollection(get(container.getInstance()), instance.getInstance());
     }
 
     public Collection getCollection(Object listOwner) {

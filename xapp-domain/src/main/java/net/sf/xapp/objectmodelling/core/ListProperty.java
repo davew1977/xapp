@@ -86,8 +86,8 @@ public class ListProperty extends ContainerProperty
     }
 
     @Override
-    public void add(Object container, ObjectMeta objMeta) {
-        addToMapOrCollection(get(container), objMeta.getInstance());
+    public boolean removeFromMapOrCollection(Object mapOrCollection, Object instance) {
+        return ((Collection) mapOrCollection).remove(instance);
     }
 
     @Override

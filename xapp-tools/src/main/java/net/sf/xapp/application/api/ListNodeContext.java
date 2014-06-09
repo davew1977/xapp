@@ -47,7 +47,4 @@ public interface ListNodeContext extends NodeContext
      */
     List<ClassModel> getValidImplementations();
 
-    boolean contains(ObjectMeta instance);
-
-    void add(ObjectMeta instance);
 }

@@ -39,7 +39,7 @@ public class CreateCommand extends NodeCommand
         {
             public void save(List<PropertyUpdate> updates, boolean closeOnSave)
             {
-                appContainer.getNodeUpdateApi().addObject(parentNode, objMeta, updates);
+                appContainer.getNodeUpdateApi().initObject(objMeta, updates);
             }
 
             @Override

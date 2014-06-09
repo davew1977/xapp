@@ -32,7 +32,6 @@ public class ListNodeContextImpl implements ListNodeContext
 {
     private ContainerProperty m_listProperty;
     private ObjectMeta m_listOwner;
-    private Node node;
 
     public ListNodeContextImpl(ContainerProperty listProperty, ObjectMeta listOwner)
     {
@@ -63,16 +62,6 @@ public class ListNodeContextImpl implements ListNodeContext
     public List<ClassModel> getValidImplementations()
     {
         return m_listProperty.getContainedTypeClassModel().getValidImplementations();
-    }
-
-    @Override
-    public boolean contains(ObjectMeta instance) {
-        return m_listProperty.contains(m_listOwner.getInstance(), instance);
-    }
-
-    @Override
-    public void add(ObjectMeta instance) {
-        m_listProperty.add(m_listOwner.getInstance(), instance);
     }
 
     public List<Command> createCommands(Node node, CommandContext commandContext)
@@ -129,10 +118,5 @@ public class ListNodeContextImpl implements ListNodeContext
         }
 
         return commands;
-    }
-
-    public void setNode(Node node)
-    {
-        this.node = node;
     }
 }

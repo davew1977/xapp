@@ -136,7 +136,7 @@ public class NodeImpl implements Node
 
     @Override
     public ObjRef objRef() {
-        return new ObjRef(objectMeta(), getListNodeContext().getContainerProperty());
+        return new ObjRef(objectMeta(), getListNodeContext().getContainerProperty(), ref);
     }
 
     public ApplicationContainer getAppContainer()

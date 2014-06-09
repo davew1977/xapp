@@ -489,4 +489,8 @@ public class Property<T> implements Comparable
     public boolean isComplexNonReference() {
         return !(isReference() || isStringPrimitiveOrEnum() || isTransient());
     }
+
+    public boolean isContainer() {
+        return this instanceof ContainerProperty;
+    }
 }

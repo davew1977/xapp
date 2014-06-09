@@ -23,10 +23,10 @@ public class ObjectMeta<T> implements Namespace{
     private Object attachment;//an arbitrary object to associate with this object meta
 
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjRef parent) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectMeta parent, Property property) {
         this.classModel = classModel;
         this.instance = obj;
-        this.homeReference = parent;
+        this.homeReference = new ObjRef(parent, property, this);
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
         if (namespaceFor != null) {
             for (Class aClass : namespaceFor.value()) {
@@ -123,7 +123,7 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public ObjectMeta getParent() {
-        return homeReference !=null ? homeReference.getObj() : null;
+        return homeReference !=null ? homeReference.getParent() : null;
     }
 
     public boolean isRoot() {
@@ -337,15 +337,28 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void dispose() {
+        if (key != null) {
+            updateMetaHierarchy(key, null);
+        }
         classModel.dispose(this);
+        homeReference.dispose();
     }
 
-    public void setHomeReference(ObjRef homeReference) {
-        this.homeReference = homeReference;
+    public void setHomeReference(ObjectMeta parent, Property property) {
+        if(this.homeReference != null) {
+             this.homeReference.dispose();
+        }
+        this.homeReference = new ObjRef(parent, property, this);
         updateMetaHierarchy(key, key);
     }
 
     public ClassDatabase getClassDatabase() {
         return classModel.getClassDatabase();
+    }
+
+    public void initialize(List<PropertyUpdate> potentialUpdates) {
+        PropertyUpdate.execute(this, potentialUpdates);
+        //add self to home ref (which could either be in a collection or one to one
+        homeReference.init();
     }
 }
