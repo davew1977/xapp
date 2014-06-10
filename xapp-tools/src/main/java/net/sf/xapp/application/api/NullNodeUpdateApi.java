@@ -67,7 +67,7 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void cancelObject(ObjectMeta objMeta) {
+    public void deleteObject(ObjectMeta objMeta) {
 
     }
 }

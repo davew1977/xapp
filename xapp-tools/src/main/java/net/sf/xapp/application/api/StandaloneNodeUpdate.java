@@ -34,7 +34,8 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        objectMeta.initialize(potentialUpdates);
+        objectMeta.update(potentialUpdates);
+        objectMeta.setHomeRef();
     }
 
     @Override
@@ -79,21 +80,33 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
+    public ObjectMeta createObject(Node parentNode, ClassModel type) {
+        return null;
+    }
+
+    @Override
     public ObjectMeta createObject(ObjectMeta parent, Property property, ClassModel type) {
-        final ObjectMeta objMeta = type.newInstance(new ObjRef(parent, property, ));
-        appContainer.getApplication().nodeAboutToBeAdded(parentNode, objMeta);
+        final ObjectMeta objMeta = type.newInstance(parent, property);
+        appContainer.getApplication().nodeAboutToBeAdded(objMeta);
         return objMeta;
     }
 
     @Override
-    public ObjectMeta registerObject(Node parentNode, ClassModel type, Object obj) {
-        final ObjectMeta objMeta = type.findOrCreate(parentNode.objectMeta(), obj);
-        appContainer.getApplication().nodeAboutToBeAdded(parentNode, objMeta);
+    public ObjectMeta registerObject(ObjectMeta parent, Property property, ClassModel type, Object obj) {
+        final ObjectMeta objMeta = type.findOrCreate(parent, property, obj);
+        objMeta.setHomeRef();
+        appContainer.getApplication().nodeAdded(objMeta);
         return objMeta;
     }
 
     @Override
-    public void cancelObject(ObjectMeta objMeta) {
+    public void createReference(ObjectMeta parent, Property property, ClassModel type, Object obj) {
+        ObjectMeta objMeta = type.find(obj);
+        objMeta.createAndSetReference(parent, property);
+    }
+
+    @Override
+    public void deleteObject(ObjectMeta objMeta) {
         objMeta.dispose();
     }
 }

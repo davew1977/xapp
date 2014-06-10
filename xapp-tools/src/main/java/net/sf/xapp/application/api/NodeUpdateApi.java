@@ -1,8 +1,6 @@
 package net.sf.xapp.application.api;
 
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyUpdate;
+import net.sf.xapp.objectmodelling.core.*;
 
 import java.util.List;
 
@@ -20,13 +18,6 @@ public interface NodeUpdateApi {
      */
     void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
     void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates);
-
-    /**
-     * initialize a recently created object with properties entered by the user
-     * @param objectMeta
-     * @param potentialUpdates
-     */
-    void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
     void addObject(ObjectMeta objectMeta);
     void removeObject(ObjectMeta objectMeta);
     void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex);
@@ -43,13 +34,23 @@ public interface NodeUpdateApi {
     /**
      * creates the initial raw instance of the object
      * will be shortly followed with either an initialize or a cancel
-     * @param parentNode
-     * @param type
-     * @return
      */
-    ObjectMeta createObject(Node parentNode, ClassModel type);
-    ObjectMeta registerObject(Node parentNode, ClassModel type, Object obj);
+    ObjectMeta createObject(ObjectMeta parent, Property property, ClassModel type);
 
-    void cancelObject(ObjectMeta objMeta);
+    /**
+     * This is used when an object already exists but has been moved within the object graph
+     */
+    ObjectMeta registerObject(ObjectMeta parent, Property property, ClassModel type, Object obj);
 
+    /**
+     * initialize a recently created object with properties entered by the user
+     */
+    void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+
+    /**
+     * delete/rollback creation of a recently created object
+     */
+    void deleteObject(ObjectMeta objMeta);
+
+    void createReference(ObjectMeta parent, Property property, ClassModel classModel, Object obj);
 }

@@ -15,6 +15,7 @@ package net.sf.xapp.application.commands;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
+import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.core.Clipboard;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
@@ -50,7 +51,7 @@ public class PasteCommand extends NodeCommand
         for (Object clipboardObject : list) {
             ClassModel classModel = applicationContainer.getGuiContext().getClassDatabase().getClassModel(clipboardObject.getClass());
 
-            ObjectMeta newObjMeta = null;
+            NodeUpdateApi nodeUpdateApi = applicationContainer.getNodeUpdateApi();
             if (!node.containsReferences()) //don't remove or clone if we're only pasting references
             {
                 //remove if action was CUT
@@ -71,12 +72,13 @@ public class PasteCommand extends NodeCommand
                 }
 
                 //register so we get new object meta
-                newObjMeta = applicationContainer.getNodeUpdateApi().registerObject(node, classModel, clipboardObject);
+                nodeUpdateApi.registerObject(node.getListNodeContext().getListOwner(),
+                        node.getListNodeContext().getContainerProperty(), classModel, clipboardObject);
             } else {
-                newObjMeta = classModel.find(clipboardObject);
+                //todo create reference to obj
+                nodeUpdateApi.createReference(node.getListNodeContext().getListOwner(),
+                        node.getListNodeContext().getContainerProperty(), classModel, clipboardObject);
             }
-            //add object to data model
-            applicationContainer.getNodeUpdateApi().addObject(newObjMeta);
         }
 
         clipboard.setAction(clones.isEmpty() ? Clipboard.Action.CUT : Clipboard.Action.COPY);

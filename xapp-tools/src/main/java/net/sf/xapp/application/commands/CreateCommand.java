@@ -44,7 +44,7 @@ public class CreateCommand extends NodeCommand
 
             @Override
             public void close() {
-                appContainer.getNodeUpdateApi().cancelObject(objMeta);
+                appContainer.getNodeUpdateApi().deleteObject(objMeta);
             }
         });
         defaultEditor.getMainFrame().setLocationRelativeTo(appContainer.getMainPanel());

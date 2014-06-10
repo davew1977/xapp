@@ -157,7 +157,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final ObjectMeta instance = validImpl.newInstance(new ObjRef(parentObj, getProperty(), ref));
+        final ObjectMeta instance = validImpl.newInstance(parentObj, getProperty());
         EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
@@ -170,7 +170,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
             @Override
             public void close() {
-                nodeUpdateApi.cancelObject(instance);
+                nodeUpdateApi.deleteObject(instance);
             }
         });
         defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);

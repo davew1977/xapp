@@ -21,6 +21,7 @@ public class ObjectMeta<T> implements Namespace{
     private String key; //can change
     private ObjRef homeReference; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
+    private List<ObjRef> references = new ArrayList<ObjRef>();
 
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectMeta parent, Property property) {
@@ -342,6 +343,9 @@ public class ObjectMeta<T> implements Namespace{
         }
         classModel.dispose(this);
         homeReference.dispose();
+        for (ObjRef reference : references) {
+            reference.dispose();
+        }
     }
 
     public void setHomeReference(ObjectMeta parent, Property property) {
@@ -356,9 +360,19 @@ public class ObjectMeta<T> implements Namespace{
         return classModel.getClassDatabase();
     }
 
-    public void initialize(List<PropertyUpdate> potentialUpdates) {
+    public void update(List<PropertyUpdate> potentialUpdates) {
         PropertyUpdate.execute(this, potentialUpdates);
+    }
+
+    public void setHomeRef() {
+
         //add self to home ref (which could either be in a collection or one to one
         homeReference.init();
+    }
+
+    public void createAndSetReference(ObjectMeta parent, Property property) {
+        ObjRef ref = new ObjRef(parent, property, this);
+        references.add(ref);
+        ref.init();
     }
 }

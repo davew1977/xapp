@@ -86,17 +86,16 @@ public interface Application<T>
      * Notification that a node was added to the Application GUI tree
      * @param node
      */
-    void nodeAdded(Node node);
+    void nodeAdded(ObjectMeta objectMeta);
 
     /**
      * Notification that a node is about to be added to the Application GUI tree. The application cannot
      * veto this, but it can manipulate the data model as it wishes.
      *
      * The notification is made before the Editor for the newChild is presented on the screen
-     * @param parentNode
      * @param newChild
      */
-    void nodeAboutToBeAdded(Node parentNode, ObjectMeta newChild);
+    void nodeAboutToBeAdded(ObjectMeta newChild);
 
     /**
      * A notification that a datamodel object has been edited. The user hit the save button in an editor

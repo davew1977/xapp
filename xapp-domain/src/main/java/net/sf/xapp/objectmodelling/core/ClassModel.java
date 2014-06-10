@@ -253,10 +253,10 @@ public class ClassModel<T> {
      *
      * @return the new instance or existing singleton instance.
      */
-    public synchronized ObjectMeta<T> newInstance(ObjectMeta objectMeta, Property property) {
+    public synchronized ObjectMeta<T> newInstance(ObjectMeta parent, Property property) {
         try {
             T obj = m_class.newInstance();
-            return registerInstance(objectMeta, property, obj);
+            return registerInstance(parent, property, obj);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
