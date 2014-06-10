@@ -56,6 +56,9 @@ public class PasteCommand extends NodeCommand
             {
                 //remove if action was CUT
                 if (clipboard.getAction() == Clipboard.Action.CUT) {
+
+                    //todo remove updates to jtree here
+
                     //remove from data model
                     Node clipboardNode = applicationContainer.getNode(clipboardObject);
                     //remove from object meta model (dispose, not delete because we don't want to delete any child objects

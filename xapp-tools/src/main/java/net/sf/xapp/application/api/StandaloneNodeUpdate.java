@@ -93,6 +93,8 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public ObjectMeta registerObject(ObjectMeta parent, Property property, ClassModel type, Object obj) {
+        //todo try to find the obj, and if it is found, we need to remove the old node
+
         final ObjectMeta objMeta = type.findOrCreate(parent, property, obj);
         objMeta.setHomeRef();
         appContainer.getApplication().nodeAdded(objMeta);
