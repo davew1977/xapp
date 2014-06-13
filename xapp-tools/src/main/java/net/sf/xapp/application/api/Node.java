@@ -13,6 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.core.CommandContext;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjRef;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
@@ -113,5 +114,5 @@ public interface Node
      * will combine this obj with its nearest list property to form an objref (needed to create a new objmeta)
      * @return
      */
-    ObjRef objRef();
+    ObjectLocation objProp();
 }

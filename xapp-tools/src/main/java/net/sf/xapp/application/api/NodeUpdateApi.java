@@ -18,8 +18,6 @@ public interface NodeUpdateApi {
      */
     void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
     void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates);
-    void addObject(ObjectMeta objectMeta);
-    void removeObject(ObjectMeta objectMeta);
     void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex);
     /**
      * index has a value if the containing property is a list (null if map or set)
@@ -35,12 +33,13 @@ public interface NodeUpdateApi {
      * creates the initial raw instance of the object
      * will be shortly followed with either an initialize or a cancel
      */
-    ObjectMeta createObject(ObjectMeta parent, Property property, ClassModel type);
+    ObjectMeta createObject(ObjectLocation location, ClassModel type);
 
     /**
      * This is used when an object already exists but has been moved within the object graph
      */
-    ObjectMeta registerObject(ObjectMeta parent, Property property, ClassModel type, Object obj);
+    void moveObject(ObjectLocation newLocation, ClassModel type, Object obj);
+    void insertObject(ObjectLocation newLocation, ClassModel type, Object obj);
 
     /**
      * initialize a recently created object with properties entered by the user
@@ -52,5 +51,6 @@ public interface NodeUpdateApi {
      */
     void deleteObject(ObjectMeta objMeta);
 
-    void createReference(ObjectMeta parent, Property property, ClassModel classModel, Object obj);
+    void createReference(ObjectLocation objectLocation, ClassModel classModel, Object obj);
+    void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta);
 }

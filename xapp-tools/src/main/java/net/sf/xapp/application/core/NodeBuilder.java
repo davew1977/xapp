@@ -17,11 +17,9 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.ObjectNodeContext;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIST;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.PROPERTY;
-import net.sf.xapp.annotations.objectmodelling.TreeMeta;
+
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
-import net.sf.xapp.tree.Tree;
-import net.sf.xapp.utils.XappException;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -177,7 +175,7 @@ public class NodeBuilder
         {
             Node parent = node.getParent();
             int oldIndex = parent.indexOf(node);
-            m_applicationContainer.removeNode(node);
+            m_applicationContainer.removeNode(node, true);
             if(node.getObjectNodeContext()!=null)
             {
                 newNode = createNode(null, node.objectMeta(), parent, node.getObjectNodeContext().getObjectContext(), oldIndex);

@@ -18,7 +18,6 @@ import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.core.Clipboard;
 import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,17 +55,9 @@ public class PasteCommand extends NodeCommand
             {
                 //remove if action was CUT
                 if (clipboard.getAction() == Clipboard.Action.CUT) {
-
-                    //todo remove updates to jtree here
-
-                    //remove from data model
-                    Node clipboardNode = applicationContainer.getNode(clipboardObject);
-                    //remove from object meta model (dispose, not delete because we don't want to delete any child objects
-                    classModel.dispose(clipboardObject);
-                    //remove the node
-                    applicationContainer.removeNode(clipboardNode);
-
-                    applicationContainer.getApplication().nodeRemoved(clipboardNode, true);
+                    nodeUpdateApi.moveObject(node.objProp(), classModel, clipboardObject);
+                } else {
+                    nodeUpdateApi.cre
                 }
                 //if cloneable then create new clone for clipboard
                 if (clipboardObject instanceof Cloneable) {
@@ -75,12 +66,9 @@ public class PasteCommand extends NodeCommand
                 }
 
                 //register so we get new object meta
-                nodeUpdateApi.registerObject(node.getListNodeContext().getListOwner(),
-                        node.getListNodeContext().getContainerProperty(), classModel, clipboardObject);
             } else {
                 //todo create reference to obj
-                nodeUpdateApi.createReference(node.getListNodeContext().getListOwner(),
-                        node.getListNodeContext().getContainerProperty(), classModel, clipboardObject);
+                nodeUpdateApi.createReference(node.objProp(), classModel, clipboardObject);
             }
         }
 

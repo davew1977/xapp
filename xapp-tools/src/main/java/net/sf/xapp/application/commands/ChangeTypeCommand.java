@@ -52,7 +52,7 @@ public class ChangeTypeCommand extends NodeCommand
                     ClassModel srcClassModel = node.getObjectNodeContext().getClassModel();
                     ObjectMeta oldInstance = node.wrappedObject();
                     List<Property> properties = srcClassModel.getAllProperties();
-                    ObjectMeta newInstance = targetClassModel.newInstance(node.getParent().objRef());
+                    ObjectMeta newInstance = targetClassModel.newInstance(node.getParent().objProp());
                     for (Property property : properties)
                     {
                         newInstance.set(property, oldInstance.get(property));

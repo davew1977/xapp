@@ -244,28 +244,23 @@ public class ClassModel<T> {
 
     /**
      * Create a new instance of the class.
-     * If the class is marked as a singleton by the @Singleton annotation
-     * a new instance will be created only if none already exists.
-     * <p/>
-     * Note that instances created by ordinary means will not be limited
-     * by these restrictions as they are not created using this mechanism
-     * and thus not become registered by the framework.
-     *
-     * @return the new instance or existing singleton instance.
      */
-    public synchronized ObjectMeta<T> newInstance(ObjectMeta parent, Property property) {
+    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation) {
         try {
             T obj = m_class.newInstance();
-            return registerInstance(parent, property, obj);
+            return registerInstance(objectLocation, obj);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
         }
     }
-    public ObjectMeta<T> registerInstance(ObjectMeta parent, Property property, T obj) {
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, parent, property);
+
+    /**
+     * adds a previously unknown object to the model
+     */
+    public ObjectMeta<T> registerInstance(ObjectLocation objectLocation, T obj) {
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation);
         instances.add(objectMeta);
-        objectMeta.initInstance();
         return objectMeta;
     }
 
@@ -854,25 +849,25 @@ public class ClassModel<T> {
         return find(o1) != null;
     }
 
-    public ObjectMeta<T> findOrCreate(ObjectMeta parent, Property property, Object o1) {
+    public ObjectMeta<T> findOrCreate(ObjectLocation objectLocation, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = registerInstance(parent, property, (T) o1);
+            objectMeta = registerInstance(objectLocation, (T) o1);
         } else {
             //update the parent
-            objectMeta.setHomeReference(parent, property);
+            objectMeta.setHomeReference(objectLocation);
         }
         return objectMeta;
     }
 
     public ObjectMeta<T> registerInstance(T o1) {
         assert find(o1) == null;
-        ObjectMeta<T> objectMeta = registerInstance(null, null, o1);
+        ObjectMeta<T> objectMeta = registerInstance(null, o1);
         for (Property property : properties) {
             if(property.isComplexNonReference()) {
                 Object value = objectMeta.get(property);
                 if(value != null) {
-                    property.getPropertyClassModel().registerInstance(objectMeta, property, value);
+                    property.getPropertyClassModel().registerInstance(new ObjectLocation(objectMeta, property), value);
                 }
             }
         }
@@ -881,9 +876,10 @@ public class ClassModel<T> {
         for (ContainerProperty containerProperty : containerProperties) {
 
             if(!containerProperty.containsReferences() && containerProperty.getContainedTypeClassModel().hasKey()) {
+                ObjectLocation objectLocation = new ObjectLocation(objectMeta, containerProperty);
                 Collection col = containerProperty.getCollection(o1);
                 for (Object o : col) {
-                    containerProperty.getContainedTypeClassModel().registerInstance(objectMeta, containerProperty, o);
+                    containerProperty.getContainedTypeClassModel().registerInstance(objectLocation, o);
                 }
             }
         }

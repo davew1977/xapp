@@ -15,6 +15,7 @@ package net.sf.xapp.application.commands;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
+import net.sf.xapp.application.api.NodeUpdateApi;
 
 import java.util.List;
 
@@ -34,29 +35,18 @@ public class RemoveCommand extends NodeCommand
             System.out.println("cannot remove root!");
             return;
         }
-        //remove from data model
         Node parentNode =  node.getParent();
-        parentNode.getListNodeContext().getCollection().remove(node.wrappedObject());
-        //if this is not a reference, then we should remove references to it too
-        if(!node.isReference())
-        {
-            List<Node> referencingNodes = appContainer.findReferencingNodes(node.wrappedObject());
-            for (Node referencingNode : referencingNodes)
-            {
-                new RemoveCommand().execute(referencingNode);
-            }
-            //dispose of object
-            node.getObjectNodeContext().getClassModel().delete(node.wrappedObject());
+
+
+        NodeUpdateApi nodeUpdateApi = appContainer.getNodeUpdateApi();
+        if(node.isReference()) {
+            nodeUpdateApi.removeReference(parentNode.objProp(), node.objectMeta());
+        } else {
+            nodeUpdateApi.deleteObject(node.objectMeta());
         }
 
         //we want the selection path to be on above the node removed or the parent path if this does not exist
         Node childBefore = parentNode.getChildBefore(node);
         appContainer.setSelectedNode(childBefore != null ? childBefore : parentNode);
-        //remove the node
-        /*
-        20131207 - calling node removed first because otherwise
-         */
-        appContainer.getApplication().nodeRemoved(node, false);
-        appContainer.removeNode(node);
     }
 }

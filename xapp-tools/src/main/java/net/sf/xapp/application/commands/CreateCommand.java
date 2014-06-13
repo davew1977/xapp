@@ -15,6 +15,7 @@ package net.sf.xapp.application.commands;
 import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
@@ -33,7 +34,9 @@ public class CreateCommand extends NodeCommand
     public void execute(final Node parentNode)
     {
         final ApplicationContainer appContainer = parentNode.getAppContainer();
-        final ObjectMeta objMeta = appContainer.getNodeUpdateApi().createObject(parentNode, m_createClass);
+        ObjectMeta parentObjMeta = parentNode.getListNodeContext().getListOwner();
+        ContainerProperty containerProperty = parentNode.getListNodeContext().getContainerProperty();
+        final ObjectMeta objMeta = appContainer.getNodeUpdateApi().createObject(parentObjMeta, containerProperty, m_createClass);
         EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE, appContainer.getNodeUpdateApi());
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {

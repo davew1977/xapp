@@ -759,10 +759,11 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         addHook(beforeHooks, action, hook);
     }
 
-    public void removeNode(Node node)
+    public void removeNode(Node node, boolean wasCut)
     {
         //note this method only modifies the JTree NOT the data model
         ((DefaultTreeModel) getMainTree().getModel()).removeNodeFromParent(node.getJtreeNode());
+        getApplication().nodeRemoved(node, wasCut);
     }
 
     public void searchResultSelected(Object selectedValue)

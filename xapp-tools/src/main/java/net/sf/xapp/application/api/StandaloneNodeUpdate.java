@@ -22,6 +22,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         if(node != null) {
             node.refresh();
         }
+        objectMeta.update(potentialUpdates);
         appContainer.getApplication().objectUpdated(objectMeta, PropertyUpdate.execute(objectMeta, potentialUpdates));
     }
 
@@ -35,17 +36,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
-        objectMeta.setHomeRef();
-    }
-
-    @Override
-    public void addObject(ObjectMeta objectMeta) {
-
-    }
-
-    @Override
-    public void removeObject(ObjectMeta objectMeta) {
-
     }
 
     @Override
@@ -85,30 +75,53 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(ObjectMeta parent, Property property, ClassModel type) {
-        final ObjectMeta objMeta = type.newInstance(parent, property);
+    public ObjectMeta createObject(ObjectLocation location, ClassModel type) {
+        final ObjectMeta objMeta = type.newInstance(location);
         appContainer.getApplication().nodeAboutToBeAdded(objMeta);
         return objMeta;
     }
 
     @Override
-    public ObjectMeta registerObject(ObjectMeta parent, Property property, ClassModel type, Object obj) {
-        //todo try to find the obj, and if it is found, we need to remove the old node
-
-        final ObjectMeta objMeta = type.findOrCreate(parent, property, obj);
-        objMeta.setHomeRef();
-        appContainer.getApplication().nodeAdded(objMeta);
-        return objMeta;
+    public void moveObject(ObjectLocation newLocation, ClassModel type, Object obj) {
+        //find the old object and remove it
+        ObjectMeta objectMeta = type.find(obj);
+        deleteObject(objectMeta, true);
+        //todo create the node
+        appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
-    public void createReference(ObjectMeta parent, Property property, ClassModel type, Object obj) {
+    public void insertObject(ObjectLocation newLocation, ClassModel type, Object obj) {
+        ObjectMeta objectMeta = type.registerInstance(newLocation, obj);
+        //todo create the node
+
+        appContainer.getApplication().nodeAdded(objectMeta);
+
+    }
+
+    @Override
+    public void createReference(ObjectLocation objectLocation, ClassModel type, Object obj) {
         ObjectMeta objMeta = type.find(obj);
-        objMeta.createAndSetReference(parent, property);
+        objMeta.createAndSetReference(objectLocation);
     }
 
     @Override
     public void deleteObject(ObjectMeta objMeta) {
+        deleteObject(objMeta, false);
+
+    }
+
+    private void deleteObject(ObjectMeta objMeta, boolean wasMoved) {
+        //remove from data model
         objMeta.dispose();
+        //clean up nodes
+        Node node = (Node) objMeta.getAttachment();
+        if (node!=null) {
+            appContainer.removeNode(node, true);
+        }
+        List<Node> referencingNodes = appContainer.findReferencingNodes(objMeta.getInstance());
+        for (Node referencingNode : referencingNodes) {
+            appContainer.removeNode(referencingNode, wasMoved);
+        }
     }
 }

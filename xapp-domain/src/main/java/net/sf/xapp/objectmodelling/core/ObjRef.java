@@ -4,49 +4,41 @@ package net.sf.xapp.objectmodelling.core;
  * encapsulates the location of an object
  */
 public class ObjRef {
-    private final ObjectMeta parent;
-    private final Property property;
+    private final ObjectLocation objectLocation;
     private final ObjectMeta ref;
 
-    public ObjRef(ObjectMeta parent, Property property, ObjectMeta ref) {
-        this.parent = parent;
-        this.property = property;
+    public ObjRef(ObjectLocation objectLocation, ObjectMeta ref) {
+        this.objectLocation = objectLocation;
         this.ref = ref;
     }
 
+    public ObjectLocation getObjectLocation() {
+        return objectLocation;
+    }
+
     public ObjectMeta getParent() {
-        return parent;
+        return objectLocation.getObj();
     }
 
     public Property getProperty() {
-        return property;
+        return objectLocation.getProperty();
     }
 
     /**
      * nullify the underlying reference
      */
-    public void dispose() {
-        if (parent != null) {
-            if(property.isContainer()) {
-                ContainerProperty cp = (ContainerProperty) property;
-                cp.remove(parent, ref);
-            } else {
-                parent.set(property, null);
-            }
+    public void unset() {
+        if (objectLocation != null) {
+            objectLocation.unset(ref);
         }
     }
 
     /**
      * set the underlying reference (add if collection, put if map, set if one to one)
      */
-    public void init() {
-        if (parent!=null) {
-            if(property.isContainer()) {
-                ContainerProperty cp = (ContainerProperty) property;
-                cp.add(parent, ref);
-            } else {
-                parent.set(property, this);
-            }
+    public void set() {
+        if (objectLocation != null) {
+            objectLocation.set(ref);
         }
     }
 }

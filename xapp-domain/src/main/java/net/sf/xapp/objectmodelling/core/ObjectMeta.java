@@ -21,13 +21,14 @@ public class ObjectMeta<T> implements Namespace{
     private String key; //can change
     private ObjRef homeReference; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
-    private List<ObjRef> references = new ArrayList<ObjRef>();
+    private Map<ObjectLocation, ObjRef> references = new HashMap<ObjectLocation, ObjRef>();
 
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectMeta parent, Property property) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation objectLocation) {
         this.classModel = classModel;
         this.instance = obj;
-        this.homeReference = new ObjRef(parent, property, this);
+        this.homeReference = new ObjRef(objectLocation, this);
+        this.homeReference.set();
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
         if (namespaceFor != null) {
             for (Class aClass : namespaceFor.value()) {
@@ -36,6 +37,11 @@ public class ObjectMeta<T> implements Namespace{
             }
         }
         this.id = classModel.registerWithClassDatabase(this);
+        tryCall(instance, "setObjectMeta", this);
+        key = (String) get(classModel.getKeyProperty());
+        if (key != null) {
+            updateMetaHierarchy(null, key);
+        }
     }
 
     public void mapByKey(ObjectMeta obj) {
@@ -175,20 +181,6 @@ public class ObjectMeta<T> implements Namespace{
             return set;
         }
         return new LinkedHashSet<ObjectMeta>();
-    }
-
-
-    /**
-     * optionally initialize the instance with this object meta
-     * if the object already has primary key then we need to update
-     * parent object metas
-     */
-    public void initInstance() {
-        String key = (String) get(classModel.getKeyProperty());
-        if (key != null) {
-           updateMetaHierarchy(null, key);
-        }
-        tryCall(instance, "setObjectMeta", this);
     }
 
     public boolean isNamespaceFor(Class aClass) {
@@ -342,17 +334,19 @@ public class ObjectMeta<T> implements Namespace{
             updateMetaHierarchy(key, null);
         }
         classModel.dispose(this);
-        homeReference.dispose();
-        for (ObjRef reference : references) {
-            reference.dispose();
+        homeReference.unset();
+        for (ObjRef reference : references.values()) {
+            reference.unset();
         }
+        references.clear();
     }
 
-    public void setHomeReference(ObjectMeta parent, Property property) {
+    public void setHomeReference(ObjectLocation objectLocation) {
         if(this.homeReference != null) {
-             this.homeReference.dispose();
+             this.homeReference.unset();
         }
-        this.homeReference = new ObjRef(parent, property, this);
+        this.homeReference = new ObjRef(objectLocation, this);
+        this.homeReference.set();
         updateMetaHierarchy(key, key);
     }
 
@@ -364,15 +358,14 @@ public class ObjectMeta<T> implements Namespace{
         PropertyUpdate.execute(this, potentialUpdates);
     }
 
-    public void setHomeRef() {
-
-        //add self to home ref (which could either be in a collection or one to one
-        homeReference.init();
+    public void createAndSetReference(ObjectLocation objectLocation) {
+        ObjRef ref = new ObjRef(objectLocation, this);
+        references.put(ref.getObjectLocation(), ref);
+        ref.set();
     }
 
-    public void createAndSetReference(ObjectMeta parent, Property property) {
-        ObjRef ref = new ObjRef(parent, property, this);
-        references.add(ref);
-        ref.init();
+    public void removeAndUnsetReference(ObjectLocation objectLocation) {
+        ObjRef objRef = references.remove(objectLocation);
+        objRef.unset();
     }
 }
