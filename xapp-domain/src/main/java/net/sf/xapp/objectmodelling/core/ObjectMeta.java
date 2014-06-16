@@ -19,6 +19,7 @@ public class ObjectMeta<T> implements Namespace{
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
     private final Long id;
     private String key; //can change
+    //todo i think obj ref is redundant, remove
     private ObjRef homeReference; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
     private Map<ObjectLocation, ObjRef> references = new HashMap<ObjectLocation, ObjRef>();
@@ -367,5 +368,9 @@ public class ObjectMeta<T> implements Namespace{
     public void removeAndUnsetReference(ObjectLocation objectLocation) {
         ObjRef objRef = references.remove(objectLocation);
         objRef.unset();
+    }
+
+    public ObjectLocation location() {
+        return homeReference.getObjectLocation();
     }
 }

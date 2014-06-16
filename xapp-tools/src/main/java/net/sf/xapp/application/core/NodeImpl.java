@@ -15,7 +15,6 @@ package net.sf.xapp.application.core;
 import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.commands.RefreshCommand;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
-import net.sf.xapp.objectmodelling.core.ObjRef;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
@@ -136,8 +135,8 @@ public class NodeImpl implements Node
     }
 
     @Override
-    public ObjectLocation objProp() {
-        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty());
+    public ObjectLocation objLocation() {
+        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty(), this);
     }
 
     public ApplicationContainer getAppContainer()

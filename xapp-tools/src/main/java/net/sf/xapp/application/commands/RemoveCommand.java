@@ -17,8 +17,6 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.api.NodeUpdateApi;
 
-import java.util.List;
-
 public class RemoveCommand extends NodeCommand
 {
 
@@ -40,7 +38,7 @@ public class RemoveCommand extends NodeCommand
 
         NodeUpdateApi nodeUpdateApi = appContainer.getNodeUpdateApi();
         if(node.isReference()) {
-            nodeUpdateApi.removeReference(parentNode.objProp(), node.objectMeta());
+            nodeUpdateApi.removeReference(parentNode.objLocation(), node.objectMeta());
         } else {
             nodeUpdateApi.deleteObject(node.objectMeta());
         }

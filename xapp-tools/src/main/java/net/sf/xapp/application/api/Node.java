@@ -111,8 +111,7 @@ public interface Node
     void refresh();
 
     /**
-     * will combine this obj with its nearest list property to form an objref (needed to create a new objmeta)
-     * @return
+     * @return an object location
      */
-    ObjectLocation objProp();
+    ObjectLocation objLocation();
 }

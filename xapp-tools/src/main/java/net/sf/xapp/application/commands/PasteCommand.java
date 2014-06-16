@@ -47,17 +47,17 @@ public class PasteCommand extends NodeCommand
         Clipboard clipboard = applicationContainer.getClipboard();
         List<Object> list = clipboard.getClipboardObjects();
         List<Object> clones = new ArrayList<Object>();
+        NodeUpdateApi nodeUpdateApi = applicationContainer.getNodeUpdateApi();
         for (Object clipboardObject : list) {
-            ClassModel classModel = applicationContainer.getGuiContext().getClassDatabase().getClassModel(clipboardObject.getClass());
+            ClassModel classModel = applicationContainer.getClassDatabase().getClassModel(clipboardObject.getClass());
 
-            NodeUpdateApi nodeUpdateApi = applicationContainer.getNodeUpdateApi();
             if (!node.containsReferences()) //don't remove or clone if we're only pasting references
             {
                 //remove if action was CUT
-                if (clipboard.getAction() == Clipboard.Action.CUT) {
-                    nodeUpdateApi.moveObject(node.objProp(), classModel, clipboardObject);
+                if (clipboard.isCut()) {
+                    nodeUpdateApi.moveObject(node.objLocation(), classModel, clipboardObject);
                 } else {
-                    nodeUpdateApi.cre
+                    nodeUpdateApi.insertObject(node.objLocation(), classModel, clipboardObject);
                 }
                 //if cloneable then create new clone for clipboard
                 if (clipboardObject instanceof Cloneable) {
@@ -68,7 +68,7 @@ public class PasteCommand extends NodeCommand
                 //register so we get new object meta
             } else {
                 //todo create reference to obj
-                nodeUpdateApi.createReference(node.objProp(), classModel, clipboardObject);
+                nodeUpdateApi.createReference(node.objLocation(), classModel, clipboardObject);
             }
         }
 

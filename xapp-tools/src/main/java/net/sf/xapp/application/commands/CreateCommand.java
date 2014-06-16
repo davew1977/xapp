@@ -34,9 +34,7 @@ public class CreateCommand extends NodeCommand
     public void execute(final Node parentNode)
     {
         final ApplicationContainer appContainer = parentNode.getAppContainer();
-        ObjectMeta parentObjMeta = parentNode.getListNodeContext().getListOwner();
-        ContainerProperty containerProperty = parentNode.getListNodeContext().getContainerProperty();
-        final ObjectMeta objMeta = appContainer.getNodeUpdateApi().createObject(parentObjMeta, containerProperty, m_createClass);
+        final ObjectMeta objMeta = appContainer.getNodeUpdateApi().createObject(parentNode.objLocation(), m_createClass);
         EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE, appContainer.getNodeUpdateApi());
         final Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {

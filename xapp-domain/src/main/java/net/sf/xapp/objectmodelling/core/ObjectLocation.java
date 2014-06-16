@@ -6,10 +6,12 @@ package net.sf.xapp.objectmodelling.core;
 public class ObjectLocation {
     private final ObjectMeta obj;
     private final Property property;
+    private Object attachment;
 
-    public ObjectLocation(ObjectMeta obj, Property property) {
+    public ObjectLocation(ObjectMeta obj, Property property, Object attachment) {
         this.obj = obj;
         this.property = property;
+        this.attachment = attachment;
     }
 
     public ObjectMeta getObj() {
@@ -54,5 +56,13 @@ public class ObjectLocation {
         } else {
             obj.set(property, this);
         }
+    }
+
+    public Object getAttachment() {
+        return attachment;
+    }
+
+    public boolean isCollection() {
+        return property.isContainer();
     }
 }

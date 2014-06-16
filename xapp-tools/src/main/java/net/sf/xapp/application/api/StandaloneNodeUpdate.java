@@ -4,6 +4,8 @@ import net.sf.xapp.objectmodelling.core.*;
 
 import java.util.List;
 
+import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.*;
+
 /**
  * © 2013 Newera Education Ltd
  * Created by dwebber
@@ -36,22 +38,16 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
+        //create the node
+        ObjectLocation objectLocation = objectMeta.location();
+        appContainer.getNodeBuilder().createNode(objectLocation.getProperty(), objectMeta,
+                (Node) objectLocation.getAttachment(), objectLocation.isCollection() ? IN_LIST : PROPERTY);
+        appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
     public void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex) {
 
-    }
-
-    @Override
-    public void addObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        PropertyUpdate.execute(objectMeta, potentialUpdates);
-        addObject(parentNode, objectMeta);
-    }
-
-    @Override
-    public void addObject(Node parentNode, ObjectMeta objectMeta) {
-        parentNode.add(objectMeta);
     }
 
     @Override
@@ -70,11 +66,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(Node parentNode, ClassModel type) {
-        return null;
-    }
-
-    @Override
     public ObjectMeta createObject(ObjectLocation location, ClassModel type) {
         final ObjectMeta objMeta = type.newInstance(location);
         appContainer.getApplication().nodeAboutToBeAdded(objMeta);
@@ -86,23 +77,28 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         //find the old object and remove it
         ObjectMeta objectMeta = type.find(obj);
         deleteObject(objectMeta, true);
-        //todo create the node
+        //create the node
+        appContainer.getNodeBuilder().createNode(newLocation.getProperty(), objectMeta,
+                (Node) newLocation.getAttachment(), IN_LIST);
         appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
     public void insertObject(ObjectLocation newLocation, ClassModel type, Object obj) {
         ObjectMeta objectMeta = type.registerInstance(newLocation, obj);
-        //todo create the node
-
+        //create the node
+        appContainer.getNodeBuilder().createNode(newLocation.getProperty(), objectMeta,
+                (Node) newLocation.getAttachment(), IN_LIST);
         appContainer.getApplication().nodeAdded(objectMeta);
 
     }
 
     @Override
-    public void createReference(ObjectLocation objectLocation, ClassModel type, Object obj) {
+    public void createReference(ObjectLocation newLocation, ClassModel type, Object obj) {
         ObjectMeta objMeta = type.find(obj);
-        objMeta.createAndSetReference(objectLocation);
+        objMeta.createAndSetReference(newLocation);
+        appContainer.getNodeBuilder().createNode(newLocation.getProperty(), objMeta,
+                (Node) newLocation.getAttachment(), IN_LIST);
     }
 
     @Override

@@ -21,6 +21,10 @@ public class Clipboard
 {
 
 
+    public boolean isCut() {
+        return getAction() == Clipboard.Action.CUT;
+    }
+
     public enum Action{CUT,COPY}
     private List<Object> m_clipboardObjects = new ArrayList<Object>();
     private Action m_action;
