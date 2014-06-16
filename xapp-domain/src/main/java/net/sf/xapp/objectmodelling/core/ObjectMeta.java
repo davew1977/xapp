@@ -20,16 +20,16 @@ public class ObjectMeta<T> implements Namespace{
     private final Long id;
     private String key; //can change
     //todo i think obj ref is redundant, remove
-    private ObjRef homeReference; //the parent obj and the property where this is stored
+    private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
-    private Map<ObjectLocation, ObjRef> references = new HashMap<ObjectLocation, ObjRef>();
+    private List<ObjectLocation> references = new ArrayList<ObjectLocation>();
 
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectLocation objectLocation) {
         this.classModel = classModel;
         this.instance = obj;
-        this.homeReference = new ObjRef(objectLocation, this);
-        this.homeReference.set();
+        this.home = objectLocation;
+        this.home.set(this);
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
         if (namespaceFor != null) {
             for (Class aClass : namespaceFor.value()) {
@@ -126,12 +126,12 @@ public class ObjectMeta<T> implements Namespace{
         return instance;
     }
 
-    public ObjRef getHomeReference() {
-        return homeReference;
+    public ObjectLocation getHome() {
+        return home;
     }
 
     public ObjectMeta getParent() {
-        return homeReference.getParent(); //may return null if root obj
+        return home.getObj(); //may return null if root obj
     }
 
     public boolean isRoot() {
@@ -335,20 +335,22 @@ public class ObjectMeta<T> implements Namespace{
             updateMetaHierarchy(key, null);
         }
         classModel.dispose(this);
-        homeReference.unset();
-        for (ObjRef reference : references.values()) {
-            reference.unset();
+        home.unset(this);
+        for (ObjectLocation reference : references) {
+            reference.unset(this);
         }
         references.clear();
     }
 
-    public void setHomeReference(ObjectLocation objectLocation) {
-        if(this.homeReference != null) {
-             this.homeReference.unset();
+    public ObjectLocation setHome(ObjectLocation objectLocation) {
+        ObjectLocation old = home;
+        if(old!= null) {
+             old.unset(this);
         }
-        this.homeReference = new ObjRef(objectLocation, this);
-        this.homeReference.set();
+        this.home = objectLocation;
+        this.home.set(this);
         updateMetaHierarchy(key, key);
+        return old;
     }
 
     public ClassDatabase getClassDatabase() {
@@ -360,17 +362,32 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void createAndSetReference(ObjectLocation objectLocation) {
-        ObjRef ref = new ObjRef(objectLocation, this);
-        references.put(ref.getObjectLocation(), ref);
-        ref.set();
+        references.add(objectLocation);
+        objectLocation.set(this);
     }
 
     public void removeAndUnsetReference(ObjectLocation objectLocation) {
-        ObjRef objRef = references.remove(objectLocation);
-        objRef.unset();
+        boolean removed = references.remove(objectLocation);
+        assert removed;
+        objectLocation.unset(this);
     }
 
-    public ObjectLocation location() {
-        return homeReference.getObjectLocation();
+    public void updateIndex(ObjectLocation location, int index) {
+        //find "my" location
+        ObjectLocation myLocation = resolve(location);
+        myLocation.updateIndex(this, index);
+    }
+
+    private ObjectLocation resolve(ObjectLocation location) {
+        if(!location.containsReferences()) {
+            assert location.equals(home);
+            return home;
+        }
+        for (ObjectLocation reference : references) {
+            if(reference.equals(location)) {
+                return reference;
+            }
+        }
+        throw new IllegalArgumentException(String.format("object %s not in location %s", this, location));
     }
 }

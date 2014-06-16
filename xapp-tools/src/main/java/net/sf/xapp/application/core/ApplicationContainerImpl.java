@@ -24,8 +24,6 @@ import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjRef;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.XappException;
@@ -515,26 +513,10 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     public void add(Node parentNode, Object obj, int index)
     {
         Node node = getNode(obj);
-        if (node != null) throw new XappException("object " + obj + " is already added");
-
-        final ListNodeContext listNodeContext = parentNode.getListNodeContext();
-        List list = (List) listNodeContext.getCollection();
-        if (!list.contains(obj))
-        {
-            if(index == -1) {
-
-                list.add(index, obj);
-            }
-            else {
-                list.add(index, obj);
-            }
-            ObjectMeta objectMeta = getClassDatabase().getClassModel(obj.getClass()).registerInstance(
-                    new ObjRef(parentNode.objectMeta(), listNodeContext.getContainerProperty(), ref), obj);
-            getApplication().nodeAboutToBeAdded(parentNode, objectMeta);
-            Node newNode = m_nodeBuilder.createNode(null, objectMeta, parentNode, ObjectNodeContext.ObjectContext.IN_LIST);
-            getMainPanel().repaint();
-            getApplication().nodeAdded(newNode);
+        if (node != null) {
+            throw new XappException("object " + obj + " is already added");
         }
+        getNodeUpdateApi().insertObject(parentNode.objLocation(), obj);
     }
 
     @Override

@@ -855,7 +855,7 @@ public class ClassModel<T> {
             objectMeta = registerInstance(objectLocation, (T) o1);
         } else {
             //update the parent
-            objectMeta.setHomeReference(objectLocation);
+            objectMeta.setHome(objectLocation);
         }
         return objectMeta;
     }

@@ -119,24 +119,18 @@ public class NodeImpl implements Node
     }
 
     @Override
-    public void add(ObjectMeta newObjMeta) {
-        listNodeContext.add(newObjMeta);
-        NodeBuilder nodeBuilder = appContainer.getNodeBuilder();
-        Node newNode = nodeBuilder.createNode(null, newObjMeta, this, ObjectNodeContext.ObjectContext.IN_LIST);
-        appContainer.getMainPanel().repaint();
-        if (!newNode.isReference()) {
-            appContainer.getApplication().nodeAdded(newNode);
-        }
-    }
-
-    @Override
     public void refresh() {
         getAppContainer().refreshNode(this);
     }
 
     @Override
     public ObjectLocation objLocation() {
-        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty(), this);
+        return objLocation(numChildren());
+    }
+
+    @Override
+    public ObjectLocation objLocation(int index) {
+        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty(), index, this);
     }
 
     public ApplicationContainer getAppContainer()

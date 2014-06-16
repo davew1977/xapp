@@ -38,8 +38,8 @@ public interface NodeUpdateApi {
     /**
      * This is used when an object already exists but has been moved within the object graph
      */
-    void moveObject(ObjectLocation newLocation, ClassModel type, Object obj);
-    void insertObject(ObjectLocation newLocation, ClassModel type, Object obj);
+    void moveObject(ObjectLocation newLocation, Object obj);
+    void insertObject(ObjectLocation newLocation, Object obj);
 
     /**
      * initialize a recently created object with properties entered by the user
@@ -51,6 +51,8 @@ public interface NodeUpdateApi {
      */
     void deleteObject(ObjectMeta objMeta);
 
-    void createReference(ObjectLocation objectLocation, ClassModel classModel, Object obj);
+    void createReference(ObjectLocation objectLocation, Object obj);
     void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta);
+
+    void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int newIndex);
 }

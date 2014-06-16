@@ -14,9 +14,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.core.CommandContext;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
-import net.sf.xapp.objectmodelling.core.ObjRef;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.tree.Tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -106,12 +104,11 @@ public interface Node
 
     ObjectMeta objectMeta();
 
-    void add(ObjectMeta newObjMeta);
-
     void refresh();
 
     /**
      * @return an object location
      */
     ObjectLocation objLocation();
+    ObjectLocation objLocation(int index);
 }

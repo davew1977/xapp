@@ -51,8 +51,16 @@ public class NodeBuilder
         return createNode(property, instance, parentNode, objectContext, parentNode.numChildren());
     }
 
+    public Node createNode(ObjectLocation objectLocation, ObjectMeta instance, ObjectNodeContext.ObjectContext objectContext)
+    {
+        return createNode(objectLocation.getProperty(), instance, (Node) objectLocation.getAttachment(), objectContext, objectLocation.index());
+    }
+
     public Node createNode(Property parentProperty, ObjectMeta objMeta, Node parentNode, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
     {
+        if(insertIndex==-1) {
+            insertIndex = parentNode.numChildren();
+        }
         DefaultMutableTreeNode jtreeNode = new DefaultMutableTreeNode();
         DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
 
