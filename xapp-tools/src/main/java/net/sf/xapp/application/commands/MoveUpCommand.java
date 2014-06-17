@@ -15,9 +15,7 @@ package net.sf.xapp.application.commands;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import java.util.List;
 
 public class MoveUpCommand extends NodeCommand
 {
@@ -31,7 +29,7 @@ public class MoveUpCommand extends NodeCommand
         //get the parent list node
         Node parentNode = node.getParent();
         TreePath selectionPath = node.getAppContainer().getMainTree().getSelectionPath();
-        node.getAppContainer().getNodeUpdateApi().moveInList(parentNode.objLocation(), node.objectMeta(), node.index()-1);
+        node.getAppContainer().getNodeUpdateApi().moveInList(parentNode.newObjLocation(), node.objectMeta(), node.index()-1);
         node.getAppContainer().getMainTree().setSelectionPath(selectionPath);
     }
 }

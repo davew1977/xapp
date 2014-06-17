@@ -107,8 +107,16 @@ public interface Node
     void refresh();
 
     /**
+     * call when creating an obj location from the current node
+     * node must be a container for child nodes (listnode context is assumed to have a value)
      * @return an object location
      */
-    ObjectLocation objLocation();
-    ObjectLocation objLocation(int index);
+    ObjectLocation newObjLocation();
+    ObjectLocation newObjLocation(int index);
+
+    /**
+     *
+     * @return the obj location of THIS node, assumes objnode context
+     */
+    ObjectLocation thisObjLocation();
 }

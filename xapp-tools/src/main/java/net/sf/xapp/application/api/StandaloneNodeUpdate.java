@@ -7,8 +7,6 @@ import java.util.List;
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.*;
 
 /**
- * © 2013 Newera Education Ltd
- * Created by dwebber
  */
 public class StandaloneNodeUpdate implements NodeUpdateApi {
     private final ApplicationContainer appContainer;
@@ -43,26 +41,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         appContainer.getNodeBuilder().createNode(objectLocation.getProperty(), objectMeta,
                 (Node) objectLocation.getAttachment(), objectLocation.isCollection() ? IN_LIST : PROPERTY);
         appContainer.getApplication().nodeAdded(objectMeta);
-    }
-
-    @Override
-    public void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex) {
-
-    }
-
-    @Override
-    public void addNode(Node node) {
-
-    }
-
-    @Override
-    public void removeNode(Node node) {
-
-    }
-
-    @Override
-    public void moveNode(Node node, int oldIndex, int newIndex) {
-
     }
 
     @Override
@@ -105,6 +83,14 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
+    public void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta) {
+        objectMeta.removeAndUnsetReference(objectLocation);
+        Node parentNode = (Node) objectLocation.getAttachment();
+        Node node = parentNode.getChildAt(objectLocation.index());
+        appContainer.removeNode(node, false);
+    }
+
+    @Override
     public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int newIndex) {
         //update model
         objectMeta.updateIndex(objectLocation, newIndex);
@@ -113,7 +99,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public void deleteObject(ObjectMeta objMeta) {
         deleteObject(objMeta, false);
-
     }
 
     private void deleteObject(ObjectMeta objMeta, boolean wasMoved) {

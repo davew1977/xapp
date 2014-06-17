@@ -1,6 +1,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
@@ -18,21 +19,6 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
 
     @Override
     public void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates) {
-
-    }
-
-    @Override
-    public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-
-    }
-
-    @Override
-    public void addObject(ObjectMeta objectMeta) {
-
-    }
-
-    @Override
-    public void removeObject(ObjectMeta objectMeta) {
 
     }
 
@@ -57,17 +43,42 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(Node parentNode, ClassModel type) {
+    public ObjectMeta createObject(ObjectLocation location, ClassModel type) {
         return null;
     }
 
     @Override
-    public ObjectMeta registerObject(Node parentNode, ClassModel type, Object obj) {
-        return null;
+    public void moveObject(ObjectLocation newLocation, Object obj) {
+
+    }
+
+    @Override
+    public void insertObject(ObjectLocation newLocation, Object obj) {
+
+    }
+
+    @Override
+    public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+
     }
 
     @Override
     public void deleteObject(ObjectMeta objMeta) {
+
+    }
+
+    @Override
+    public void createReference(ObjectLocation objectLocation, Object obj) {
+
+    }
+
+    @Override
+    public void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta) {
+
+    }
+
+    @Override
+    public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int newIndex) {
 
     }
 }

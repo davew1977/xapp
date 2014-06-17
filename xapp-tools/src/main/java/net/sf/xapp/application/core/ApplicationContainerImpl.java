@@ -516,7 +516,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if (node != null) {
             throw new XappException("object " + obj + " is already added");
         }
-        getNodeUpdateApi().insertObject(parentNode.objLocation(), obj);
+        getNodeUpdateApi().insertObject(parentNode.newObjLocation(), obj);
     }
 
     @Override

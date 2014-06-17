@@ -18,17 +18,6 @@ public interface NodeUpdateApi {
      */
     void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
     void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates);
-    void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex);
-    /**
-     * index has a value if the containing property is a list (null if map or set)
-     */
-    void addNode(Node node);
-    void removeNode(Node node);
-    /**
-     * Node was moved up or down in a list
-     */
-    void moveNode(Node node, int oldIndex, int newIndex);
-
     /**
      * creates the initial raw instance of the object
      * will be shortly followed with either an initialize or a cancel
