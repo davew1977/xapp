@@ -9,11 +9,13 @@ public class ObjectLocation {
     private int index;
     private Object attachment;
 
-    public ObjectLocation(ObjectMeta obj, Property property, int index, Object attachment) {
+    public ObjectLocation(ObjectMeta obj, Property property) {
+        this(obj, property, -1);
+    }
+    public ObjectLocation(ObjectMeta obj, Property property, int index) {
         this.obj = obj;
         this.property = property;
         this.index = index;
-        this.attachment = attachment;
     }
 
     public ObjectMeta getObj() {
@@ -62,6 +64,10 @@ public class ObjectLocation {
 
     public Object getAttachment() {
         return attachment;
+    }
+
+    public void setAttachment(Object attachment) {
+        this.attachment = attachment;
     }
 
     public boolean isCollection() {

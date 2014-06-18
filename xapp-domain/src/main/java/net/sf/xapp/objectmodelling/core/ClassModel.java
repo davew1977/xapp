@@ -867,7 +867,7 @@ public class ClassModel<T> {
             if(property.isComplexNonReference()) {
                 Object value = objectMeta.get(property);
                 if(value != null) {
-                    property.getPropertyClassModel().registerInstance(new ObjectLocation(objectMeta, property, attachment), value);
+                    property.getPropertyClassModel().registerInstance(new ObjectLocation(objectMeta, property), value);
                 }
             }
         }
@@ -876,10 +876,10 @@ public class ClassModel<T> {
         for (ContainerProperty containerProperty : containerProperties) {
 
             if(!containerProperty.containsReferences() && containerProperty.getContainedTypeClassModel().hasKey()) {
-                ObjectLocation objectLocation = new ObjectLocation(objectMeta, containerProperty, attachment);
                 Collection col = containerProperty.getCollection(o1);
+                int index = 0;
                 for (Object o : col) {
-                    containerProperty.getContainedTypeClassModel().registerInstance(objectLocation, o);
+                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjectLocation(objectMeta, containerProperty, index++), o);
                 }
             }
         }
