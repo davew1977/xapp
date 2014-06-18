@@ -306,7 +306,7 @@ public class Unmarshaller<T>
                         Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
                         nextObject = unmarshaller.unmarshal(listElement, context, property).getInstance();
                     }
-                    listProperty.addToMapOrCollection(al, nextObject);
+                    listProperty.addToMapOrCollection(al, -1, nextObject);
                 }
             }
             parentOb.set(property, al);
@@ -527,7 +527,7 @@ public class Unmarshaller<T>
 
 
         public  ObjectMeta<E> newInstance(Property property) {
-            objectMeta = classModel.newInstance(parentObjMeta(), property);
+            objectMeta = classModel.newInstance(new ObjectLocation(parentObjMeta(), property));
 
             /*if (classModel.hasKey()) {
                 LocalContext namespace = getNamespace(classModel.getContainedClass());
@@ -606,7 +606,7 @@ public class Unmarshaller<T>
             {
                 Class propertyClass = m_listProperty.getContainedType();
                 Object ref = objectMeta.get(propertyClass, s);
-                m_listProperty.addToMapOrCollection(mapOrCollection, ref);
+                m_listProperty.addToMapOrCollection(mapOrCollection, -1, ref);
             }
             target.set(m_listProperty, mapOrCollection);
         }

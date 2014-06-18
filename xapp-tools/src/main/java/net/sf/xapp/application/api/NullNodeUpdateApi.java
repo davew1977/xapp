@@ -22,25 +22,6 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
 
     }
 
-    @Override
-    public void moveObject(ObjectMeta objectMeta, int oldIndex, int newIndex) {
-
-    }
-
-    @Override
-    public void addNode(Node node) {
-
-    }
-
-    @Override
-    public void removeNode(Node node) {
-
-    }
-
-    @Override
-    public void moveNode(Node node, int oldIndex, int newIndex) {
-
-    }
 
     @Override
     public ObjectMeta createObject(ObjectLocation location, ClassModel type) {

@@ -2,6 +2,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.*;
 
+import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
 
 import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.*;
@@ -17,13 +18,13 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        //find node
+
+        objectMeta.update(potentialUpdates);
+        appContainer.getApplication().objectUpdated(objectMeta, PropertyUpdate.execute(objectMeta, potentialUpdates)); //find node
         Node node = (Node) objectMeta.getAttachment();
         if(node != null) {
             node.refresh();
         }
-        objectMeta.update(potentialUpdates);
-        appContainer.getApplication().objectUpdated(objectMeta, PropertyUpdate.execute(objectMeta, potentialUpdates));
     }
 
     @Override
@@ -38,8 +39,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         objectMeta.update(potentialUpdates);
         //create the node
         ObjectLocation objectLocation = objectMeta.getHome();
-        appContainer.getNodeBuilder().createNode(objectLocation.getProperty(), objectMeta,
-                (Node) objectLocation.getAttachment(), objectLocation.isCollection() ? IN_LIST : PROPERTY);
+        appContainer.getNodeBuilder().createNode(objectLocation, objectMeta);
         appContainer.getApplication().nodeAdded(objectMeta);
     }
 
@@ -61,7 +61,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
             appContainer.removeNode(node, true);
         }
         //create new node
-        appContainer.getNodeBuilder().createNode(newLocation, objectMeta, IN_LIST);
+        appContainer.getNodeBuilder().createNode(newLocation, objectMeta);
         appContainer.getApplication().nodeAdded(objectMeta);
     }
 
@@ -69,17 +69,16 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void insertObject(ObjectLocation newLocation, Object obj) {
         ObjectMeta objectMeta = getClassModel(obj).registerInstance(newLocation, obj);
         //create the node
-        appContainer.getNodeBuilder().createNode(newLocation.getProperty(), objectMeta,
-                (Node) newLocation.getAttachment(), IN_LIST, newLocation.index());
+        appContainer.getNodeBuilder().createNode(newLocation, objectMeta, newLocation.index());
         appContainer.getApplication().nodeAdded(objectMeta);
-
+        appContainer.getMainPanel().repaint();
     }
 
     @Override
     public void createReference(ObjectLocation newLocation, Object obj) {
         ObjectMeta objMeta = getClassModel(obj).find(obj);
         objMeta.createAndSetReference(newLocation);
-        appContainer.getNodeBuilder().createNode(newLocation, objMeta, IN_LIST);
+        appContainer.getNodeBuilder().createNode(newLocation, objMeta);
     }
 
     @Override
@@ -94,6 +93,10 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int newIndex) {
         //update model
         objectMeta.updateIndex(objectLocation, newIndex);
+
+        //update jtree
+        Node node = (Node) objectMeta.getAttachment();
+        node.updateIndex(newIndex);
     }
 
     @Override

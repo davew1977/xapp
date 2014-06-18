@@ -109,9 +109,9 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     }
 
     @Override
-    public ObjectMeta findOrCreateObjMeta(ObjectMeta parent, Property property, Object value) {
+    public ObjectMeta findOrCreateObjMeta(ObjectLocation objectLocation, Object value) {
         ClassModel<?> classModel = getClassModel(value.getClass());
-        return classModel.findOrCreate(parent, property, value);
+        return classModel.findOrCreate(objectLocation, value);
     }
 
     public Unmarshaller getRootUnmarshaller()

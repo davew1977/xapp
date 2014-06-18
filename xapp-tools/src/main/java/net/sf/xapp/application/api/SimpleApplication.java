@@ -54,6 +54,26 @@ public class SimpleApplication<T> implements Application<T>
     }
 
     @Override
+    public void nodeAdded(ObjectMeta objectMeta) {
+
+    }
+
+    @Override
+    public void nodeAboutToBeAdded(ObjectMeta newChild) {
+
+    }
+
+    @Override
+    public void objectUpdated(ObjectMeta objectMeta, Map<String, PropertyChange> changes) {
+
+    }
+
+    @Override
+    public void objectUpdated(Node objectNode, ObjectMeta objectMeta, Map<String, PropertyChange> changes) {
+
+    }
+
+    @Override
     public void nodesSelected(List<Node> nodes, Class commonClass)
     {
 
@@ -81,11 +101,6 @@ public class SimpleApplication<T> implements Application<T>
 
     public void nodeAdded(Node node)
     {
-
-    }
-
-    @Override
-    public void nodeAboutToBeAdded(Node parentNode, ObjectMeta newChild) {
 
     }
 

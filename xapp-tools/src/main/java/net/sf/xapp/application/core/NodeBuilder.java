@@ -41,23 +41,19 @@ public class NodeBuilder
 
     public Node createTree()
     {
-        Node node = createNode(null, m_applicationContainer.getGuiContext().getObjectMeta(), null, null, 0);
+        ObjectMeta objectMeta = m_applicationContainer.getGuiContext().getObjectMeta();
+        Node node = createNode(objectMeta.getHome(), objectMeta);
         m_applicationContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }
 
-    public Node createNode(Property property, ObjectMeta instance, Node parentNode, ObjectNodeContext.ObjectContext objectContext)
-    {
-        return createNode(property, instance, parentNode, objectContext, parentNode.numChildren());
+    public Node createNode(ObjectLocation objectLocation, ObjectMeta objMeta) {
+        return createNode(objectLocation, objMeta, -1);
     }
-
-    public Node createNode(ObjectLocation objectLocation, ObjectMeta instance, ObjectNodeContext.ObjectContext objectContext)
+    public Node createNode(ObjectLocation objectLocation, ObjectMeta objMeta, int insertIndex)
     {
-        return createNode(objectLocation.getProperty(), instance, (Node) objectLocation.getAttachment(), objectContext, objectLocation.index());
-    }
-
-    public Node createNode(Property parentProperty, ObjectMeta objMeta, Node parentNode, ObjectNodeContext.ObjectContext objectContext, int insertIndex)
-    {
+        Node parentNode = (Node) objectLocation.getAttachment();
+        Property parentProperty = objectLocation.getProperty();
         if(insertIndex==-1) {
             insertIndex = parentNode.numChildren();
         }
@@ -66,7 +62,8 @@ public class NodeBuilder
 
         ClassModel classModel = objMeta.getClassModel();
         ClassDatabase cdb = classModel.getClassDatabase();
-        ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, objMeta, objectContext);
+        ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, objMeta,
+                objectLocation.isCollection() ? IN_LIST : PROPERTY);
         ListNodeContextImpl listNodeContext = null;
         ListProperty containerListProperty = classModel.getContainerListProperty();
         if (classModel.isContainer())
@@ -77,10 +74,7 @@ public class NodeBuilder
         }
         Node newNode = new NodeImpl(m_applicationContainer, jtreeNode, listNodeContext, objectNodeContext);
         objMeta.setAttachment(newNode);
-        if(listNodeContext!=null)
-        {
-            listNodeContext.setNode(newNode);
-        }
+
         jtreeNode.setUserObject(newNode);
         if (!m_applicationContainer.getNodeFilter().accept(newNode))
         {
@@ -136,12 +130,14 @@ public class NodeBuilder
             Object value = objMeta.get(property);
             //register the obj if the obj meta is null
             ObjectMeta propValueObjMeta = null;
+            ObjectLocation newLocation = new ObjectLocation(objMeta, property);
+            newLocation.setAttachment(newNode);
             if (value != null) {
-                propValueObjMeta = cdb.findOrCreateObjMeta(objMeta, property, value);
+                propValueObjMeta = cdb.findOrCreateObjMeta(newLocation, value);
             }
             if (value != null && propValueObjMeta != null)
             {
-                createNode(property, propValueObjMeta, newNode, PROPERTY);
+                createNode(newLocation, propValueObjMeta);
             }
         }
         return newNode;
@@ -163,12 +159,13 @@ public class NodeBuilder
 
     public void populateListNodes(Node parentNode)
     {
+        ClassDatabase cdb = parentNode.getClassDatabase();
         ListNodeContext listNodeContext = parentNode.getListNodeContext();
         Collection list = listNodeContext.getCollection();
         for (Object o : list)
         {
-            ObjectMeta parentObjMeta = parentNode.objectMeta();
-            createNode(null, parentObjMeta.getClassDatabase().findOrCreateObjMeta(parentObjMeta, listNodeContext.getContainerProperty(), o), parentNode, IN_LIST);
+            ObjectLocation objectLocation = parentNode.newObjLocation();
+            createNode(objectLocation, cdb.findOrCreateObjMeta(objectLocation, o));
         }
     }
 
@@ -182,11 +179,12 @@ public class NodeBuilder
         else
         {
             Node parent = node.getParent();
+            ObjectLocation objectLocation = node.thisObjLocation();
             int oldIndex = parent.indexOf(node);
             m_applicationContainer.removeNode(node, true);
             if(node.getObjectNodeContext()!=null)
             {
-                newNode = createNode(null, node.objectMeta(), parent, node.getObjectNodeContext().getObjectContext(), oldIndex);
+                newNode = createNode(objectLocation, node.objectMeta(), oldIndex);
             }
             else
             {

@@ -14,11 +14,13 @@ package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.commands.RefreshCommand;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.io.File;
 import java.util.ArrayList;
@@ -130,13 +132,35 @@ public class NodeImpl implements Node
 
     @Override
     public ObjectLocation newObjLocation(int index) {
-        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty(), index, this);
+        ObjectLocation objectLocation = new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty(), index);
+        objectLocation.setAttachment(this);
+        return objectLocation;
     }
 
     @Override
     public ObjectLocation thisObjLocation() {
         assert objectNodeContext != null;
         return getParent().newObjLocation(index());
+    }
+
+    @Override
+    public ClassDatabase getClassDatabase() {
+        return getAppContainer().getClassDatabase();
+    }
+
+    @Override
+    public void updateIndex(int newIndex) {
+        int oldIndex = index();
+        Node parentNode = getParent();
+
+        DefaultTreeModel treeModel = (DefaultTreeModel) getAppContainer().getMainTree().getModel();
+        treeModel.removeNodeFromParent(getJtreeNode());
+        treeModel.insertNodeInto(getJtreeNode(), parentNode.getJtreeNode(), newIndex);
+        if(newIndex>oldIndex) {
+            appContainer.getApplication().nodeMovedDown(this);
+        } else {
+            appContainer.getApplication().nodeMovedUp(this);
+        }
     }
 
     public ApplicationContainer getAppContainer()

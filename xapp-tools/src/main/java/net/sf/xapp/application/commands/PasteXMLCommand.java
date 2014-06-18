@@ -61,11 +61,7 @@ public class PasteXMLCommand extends NodeCommand
         }
                  //todo rewire to node update api
         //add object to data model
-        node.getListNodeContext().getCollection().add(clipboardObject.getInstance());
-        //create new node
-        Node newNode = applicationContainer.getNodeBuilder().createNode(null, clipboardObject, node, null);
+        applicationContainer.getNodeUpdateApi().insertObject(node.newObjLocation(), clipboardObject.getInstance());
 
-        applicationContainer.getMainPanel().repaint();
-        applicationContainer.getApplication().nodeAdded(newNode);
     }
 }
