@@ -52,7 +52,6 @@ public class NodeBuilder
     }
     public Node createNode(ObjectLocation objectLocation, ObjectMeta objMeta, int insertIndex)
     {
-        Node parentNode = (Node) objectLocation.getAttachment();
         Property parentProperty = objectLocation.getProperty();
         if(insertIndex==-1) {
             insertIndex = parentNode.numChildren();

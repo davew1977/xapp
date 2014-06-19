@@ -28,8 +28,6 @@ public class ObjectMeta<T> implements Namespace{
     public ObjectMeta(ClassModel classModel, T obj, ObjectLocation objectLocation) {
         this.classModel = classModel;
         this.instance = obj;
-        this.home = objectLocation;
-        this.home.set(this);
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
         if (namespaceFor != null) {
             for (Class aClass : namespaceFor.value()) {
@@ -40,9 +38,7 @@ public class ObjectMeta<T> implements Namespace{
         this.id = classModel.registerWithClassDatabase(this);
         tryCall(instance, "setObjectMeta", this);
         key = (String) get(classModel.getKeyProperty());
-        if (key != null) {
-            updateMetaHierarchy(null, key);
-        }
+        setHome(objectLocation);
     }
 
     public void mapByKey(ObjectMeta obj) {
@@ -131,11 +127,11 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public ObjectMeta getParent() {
-        return home.getObj(); //may return null if root obj
+        return !isRoot() ? home.getObj() : null; //may return null if root obj
     }
 
     public boolean isRoot() {
-        return getParent() == null;
+        return home == null;
     }
 
     public ObjectMeta root() {
@@ -200,13 +196,14 @@ public class ObjectMeta<T> implements Namespace{
         PropertyChange change = property.set(getInstance(), value);
         if (property.isKey() && change != null) {
             String oldVal = (String) change.oldVal;
+            assert Property.objEquals(oldVal, key);
             String newVal = (String) change.newVal;
-            updateMetaHierarchy(oldVal, newVal);
+            updateMetaHierarchy(newVal);
         }
         return change;
     }
 
-    public void updateMetaHierarchy(String oldKeyVal, String newKeyVal) {
+    public void updateMetaHierarchy(String newKeyVal) {
 
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
         //if last element is this object, then remove it
@@ -214,7 +211,7 @@ public class ObjectMeta<T> implements Namespace{
             namespacePath.removeLast();
         }
         ObjectMeta closestNamespace = namespacePath.removeLast();
-        if (oldKeyVal != null) {
+        if (key != null) {
             closestNamespace.remove(this);
             if(newKeyVal == null) { //like deleting object
                 for (ObjectMeta objectMeta : namespacePath) {
@@ -332,7 +329,7 @@ public class ObjectMeta<T> implements Namespace{
 
     public void dispose() {
         if (key != null) {
-            updateMetaHierarchy(key, null);
+            updateMetaHierarchy(null);
         }
         classModel.dispose(this);
         home.unset(this);
@@ -342,14 +339,18 @@ public class ObjectMeta<T> implements Namespace{
         references.clear();
     }
 
-    public ObjectLocation setHome(ObjectLocation objectLocation) {
+    public ObjectLocation setHome(ObjectLocation newLoc) {
         ObjectLocation old = home;
-        if(old!= null) {
-             old.unset(this);
+        if (!Property.objEquals(old, newLoc)) {
+            if(old!= null) {
+                 old.unset(this);
+            }
+            this.home = newLoc;
+            if (newLoc != null) {
+                this.home.set(this);
+            }
         }
-        this.home = objectLocation;
-        this.home.set(this);
-        updateMetaHierarchy(key, key);
+        updateMetaHierarchy(key);
         return old;
     }
 

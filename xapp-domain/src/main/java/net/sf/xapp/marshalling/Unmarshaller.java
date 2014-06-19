@@ -527,7 +527,7 @@ public class Unmarshaller<T>
 
 
         public  ObjectMeta<E> newInstance(Property property) {
-            objectMeta = classModel.newInstance(new ObjectLocation(parentObjMeta(), property));
+            objectMeta = classModel.newInstance(!isRoot() ? new ObjectLocation(parentObjMeta(), property) : null);
 
             /*if (classModel.hasKey()) {
                 LocalContext namespace = getNamespace(classModel.getContainedClass());
@@ -578,7 +578,8 @@ public class Unmarshaller<T>
 
         public void execute(ObjectMeta objectMeta)
         {
-            target.set(property, objectMeta.get(property.getPropertyClass(), m_reference));
+            ObjectMeta objMeta = objectMeta.getObjMeta(property.getPropertyClass(), m_reference);
+            objMeta.createAndSetReference(new ObjectLocation(target, property));
         }
 
         @Override
@@ -605,8 +606,8 @@ public class Unmarshaller<T>
             for (String s : m_references)
             {
                 Class propertyClass = m_listProperty.getContainedType();
-                Object ref = objectMeta.get(propertyClass, s);
-                m_listProperty.addToMapOrCollection(mapOrCollection, -1, ref);
+                ObjectMeta ref = objectMeta.getObjMeta(propertyClass, s);
+                ref.createAndSetReference(new ObjectLocation(target, m_listProperty, -1));
             }
             target.set(m_listProperty, mapOrCollection);
         }

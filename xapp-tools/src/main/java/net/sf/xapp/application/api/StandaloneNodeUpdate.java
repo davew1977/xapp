@@ -84,7 +84,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta) {
         objectMeta.removeAndUnsetReference(objectLocation);
-        Node parentNode = (Node) objectLocation.getAttachment();
         Node node = parentNode.getChildAt(objectLocation.index());
         appContainer.removeNode(node, false);
     }

@@ -58,13 +58,13 @@ public class ObjectLocation {
             ContainerProperty cp = (ContainerProperty) property;
             cp.add(obj, index, ref);
         } else {
-            obj.set(property, this);
+            obj.set(property, ref.getInstance());
         }
     }
 
-    public Object getAttachment() {
+    /*public Object getAttachment() {
         return attachment;
-    }
+    }*/
 
     public void setAttachment(Object attachment) {
         this.attachment = attachment;
