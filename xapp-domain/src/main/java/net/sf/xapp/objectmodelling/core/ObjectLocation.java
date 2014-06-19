@@ -6,16 +6,10 @@ package net.sf.xapp.objectmodelling.core;
 public class ObjectLocation {
     private final ObjectMeta obj;
     private final Property property;
-    private int index;
-    private Object attachment;
 
     public ObjectLocation(ObjectMeta obj, Property property) {
-        this(obj, property, -1);
-    }
-    public ObjectLocation(ObjectMeta obj, Property property, int index) {
         this.obj = obj;
         this.property = property;
-        this.index = index;
     }
 
     public ObjectMeta getObj() {
@@ -54,6 +48,9 @@ public class ObjectLocation {
     }
 
     public void set(ObjectMeta ref) {
+        set(ref, -1);
+    }
+    public void set(ObjectMeta ref, int index) {
         if (property.isContainer()) {
             ContainerProperty cp = (ContainerProperty) property;
             cp.add(obj, index, ref);
@@ -62,20 +59,8 @@ public class ObjectLocation {
         }
     }
 
-    /*public Object getAttachment() {
-        return attachment;
-    }*/
-
-    public void setAttachment(Object attachment) {
-        this.attachment = attachment;
-    }
-
     public boolean isCollection() {
         return property.isContainer();
-    }
-
-    public int index() {
-        return index;
     }
 
     public boolean containsReferences() {
@@ -84,7 +69,6 @@ public class ObjectLocation {
 
     public void updateIndex(ObjectMeta objectMeta, int index) {
         unset(objectMeta);
-        this.index = index;
-        set(objectMeta);
+        set(objectMeta, index);
     }
 }

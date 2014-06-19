@@ -42,16 +42,21 @@ public class NodeBuilder
     public Node createTree()
     {
         ObjectMeta objectMeta = m_applicationContainer.getGuiContext().getObjectMeta();
-        Node node = createNode(objectMeta.getHome(), objectMeta);
+        Node node = createNode(null, objectMeta);
         m_applicationContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }
 
-    public Node createNode(ObjectLocation objectLocation, ObjectMeta objMeta) {
-        return createNode(objectLocation, objMeta, -1);
+    public Node createNode(Node parentNode, ObjectMeta objMeta) {
+        return createNode(parentNode, objMeta, -1);
     }
-    public Node createNode(ObjectLocation objectLocation, ObjectMeta objMeta, int insertIndex)
+    public Node createNode(Node parentNode, ObjectMeta objMeta, int insertIndex)
     {
+        //parent node may be:
+        // 1) a list node containing objects
+        // 2) a list node containing references
+        // 3) an object node containing a set of objects (if it is a "container" class)
+        // 4) an object node containing one or more complex objects (ones important enough to have their own nodes)
         Property parentProperty = objectLocation.getProperty();
         if(insertIndex==-1) {
             insertIndex = parentNode.numChildren();
@@ -72,7 +77,6 @@ public class NodeBuilder
             listNodeContext = new ListNodeContextImpl(listProp, listOwner);
         }
         Node newNode = new NodeImpl(m_applicationContainer, jtreeNode, listNodeContext, objectNodeContext);
-        objMeta.setAttachment(newNode);
 
         jtreeNode.setUserObject(newNode);
         if (!m_applicationContainer.getNodeFilter().accept(newNode))
@@ -87,8 +91,11 @@ public class NodeBuilder
         //Short circuit here if the new node is but a reference
         if(newNode.isReference())
         {
+            objMeta.attach(newNode.thisObjLocation(), newNode);
             return newNode;
         }
+        objMeta.attach(newNode);
+
         //create child nodes for "container list prop"
         if (classModel.isContainer())
         {
@@ -129,14 +136,12 @@ public class NodeBuilder
             Object value = objMeta.get(property);
             //register the obj if the obj meta is null
             ObjectMeta propValueObjMeta = null;
-            ObjectLocation newLocation = new ObjectLocation(objMeta, property);
-            newLocation.setAttachment(newNode);
             if (value != null) {
-                propValueObjMeta = cdb.findOrCreateObjMeta(newLocation, value);
+                propValueObjMeta = cdb.findOrCreateObjMeta(new ObjectLocation(objMeta, property), value);
             }
             if (value != null && propValueObjMeta != null)
             {
-                createNode(newLocation, propValueObjMeta);
+                createNode(parentNode, propValueObjMeta);
             }
         }
         return newNode;

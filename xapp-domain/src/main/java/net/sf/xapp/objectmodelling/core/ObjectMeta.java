@@ -22,7 +22,7 @@ public class ObjectMeta<T> implements Namespace{
     //todo i think obj ref is redundant, remove
     private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
-    private List<ObjectLocation> references = new ArrayList<ObjectLocation>();
+    private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
 
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectLocation objectLocation) {
@@ -323,7 +323,7 @@ public class ObjectMeta<T> implements Namespace{
         return attachment;
     }
 
-    public void setAttachment(Object attachment) {
+    public void attach(Object attachment) {
         this.attachment = attachment;
     }
 
@@ -333,7 +333,7 @@ public class ObjectMeta<T> implements Namespace{
         }
         classModel.dispose(this);
         home.unset(this);
-        for (ObjectLocation reference : references) {
+        for (ObjectLocation reference : references.keySet()) {
             reference.unset(this);
         }
         references.clear();
@@ -363,14 +363,18 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void createAndSetReference(ObjectLocation objectLocation) {
-        references.add(objectLocation);
+        references.put(objectLocation, null);
         objectLocation.set(this);
     }
 
-    public void removeAndUnsetReference(ObjectLocation objectLocation) {
-        boolean removed = references.remove(objectLocation);
-        assert removed;
+    public void attach(ObjectLocation objectLocation, Object attachment) {
+        references.put(objectLocation, attachment);
+    }
+
+    public Object removeAndUnsetReference(ObjectLocation objectLocation) {
+        Object attachment = references.remove(objectLocation);
         objectLocation.unset(this);
+        return attachment;
     }
 
     public void updateIndex(ObjectLocation location, int index) {

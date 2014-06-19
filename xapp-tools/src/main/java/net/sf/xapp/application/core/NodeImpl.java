@@ -132,9 +132,7 @@ public class NodeImpl implements Node
 
     @Override
     public ObjectLocation newObjLocation(int index) {
-        ObjectLocation objectLocation = new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty(), index);
-        objectLocation.setAttachment(this);
-        return objectLocation;
+        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty());
     }
 
     @Override
