@@ -126,19 +126,14 @@ public class NodeImpl implements Node
     }
 
     @Override
-    public ObjectLocation newObjLocation() {
-        return newObjLocation(numChildren());
-    }
-
-    @Override
-    public ObjectLocation newObjLocation(int index) {
+    public ObjectLocation asObjLocation() {
         return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty());
     }
 
     @Override
     public ObjectLocation thisObjLocation() {
         assert objectNodeContext != null;
-        return getParent().newObjLocation(index());
+        return getParent().asObjLocation();
     }
 
     @Override

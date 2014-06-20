@@ -35,6 +35,6 @@ public interface ObjectNodeContext extends NodeContext
 
     ClassModel getClassModel();
     ObjectMeta objectMeta();
-    ObjectContext getObjectContext();
+
     boolean canEdit();
 }

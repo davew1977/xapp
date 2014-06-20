@@ -32,23 +32,25 @@ import java.util.List;
  */
 public class NodeBuilder
 {
-    private ApplicationContainerImpl m_applicationContainer;
+    private ApplicationContainerImpl appContainer;
+    private ClassDatabase cdb;
 
-    public NodeBuilder(ApplicationContainerImpl applicationContainer)
+    public NodeBuilder(ApplicationContainerImpl appContainer)
     {
-        m_applicationContainer = applicationContainer;
+        this.appContainer = appContainer;
+        cdb = this.appContainer.getClassDatabase();
     }
 
     public Node createTree()
     {
-        ObjectMeta objectMeta = m_applicationContainer.getGuiContext().getObjectMeta();
+        ObjectMeta objectMeta = appContainer.getGuiContext().getObjectMeta();
         Node node = createNode(null, objectMeta);
-        m_applicationContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
+        appContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }
 
     public Node createNode(Node parentNode, ObjectMeta objMeta) {
-        return createNode(parentNode, objMeta, -1);
+        return createNode(parentNode, objMeta, parentNode.numChildren());
     }
     public Node createNode(Node parentNode, ObjectMeta objMeta, int insertIndex)
     {
@@ -58,14 +60,11 @@ public class NodeBuilder
         // 3) an object node containing a set of objects (if it is a "container" class)
         // 4) an object node containing one or more complex objects (ones important enough to have their own nodes)
         Property parentProperty = objectLocation.getProperty();
-        if(insertIndex==-1) {
-            insertIndex = parentNode.numChildren();
-        }
-        DefaultMutableTreeNode jtreeNode = new DefaultMutableTreeNode();
-        DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
+        DefaultMutableTreeNode jTreeNode = new DefaultMutableTreeNode();
+
+        ObjectContent
 
         ClassModel classModel = objMeta.getClassModel();
-        ClassDatabase cdb = classModel.getClassDatabase();
         ObjectNodeContext objectNodeContext = new ObjectNodeContextImpl(parentProperty, classModel, objMeta,
                 objectLocation.isCollection() ? IN_LIST : PROPERTY);
         ListNodeContextImpl listNodeContext = null;
@@ -76,17 +75,17 @@ public class NodeBuilder
             ObjectMeta listOwner = objMeta;
             listNodeContext = new ListNodeContextImpl(listProp, listOwner);
         }
-        Node newNode = new NodeImpl(m_applicationContainer, jtreeNode, listNodeContext, objectNodeContext);
+        Node newNode = new NodeImpl(appContainer, jTreeNode, listNodeContext, objectNodeContext);
 
-        jtreeNode.setUserObject(newNode);
-        if (!m_applicationContainer.getNodeFilter().accept(newNode))
+        jTreeNode.setUserObject(newNode);
+        if (!appContainer.getNodeFilter().accept(newNode))
         {
             //This user object is filtered out
             return newNode;
         }
         if (parentNode != null) //if not root
         {
-            treeModel.insertNodeInto(jtreeNode, parentNode.getJtreeNode(), insertIndex);
+            treeModel().insertNodeInto(jTreeNode, parentNode.getJtreeNode(), insertIndex);
         }
         //Short circuit here if the new node is but a reference
         if(newNode.isReference())
@@ -147,14 +146,18 @@ public class NodeBuilder
         return newNode;
     }
 
+    private DefaultTreeModel treeModel() {
+        return (DefaultTreeModel) appContainer.getMainTree().getModel();
+    }
+
     private Node createListNode(ContainerProperty listProperty, Node parentNode, int insertIndex)
     {
         ObjectMeta listOwner = parentNode.objectMeta();
         DefaultMutableTreeNode parentJTreeNode = parentNode.getJtreeNode();
-        DefaultTreeModel treeModel = (DefaultTreeModel) m_applicationContainer.getMainTree().getModel();
+        DefaultTreeModel treeModel = (DefaultTreeModel) appContainer.getMainTree().getModel();
         ListNodeContextImpl lnc = new ListNodeContextImpl(listProperty, listOwner);
         DefaultMutableTreeNode jListNode = new DefaultMutableTreeNode();
-        Node listNode = new NodeImpl(m_applicationContainer, jListNode, lnc, null);
+        Node listNode = new NodeImpl(appContainer, jListNode, lnc, null);
         jListNode.setUserObject(listNode);
         treeModel.insertNodeInto(jListNode, parentJTreeNode, insertIndex);
         populateListNodes(listNode);
@@ -168,7 +171,7 @@ public class NodeBuilder
         Collection list = listNodeContext.getCollection();
         for (Object o : list)
         {
-            ObjectLocation objectLocation = parentNode.newObjLocation();
+            ObjectLocation objectLocation = parentNode.asObjLocation();
             createNode(objectLocation, cdb.findOrCreateObjMeta(objectLocation, o));
         }
     }
@@ -185,7 +188,7 @@ public class NodeBuilder
             Node parent = node.getParent();
             ObjectLocation objectLocation = node.thisObjLocation();
             int oldIndex = parent.indexOf(node);
-            m_applicationContainer.removeNode(node, true);
+            appContainer.removeNode(node, true);
             if(node.getObjectNodeContext()!=null)
             {
                 newNode = createNode(objectLocation, node.objectMeta(), oldIndex);
@@ -195,7 +198,7 @@ public class NodeBuilder
                 newNode = createListNode(node.getListNodeContext().getContainerProperty(), parent, oldIndex);
             }
         }
-        m_applicationContainer.getMainPanel().repaint();
+        appContainer.getMainPanel().repaint();
         return newNode;
     }
 }

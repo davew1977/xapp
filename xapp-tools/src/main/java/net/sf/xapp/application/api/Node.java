@@ -112,8 +112,7 @@ public interface Node
      * node must be a container for child nodes (listnode context is assumed to have a value)
      * @return an object location
      */
-    ObjectLocation newObjLocation();
-    ObjectLocation newObjLocation(int index);
+    ObjectLocation asObjLocation();
 
     /**
      *
