@@ -17,7 +17,6 @@ import net.sf.xapp.application.commands.RefreshCommand;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -26,33 +25,42 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeImpl implements Node
-{
-    protected ApplicationContainer appContainer;
-    protected DefaultMutableTreeNode jTreeNode;
+public class NodeImpl implements Node {
+    protected final ApplicationContainer appContainer;
+    protected final DefaultMutableTreeNode jTreeNode;
     private ListNodeContext listNodeContext;
     private ObjectNodeContext objectNodeContext;
 
-    public NodeImpl(ApplicationContainer applicationContainer, DefaultMutableTreeNode jtreeNode, ListNodeContext listNodeContext, ObjectNodeContext objectNodeContext)
-    {
-        appContainer = applicationContainer;
-        jTreeNode = jtreeNode;
-        this.listNodeContext = listNodeContext;
-        this.objectNodeContext = objectNodeContext;
+    public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex) {
+        this.appContainer = appContainer;
+        jTreeNode = new DefaultMutableTreeNode();
+        jTreeNode.setUserObject(this);
+        DefaultTreeModel treeModel = (DefaultTreeModel) appContainer.getMainTree().getModel();
+        treeModel.insertNodeInto(jTreeNode, parent.getJtreeNode(), insertIndex);
     }
 
-    public DefaultMutableTreeNode getJtreeNode()
-    {
+    public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectLocation objectLocation) {
+        this(appContainer, parent, insertIndex);
+        listNodeContext = new ListNodeContext(objectLocation);
+    }
+    public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectMeta objectMeta) {
+        this(appContainer, parent, insertIndex);
+        objectNodeContext = new ObjectNodeContext(this, objectMeta);
+        if (objectMeta.isContainer()) {
+            listNodeContext = new ListNodeContext(new ObjectLocation(objectMeta, objectMeta.getContainerProperty()));
+        }
+        if(!isReference()) {
+            objectMeta.attach(this);
+        } else {
+            objectMeta.attach(myObjLocation(), this);
+        }
+    }
+
+    public DefaultMutableTreeNode getJtreeNode() {
         return jTreeNode;
     }
 
-    public void setJtreeNode(DefaultMutableTreeNode jtreeNode)
-    {
-        jTreeNode = jtreeNode;
-    }
-
-    public boolean isRoot()
-    {
+    public boolean isRoot() {
         return jTreeNode != null && jTreeNode.isRoot();
     }
 
@@ -63,47 +71,39 @@ public class NodeImpl implements Node
         return parentJTreeNode != null ? (Node) parentJTreeNode.getUserObject() : null;
     }
 
-    public Node getChildBefore(Node node)
-    {
+    public Node getChildBefore(Node node) {
         DefaultMutableTreeNode childBefore = (DefaultMutableTreeNode) jTreeNode.getChildBefore(node.getJtreeNode());
         return childBefore != null ? (Node) childBefore.getUserObject() : null;
     }
 
     @Override
-    public Node getChildAfter(Node node)
-    {
+    public Node getChildAfter(Node node) {
         DefaultMutableTreeNode childAfter = (DefaultMutableTreeNode) jTreeNode.getChildAfter(node.getJtreeNode());
         return childAfter != null ? (Node) childAfter.getUserObject() : null;
     }
 
-    public Node getChildAt(int index)
-    {
+    public Node getChildAt(int index) {
         return (Node) ((DefaultMutableTreeNode) jTreeNode.getChildAt(index)).getUserObject();
     }
 
-    public ObjectNodeContext getObjectNodeContext()
-    {
+    public ObjectNodeContext getObjectNodeContext() {
         return objectNodeContext;
     }
 
-    public ListNodeContext getListNodeContext()
-    {
+    public ListNodeContext getListNodeContext() {
         return listNodeContext;
     }
 
     @Override
-    public <T> boolean isA(Class<T> aClass)
-    {
-        return aClass.isInstance(wrappedObject()); 
+    public <T> boolean isA(Class<T> aClass) {
+        return aClass.isInstance(wrappedObject());
     }
 
-    public Object wrappedObject()
-    {
-        return objectNodeContext != null ? objectNodeContext.instance():  null;
+    public Object wrappedObject() {
+        return objectNodeContext != null ? objectNodeContext.instance() : null;
     }
 
-    public Object nearestWrappedObject()
-    {
+    public Object nearestWrappedObject() {
         return objectNodeContext != null ? objectNodeContext.instance() : getParent().wrappedObject();
     }
 
@@ -126,14 +126,14 @@ public class NodeImpl implements Node
     }
 
     @Override
-    public ObjectLocation asObjLocation() {
-        return new ObjectLocation(objectMeta(), getListNodeContext().getContainerProperty());
+    public ObjectLocation toObjLocation() {
+        return listNodeContext.getObjectLocation();
     }
 
     @Override
-    public ObjectLocation thisObjLocation() {
+    public ObjectLocation myObjLocation() {
         assert objectNodeContext != null;
-        return getParent().asObjLocation();
+        return getParent().toObjLocation();
     }
 
     @Override
@@ -149,88 +149,73 @@ public class NodeImpl implements Node
         DefaultTreeModel treeModel = (DefaultTreeModel) getAppContainer().getMainTree().getModel();
         treeModel.removeNodeFromParent(getJtreeNode());
         treeModel.insertNodeInto(getJtreeNode(), parentNode.getJtreeNode(), newIndex);
-        if(newIndex>oldIndex) {
+        if (newIndex > oldIndex) {
             appContainer.getApplication().nodeMovedDown(this);
         } else {
             appContainer.getApplication().nodeMovedUp(this);
         }
     }
 
-    public ApplicationContainer getAppContainer()
-    {
+    @Override
+    public boolean isObjectNode() {
+        return objectNodeContext != null;
+    }
+
+    public ApplicationContainer getAppContainer() {
         return appContainer;
     }
 
-    public int indexOf(Node node)
-    {
+    public int indexOf(Node node) {
         return jTreeNode.getIndex(node.getJtreeNode());
     }
 
-    public int numChildren()
-    {
+    public int numChildren() {
         return jTreeNode.getChildCount();
     }
 
-    public TreePath getPath()
-    {
+    public TreePath getPath() {
         return new TreePath(jTreeNode.getPath());
     }
 
-    public List<Command> createCommands(CommandContext commandContext)
-    {
+    public List<Command> createCommands(CommandContext commandContext) {
         ArrayList<Command> commands = new ArrayList<Command>();
-        if (listNodeContext != null) commands.addAll(listNodeContext.createCommands(this, commandContext));
-        if (objectNodeContext != null) commands.addAll(objectNodeContext.createCommands(this, commandContext));
+        if (listNodeContext != null) {
+            commands.addAll(listNodeContext.createCommands(this, commandContext));
+        }
+        if (objectNodeContext != null) {
+            commands.addAll(objectNodeContext.createCommands(commandContext));
+        }
         if (commandContext != CommandContext.SEARCH) commands.add(new RefreshCommand());
 
         return commands;
     }
 
-    public String toString()
-    {
+    public String toString() {
         //special root handling, default to file name minus suffix
-        if (isRoot() && !objectNodeContext.hasToStringMethod())
-        {
-			File currentFile = appContainer.getGuiContext().getCurrentFile();
-			if(currentFile != null)
-			{
-				String filename = currentFile.getName();
-				return filename.substring(0, filename.lastIndexOf("."));
-			}
-			else
-			{
-				return objectNodeContext.getClassModel().getContainedClass().getSimpleName();
-			}
-		}
-        if (wrappedObject() != null)
-        {
-            if(objectNodeContext.hasToStringMethod()) {
-                String strValue = wrappedObject().toString();
-                if (strValue != null && strValue.length() > 50)
-                {
-                    strValue = strValue.substring(0, 50);
-                }
-                return strValue;
+        if (isRoot() && !objectNodeContext.hasToStringMethod()) {
+            File currentFile = appContainer.getGuiContext().getCurrentFile();
+            if (currentFile != null) {
+                String filename = currentFile.getName();
+                return filename.substring(0, filename.lastIndexOf("."));
             } else {
-                Property property = objectNodeContext.getProperty();
-                return wrappedObject().getClass().getSimpleName() + (property != null ? ":" + property.getName() : "");
+                return objectMeta().getSimpleClassName();
             }
+        }
+        if (wrappedObject() != null) {
+            return objectNodeContext.toString();
         }
         return listNodeContext.getContainerProperty().getName();
     }
 
-    public boolean containsReferences()
-    {
+    public boolean containsReferences() {
         return listNodeContext != null && listNodeContext.getContainerProperty().containsReferences();
     }
 
-    public boolean isReference()
-    {
+    public boolean isReference() {
         return !isRoot() && getParent().containsReferences();  //todo get parent can return true if parent type is a "Container" for another list property which "ContainsReferences"
     }
 
-    public boolean canEdit()
-    {
+    public boolean canEdit() {
         return objectNodeContext != null && objectNodeContext.canEdit();
     }
 

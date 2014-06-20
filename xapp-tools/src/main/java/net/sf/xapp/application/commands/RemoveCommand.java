@@ -38,7 +38,7 @@ public class RemoveCommand extends NodeCommand
 
         NodeUpdateApi nodeUpdateApi = appContainer.getNodeUpdateApi();
         if(node.isReference()) {
-            nodeUpdateApi.removeReference(node.thisObjLocation(), node.objectMeta());
+            nodeUpdateApi.removeReference(node.myObjLocation(), node.objectMeta());
         } else {
             nodeUpdateApi.deleteObject(node.objectMeta());
         }

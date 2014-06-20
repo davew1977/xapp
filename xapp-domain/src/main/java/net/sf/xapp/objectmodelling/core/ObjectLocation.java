@@ -1,5 +1,7 @@
 package net.sf.xapp.objectmodelling.core;
 
+import java.util.Collection;
+
 /**
  * encapsulates the location of an object
  */
@@ -70,5 +72,9 @@ public class ObjectLocation {
     public void updateIndex(ObjectMeta objectMeta, int index) {
         unset(objectMeta);
         set(objectMeta, index);
+    }
+
+    public Collection getCollection() {
+        return ((ContainerProperty) property).getCollection(obj);
     }
 }

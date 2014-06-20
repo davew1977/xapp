@@ -13,11 +13,11 @@
 package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.Node;
-import net.sf.xapp.application.api.ObjectNodeContext;
 import net.sf.xapp.application.api.ToolTipHandler;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ListProperty;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
 import java.util.Collection;
@@ -40,17 +40,16 @@ public class DefaultToolTipHandler implements ToolTipHandler
 
     public String getTooltip(Node objectNode)
     {
-        ObjectNodeContext context = objectNode.getObjectNodeContext();
-        if(context!=null)
-        {
-            ClassModel classModel = context.getClassModel();
-            return getTooltip(classModel, objectNode.wrappedObject());
+        ObjectMeta objectMeta = objectNode.objectMeta();
+        if(objectMeta==null) {
+            return null;
         }
-        return null;
+        ClassModel classModel = objectMeta.getClassModel();
+        Object instance = objectMeta.getInstance();
+        return getTooltip(classModel, instance);
     }
 
-    private String getTooltip(ClassModel classModel, Object instance)
-    {
+    private String getTooltip(ClassModel classModel, Object instance) {
         if(!m_enabled)
         {
             return null;

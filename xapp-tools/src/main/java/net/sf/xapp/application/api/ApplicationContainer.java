@@ -207,7 +207,7 @@ public interface ApplicationContainer<T>
 
     Clipboard getClipboard();
 
-    void removeNode(Node node, boolean wasCut);
+    void removeNode(Node node);
 
     MyTreeCellRenderer getTreeCellRenderer();
 

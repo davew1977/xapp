@@ -539,7 +539,7 @@ public class ClassModel<T> {
         return m_containerListProperty != null;
     }
 
-    public ListProperty getContainerListProperty() {
+    public ContainerProperty getContainerProperty() {
         return m_containerListProperty;
     }
 

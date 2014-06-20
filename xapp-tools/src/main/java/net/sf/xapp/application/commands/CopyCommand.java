@@ -15,6 +15,7 @@ package net.sf.xapp.application.commands;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.core.Clipboard;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 public class CopyCommand extends NodeCommand
 {
@@ -25,9 +26,9 @@ public class CopyCommand extends NodeCommand
 
     public void execute(Node node)
     {
-        Object instance = node.wrappedObject();
+        ObjectMeta objectMeta= node.objectMeta();
         //assert instance instanceof Cloneable;
-        Object clone = node.getObjectNodeContext().getClassModel().createClone(instance);
+        Object clone = objectMeta.cloneInstance();
         node.getAppContainer().getClipboard().setAction(Clipboard.Action.COPY);
         node.getAppContainer().getClipboard().addClipboardObject(clone);
     }

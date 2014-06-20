@@ -7,7 +7,6 @@ package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.Node;
 import junit.framework.TestCase;
-import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
@@ -40,7 +39,12 @@ public class ApplicationContainerImplTest extends TestCase
     {
         public DummyNode(Object instance)
         {
-            super(null, null, null, new ObjectNodeContextImpl(null, null, new ObjectMeta(null, instance, null), null));
+            super(null, null, null, new ObjectNodeContext(null, null, new ObjectMeta(null, instance, null), null));
+        }
+
+        @Override
+        public boolean inList() {
+            return false;
         }
     }
 }

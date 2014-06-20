@@ -13,6 +13,8 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.core.CommandContext;
+import net.sf.xapp.application.core.ListNodeContext;
+import net.sf.xapp.application.core.ObjectNodeContext;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
@@ -45,7 +47,6 @@ public interface Node
     Node getChildAt(int index);
     int indexOf(Node node);
     DefaultMutableTreeNode getJtreeNode();
-    void setJtreeNode(DefaultMutableTreeNode dmtn);
     int numChildren();
     TreePath getPath();
 
@@ -112,15 +113,17 @@ public interface Node
      * node must be a container for child nodes (listnode context is assumed to have a value)
      * @return an object location
      */
-    ObjectLocation asObjLocation();
+    ObjectLocation toObjLocation();
 
     /**
      *
      * @return the obj location of THIS node, assumes objnode context
      */
-    ObjectLocation thisObjLocation();
+    ObjectLocation myObjLocation();
 
     ClassDatabase getClassDatabase();
 
     void updateIndex(int newIndex);
+
+    boolean isObjectNode();
 }

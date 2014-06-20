@@ -13,9 +13,9 @@
 package net.sf.xapp.application.commands;
 
 
-import net.sf.xapp.application.api.ListNodeContext;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
+import net.sf.xapp.application.core.ListNodeContext;
 import net.sf.xapp.application.editor.EditorAdaptor;
 import net.sf.xapp.application.editor.widgets.ListReferenceGUI;
 import net.sf.xapp.objectmodelling.core.ListProperty;
@@ -38,6 +38,7 @@ public class GetReferencesCommand extends NodeCommand
         {
             public void save(List<PropertyUpdate> changes, boolean closing)
             {
+                //todo rewrite for node update api
                 ListNodeContext context = node.getListNodeContext();
                 Collection list = context.getCollection();
                 Collection before = new ArrayList(list);

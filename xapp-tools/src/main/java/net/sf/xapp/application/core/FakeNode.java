@@ -12,8 +12,6 @@
  */
 package net.sf.xapp.application.core;
 
-import net.sf.xapp.application.api.ListNodeContext;
-
 public class FakeNode extends NodeImpl
 {
     private Object m_obj;

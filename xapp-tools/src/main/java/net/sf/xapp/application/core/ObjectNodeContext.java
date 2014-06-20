@@ -14,9 +14,7 @@ package net.sf.xapp.application.core;
 
 import net.sf.xapp.application.api.Command;
 import net.sf.xapp.application.api.Node;
-import net.sf.xapp.application.api.ObjectNodeContext;
 
-import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.IN_LIST;
 
 import net.sf.xapp.application.commands.*;
 
@@ -29,51 +27,55 @@ import net.sf.xapp.objectmodelling.core.Property;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectNodeContextImpl implements ObjectNodeContext {
-    private ClassModel m_classModel;
+public class ObjectNodeContext {
+    private Node node;
     private ObjectMeta objectMeta;
-    private ObjectContext m_objectContext;
-    private Property property;
 
-    public ObjectNodeContextImpl(Property property, ClassModel classModel, ObjectMeta instance, ObjectContext objectContext) {
-        this.property = property;
-        m_classModel = classModel;
-        objectMeta = instance;
-        m_objectContext = objectContext;
+    public ObjectNodeContext(NodeImpl node, ObjectMeta objMeta) {
+        this.node = node;
+        objectMeta = objMeta;
     }
 
-    @Override
     public boolean hasToStringMethod() {
-        return getClassModel().hasMethod("toString");
+        return classModel().hasMethod("toString");
     }
 
-    @Override
-    public Property getProperty() {
-        return property;
+    private ClassModel classModel() {
+        return objectMeta().getClassModel();
     }
 
-    @Override
     public Object instance() {
         return objectMeta().getInstance();
-    }
-
-    public ClassModel getClassModel() {
-        return m_classModel;
     }
 
     public ObjectMeta objectMeta() {
         return objectMeta;
     }
 
-    public List<Command> createCommands(Node node, CommandContext commandContext) {
+    @Override
+    public String toString() {
+        if(hasToStringMethod()) {
+            String strValue = instance().toString();
+            if (strValue != null && strValue.length() > 50)
+            {
+                strValue = strValue.substring(0, 50);
+            }
+            return strValue;
+        } else {
+            Property property = objectMeta.getHome().getProperty();
+            return instance().getClass().getSimpleName() + (property != null ? ":" + property.getName() : "");
+        }
+    }
+
+    public List<Command> createCommands(CommandContext commandContext) {
         List<Command> commands = new ArrayList<Command>();
         if (canEdit()) commands.add(new EditCommand());
         //add commands that are only allowed for objects in a list:
-        if (m_objectContext == IN_LIST && commandContext != CommandContext.SEARCH) {
-            if (m_classModel.isAllowed(DELETE) || node.isReference()) {
+        if (commandContext != CommandContext.SEARCH) {
+            if (classModel().isAllowed(DELETE) || node.isReference()) {
                 commands.add(new RemoveCommand());
             }
-            if (m_classModel.isAllowed(MOVE_UP_OR_DOWN)) {
+            if (classModel().isAllowed(MOVE_UP_OR_DOWN)) {
                 commands.add(new MoveUpCommand());
                 commands.add(new MoveDownCommand());
             }
@@ -81,17 +83,17 @@ public class ObjectNodeContextImpl implements ObjectNodeContext {
             Node parentNode = node.getParent();
             if (!parentNode.containsReferences()) {
                 //COPY and COPY_XML
-                if (m_classModel.isAllowed(CUT_COPY) && objectMeta.isCloneable()) {
+                if (classModel().isAllowed(CUT_COPY) && objectMeta.isCloneable()) {
                     commands.add(new CopyCommand());
                     commands.add(new CopyXMLCommand());
                 }
                 //CUT
-                if (m_classModel.isAllowed(CUT_COPY)) {
+                if (classModel().isAllowed(CUT_COPY)) {
                     commands.add(new CutCommand());
                 }
                 //CHANGE_TYPE
                 List<ClassModel> validImpls = parentNode.getListNodeContext().getValidImplementations();
-                if (validImpls.size() > 1 && m_classModel.isAllowed(CHANGE_TYPE)) {
+                if (validImpls.size() > 1 && classModel().isAllowed(CHANGE_TYPE)) {
                     commands.add(new ChangeTypeCommand());
                 }
             }
@@ -100,6 +102,6 @@ public class ObjectNodeContextImpl implements ObjectNodeContext {
     }
 
     public boolean canEdit() {
-        return m_classModel.isAllowed(EDIT);
+        return classModel().isAllowed(EDIT);
     }
 }

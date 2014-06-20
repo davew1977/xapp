@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+
 /**
  * Allows an application to apply a filter on the main tree in the lefthand pane
  */
@@ -22,5 +24,5 @@ public interface TreeNodeFilter
      * @param node
      * @return true if the node should be visible in the tree
      */
-    boolean accept(Node node);
+    boolean accept(ObjectMeta node);
 }

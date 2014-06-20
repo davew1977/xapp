@@ -24,6 +24,7 @@ import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.XappException;
@@ -516,7 +517,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if (node != null) {
             throw new XappException("object " + obj + " is already added");
         }
-        getNodeUpdateApi().insertObject(parentNode.asObjLocation(), obj);
+        getNodeUpdateApi().insertObject(parentNode.toObjLocation(), obj);
     }
 
     @Override
@@ -741,11 +742,10 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         addHook(beforeHooks, action, hook);
     }
 
-    public void removeNode(Node node, boolean wasCut)
+    public void removeNode(Node node)
     {
         //note this method only modifies the JTree NOT the data model
         ((DefaultTreeModel) getMainTree().getModel()).removeNodeFromParent(node.getJtreeNode());
-        getApplication().nodeRemoved(node, wasCut);
     }
 
     public void searchResultSelected(Object selectedValue)
@@ -1246,7 +1246,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     private static class DefaultTreeNodeFilter implements TreeNodeFilter
     {
-        public boolean accept(Node node)
+        public boolean accept(ObjectMeta objectMeta)
         {
             return true;
         }

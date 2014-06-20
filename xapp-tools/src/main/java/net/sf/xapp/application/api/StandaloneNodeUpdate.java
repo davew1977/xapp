@@ -2,10 +2,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.*;
 
-import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
-
-import static net.sf.xapp.application.api.ObjectNodeContext.ObjectContext.*;
 
 /**
  */
@@ -58,7 +55,8 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         ObjectLocation oldLocation = objectMeta.setHome(newLocation);
         Node node = (Node) objectMeta.getAttachment();
         if (node!=null) {
-            appContainer.removeNode(node, true);
+            appContainer.removeNode(node);
+            appContainer.getApplication().nodeRemoved(node, true);
         }
         //create new node
         appContainer.getNodeBuilder().createNode(newLocation, objectMeta);
@@ -85,7 +83,9 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta) {
         objectMeta.removeAndUnsetReference(objectLocation);
         Node node = parentNode.getChildAt(objectLocation.index());
-        appContainer.removeNode(node, false);
+        appContainer.removeNode(node);
+        appContainer.getApplication().nodeRemoved(node, false);
+
     }
 
     @Override

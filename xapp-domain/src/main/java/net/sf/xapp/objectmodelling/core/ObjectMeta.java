@@ -13,7 +13,7 @@ import static net.sf.xapp.utils.ReflectionUtils.*;
  * additional data per instance
  */
 public class ObjectMeta<T> implements Namespace{
-    private final ClassModel classModel;
+    private final ClassModel<T> classModel;
     private final T instance;
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
@@ -184,7 +184,7 @@ public class ObjectMeta<T> implements Namespace{
         return isRoot() || matchingMap(aClass) != null;
     }
 
-    public ClassModel getClassModel() {
+    public ClassModel<T> getClassModel() {
         return classModel;
     }
 
@@ -388,11 +388,38 @@ public class ObjectMeta<T> implements Namespace{
             assert location.equals(home);
             return home;
         }
-        for (ObjectLocation reference : references) {
+        for (ObjectLocation reference : references.keySet()) {
             if(reference.equals(location)) {
                 return reference;
             }
         }
         throw new IllegalArgumentException(String.format("object %s not in location %s", this, location));
+    }
+
+    public Object cloneInstance() {
+        return getClassModel().createClone(instance);
+    }
+
+    public String getSimpleClassName() {
+        return getClassModel().getContainedClass().getSimpleName();
+    }
+
+    public boolean isContainer() {
+        return getClassModel().isContainer();
+    }
+
+    public ContainerProperty getContainerProperty() {
+        return getClassModel().getContainerProperty();
+    }
+
+    public List<ContainerProperty> allContainerProps() {
+        List<ContainerProperty> containerProperties = new ArrayList<ContainerProperty>(classModel.getMapProperties());
+        List<ListProperty> listProperties = classModel.getListProperties();
+        containerProperties.addAll(listProperties);
+        return containerProperties;
+    }
+
+    public List<Property> getProperties() {
+        return getClassModel().getProperties();
     }
 }

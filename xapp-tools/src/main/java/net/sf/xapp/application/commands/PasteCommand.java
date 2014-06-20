@@ -55,9 +55,9 @@ public class PasteCommand extends NodeCommand
             {
                 //remove if action was CUT
                 if (clipboard.isCut()) {
-                    nodeUpdateApi.moveObject(node.asObjLocation(), clipboardObject);
+                    nodeUpdateApi.moveObject(node.toObjLocation(), clipboardObject);
                 } else {
-                    nodeUpdateApi.insertObject(node.asObjLocation(), clipboardObject);
+                    nodeUpdateApi.insertObject(node.toObjLocation(), clipboardObject);
                 }
                 //if cloneable then create new clone for clipboard
                 if (clipboardObject instanceof Cloneable) {
@@ -68,7 +68,7 @@ public class PasteCommand extends NodeCommand
                 //register so we get new object meta
             } else {
                 //todo create reference to obj
-                nodeUpdateApi.createReference(node.asObjLocation(), clipboardObject);
+                nodeUpdateApi.createReference(node.toObjLocation(), clipboardObject);
             }
         }
 
