@@ -40,24 +40,26 @@ public class ObjectLocation {
         return result;
     }
 
-    public void unset(ObjectMeta ref) {
+    public PropertyChange unset(ObjectMeta ref) {
         if (property.isContainer()) {
             ContainerProperty cp = (ContainerProperty) property;
             cp.remove(obj, ref);
+            return null;
         } else {
-            obj.set(property, null);
+            return obj.set(property, null);
         }
     }
 
-    public void set(ObjectMeta ref) {
-        set(ref, -1);
+    public PropertyChange set(ObjectMeta ref) {
+        return set(ref, -1);
     }
-    public void set(ObjectMeta ref, int index) {
+    public PropertyChange set(ObjectMeta ref, int index) {
         if (property.isContainer()) {
             ContainerProperty cp = (ContainerProperty) property;
             cp.add(obj, index, ref);
+            return null;
         } else {
-            obj.set(property, ref.getInstance());
+            return obj.set(property, ref.getInstance());
         }
     }
 

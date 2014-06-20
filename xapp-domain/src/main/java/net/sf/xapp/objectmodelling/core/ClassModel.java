@@ -879,7 +879,7 @@ public class ClassModel<T> {
                 Collection col = containerProperty.getCollection(o1);
                 int index = 0;
                 for (Object o : col) {
-                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjectLocation(objectMeta, containerProperty, index++), o);
+                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjectLocation(objectMeta, containerProperty), o);
                 }
             }
         }

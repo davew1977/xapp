@@ -22,19 +22,18 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
 
     }
 
-
     @Override
-    public ObjectMeta createObject(ObjectLocation location, ClassModel type) {
+    public ObjectMeta createObject(Node parentNode, ClassModel type) {
         return null;
     }
 
     @Override
-    public void moveObject(ObjectLocation newLocation, Object obj) {
+    public void moveObject(Node parentNode, Object obj) {
 
     }
 
     @Override
-    public void insertObject(ObjectLocation newLocation, Object obj) {
+    public void insertObject(Node parentNode, Object obj) {
 
     }
 
@@ -49,17 +48,17 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void createReference(ObjectLocation objectLocation, Object obj) {
+    public void createReference(Node parentNode, Object obj) {
 
     }
 
     @Override
-    public void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta) {
+    public void removeReference(Node parentNode, ObjectMeta objectMeta) {
 
     }
 
     @Override
-    public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int newIndex) {
+    public void moveInList(Node parentNode, ObjectMeta objectMeta, int newIndex) {
 
     }
 }

@@ -29,7 +29,7 @@ public class MoveDownCommand extends NodeCommand
         //get the parent list node
         Node parentNode = node.getParent();
         TreePath selectionPath = node.getAppContainer().getMainTree().getSelectionPath();
-        node.getAppContainer().getNodeUpdateApi().moveInList(parentNode.toObjLocation(), node.objectMeta(), node.index()+1);
+        node.getAppContainer().getNodeUpdateApi().moveInList(parentNode, node.objectMeta(), node.index()+1);
         node.getAppContainer().getMainTree().setSelectionPath(selectionPath);
     }
 }

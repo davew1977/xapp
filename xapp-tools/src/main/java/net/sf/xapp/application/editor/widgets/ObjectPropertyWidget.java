@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.application.editor.widgets;
 
+import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.application.utils.SwingUtils;
@@ -157,7 +158,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final ObjectMeta instance = nodeUpdateApi.createObject(new ObjectLocation(parentObj, getProperty()), validImpl);
+        final ObjectMeta instance = nodeUpdateApi.createObject((Node) parentObj.getAttachment(), validImpl);
         EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {

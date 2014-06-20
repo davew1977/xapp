@@ -2,6 +2,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,64 +35,66 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
-        //create the node
-        ObjectLocation objectLocation = objectMeta.getHome();
-        appContainer.getNodeBuilder().createNode(objectLocation, objectMeta);
-        appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
-    public ObjectMeta createObject(ObjectLocation location, ClassModel type) {
-        final ObjectMeta objMeta = type.newInstance(location);
+    public ObjectMeta createObject(Node parentNode, ClassModel type) {
+        final ObjectMeta objMeta = type.newInstance(parentNode.toObjLocation());
         appContainer.getApplication().nodeAboutToBeAdded(objMeta);
+
+        //create the node (may be removed if user cancels)
+        appContainer.getNodeBuilder().createNode(parentNode, objMeta);
+        appContainer.getApplication().nodeAdded(objMeta);
+
         return objMeta;
     }
 
     @Override
-    public void moveObject(ObjectLocation newLocation, Object obj) {
-        assert !newLocation.containsReferences();
+    public void moveObject(Node parentNode, Object obj) {
+        ObjectLocation newLoc = parentNode.toObjLocation();
+        assert !newLoc.containsReferences();
         //find the old object and remove it
         ObjectMeta objectMeta = getClassModel(obj).find(obj);
-        ObjectLocation oldLocation = objectMeta.setHome(newLocation);
+        objectMeta.setHome(newLoc);
         Node node = (Node) objectMeta.getAttachment();
         if (node!=null) {
             appContainer.removeNode(node);
             appContainer.getApplication().nodeRemoved(node, true);
         }
         //create new node
-        appContainer.getNodeBuilder().createNode(newLocation, objectMeta);
+        appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
         appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
-    public void insertObject(ObjectLocation newLocation, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).registerInstance(newLocation, obj);
+    public void insertObject(Node parentNode, Object obj) {
+        ObjectMeta objectMeta = getClassModel(obj).registerInstance(parentNode.toObjLocation(), obj);
         //create the node
-        appContainer.getNodeBuilder().createNode(newLocation, objectMeta, newLocation.index());
+        appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
         appContainer.getApplication().nodeAdded(objectMeta);
         appContainer.getMainPanel().repaint();
     }
 
     @Override
-    public void createReference(ObjectLocation newLocation, Object obj) {
+    public void createReference(Node parentNode, Object obj) {
         ObjectMeta objMeta = getClassModel(obj).find(obj);
-        objMeta.createAndSetReference(newLocation);
-        appContainer.getNodeBuilder().createNode(newLocation, objMeta);
+        objMeta.createAndSetReference(parentNode.toObjLocation());
+        appContainer.getNodeBuilder().createNode(parentNode, objMeta);
     }
 
     @Override
-    public void removeReference(ObjectLocation objectLocation, ObjectMeta objectMeta) {
-        objectMeta.removeAndUnsetReference(objectLocation);
-        Node node = parentNode.getChildAt(objectLocation.index());
+    public void removeReference(Node node) {
+        assert node.isReference();
+        node.objectMeta().removeAndUnsetReference(node.myObjLocation());
         appContainer.removeNode(node);
         appContainer.getApplication().nodeRemoved(node, false);
 
     }
 
     @Override
-    public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int newIndex) {
+    public void moveInList(Node parentNode, ObjectMeta objectMeta, int newIndex) {
         //update model
-        objectMeta.updateIndex(objectLocation, newIndex);
+        objectMeta.updateIndex(parentNode.toObjLocation(), newIndex);
 
         //update jtree
         Node node = (Node) objectMeta.getAttachment();
@@ -99,21 +102,16 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public void deleteObject(ObjectMeta objMeta) {
-        deleteObject(objMeta, false);
-    }
-
-    private void deleteObject(ObjectMeta objMeta, boolean wasMoved) {
+    public void deleteObject(Node node) {
         //remove from data model
-        objMeta.dispose();
+        Collection<Node> attachments = (Collection<Node>) node.objectMeta().dispose();
         //clean up nodes
-        Node node = (Node) objMeta.getAttachment();
-        if (node!=null) {
-            appContainer.removeNode(node, true);
-        }
-        List<Node> referencingNodes = appContainer.findReferencingNodes(objMeta.getInstance());
-        for (Node referencingNode : referencingNodes) {
-            appContainer.removeNode(referencingNode, wasMoved);
+        appContainer.removeNode(node);
+        appContainer.getApplication().nodeRemoved(node, true);
+
+        for (Node referencingNode: attachments) {
+            appContainer.removeNode(referencingNode);
+            appContainer.getApplication().nodeRemoved(node, false);
         }
     }
 

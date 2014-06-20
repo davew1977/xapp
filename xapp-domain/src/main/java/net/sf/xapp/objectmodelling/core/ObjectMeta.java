@@ -193,14 +193,29 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public PropertyChange set(Property property, Object value) {
-        PropertyChange change = property.set(getInstance(), value);
-        if (property.isKey() && change != null) {
-            String oldVal = (String) change.oldVal;
-            assert Property.objEquals(oldVal, key);
-            String newVal = (String) change.newVal;
-            updateMetaHierarchy(newVal);
+        if(property.isReference()) {
+            if(value!=null) {
+                ObjectMeta objectMeta = property.getPropertyClassModel().find(value);
+                return objectMeta.createAndSetReference(new ObjectLocation(this, property));
+            } else {
+                //get old value
+                Object old = get(property);
+                if(old!=null) {
+                    ObjectMeta objectMeta = property.getPropertyClassModel().find(old);
+                    return objectMeta.removeAndUnsetReference(new ObjectLocation(this, property));
+                }
+                return new PropertyChange(property, this, null, null);
+            }
+        } else {
+            PropertyChange change = property.set(getInstance(), value);
+            if (property.isKey() && change != null) {
+                String oldVal = (String) change.oldVal;
+                assert Property.objEquals(oldVal, key);
+                String newVal = (String) change.newVal;
+                updateMetaHierarchy(newVal);
+            }
+            return change;
         }
-        return change;
     }
 
     public void updateMetaHierarchy(String newKeyVal) {
@@ -319,6 +334,9 @@ public class ObjectMeta<T> implements Namespace{
         return id;
     }
 
+    public Object getAttachment(ObjectLocation objectLocation) {
+        return references.get(objectLocation);
+    }
     public Object getAttachment() {
         return attachment;
     }
@@ -327,7 +345,7 @@ public class ObjectMeta<T> implements Namespace{
         this.attachment = attachment;
     }
 
-    public void dispose() {
+    public Collection<Object> dispose() {
         if (key != null) {
             updateMetaHierarchy(null);
         }
@@ -336,7 +354,7 @@ public class ObjectMeta<T> implements Namespace{
         for (ObjectLocation reference : references.keySet()) {
             reference.unset(this);
         }
-        references.clear();
+        return references.values();
     }
 
     public ObjectLocation setHome(ObjectLocation newLoc) {
@@ -362,19 +380,18 @@ public class ObjectMeta<T> implements Namespace{
         PropertyUpdate.execute(this, potentialUpdates);
     }
 
-    public void createAndSetReference(ObjectLocation objectLocation) {
+    public PropertyChange createAndSetReference(ObjectLocation objectLocation) {
         references.put(objectLocation, null);
-        objectLocation.set(this);
+        return objectLocation.set(this);
     }
 
     public void attach(ObjectLocation objectLocation, Object attachment) {
         references.put(objectLocation, attachment);
     }
 
-    public Object removeAndUnsetReference(ObjectLocation objectLocation) {
-        Object attachment = references.remove(objectLocation);
-        objectLocation.unset(this);
-        return attachment;
+    public PropertyChange removeAndUnsetReference(ObjectLocation objectLocation) {
+        references.remove(objectLocation);
+        return objectLocation.unset(this);
     }
 
     public void updateIndex(ObjectLocation location, int index) {

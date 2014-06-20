@@ -607,7 +607,7 @@ public class Unmarshaller<T>
             {
                 Class propertyClass = m_listProperty.getContainedType();
                 ObjectMeta ref = objectMeta.getObjMeta(propertyClass, s);
-                ref.createAndSetReference(new ObjectLocation(target, m_listProperty, -1));
+                ref.createAndSetReference(new ObjectLocation(target, m_listProperty));
             }
             target.set(m_listProperty, mapOrCollection);
         }

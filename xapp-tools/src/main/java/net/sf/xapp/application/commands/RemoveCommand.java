@@ -37,14 +37,15 @@ public class RemoveCommand extends NodeCommand
 
 
         NodeUpdateApi nodeUpdateApi = appContainer.getNodeUpdateApi();
+        Node childBefore = parentNode.getChildBefore(node);
+
         if(node.isReference()) {
-            nodeUpdateApi.removeReference(node.myObjLocation(), node.objectMeta());
+            nodeUpdateApi.removeReference(node);
         } else {
-            nodeUpdateApi.deleteObject(node.objectMeta());
+            nodeUpdateApi.deleteObject(node);
         }
 
         //we want the selection path to be on above the node removed or the parent path if this does not exist
-        Node childBefore = parentNode.getChildBefore(node);
         appContainer.setSelectedNode(childBefore != null ? childBefore : parentNode);
     }
 }
