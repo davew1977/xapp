@@ -77,6 +77,6 @@ public class ObjectLocation {
     }
 
     public Collection getCollection() {
-        return ((ContainerProperty) property).getCollection(obj);
+        return ((ContainerProperty) property).getCollection(obj.getInstance());
     }
 }

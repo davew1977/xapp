@@ -36,7 +36,7 @@ public class NodeBuilder {
 
     public Node createTree() {
         ObjectMeta objectMeta = appContainer.getGuiContext().getObjectMeta();
-        Node node = createNode(null, objectMeta);
+        Node node = createNode(null, objectMeta, 0);
         appContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }

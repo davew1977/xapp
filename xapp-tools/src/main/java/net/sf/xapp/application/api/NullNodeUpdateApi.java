@@ -43,17 +43,17 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void deleteObject(ObjectMeta objMeta) {
-
-    }
-
-    @Override
     public void createReference(Node parentNode, Object obj) {
 
     }
 
     @Override
-    public void removeReference(Node parentNode, ObjectMeta objectMeta) {
+    public void deleteObject(Node node) {
+
+    }
+
+    @Override
+    public void removeReference(Node referenceNode) {
 
     }
 

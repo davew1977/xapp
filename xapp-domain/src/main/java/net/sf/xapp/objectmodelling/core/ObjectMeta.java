@@ -194,18 +194,16 @@ public class ObjectMeta<T> implements Namespace{
 
     public PropertyChange set(Property property, Object value) {
         if(property.isReference()) {
+            Object old = get(property);
             if(value!=null) {
                 ObjectMeta objectMeta = property.getPropertyClassModel().find(value);
-                return objectMeta.createAndSetReference(new ObjectLocation(this, property));
-            } else {
-                //get old value
-                Object old = get(property);
-                if(old!=null) {
-                    ObjectMeta objectMeta = property.getPropertyClassModel().find(old);
-                    return objectMeta.removeAndUnsetReference(new ObjectLocation(this, property));
-                }
-                return new PropertyChange(property, this, null, null);
+                objectMeta.createReference(new ObjectLocation(this, property));
             }
+            if(old!=null) {
+                ObjectMeta objectMeta = property.getPropertyClassModel().find(old);
+                objectMeta.removeReference(new ObjectLocation(this, property));
+            }
+            return new PropertyChange(property, this, old, value);
         } else {
             PropertyChange change = property.set(getInstance(), value);
             if (property.isKey() && change != null) {
@@ -380,6 +378,10 @@ public class ObjectMeta<T> implements Namespace{
         PropertyUpdate.execute(this, potentialUpdates);
     }
 
+    public void createReference(ObjectLocation objectLocation) {
+        references.put(objectLocation, null);
+    }
+
     public PropertyChange createAndSetReference(ObjectLocation objectLocation) {
         references.put(objectLocation, null);
         return objectLocation.set(this);
@@ -392,6 +394,10 @@ public class ObjectMeta<T> implements Namespace{
     public PropertyChange removeAndUnsetReference(ObjectLocation objectLocation) {
         references.remove(objectLocation);
         return objectLocation.unset(this);
+    }
+
+    public void removeReference(ObjectLocation objectLocation) {
+        references.remove(objectLocation);
     }
 
     public void updateIndex(ObjectLocation location, int index) {

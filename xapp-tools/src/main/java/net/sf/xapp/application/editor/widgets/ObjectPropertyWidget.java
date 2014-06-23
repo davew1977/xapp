@@ -170,7 +170,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
             @Override
             public void close() {
-                nodeUpdateApi.deleteObject(instance);
+                nodeUpdateApi.deleteObject((Node) instance.getAttachment());
             }
         });
         defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);

@@ -39,12 +39,7 @@ public class ApplicationContainerImplTest extends TestCase
     {
         public DummyNode(Object instance)
         {
-            super(null, null, null, new ObjectNodeContext(null, null, new ObjectMeta(null, instance, null), null));
-        }
-
-        @Override
-        public boolean inList() {
-            return false;
+            super(null, null, -1, new ObjectMeta(null, instance, null));
         }
     }
 }
