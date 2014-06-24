@@ -31,20 +31,17 @@ public class NodeImpl implements Node {
     private ListNodeContext listNodeContext;
     private ObjectNodeContext objectNodeContext;
 
-    public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex) {
+    protected NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex) {
         this.appContainer = appContainer;
         jTreeNode = new DefaultMutableTreeNode();
-        jTreeNode.setUserObject(this);
-        DefaultTreeModel treeModel = (DefaultTreeModel) appContainer.getMainTree().getModel();
-        if (parent!=null) {
-            treeModel.insertNodeInto(jTreeNode, parent.getJtreeNode(), insertIndex);
-        }
     }
 
     public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectLocation objectLocation) {
         this(appContainer, parent, insertIndex);
         listNodeContext = new ListNodeContext(objectLocation);
+        addToJTree(parent, insertIndex);
     }
+
     public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectMeta objectMeta) {
         this(appContainer, parent, insertIndex);
         objectNodeContext = new ObjectNodeContext(this, objectMeta);
@@ -55,6 +52,16 @@ public class NodeImpl implements Node {
             objectMeta.attach(this);
         } else {
             objectMeta.attach(myObjLocation(), this);
+        }
+        addToJTree(parent, insertIndex);
+    }
+
+    private void addToJTree(Node parent, int insertIndex) {
+
+        jTreeNode.setUserObject(this);
+        DefaultTreeModel treeModel = (DefaultTreeModel) appContainer.getMainTree().getModel();
+        if (parent!=null) {
+            treeModel.insertNodeInto(jTreeNode, parent.getJtreeNode(), insertIndex);
         }
     }
 

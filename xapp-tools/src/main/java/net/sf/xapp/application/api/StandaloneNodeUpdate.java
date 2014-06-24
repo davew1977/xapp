@@ -20,7 +20,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         objectMeta.update(potentialUpdates);
         appContainer.getApplication().objectUpdated(objectMeta, PropertyUpdate.execute(objectMeta, potentialUpdates)); //find node
         Node node = (Node) objectMeta.getAttachment();
-        if(node != null) {
+        if(node != null) { //todo only refresh if sub-objects have changed
             node.refresh();
         }
     }
@@ -35,6 +35,11 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
+        Node node = (Node) objectMeta.getAttachment();
+        if(node != null) { //todo only refresh if sub-objects have changed
+            node.refresh();
+        }
+        appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
@@ -44,7 +49,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
         //create the node (may be removed if user cancels)
         appContainer.getNodeBuilder().createNode(parentNode, objMeta);
-        appContainer.getApplication().nodeAdded(objMeta);
 
         return objMeta;
     }

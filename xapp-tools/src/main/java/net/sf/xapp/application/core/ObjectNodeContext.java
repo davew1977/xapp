@@ -73,16 +73,18 @@ public class ObjectNodeContext {
         if (canEdit()) commands.add(new EditCommand());
         //add commands that are only allowed for objects in a list:
         if (commandContext != CommandContext.SEARCH) {
-            if (classModel().isAllowed(DELETE) || node.isReference()) {
-                commands.add(new RemoveCommand());
-            }
-            if (classModel().isAllowed(MOVE_UP_OR_DOWN)) {
-                commands.add(new MoveUpCommand());
-                commands.add(new MoveDownCommand());
+            if (!node.isRoot()) {
+                if (classModel().isAllowed(DELETE) || node.isReference()) {
+                    commands.add(new RemoveCommand());
+                }
+                if (classModel().isAllowed(MOVE_UP_OR_DOWN)) {
+                    commands.add(new MoveUpCommand());
+                    commands.add(new MoveDownCommand());
+                }
             }
             //add commands that are only allowed when the surrounding list does NOT contain references
             Node parentNode = node.getParent();
-            if (!parentNode.containsReferences()) {
+            if (parentNode == null || !parentNode.containsReferences()) {
                 //COPY and COPY_XML
                 if (classModel().isAllowed(CUT_COPY) && objectMeta.isCloneable()) {
                     commands.add(new CopyCommand());

@@ -7,6 +7,7 @@ import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * © 2013 Newera Education Ltd
@@ -18,6 +19,7 @@ public class ClassRoom implements FileSystem{
     private Teacher teacher;
     private List<Pupil> pupils;
     private DirMeta homeDir = new DirMeta("docs");
+    private Set<Pet> pets;
 
     @Key
     public String getName() {
@@ -52,6 +54,14 @@ public class ClassRoom implements FileSystem{
 
     public void setHomeDir(DirMeta homeDir) {
         this.homeDir = homeDir;
+    }
+
+    public Set<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(Set<Pet> pets) {
+        this.pets = pets;
     }
 
     @Override

@@ -2,6 +2,8 @@ add simple object to list
 add simple object to set
 add simple object to map
 
+multi edit
+
 enum prop edit
 ref prop edit
 ref prop edit when referenced type is a tree
@@ -15,6 +17,7 @@ school system serialize/deserialize {
 
 move up/move down node
 move up/move down reference node
+ensure cannot move up/down if map or set
 
 remove object {
     object with references (they should be cleaned up)
@@ -30,6 +33,11 @@ copy xml/paste xml
 change type command
 
 edit/create/remove object not in a list (embedded object)
+
+//with simple application
+check node updated called correctly
+check node added called correctly
+check node removed called correctly
 
 
 

@@ -194,25 +194,26 @@ public class ObjectMeta<T> implements Namespace{
 
     public PropertyChange set(Property property, Object value) {
         PropertyChange change = property.set(getInstance(), value);
-        if(property.isReference()) {
-            if(value!=null) {
-                ObjectMeta objectMeta = property.getPropertyClassModel().find(value);
-                objectMeta.createReference(new ObjectLocation(this, property));
+        if (change != null) {
+            if(property.isReference()) {
+                if(value!=null) {
+                    ObjectMeta objectMeta = property.getPropertyClassModel().find(value);
+                    objectMeta.createReference(new ObjectLocation(this, property));
+                }
+                if(change.oldVal!=null) {
+                    ObjectMeta objectMeta = property.getPropertyClassModel().find(change.oldVal);
+                    objectMeta.removeReference(new ObjectLocation(this, property));
+                }
+            } else {
+                if (property.isKey() && change != null) {
+                    String oldVal = (String) change.oldVal;
+                    assert Property.objEquals(oldVal, key);
+                    String newVal = (String) change.newVal;
+                    updateMetaHierarchy(newVal);
+                }
             }
-            if(change.oldVal!=null) {
-                ObjectMeta objectMeta = property.getPropertyClassModel().find(change.oldVal);
-                objectMeta.removeReference(new ObjectLocation(this, property));
-            }
-            return change;
-        } else {
-            if (property.isKey() && change != null) {
-                String oldVal = (String) change.oldVal;
-                assert Property.objEquals(oldVal, key);
-                String newVal = (String) change.newVal;
-                updateMetaHierarchy(newVal);
-            }
-            return change;
         }
+        return change;
     }
 
     public void updateMetaHierarchy(String newKeyVal) {
@@ -447,10 +448,12 @@ public class ObjectMeta<T> implements Namespace{
 
     public Set<ClassModel> compatibleTypes() {
         Set<ClassModel> result = new HashSet<ClassModel>();
-        result.add(classModel);
-        ClassModel propertyClassModel = getHome().getProperty().getPropertyClassModel();
-        result.add(propertyClassModel);
-        result.addAll(propertyClassModel.getValidImplementations());
+        if (!isRoot()) {
+            result.add(classModel);
+            ClassModel propertyClassModel = getHome().getProperty().getPropertyClassModel();
+            result.add(propertyClassModel);
+            result.addAll(propertyClassModel.getValidImplementations());
+        }
         return result;
     }
 }
