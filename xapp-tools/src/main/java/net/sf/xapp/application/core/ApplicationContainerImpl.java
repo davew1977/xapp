@@ -68,6 +68,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     private boolean m_systemExit = true;
     private SearchFormControl m_searchFormControl;
     private ScheduledThreadPoolExecutor m_executor = new ScheduledThreadPoolExecutor(1);
+    private NodeUpdateApi nodeUpdateApi = new StandaloneNodeUpdate(this);
 
     /**
      * The application tool bar, initially empty.
@@ -462,7 +463,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     @Override
     public NodeUpdateApi getNodeUpdateApi() {
-        throw new UnsupportedOperationException();
+        return nodeUpdateApi;
     }
 
     private List<Command> getCommands(Node node, CommandContext commandContext)

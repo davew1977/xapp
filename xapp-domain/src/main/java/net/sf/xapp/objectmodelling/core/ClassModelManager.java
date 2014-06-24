@@ -114,6 +114,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return classModel.findOrCreate(objectLocation, value);
     }
 
+    public ObjectMeta find(Object value) {
+        ClassModel classModel = getClassModel(value.getClass());
+        return classModel.find(value);
+    }
+
     public Unmarshaller getRootUnmarshaller()
     {
         return createUnmarshaller(rootType);

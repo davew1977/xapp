@@ -26,6 +26,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Set;
 
 public class ChangeTypeCommand extends NodeCommand
 {
@@ -38,7 +39,7 @@ public class ChangeTypeCommand extends NodeCommand
     {
         JPopupMenu menu = new JPopupMenu();
         ListNodeContext parentListNodeContext = node.getParent().getListNodeContext();
-        List<ClassModel> classOptions = parentListNodeContext.getValidImplementations();
+        Set<ClassModel> classOptions = node.objectMeta().compatibleTypes();
         final List containingList = parentListNodeContext.getList();
         final ApplicationContainer appContainer = node.getAppContainer();
         for (final ClassModel targetClassModel : classOptions)

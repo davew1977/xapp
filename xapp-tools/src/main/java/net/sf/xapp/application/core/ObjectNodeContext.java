@@ -26,6 +26,7 @@ import net.sf.xapp.objectmodelling.core.Property;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ObjectNodeContext {
     private Node node;
@@ -92,7 +93,7 @@ public class ObjectNodeContext {
                     commands.add(new CutCommand());
                 }
                 //CHANGE_TYPE
-                List<ClassModel> validImpls = parentNode.getListNodeContext().getValidImplementations();
+                Set<ClassModel> validImpls = objectMeta.compatibleTypes();
                 if (validImpls.size() > 1 && classModel().isAllowed(CHANGE_TYPE)) {
                     commands.add(new ChangeTypeCommand());
                 }

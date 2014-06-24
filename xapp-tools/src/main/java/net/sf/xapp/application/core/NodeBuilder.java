@@ -96,7 +96,7 @@ public class NodeBuilder {
                     propValueObjMeta = cdb.findOrCreateObjMeta(new ObjectLocation(objMeta, property), value);
                 }
                 if (value != null && propValueObjMeta != null) {
-                    createNode(parentNode, propValueObjMeta);
+                    createNode(newNode, propValueObjMeta);
                 }
             }
         }
@@ -116,8 +116,7 @@ public class NodeBuilder {
         ListNodeContext listNodeContext = parentNode.getListNodeContext();
         Collection list = listNodeContext.getCollection();
         for (Object o : list) {
-            ObjectLocation objectLocation = parentNode.toObjLocation();
-            createNode(parentNode, cdb.findOrCreateObjMeta(objectLocation, o));
+            createNode(parentNode, cdb.find(o));
         }
     }
 

@@ -193,19 +193,18 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public PropertyChange set(Property property, Object value) {
+        PropertyChange change = property.set(getInstance(), value);
         if(property.isReference()) {
-            Object old = get(property);
             if(value!=null) {
                 ObjectMeta objectMeta = property.getPropertyClassModel().find(value);
                 objectMeta.createReference(new ObjectLocation(this, property));
             }
-            if(old!=null) {
-                ObjectMeta objectMeta = property.getPropertyClassModel().find(old);
+            if(change.oldVal!=null) {
+                ObjectMeta objectMeta = property.getPropertyClassModel().find(change.oldVal);
                 objectMeta.removeReference(new ObjectLocation(this, property));
             }
-            return new PropertyChange(property, this, old, value);
+            return change;
         } else {
-            PropertyChange change = property.set(getInstance(), value);
             if (property.isKey() && change != null) {
                 String oldVal = (String) change.oldVal;
                 assert Property.objEquals(oldVal, key);
@@ -365,8 +364,8 @@ public class ObjectMeta<T> implements Namespace{
             if (newLoc != null) {
                 this.home.set(this);
             }
+            updateMetaHierarchy(key);
         }
-        updateMetaHierarchy(key);
         return old;
     }
 
@@ -444,5 +443,14 @@ public class ObjectMeta<T> implements Namespace{
 
     public List<Property> getProperties() {
         return getClassModel().getProperties();
+    }
+
+    public Set<ClassModel> compatibleTypes() {
+        Set<ClassModel> result = new HashSet<ClassModel>();
+        result.add(classModel);
+        ClassModel propertyClassModel = getHome().getProperty().getPropertyClassModel();
+        result.add(propertyClassModel);
+        result.addAll(propertyClassModel.getValidImplementations());
+        return result;
     }
 }

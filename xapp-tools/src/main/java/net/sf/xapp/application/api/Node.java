@@ -16,6 +16,7 @@ import net.sf.xapp.application.core.CommandContext;
 import net.sf.xapp.application.core.ListNodeContext;
 import net.sf.xapp.application.core.ObjectNodeContext;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
@@ -126,4 +127,5 @@ public interface Node
     void updateIndex(int newIndex);
 
     boolean isObjectNode();
+
 }

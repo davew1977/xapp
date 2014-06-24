@@ -27,6 +27,8 @@ copy/paste reference
 
 copy xml/paste xml
 
+change type command
+
 edit/create/remove object not in a list (embedded object)
 
 

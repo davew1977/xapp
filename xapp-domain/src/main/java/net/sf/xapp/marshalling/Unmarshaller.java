@@ -602,14 +602,12 @@ public class Unmarshaller<T>
 
         public void execute(ObjectMeta objectMeta)
         {
-            Object mapOrCollection = m_listProperty.createCollection();
             for (String s : m_references)
             {
                 Class propertyClass = m_listProperty.getContainedType();
                 ObjectMeta ref = objectMeta.getObjMeta(propertyClass, s);
                 ref.createAndSetReference(new ObjectLocation(target, m_listProperty));
             }
-            target.set(m_listProperty, mapOrCollection);
         }
 
         @Override

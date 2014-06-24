@@ -84,4 +84,5 @@ public interface ClassDatabase<T>
     Collection<ObjectMeta> allManagedObjects();
 
     ObjectMeta findOrCreateObjMeta(ObjectLocation objectLocation, Object value);
+    ObjectMeta find(Object value);
 }
