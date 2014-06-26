@@ -2,7 +2,7 @@
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
       <ClassRooms>
-        <ClassRoom name="Ruby" teacher="acarver">
+        <ClassRoom name="Ruby" teacher="etrevis">
           <HomeDir name="docs">
             <Files>
               <DirMeta name="bestwork">
@@ -83,6 +83,17 @@ And lived inside me]]></Text>
           <Pupils>
             <Pupil ref="jkeeley"/>
             <Pupil ref="eliasw"/>
+          </Pupils>
+        </ClassRoom>
+        <ClassRoom name="Station Class" teacher="breid">
+          <HomeDir name="docs"/>
+          <Pets>
+            <Pet animal="gerbil" name="jumpy"/>
+          </Pets>
+          <Pupils>
+            <Pupil ref="jkeeley"/>
+            <Pupil ref="eliasw"/>
+            <Pupil ref="jwebber"/>
           </Pupils>
         </ClassRoom>
       </ClassRooms>
