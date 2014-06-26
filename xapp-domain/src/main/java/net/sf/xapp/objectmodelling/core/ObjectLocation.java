@@ -76,7 +76,20 @@ public class ObjectLocation {
         set(objectMeta, index);
     }
 
+    public int indexOf(ObjectMeta objectMeta) {
+        ContainerProperty cp = (ContainerProperty) property;
+        return cp.indexOf(obj, objectMeta);
+    }
+
     public Collection getCollection() {
         return ((ContainerProperty) property).getCollection(obj.getInstance());
+    }
+
+    public boolean isList() {
+        return property.isList();
+    }
+
+    public int size() {
+        return isCollection() ? ((ContainerProperty) property).size(obj) : 1;
     }
 }

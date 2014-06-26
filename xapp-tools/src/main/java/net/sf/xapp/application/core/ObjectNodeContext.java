@@ -21,6 +21,7 @@ import net.sf.xapp.application.commands.*;
 import static net.sf.xapp.objectmodelling.api.Rights.*;
 
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 
@@ -73,17 +74,25 @@ public class ObjectNodeContext {
         if (canEdit()) commands.add(new EditCommand());
         //add commands that are only allowed for objects in a list:
         if (commandContext != CommandContext.SEARCH) {
+            Node parentNode = node.getParent();
             if (!node.isRoot()) {
                 if (classModel().isAllowed(DELETE) || node.isReference()) {
                     commands.add(new RemoveCommand());
                 }
-                if (classModel().isAllowed(MOVE_UP_OR_DOWN)) {
-                    commands.add(new MoveUpCommand());
-                    commands.add(new MoveDownCommand());
+
+                ObjectLocation objectLocation = node.myObjLocation();
+                if(objectLocation != null && objectLocation.isList()) {
+                    int index = objectLocation.indexOf(objectMeta);
+                    int size = objectLocation.size();
+                    if(index>0) {
+                        commands.add(new MoveUpCommand());
+                    }
+                    if(index<size-1) {
+                        commands.add(new MoveDownCommand());
+                    }
                 }
             }
             //add commands that are only allowed when the surrounding list does NOT contain references
-            Node parentNode = node.getParent();
             if (parentNode == null || !parentNode.containsReferences()) {
                 //COPY and COPY_XML
                 if (classModel().isAllowed(CUT_COPY) && objectMeta.isCloneable()) {

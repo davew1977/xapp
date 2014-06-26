@@ -31,19 +31,19 @@ public class NodeImpl implements Node {
     private ListNodeContext listNodeContext;
     private ObjectNodeContext objectNodeContext;
 
-    protected NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex) {
+    protected NodeImpl(ApplicationContainer appContainer) {
         this.appContainer = appContainer;
         jTreeNode = new DefaultMutableTreeNode();
     }
 
     public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectLocation objectLocation) {
-        this(appContainer, parent, insertIndex);
+        this(appContainer);
         listNodeContext = new ListNodeContext(objectLocation);
         addToJTree(parent, insertIndex);
     }
 
     public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectMeta objectMeta) {
-        this(appContainer, parent, insertIndex);
+        this(appContainer);
         objectNodeContext = new ObjectNodeContext(this, objectMeta);
         if (objectMeta.isContainer()) {
             listNodeContext = new ListNodeContext(new ObjectLocation(objectMeta, objectMeta.getContainerProperty()));
@@ -136,7 +136,8 @@ public class NodeImpl implements Node {
 
     @Override
     public ObjectLocation toObjLocation() {
-        return listNodeContext.getObjectLocation();
+        //todo would really like to return a location even if we have no list context, but...
+        return listNodeContext != null ? listNodeContext.getObjectLocation() : null;
     }
 
     @Override

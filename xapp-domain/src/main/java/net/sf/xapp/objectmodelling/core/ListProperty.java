@@ -99,5 +99,10 @@ public class ListProperty extends ContainerProperty
         return get(listOwner);
     }
 
+    @Override
+    public int size(ObjectMeta obj) {
+        return getCollection(obj.getInstance()).size();
+    }
+
 
 }

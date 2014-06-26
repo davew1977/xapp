@@ -18,7 +18,7 @@ public class FakeNode extends NodeImpl
 
     public FakeNode(Object obj)
     {
-        super(null, null, -1);
+        super(null);
         m_obj = obj;
     }
 

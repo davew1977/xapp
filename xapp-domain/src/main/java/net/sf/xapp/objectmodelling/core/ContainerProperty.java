@@ -113,4 +113,16 @@ public class ContainerProperty extends Property
     public Collection getCollection(Object listOwner) {
         return map(listOwner).values();
     }
+
+    public int indexOf(ObjectMeta container, ObjectMeta objectMeta) {
+        if(isList()) {
+            return ((List) get(container.getInstance())).indexOf(objectMeta.getInstance());
+        } else {
+            throw new UnsupportedOperationException("Cannot call indexOf unless list " + this);
+        }
+    }
+
+    public int size(ObjectMeta obj) {
+        return map(obj.getInstance()).size();
+    }
 }
