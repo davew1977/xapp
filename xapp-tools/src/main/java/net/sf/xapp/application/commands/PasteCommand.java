@@ -67,7 +67,7 @@ public class PasteCommand extends NodeCommand
 
                 //register so we get new object meta
             } else {
-                //todo create reference to obj
+                //create reference to obj
                 nodeUpdateApi.createReference(node, clipboardObject);
             }
         }

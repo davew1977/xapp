@@ -23,6 +23,11 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
+    public void updateReferences(Node node, List<Object> objects) {
+
+    }
+
+    @Override
     public ObjectMeta createObject(Node parentNode, ClassModel type) {
         return null;
     }

@@ -20,7 +20,7 @@ no spitting]]></Text>
           <Pets>
             <Pet animal="dog" name="Bouncer"/>
             <Pet animal="gerbil" name="Jimmy"/>
-            <Pet animal="snake" name="cyril"/>
+            <Pet animal="snake" name="Cyril"/>
           </Pets>
           <Pupils>
             <Pupil ref="alicew"/>
@@ -91,7 +91,6 @@ And lived inside me]]></Text>
             <Pet animal="gerbil" name="jumpy"/>
           </Pets>
           <Pupils>
-            <Pupil ref="jkeeley"/>
             <Pupil ref="eliasw"/>
             <Pupil ref="jwebber"/>
           </Pupils>
@@ -167,6 +166,7 @@ my hobbies are knitting and tennis]]></Text>
         <ImageFile ref="eliasw/docs/pictures/home/2013/mum.jpg"/>
         <ImageFile ref="eliasw/docs/pictures/school/playground.jpg"/>
         <ImageFile ref="breid/docs/pictures/private/mr blobby.gif"/>
+        <ImageFile ref="eliasw/docs/pictures/home/alice.jpg"/>
       </PicturesOfTheWeek>
     </School>
   </Schools>

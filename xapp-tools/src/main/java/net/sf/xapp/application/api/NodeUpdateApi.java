@@ -44,4 +44,6 @@ public interface NodeUpdateApi {
     void removeReference(Node referenceNode);
 
     void moveInList(Node parentNode, ObjectMeta objectMeta, int newIndex);
+
+    void updateReferences(Node node, List<Object> objects);
 }

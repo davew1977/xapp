@@ -1,9 +1,9 @@
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.application.core.ListNodeContext;
 import net.sf.xapp.objectmodelling.core.*;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  */
@@ -84,6 +84,36 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         ObjectMeta objMeta = getClassModel(obj).find(obj);
         objMeta.createAndSetReference(parentNode.toObjLocation());
         appContainer.getNodeBuilder().createNode(parentNode, objMeta);
+    }
+
+    @Override
+    public void updateReferences(Node node, List<Object> newValues) {
+        Collection oldValues = node.getListNodeContext().getCollection();
+        List<Object> toRemove = new ArrayList<Object>(oldValues);
+        List<Object> toAdd = new ArrayList<Object>(newValues);
+        toRemove.removeAll(newValues);
+        toAdd.removeAll(oldValues);
+        //remove unlinked references
+        for (Object oldValue : toRemove) {
+            ObjectMeta objMeta = getClassModel(oldValue).find(oldValue);
+            objMeta.removeAndUnsetReference(node.toObjLocation());
+        }
+        //add new references
+        for (Object newValue : toAdd) {
+
+            ObjectMeta objMeta = getClassModel(newValue).find(newValue);
+            objMeta.createAndSetReference(node.toObjLocation());
+        }
+
+        boolean unchanged = toAdd.isEmpty() && toRemove.isEmpty();
+
+        if(!unchanged) {
+            appContainer.getNodeBuilder().refresh(node);
+            Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
+            ContainerProperty containerProperty = node.getListNodeContext().getContainerProperty();
+            map.put(containerProperty.getName(), new PropertyChange(containerProperty, node.wrappedObject(), oldValues, newValues));
+            node.getAppContainer().getApplication().nodeUpdated(node, map);
+        }
     }
 
     @Override

@@ -15,11 +15,8 @@ package net.sf.xapp.application.commands;
 
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
-import net.sf.xapp.application.core.ListNodeContext;
 import net.sf.xapp.application.editor.EditorAdaptor;
 import net.sf.xapp.application.editor.widgets.ListReferenceGUI;
-import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.util.*;
@@ -38,22 +35,7 @@ public class GetReferencesCommand extends NodeCommand
         {
             public void save(List<PropertyUpdate> changes, boolean closing)
             {
-                //todo rewrite for node update api
-                ListNodeContext context = node.getListNodeContext();
-                Collection list = context.getCollection();
-                Collection before = new ArrayList(list);
-                list.clear();
-                list.addAll(gui.getData());
-                ListProperty listProperty = (ListProperty) context.getContainerProperty();
-                context.getListOwner().set(listProperty, list);
-                Node updatedNode = node.getObjectNodeContext() != null ? node : node.getParent();
-                Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
-                map.put(listProperty.getName(), new PropertyChange(listProperty, updatedNode.wrappedObject(), before, list));
-                node.getAppContainer().getNodeBuilder().refresh(node);
-                if (!before.equals(list))
-                {
-                    node.getAppContainer().getApplication().nodeUpdated(updatedNode, map);
-                }
+                node.getAppContainer().getNodeUpdateApi().updateReferences(node, gui.getData());
             }
         });
         gui.setLocationRelativeTo(node.getAppContainer().getMainPanel());
