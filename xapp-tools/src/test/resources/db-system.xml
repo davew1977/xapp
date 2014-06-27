@@ -1,8 +1,8 @@
-<System personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew">
+<System personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis">
   <Schools>
-    <School name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
+    <School headTeacher="etrevis" name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
       <ClassRooms>
-        <ClassRoom name="Ruby">
+        <ClassRoom name="Ruby" teacher="etrevis">
           <HomeDir name="docs">
             <Files>
               <DirMeta name="bestwork">
@@ -28,7 +28,7 @@ no spitting]]></Text>
             <Pupil ref="alicew"/>
           </Pupils>
         </ClassRoom>
-        <ClassRoom name="Emerald">
+        <ClassRoom name="Emerald" teacher="etrevis">
           <HomeDir name="docs">
             <Files>
               <DirMeta name="class_pics">
@@ -44,6 +44,35 @@ no spitting]]></Text>
         </ClassRoom>
       </ClassRooms>
       <People>
+        <Teacher aboutMe="docs/documents/The Flea" firstName="Elizabeth" secondName="Trevis" username="etrevis">
+          <HomeDir name="docs">
+            <Files>
+              <DirMeta name="documents">
+                <Files>
+                  <TextFile name="The Parrot">
+                    <Text><![CDATA[It squawks and talks
+and walks and flaps
+and pecks little chaps]]></Text>
+                  </TextFile>
+                  <TextFile name="Ode to joy">
+                    <Text><![CDATA[Oh to be a cloud
+In a mostly blue sky
+Floating above
+A mostly green land scape
+with a physique garden
+With someone looking skyward]]></Text>
+                  </TextFile>
+                  <TextFile name="The Flea">
+                    <Text><![CDATA[I had a little flea,
+It didn't like me,
+It jumped in my tea,
+And lived inside me]]></Text>
+                  </TextFile>
+                </Files>
+              </DirMeta>
+            </Files>
+          </HomeDir>
+        </Teacher>
         <Pupil firstName="Elias" secondName="Webber" username="eliasw">
           <HomeDir name="docs"/>
         </Pupil>
