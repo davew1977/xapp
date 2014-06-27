@@ -126,12 +126,11 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public void moveInList(Node parentNode, ObjectMeta objectMeta, int newIndex) {
+    public void moveInList(Node node, int delta) {
         //update model
-        objectMeta.updateIndex(parentNode.toObjLocation(), newIndex);
+        int newIndex = node.objectMeta().updateIndex(node.getParent().toObjLocation(), delta);
 
         //update jtree
-        Node node = (Node) objectMeta.getAttachment();
         node.updateIndex(newIndex);
     }
 

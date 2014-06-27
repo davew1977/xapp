@@ -400,10 +400,10 @@ public class ObjectMeta<T> implements Namespace{
         references.remove(objectLocation);
     }
 
-    public void updateIndex(ObjectLocation location, int index) {
+    public int updateIndex(ObjectLocation location, int index) {
         //find "my" location
         ObjectLocation myLocation = resolve(location);
-        myLocation.updateIndex(this, index);
+        return myLocation.updateIndex(this, index);
     }
 
     private ObjectLocation resolve(ObjectLocation location) {

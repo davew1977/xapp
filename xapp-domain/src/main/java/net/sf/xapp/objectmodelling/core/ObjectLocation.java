@@ -71,9 +71,12 @@ public class ObjectLocation {
         return ((ContainerProperty) property).containsReferences();
     }
 
-    public void updateIndex(ObjectMeta objectMeta, int index) {
+    public int updateIndex(ObjectMeta objectMeta, int delta) {
+        int currentIndex = indexOf(objectMeta);
         unset(objectMeta);
-        set(objectMeta, index);
+        int newIndex = currentIndex + delta;
+        set(objectMeta, newIndex);
+        return newIndex;
     }
 
     public int indexOf(ObjectMeta objectMeta) {

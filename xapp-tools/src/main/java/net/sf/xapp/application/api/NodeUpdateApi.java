@@ -43,7 +43,7 @@ public interface NodeUpdateApi {
     void createReference(Node parentNode, Object obj);
     void removeReference(Node referenceNode);
 
-    void moveInList(Node parentNode, ObjectMeta objectMeta, int newIndex);
+    void moveInList(Node node, int delta);
 
     void updateReferences(Node node, List<Object> objects);
 }

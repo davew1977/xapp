@@ -23,8 +23,9 @@ no spitting]]></Text>
             <Pet animal="snake" name="Cyril"/>
           </Pets>
           <Pupils>
-            <Pupil ref="alicew"/>
             <Pupil ref="eliasw"/>
+            <Pupil ref="jamiec"/>
+            <Pupil ref="alicew"/>
           </Pupils>
         </ClassRoom>
         <ClassRoom name="Emerald" teacher="etrevis">
@@ -48,11 +49,10 @@ no spitting]]></Text>
             <Files>
               <DirMeta name="documents">
                 <Files>
-                  <TextFile name="The Flea">
-                    <Text><![CDATA[I had a little flea,
-It didn't like me,
-It jumped in my tea,
-And lived inside me]]></Text>
+                  <TextFile name="The Parrot">
+                    <Text><![CDATA[It squawks and talks
+and walks and flaps
+and pecks little chaps]]></Text>
                   </TextFile>
                   <TextFile name="Ode to joy">
                     <Text><![CDATA[Oh to be a cloud
@@ -61,6 +61,12 @@ Floating above
 A mostly green land scape
 with a physique garden
 With someone looking skyward]]></Text>
+                  </TextFile>
+                  <TextFile name="The Flea">
+                    <Text><![CDATA[I had a little flea,
+It didn't like me,
+It jumped in my tea,
+And lived inside me]]></Text>
                   </TextFile>
                 </Files>
               </DirMeta>

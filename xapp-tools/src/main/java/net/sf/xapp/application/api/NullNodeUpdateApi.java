@@ -63,7 +63,7 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void moveInList(Node parentNode, ObjectMeta objectMeta, int newIndex) {
+    public void moveInList(Node node, int delta) {
 
     }
 }

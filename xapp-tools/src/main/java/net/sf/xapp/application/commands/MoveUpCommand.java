@@ -27,9 +27,8 @@ public class MoveUpCommand extends NodeCommand
     public void execute(Node node)
     {
         //get the parent list node
-        Node parentNode = node.getParent();
         TreePath selectionPath = node.getAppContainer().getMainTree().getSelectionPath();
-        node.getAppContainer().getNodeUpdateApi().moveInList(parentNode, node.objectMeta(), node.index()-1);
+        node.getAppContainer().getNodeUpdateApi().moveInList(node, -1);
         node.getAppContainer().getMainTree().setSelectionPath(selectionPath);
     }
 }
