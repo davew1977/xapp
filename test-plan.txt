@@ -21,6 +21,10 @@ ensure cannot move up/down if map or set
 
 remove object {
     object with references (they should be cleaned up)
+    BUG {
+        major problem cleaning up child objects after delete
+    }
+
     simple object
     reference from ref list
 }

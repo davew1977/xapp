@@ -344,15 +344,17 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public Collection<Object> dispose() {
+        ArrayList<ObjectLocation> refs = new ArrayList<ObjectLocation>(references.keySet());//copy to prevent concurrent modification
+        Collection<Object> attachments = references.values(); //store for returning later
+        for (ObjectLocation reference : refs) {
+            reference.unset(this);
+        }
         if (key != null) {
             updateMetaHierarchy(null);
         }
         classModel.dispose(this);
         home.unset(this);
-        for (ObjectLocation reference : references.keySet()) {
-            reference.unset(this);
-        }
-        return references.values();
+        return attachments;
     }
 
     public ObjectLocation setHome(ObjectLocation newLoc) {
@@ -455,5 +457,33 @@ public class ObjectMeta<T> implements Namespace{
             result.addAll(propertyClassModel.getValidImplementations());
         }
         return result;
+    }
+
+    public String printInfo() {
+        StringBuilder sb = new StringBuilder(meta()).append("\n");
+        if (isRoot()) {
+            sb.append("THIS IS ROOT\n");
+        } else {
+            sb.append("Home: ").append(home.toString(this)).append("\n");
+        }
+        sb.append("\n");
+        sb.append("References:\n");
+        for (ObjectLocation objectLocation : references.keySet()) {
+            sb.append("\t").append(objectLocation.toString(this)).append("\n");
+        }
+        sb.append("\n");
+        sb.append("Lookup Maps:\n");
+        for (Map.Entry<Class<?>, Map<String, ObjectMeta>> classMapEntry : lookupMap.entrySet()) {
+            sb.append("\t").append(classMapEntry.getKey()).append("\n");
+            sb.append("\t\t").append(classMapEntry.getValue()).append("\n");
+        }
+
+        sb.append("\n");
+        sb.append("Lookup Sets:\n");
+        for (Map.Entry<Class<?>, Set<ObjectMeta>> classSetEntry : lookupSets.entrySet()) {
+            sb.append("\t").append(classSetEntry.getKey()).append("\n");
+            sb.append("\t\t").append(classSetEntry.getValue()).append("\n");
+        }
+        return sb.toString();
     }
 }

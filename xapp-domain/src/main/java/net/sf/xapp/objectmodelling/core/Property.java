@@ -22,6 +22,7 @@ import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
 
 import java.util.ArrayList;
@@ -334,7 +335,7 @@ public class Property<T> implements Comparable
 
     public String toString()
     {
-        return m_class.getSimpleName() + ":" + getName();
+        return m_class.getSimpleName() + " " + StringUtils.decapitaliseFirst(getName());
     }
 
     public ClassModel<T> getPropertyClassModel()

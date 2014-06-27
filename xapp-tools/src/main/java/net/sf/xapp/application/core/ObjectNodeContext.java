@@ -16,6 +16,7 @@ import net.sf.xapp.application.api.Command;
 import net.sf.xapp.application.api.Node;
 
 
+import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.commands.*;
 
 import static net.sf.xapp.objectmodelling.api.Rights.*;
@@ -109,11 +110,26 @@ public class ObjectNodeContext {
                     commands.add(new ChangeTypeCommand());
                 }
             }
+
+            if(Boolean.getBoolean("xapp.debug")) {
+                commands.add(new PrintInfoCommand());
+            }
         }
         return commands;
     }
 
     public boolean canEdit() {
         return classModel().isAllowed(EDIT);
+    }
+
+    private class PrintInfoCommand extends NodeCommand {
+        protected PrintInfoCommand() {
+            super("Print Meta Info", "prints meta info for this object", "control alt P");
+        }
+
+        @Override
+        public void execute(Node params) {
+            System.out.println(objectMeta().printInfo());
+        }
     }
 }

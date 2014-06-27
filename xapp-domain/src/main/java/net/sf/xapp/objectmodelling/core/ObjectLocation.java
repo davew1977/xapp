@@ -95,4 +95,17 @@ public class ObjectLocation {
     public int size() {
         return isCollection() ? ((ContainerProperty) property).size(obj) : 1;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s.%s", obj.getSimpleClassName(), obj.getKey(), property);
+    }
+
+    private String toStringSuffix(ObjectMeta objectMeta){
+        return isList() ? "["+indexOf(objectMeta)+"]" : "";
+    }
+
+    public String toString(ObjectMeta objectMeta) {
+        return toString() + toStringSuffix(objectMeta);
+    }
 }

@@ -15,6 +15,7 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 import net.sf.xapp.objectmodelling.api.Rights;
+import net.sf.xapp.utils.StringUtils;
 
 import java.util.*;
 
@@ -70,6 +71,11 @@ public class ContainerProperty extends Property
             }
         }
         return map;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s<%s> %s", getPropertyClass().getSimpleName(), getContainedType().getSimpleName(), StringUtils.decapitaliseFirst(getName()));
     }
 
     public Object createCollection() {
