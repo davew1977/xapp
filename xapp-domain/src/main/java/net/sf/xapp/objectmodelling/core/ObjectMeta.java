@@ -344,6 +344,30 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public Collection<Object> dispose() {
+
+        //delete all child objects
+        List<Property> properties = classModel.getAllProperties();
+        for (Property property : properties) {
+            if(property instanceof ContainerProperty) {
+                ContainerProperty containerProperty = (ContainerProperty) property;
+                if (!property.isTransient() && !property.isImmutable() && !containerProperty.containsReferences()) {
+                    Collection collection = new ArrayList(containerProperty.getCollection(getInstance()));
+                    for (Object val : collection) {
+                        if(val != null) {
+                            containerProperty.getContainedTypeClassModel().find(val).dispose();
+                        }
+                    }
+                }
+            } else if(!property.isTransient()
+                    && !property.isReference()
+                    && !property.isImmutable()){
+                Object val = get(property);
+                if(val != null) {
+                    property.getPropertyClassModel().find(val).dispose();
+                }
+            }
+        }
+
         ArrayList<ObjectLocation> refs = new ArrayList<ObjectLocation>(references.keySet());//copy to prevent concurrent modification
         Collection<Object> attachments = references.values(); //store for returning later
         for (ObjectLocation reference : refs) {
@@ -352,6 +376,8 @@ public class ObjectMeta<T> implements Namespace{
         if (key != null) {
             updateMetaHierarchy(null);
         }
+
+
         classModel.dispose(this);
         home.unset(this);
         return attachments;

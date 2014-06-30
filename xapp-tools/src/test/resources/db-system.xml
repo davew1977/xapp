@@ -70,6 +70,11 @@ And lived inside me]]></Text>
                   </TextFile>
                 </Files>
               </DirMeta>
+              <DirMeta name="pix">
+                <Files>
+                  <ImageFile name="me.jpg"/>
+                </Files>
+              </DirMeta>
             </Files>
           </HomeDir>
         </Teacher>
@@ -88,6 +93,7 @@ And lived inside me]]></Text>
       </People>
       <PicturesOfTheWeek>
         <ImageFile ref="Emerald/docs/class_pics/jamie.jpg"/>
+        <ImageFile ref="etrevis/docs/pix/me.jpg"/>
       </PicturesOfTheWeek>
     </School>
     <School headTeacher="breid" name="Berwick School" schoolDescription="eliasw/docs/About Berwick School">

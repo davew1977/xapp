@@ -306,6 +306,7 @@ public class ClassModel<T> {
                 }
             }
         }
+        //todo missing deletion of map properties
         dispose(instance);
     }
 

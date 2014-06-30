@@ -263,6 +263,27 @@ public class DefaultEditor implements Editor
         {
             return EditorUtils.createBoundProperty(boundCompType);
         }
+        else if (property instanceof ListProperty)
+        {
+            ListProperty lp = (ListProperty) property;
+            if (lp.getContainedType().equals(Integer.class)) //special handling for 'primitives' - including String
+            {
+                return new IntegerListPropertyWidget();
+            }
+            if (lp.getContainedType().equals(String.class))
+            {
+                return new StringListPropertyWidget(lp.isSetCollection());
+            }
+            if(lp.getContainedType().equals(Long.class))
+            {
+                return new LongListPropertyWidget();
+            }
+            if(lp.getContainedType().isEnum())
+            {
+                return new EnumListPropertyWidget(lp.getContainedType());
+            }
+            return new NullPropertyWidget(property);
+        }
         else if (property.getPropertyClass().equals(String.class))
         {
             return new StringPropertyWidget();
@@ -298,27 +319,6 @@ public class DefaultEditor implements Editor
         else if(property.getPropertyClass().equals(Date.class))
         {
             return new DatePropertyWidget();
-        }
-        else if (property instanceof ListProperty)
-        {
-            ListProperty lp = (ListProperty) property;
-            if (lp.getContainedType().equals(Integer.class)) //special handling for 'primitives' - including String
-            {
-                return new IntegerListPropertyWidget();
-            }
-            if (lp.getContainedType().equals(String.class))
-            {
-                return new StringListPropertyWidget(lp.isSetCollection());
-            }
-            if(lp.getContainedType().equals(Long.class))
-            {
-                return new LongListPropertyWidget();
-            }
-            if(lp.getContainedType().isEnum())
-            {
-                return new EnumListPropertyWidget(lp.getContainedType());
-            }
-            return new NullPropertyWidget(property);
         }
         else if (property.getPropertyClass().equals(String[].class))
         {

@@ -255,8 +255,8 @@ public class Property<T> implements Comparable
 
     public boolean isImmutable()
     {
-        return isStringPrimitiveOrEnum() || StringSerializable.class.isAssignableFrom(m_class)
-                || m_classDatabase.getStringSerializer(m_class)!=null;
+        return isStringPrimitiveOrEnum() || StringSerializable.class.isAssignableFrom(getMainType())
+                || m_classDatabase.getStringSerializer(getMainType())!=null;
     }
 
 
@@ -292,12 +292,16 @@ public class Property<T> implements Comparable
 
     public boolean isStringOrPrimitive()
     {
-        return isBoolean() || isInt() || isLong() || isDouble() || isFloat() || m_class.isPrimitive() || m_class.equals(String.class);
+        return isBoolean() || isInt() || isLong() || isDouble() || isFloat() || getMainType().isPrimitive() || getMainType().equals(String.class);
     }
 
     public boolean isStringPrimitiveOrEnum()
     {
-        return isStringOrPrimitive() || m_class.isEnum();
+        return isStringOrPrimitive() || getMainType().isEnum();
+    }
+
+    public Class getMainType() {
+        return m_class;
     }
 
     public boolean isList()
@@ -400,12 +404,12 @@ public class Property<T> implements Comparable
 
     public boolean isBoolean()
     {
-        return m_class.equals(boolean.class) || m_class.equals(Boolean.class);
+        return getMainType().equals(boolean.class) || getMainType().equals(Boolean.class);
     }
 
     public boolean isPrimitiveBoolean()
     {
-        return m_class.equals(boolean.class);
+        return getMainType().equals(boolean.class);
     }
 
     public boolean isFormattedText()
@@ -445,22 +449,22 @@ public class Property<T> implements Comparable
 
     public boolean isDouble()
     {
-        return m_class == double.class || m_class == Double.class;
+        return getMainType() == double.class || getMainType() == Double.class;
     }
 
     public boolean isInt()
     {
-        return m_class == int.class || m_class == Integer.class;
+        return getMainType() == int.class || getMainType() == Integer.class;
     }
 
     public boolean isFloat()
     {
-        return m_class == float.class || m_class == Float.class;
+        return getMainType() == float.class || getMainType() == Float.class;
     }
 
     public boolean isLong()
     {
-        return m_class == long.class || m_class == Long.class;
+        return getMainType() == long.class || getMainType() == Long.class;
     }
 
     public String getXMLMapping()
@@ -471,7 +475,7 @@ public class Property<T> implements Comparable
 
 	public boolean isEnum()
 	{
-		return m_class.isEnum();
+		return getMainType().isEnum();
 	}
 
     public boolean isHidden()

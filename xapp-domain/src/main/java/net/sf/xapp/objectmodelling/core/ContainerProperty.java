@@ -73,6 +73,12 @@ public class ContainerProperty extends Property
         return map;
     }
 
+
+    @Override
+    public Class getMainType() {
+        return getContainedType();
+    }
+
     @Override
     public String toString() {
         return String.format("%s<%s> %s", getPropertyClass().getSimpleName(), getContainedType().getSimpleName(), StringUtils.decapitaliseFirst(getName()));
