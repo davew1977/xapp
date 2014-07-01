@@ -48,12 +48,12 @@ public class NodeImpl implements Node {
         if (objectMeta.isContainer()) {
             listNodeContext = new ListNodeContext(new ObjectLocation(objectMeta, objectMeta.getContainerProperty()));
         }
+        addToJTree(parent, insertIndex);
         if(!isReference()) {
             objectMeta.attach(this);
         } else {
             objectMeta.attach(myObjLocation(), this);
         }
-        addToJTree(parent, insertIndex);
     }
 
     private void addToJTree(Node parent, int insertIndex) {

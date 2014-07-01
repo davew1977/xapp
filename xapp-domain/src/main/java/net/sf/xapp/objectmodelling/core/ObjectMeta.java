@@ -345,31 +345,14 @@ public class ObjectMeta<T> implements Namespace{
 
     public Collection<Object> dispose() {
 
+        Collection<Object> attachments = attachments(); //store for returning later
         //delete all child objects
-        List<Property> properties = classModel.getAllProperties();
-        for (Property property : properties) {
-            if(property instanceof ContainerProperty) {
-                ContainerProperty containerProperty = (ContainerProperty) property;
-                if (!property.isTransient() && !property.isImmutable() && !containerProperty.containsReferences()) {
-                    Collection collection = new ArrayList(containerProperty.getCollection(getInstance()));
-                    for (Object val : collection) {
-                        if(val != null) {
-                            containerProperty.getContainedTypeClassModel().find(val).dispose();
-                        }
-                    }
-                }
-            } else if(!property.isTransient()
-                    && !property.isReference()
-                    && !property.isImmutable()){
-                Object val = get(property);
-                if(val != null) {
-                    property.getPropertyClassModel().find(val).dispose();
-                }
-            }
+        List<ObjectMeta> children = allChildren();
+        for (ObjectMeta child : children) {
+            attachments.addAll(child.dispose());
         }
 
         ArrayList<ObjectLocation> refs = new ArrayList<ObjectLocation>(references.keySet());//copy to prevent concurrent modification
-        Collection<Object> attachments = references.values(); //store for returning later
         for (ObjectLocation reference : refs) {
             reference.unset(this);
         }
@@ -381,6 +364,42 @@ public class ObjectMeta<T> implements Namespace{
         classModel.dispose(this);
         home.unset(this);
         return attachments;
+    }
+
+    private Collection<Object> attachments() {
+        ArrayList<Object> result = new ArrayList<Object>();
+        for (Object o : references.values()) {
+            if(o!=null) {
+                result.add(o);
+            }
+        }
+        return result;
+    }
+
+    private List<ObjectMeta> allChildren() {
+        List<ObjectMeta> result = new ArrayList<ObjectMeta>();
+        List<Property> properties = classModel.getAllProperties();
+        for (Property property : properties) {
+            if(property instanceof ContainerProperty) {
+                ContainerProperty containerProperty = (ContainerProperty) property;
+                if (!property.isTransient() && !property.isImmutable() && !containerProperty.containsReferences()) {
+                    Collection collection = containerProperty.getCollection(getInstance());
+                    for (Object val : collection) {
+                        if(val != null) {
+                            result.add(containerProperty.getContainedTypeClassModel().find(val));
+                        }
+                    }
+                }
+            } else if(!property.isTransient()
+                    && !property.isReference()
+                    && !property.isImmutable()){
+                Object val = get(property);
+                if(val != null) {
+                    result.add(property.getPropertyClassModel().find(val));
+                }
+            }
+        }
+        return result;
     }
 
     public ObjectLocation setHome(ObjectLocation newLoc) {
