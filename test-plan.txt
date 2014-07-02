@@ -22,15 +22,14 @@ ensure cannot move up/down if map or set
 remove object {
     object with references (they should be cleaned up)
     BUG {
-        major problem cleaning up child objects after delete
-
-        mostly fixed, but ref nodes of child objects are not removed
+        FIXED major problem cleaning up child objects after delete
     }
 
     simple object
     reference from ref list
 }
-
+cut/paste
+copy/paste
 cut/paste reference
 copy/paste reference
 

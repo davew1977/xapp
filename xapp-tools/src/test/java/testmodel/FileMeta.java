@@ -11,7 +11,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * To change this template use File | Settings | File Templates.
  */
 @ValidImplementations({DirMeta.class, TextFile.class, ImageFile.class})
-public class FileMeta {
+public class FileMeta implements Cloneable {
     private String name;
 
     public FileMeta(String name) {
@@ -33,5 +33,10 @@ public class FileMeta {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public FileMeta clone() throws CloneNotSupportedException {
+        return (FileMeta) super.clone();
     }
 }

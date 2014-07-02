@@ -22,6 +22,6 @@ import java.lang.annotation.Target;
 public @interface Reference
 {
     String select() default "";
-    boolean strict() default true;
+
     String tooltipMethod() default "";
 }
