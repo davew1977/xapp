@@ -27,7 +27,7 @@ public class ClassModelTest extends TestCase
         assertEquals(3, groupClassModel.getAllInstancesInHierarchy().size());
         Group group = database.getGroups().get(0);
         //try deleting group 1
-        groupClassModel.delete(group);
+        //groupClassModel.delete(group);
         //check assets and group are gone, but number of people is same
         assertEquals(2, groupClassModel.getAllInstancesInHierarchy().size());
         assets = assetClassModel.getAllInstancesInHierarchy();

@@ -117,6 +117,7 @@ public class NodeBuilder {
         Collection list = listNodeContext.getCollection();
         for (Object o : list) {
             createNode(parentNode, cdb.find(o));
+            //createNode(parentNode, cdb.findOrCreateObjMeta(parentNode.toObjLocation(), o));
         }
     }
 

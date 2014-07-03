@@ -84,6 +84,11 @@ public class ContainerProperty extends Property
         return String.format("%s<%s> %s", getPropertyClass().getSimpleName(), getContainedType().getSimpleName(), StringUtils.decapitaliseFirst(getName()));
     }
 
+    @Override
+    public boolean isComplexNonReference() {
+        return !isTransient() && !isImmutable() && !containsReferences();
+    }
+
     public Object createCollection() {
         return new LinkedHashMap();
     }
@@ -136,5 +141,17 @@ public class ContainerProperty extends Property
 
     public int size(ObjectMeta obj) {
         return map(obj.getInstance()).size();
+    }
+
+    @Override
+    public void eachValue(Object target, PropertyIterator propertyIterator) {
+        Collection collection = getCollection(target);
+        int index=0;
+        for (Object o : collection) {
+            if (o!=null) {
+                ObjectMeta objectMeta = getContainedTypeClassModel().find(o);
+                propertyIterator.exec(this, index++, objectMeta);
+            }
+        }
     }
 }

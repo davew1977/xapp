@@ -2,11 +2,15 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
+import net.sf.xapp.utils.CollectionsUtils;
+import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
 
 import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
+import static net.sf.xapp.utils.CollectionsUtils.*;
 import static net.sf.xapp.utils.ReflectionUtils.*;
 
 /**
@@ -19,7 +23,6 @@ public class ObjectMeta<T> implements Namespace{
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
     private final Long id;
     private String key; //can change
-    //todo i think obj ref is redundant, remove
     private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
@@ -39,6 +42,8 @@ public class ObjectMeta<T> implements Namespace{
         tryCall(instance, "setObjectMeta", this);
         key = (String) get(classModel.getKeyProperty());
         setHome(objectLocation);
+        //todo add references for all reference properties
+
     }
 
     public void mapByKey(ObjectMeta obj) {
@@ -377,27 +382,15 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     private List<ObjectMeta> allChildren() {
-        List<ObjectMeta> result = new ArrayList<ObjectMeta>();
-        List<Property> properties = classModel.getAllProperties();
+        final List<ObjectMeta> result = new ArrayList<ObjectMeta>();
+        List<Property> properties = filter(classModel.getAllProperties(), PropertyFilter.COMPLEX_NON_REFERENCE);
         for (Property property : properties) {
-            if(property instanceof ContainerProperty) {
-                ContainerProperty containerProperty = (ContainerProperty) property;
-                if (!property.isTransient() && !property.isImmutable() && !containerProperty.containsReferences()) {
-                    Collection collection = containerProperty.getCollection(getInstance());
-                    for (Object val : collection) {
-                        if(val != null) {
-                            result.add(containerProperty.getContainedTypeClassModel().find(val));
-                        }
-                    }
+            property.eachValue(getInstance(), new PropertyIterator() {
+                @Override
+                public void exec(Property prop, int index, ObjectMeta objMeta) {
+                    result.add(objMeta);
                 }
-            } else if(!property.isTransient()
-                    && !property.isReference()
-                    && !property.isImmutable()){
-                Object val = get(property);
-                if(val != null) {
-                    result.add(property.getPropertyClassModel().find(val));
-                }
-            }
+            });
         }
         return result;
     }

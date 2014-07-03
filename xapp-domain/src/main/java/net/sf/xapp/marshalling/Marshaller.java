@@ -389,7 +389,7 @@ public class Marshaller<T>
     public static String toXML(Object obj)
     {
         Marshaller marshaller = new Marshaller(obj.getClass());
-        marshaller.getClassDatabase().getRootClassModel().registerInstance(obj);
+        marshaller.getClassDatabase().getRootClassModel().insertInstance(obj);
         return marshaller.toXMLString(obj);
     }
 

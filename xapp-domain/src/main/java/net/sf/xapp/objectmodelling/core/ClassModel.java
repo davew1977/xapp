@@ -280,36 +280,6 @@ public class ClassModel<T> {
         }
     }
 
-    /**
-     * Removes an instance of the class and recursively deletes referenced objects.
-     * Properties marked with {@link @Reference} or {@link @ContainReferences} are skipped
-     *
-     * @param instance
-     */
-    public void delete(T instance) {
-        for (Property property : properties) {
-            if (property.isTransient()) continue;
-            if (property.isImmutable()) continue;
-            if (property.isReference()) continue;
-            Object value = property.get(instance);
-            if (value != null) {
-                m_classDatabase.getClassModel(value.getClass()).delete(value);
-            }
-        }
-        for (ListProperty listProperty : m_listProperties) {
-            if (listProperty.containsReferences()) continue;
-            if (listProperty.isTransient()) continue;
-            Collection list = listProperty.get(instance);
-            if (list != null) {
-                for (Object item : list) {
-                    m_classDatabase.getClassModel(item.getClass()).delete(item);
-                }
-            }
-        }
-        //todo missing deletion of map properties
-        dispose(instance);
-    }
-
     public static void tryAndInject(Object target, Object property, String name) {
         Field field = findField(target.getClass(), name);
         if (field != null) {
@@ -620,8 +590,8 @@ public class ClassModel<T> {
     }
 
     public void deleteAll() {
-        for (T m_instance : allInstances()) {
-            delete(m_instance);
+        for (ObjectMeta<T> instance : instances) {
+            instance.dispose();
         }
     }
 
@@ -861,9 +831,13 @@ public class ClassModel<T> {
         return objectMeta;
     }
 
-    public ObjectMeta<T> registerInstance(T o1) {
+    /**
+     * Inserts an object at given location (which, if null, will make this a root object) and scan all its
+     * properties for other objects to insert
+     */
+    public ObjectMeta<T> insertInstance(ObjectLocation objectLocation, T o1) {
         assert find(o1) == null;
-        ObjectMeta<T> objectMeta = registerInstance(null, o1);
+        ObjectMeta<T> objectMeta = registerInstance(objectLocation, o1);
         for (Property property : properties) {
             if(property.isComplexNonReference()) {
                 Object value = objectMeta.get(property);

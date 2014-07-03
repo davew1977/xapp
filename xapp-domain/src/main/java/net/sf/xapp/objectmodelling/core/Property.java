@@ -492,10 +492,14 @@ public class Property<T> implements Comparable
     }
 
     public boolean isComplexNonReference() {
-        return !(isReference() || isStringPrimitiveOrEnum() || isTransient());
+        return !(isReference() || isImmutable() || isTransient());
     }
 
     public boolean isContainer() {
         return this instanceof ContainerProperty;
+    }
+
+    public void eachValue(Object target, PropertyIterator propertyIterator) {
+        propertyIterator.exec(this, 0, getPropertyClassModel().find((T) get(target)));
     }
 }
