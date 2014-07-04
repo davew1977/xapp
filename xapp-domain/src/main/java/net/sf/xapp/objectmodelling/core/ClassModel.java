@@ -21,12 +21,10 @@ import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.Rights;
+import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.objectmodelling.difftracking.*;
 import net.sf.xapp.tree.Tree;
-import net.sf.xapp.utils.ClassUtils;
-import net.sf.xapp.utils.ReflectionUtils;
-import net.sf.xapp.utils.XappException;
-import net.sf.xapp.utils.FileUtils;
+import net.sf.xapp.utils.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -248,7 +246,7 @@ public class ClassModel<T> {
     public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation) {
         try {
             T obj = m_class.newInstance();
-            return registerInstance(objectLocation, obj);
+            return createObjMeta(objectLocation, obj);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
@@ -258,7 +256,7 @@ public class ClassModel<T> {
     /**
      * adds a previously unknown object to the model
      */
-    public ObjectMeta<T> registerInstance(ObjectLocation objectLocation, T obj) {
+    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj) {
         ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation);
         instances.add(objectMeta);
         return objectMeta;
@@ -465,6 +463,10 @@ public class ClassModel<T> {
 
     public List<Property> getAllProperties() {
         return new ArrayList<Property>(m_propertyMap.values());
+    }
+
+    public List<Property> getAllProperties(PropertyFilter filter) {
+        return CollectionsUtils.filter(m_propertyMap.values(), filter);
     }
 
     public ClassModel getValidImplementation(String className) {
@@ -823,7 +825,7 @@ public class ClassModel<T> {
     public ObjectMeta<T> findOrCreate(ObjectLocation objectLocation, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = registerInstance(objectLocation, (T) o1);
+            objectMeta = createObjMeta(objectLocation, (T) o1);
         } else {
             //update the parent
             objectMeta.setHome(objectLocation);
@@ -837,27 +839,7 @@ public class ClassModel<T> {
      */
     public ObjectMeta<T> insertInstance(ObjectLocation objectLocation, T o1) {
         assert find(o1) == null;
-        ObjectMeta<T> objectMeta = registerInstance(objectLocation, o1);
-        for (Property property : properties) {
-            if(property.isComplexNonReference()) {
-                Object value = objectMeta.get(property);
-                if(value != null) {
-                    property.getPropertyClassModel().registerInstance(new ObjectLocation(objectMeta, property), value);
-                }
-            }
-        }
-        List<ContainerProperty> containerProperties = new ArrayList<ContainerProperty>(m_listProperties);
-        containerProperties.addAll(mapProperties);
-        for (ContainerProperty containerProperty : containerProperties) {
-
-            if(!containerProperty.containsReferences() && containerProperty.getContainedTypeClassModel().hasKey()) {
-                Collection col = containerProperty.getCollection(o1);
-                int index = 0;
-                for (Object o : col) {
-                    containerProperty.getContainedTypeClassModel().registerInstance(new ObjectLocation(objectMeta, containerProperty), o);
-                }
-            }
-        }
+        ObjectMeta<T> objectMeta = createObjMeta(objectLocation, o1);
         return objectMeta;
     }
 

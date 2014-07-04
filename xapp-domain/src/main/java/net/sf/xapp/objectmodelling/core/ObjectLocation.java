@@ -108,4 +108,8 @@ public class ObjectLocation {
     public String toString(ObjectMeta objectMeta) {
         return toString() + toStringSuffix(objectMeta);
     }
+
+    public ClassModel getPropClassModel() {
+        return isCollection() ? ((ContainerProperty) property).getContainedTypeClassModel() : property.getPropertyClassModel();
+    }
 }

@@ -112,7 +112,7 @@ public class EditorManager
     public void edit(Frame comp, Object p, EditorListener editorListener)
     {
         ClassModel rootClassModel = new ClassModelManager(p.getClass(), InspectionType.FIELD).getRootClassModel();
-        ObjectMeta objectMeta = rootClassModel.registerInstance(null, p);
+        ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p);
         Editor editor = getEditor(new SingleTargetEditableContext(
                 objectMeta,
                 SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), editorListener);
@@ -128,7 +128,7 @@ public class EditorManager
      */
     public boolean edit(Frame comp, ClassModel classModel, Object p)
     {
-        ObjectMeta objectMeta = classModel.registerInstance(null, p);
+        ObjectMeta objectMeta = classModel.createObjMeta(null, p);
         Editor editor = getEditor(new SingleTargetEditableContext(objectMeta, SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()),
                 new EditorListener.NullEditorListener());
         editor.getMainDialog(comp, true).setVisible(true);

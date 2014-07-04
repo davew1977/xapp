@@ -1,5 +1,6 @@
 package net.sf.xapp.objectmodelling.core.filters;
 
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.utils.Filter;
 
@@ -12,6 +13,11 @@ public enum PropertyFilter implements Filter<Property> {
         @Override
         public boolean matches(Property property) {
             return property.isComplexNonReference();
+        }
+    }, REFERENCE {
+        @Override
+        public boolean matches(Property property) {
+            return property.isReference() || (property instanceof ContainerProperty && ((ContainerProperty) property).containsReferences());
         }
     };
 

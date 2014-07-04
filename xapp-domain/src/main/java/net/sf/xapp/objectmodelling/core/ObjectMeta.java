@@ -3,14 +3,11 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
-import net.sf.xapp.utils.CollectionsUtils;
-import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
 
 import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
-import static net.sf.xapp.utils.CollectionsUtils.*;
 import static net.sf.xapp.utils.ReflectionUtils.*;
 
 /**
@@ -28,7 +25,7 @@ public class ObjectMeta<T> implements Namespace{
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
 
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation objectLocation) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home) {
         this.classModel = classModel;
         this.instance = obj;
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
@@ -41,9 +38,28 @@ public class ObjectMeta<T> implements Namespace{
         this.id = classModel.registerWithClassDatabase(this);
         tryCall(instance, "setObjectMeta", this);
         key = (String) get(classModel.getKeyProperty());
-        setHome(objectLocation);
-        //todo add references for all reference properties
+        setHome(home);
 
+        //add metas for children of this object
+        List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
+        for (Property property : properties) {
+            property.eachValue(this, new PropertyValueIterator() {
+                @Override
+                public void exec(ObjectLocation objLocation, int index, Object val) {
+                    objLocation.getPropClassModel().createObjMeta(objLocation, val);
+                }
+            });
+        }
+        //add references for all reference properties
+        List<Property> refProps = classModel.getAllProperties(PropertyFilter.REFERENCE);
+        for (Property refProp : refProps) {
+            refProp.eachValue(this, new PropertyValueIterator() {
+                @Override
+                public void exec(ObjectLocation objectLocation, int index, Object value) {
+                    createReference();
+                }
+            });
+        }
     }
 
     public void mapByKey(ObjectMeta obj) {
@@ -383,12 +399,12 @@ public class ObjectMeta<T> implements Namespace{
 
     private List<ObjectMeta> allChildren() {
         final List<ObjectMeta> result = new ArrayList<ObjectMeta>();
-        List<Property> properties = filter(classModel.getAllProperties(), PropertyFilter.COMPLEX_NON_REFERENCE);
+        List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
         for (Property property : properties) {
-            property.eachValue(getInstance(), new PropertyIterator() {
+            property.eachValue(this, new PropertyValueIterator() {
                 @Override
-                public void exec(Property prop, int index, ObjectMeta objMeta) {
-                    result.add(objMeta);
+                public void exec(ObjectLocation objectLocation, int index, Object value) {
+                    result.add(objectLocation.getPropClassModel().find(value));
                 }
             });
         }

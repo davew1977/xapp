@@ -144,13 +144,12 @@ public class ContainerProperty extends Property
     }
 
     @Override
-    public void eachValue(Object target, PropertyIterator propertyIterator) {
+    public void eachValue(ObjectMeta target, PropertyValueIterator propertyValueIterator) {
         Collection collection = getCollection(target);
         int index=0;
         for (Object o : collection) {
             if (o!=null) {
-                ObjectMeta objectMeta = getContainedTypeClassModel().find(o);
-                propertyIterator.exec(this, index++, objectMeta);
+                propertyValueIterator.exec(new ObjectLocation(target, this), index++, o);
             }
         }
     }

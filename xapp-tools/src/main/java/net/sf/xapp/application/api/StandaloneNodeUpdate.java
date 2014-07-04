@@ -1,6 +1,5 @@
 package net.sf.xapp.application.api;
 
-import net.sf.xapp.application.core.ListNodeContext;
 import net.sf.xapp.objectmodelling.core.*;
 
 import java.util.*;
@@ -72,7 +71,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void insertObject(Node parentNode, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).registerInstance(parentNode.toObjLocation(), obj);
+        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj);
         //create the node
         appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
         appContainer.getApplication().nodeAdded(objectMeta);

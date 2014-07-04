@@ -499,7 +499,10 @@ public class Property<T> implements Comparable
         return this instanceof ContainerProperty;
     }
 
-    public void eachValue(Object target, PropertyIterator propertyIterator) {
-        propertyIterator.exec(this, 0, getPropertyClassModel().find((T) get(target)));
+    public void eachValue(ObjectMeta target, PropertyValueIterator propertyValueIterator) {
+        T val = (T) get(target);
+        if (val != null) {
+            propertyValueIterator.exec(new ObjectLocation(target, this), 0, val);
+        }
     }
 }
