@@ -145,7 +145,7 @@ public class ContainerProperty extends Property
 
     @Override
     public void eachValue(ObjectMeta target, PropertyValueIterator propertyValueIterator) {
-        Collection collection = getCollection(target);
+        Collection collection = new ArrayList(getCollection(target.getInstance()));
         int index=0;
         for (Object o : collection) {
             if (o!=null) {

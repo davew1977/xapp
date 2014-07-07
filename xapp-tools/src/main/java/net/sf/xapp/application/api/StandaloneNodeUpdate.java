@@ -58,7 +58,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         assert !newLoc.containsReferences();
         //find the old object and remove it
         ObjectMeta objectMeta = getClassModel(obj).find(obj);
-        objectMeta.setHome(newLoc);
+        objectMeta.setHome(newLoc, true);
         Node node = (Node) objectMeta.getAttachment();
         if (node!=null) {
             appContainer.removeNode(node);
@@ -71,7 +71,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void insertObject(Node parentNode, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj);
+        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true);
         //create the node
         appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
         appContainer.getApplication().nodeAdded(objectMeta);

@@ -246,7 +246,7 @@ public class ClassModel<T> {
     public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation) {
         try {
             T obj = m_class.newInstance();
-            return createObjMeta(objectLocation, obj);
+            return createObjMeta(objectLocation, obj, true);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
@@ -256,8 +256,8 @@ public class ClassModel<T> {
     /**
      * adds a previously unknown object to the model
      */
-    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj) {
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation);
+    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef) {
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef);
         instances.add(objectMeta);
         return objectMeta;
     }
@@ -825,10 +825,10 @@ public class ClassModel<T> {
     public ObjectMeta<T> findOrCreate(ObjectLocation objectLocation, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = createObjMeta(objectLocation, (T) o1);
+            objectMeta = createObjMeta(objectLocation, (T) o1, false);
         } else {
             //update the parent
-            objectMeta.setHome(objectLocation);
+            objectMeta.setHome(objectLocation, false);
         }
         return objectMeta;
     }
@@ -839,7 +839,7 @@ public class ClassModel<T> {
      */
     public ObjectMeta<T> insertInstance(ObjectLocation objectLocation, T o1) {
         assert find(o1) == null;
-        ObjectMeta<T> objectMeta = createObjMeta(objectLocation, o1);
+        ObjectMeta<T> objectMeta = createObjMeta(objectLocation, o1, true);
         return objectMeta;
     }
 

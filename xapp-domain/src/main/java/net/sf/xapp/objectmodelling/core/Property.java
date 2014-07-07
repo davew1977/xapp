@@ -500,7 +500,7 @@ public class Property<T> implements Comparable
     }
 
     public void eachValue(ObjectMeta target, PropertyValueIterator propertyValueIterator) {
-        T val = (T) get(target);
+        T val = (T) target.get(this);
         if (val != null) {
             propertyValueIterator.exec(new ObjectLocation(target, this), 0, val);
         }

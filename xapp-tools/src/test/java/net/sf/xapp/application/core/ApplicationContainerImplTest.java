@@ -39,7 +39,7 @@ public class ApplicationContainerImplTest extends TestCase
     {
         public DummyNode(Object instance)
         {
-            super(null, null, -1, new ObjectMeta(null, instance, null));
+            super(null, null, -1, new ObjectMeta(null, instance, null, false));
         }
     }
 }

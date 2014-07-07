@@ -25,7 +25,8 @@ public class ObjectMeta<T> implements Namespace{
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
 
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef) {
+        final ClassDatabase cdb = classModel.getClassDatabase();
         this.classModel = classModel;
         this.instance = obj;
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
@@ -38,7 +39,7 @@ public class ObjectMeta<T> implements Namespace{
         this.id = classModel.registerWithClassDatabase(this);
         tryCall(instance, "setObjectMeta", this);
         key = (String) get(classModel.getKeyProperty());
-        setHome(home);
+        setHome(home, updateModelHomeRef);
 
         //add metas for children of this object
         List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
@@ -46,7 +47,7 @@ public class ObjectMeta<T> implements Namespace{
             property.eachValue(this, new PropertyValueIterator() {
                 @Override
                 public void exec(ObjectLocation objLocation, int index, Object val) {
-                    objLocation.getPropClassModel().createObjMeta(objLocation, val);
+                    cdb.findOrCreateObjMeta(objLocation, val);
                 }
             });
         }
@@ -56,7 +57,8 @@ public class ObjectMeta<T> implements Namespace{
             refProp.eachValue(this, new PropertyValueIterator() {
                 @Override
                 public void exec(ObjectLocation objectLocation, int index, Object value) {
-                    createReference();
+                    ObjectMeta referee = objectLocation.getPropClassModel().find(value);
+                    referee.createReference(objectLocation);
                 }
             });
         }
@@ -411,14 +413,14 @@ public class ObjectMeta<T> implements Namespace{
         return result;
     }
 
-    public ObjectLocation setHome(ObjectLocation newLoc) {
+    public ObjectLocation setHome(ObjectLocation newLoc, boolean updateModel) {
         ObjectLocation old = home;
         if (!Property.objEquals(old, newLoc)) {
-            if(old!= null) {
+            if(updateModel && old!= null) {
                  old.unset(this);
             }
             this.home = newLoc;
-            if (newLoc != null) {
+            if (updateModel && newLoc != null) {
                 this.home.set(this);
             }
             updateMetaHierarchy(key);
