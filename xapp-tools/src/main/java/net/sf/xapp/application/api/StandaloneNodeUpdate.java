@@ -32,23 +32,23 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+    public PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
-        Node node = (Node) objectMeta.getAttachment();
-        if(node != null) { //todo only refresh if sub-objects have changed
-            node.refresh();
+        return objectMeta.setHome(homeLocation, true);
+    }
+    @Override
+    public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+        PropertyChange propertyChange = initObject(parentNode.toObjLocation(), objectMeta, potentialUpdates);
+        if(propertyChange.succeeded()) { //could fail if we're added an identical object to a set
+            Node node = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
+            appContainer.getApplication().nodeAdded(node);
         }
-        appContainer.getApplication().nodeAdded(objectMeta);
     }
 
     @Override
-    public ObjectMeta createObject(Node parentNode, ClassModel type) {
-        final ObjectMeta objMeta = type.newInstance(parentNode.toObjLocation());
-        appContainer.getApplication().nodeAboutToBeAdded(objMeta);
-
-        //create the node (may be removed if user cancels)
-        appContainer.getNodeBuilder().createNode(parentNode, objMeta);
-
+    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
+        ObjectMeta objMeta = type.newInstance(null);
+        appContainer.getApplication().nodeAboutToBeAdded(homeLocation, objMeta);
         return objMeta;
     }
 
@@ -65,16 +65,16 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
             appContainer.getApplication().nodeRemoved(node, true);
         }
         //create new node
-        appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-        appContainer.getApplication().nodeAdded(objectMeta);
+        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
+        appContainer.getApplication().nodeAdded(newNode);
     }
 
     @Override
     public void insertObject(Node parentNode, Object obj) {
         ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true);
         //create the node
-        appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-        appContainer.getApplication().nodeAdded(objectMeta);
+        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
+        appContainer.getApplication().nodeAdded(newNode);
         appContainer.getMainPanel().repaint();
     }
 
@@ -110,7 +110,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
             appContainer.getNodeBuilder().refresh(node);
             Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
             ContainerProperty containerProperty = node.getListNodeContext().getContainerProperty();
-            map.put(containerProperty.getName(), new PropertyChange(containerProperty, node.wrappedObject(), oldValues, newValues));
+            map.put(containerProperty.getName(), new RegularPropertyChange(containerProperty, node.wrappedObject(), oldValues, newValues));
             node.getAppContainer().getApplication().nodeUpdated(node, map);
         }
     }
@@ -134,12 +134,15 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public void deleteObject(Node node) {
+    public void deleteObject(ObjectMeta objectMeta) {
         //remove from data model
-        Collection<Node> attachments = (Collection<Node>) node.objectMeta().dispose();
+        Collection<Node> attachments = (Collection<Node>) objectMeta.dispose();
         //clean up nodes
-        appContainer.removeNode(node);
-        appContainer.getApplication().nodeRemoved(node, true);
+        Node node = (Node) objectMeta.getAttachment();
+        if (node != null) {
+            appContainer.removeNode(node);
+            appContainer.getApplication().nodeRemoved(node, true);
+        }
 
         for (Node referencingNode: attachments) {
             appContainer.removeNode(referencingNode);

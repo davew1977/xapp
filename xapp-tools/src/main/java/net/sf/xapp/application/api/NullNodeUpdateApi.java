@@ -1,9 +1,6 @@
 package net.sf.xapp.application.api;
 
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ObjectLocation;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.PropertyUpdate;
+import net.sf.xapp.objectmodelling.core.*;
 
 import java.util.List;
 
@@ -28,8 +25,19 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(Node parentNode, ClassModel type) {
+    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
         return null;
+    }
+
+    @Override
+    public PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+
+        return null;
+    }
+
+    @Override
+    public void deleteObject(ObjectMeta objectMeta) {
+
     }
 
     @Override
@@ -43,7 +51,7 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+    public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
 
     }
 
@@ -52,10 +60,6 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
 
     }
 
-    @Override
-    public void deleteObject(Node node) {
-
-    }
 
     @Override
     public void removeReference(Node referenceNode) {

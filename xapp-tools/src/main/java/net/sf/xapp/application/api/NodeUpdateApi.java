@@ -21,8 +21,10 @@ public interface NodeUpdateApi {
     /**
      * creates the initial raw instance of the object
      * will be shortly followed with either an initialize or a cancel
+     *
+     * created object is not yet placed in the model
      */
-    ObjectMeta createObject(Node parentNode, ClassModel type);
+    ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type);
 
     /**
      * This is used when an object already exists but has been moved within the object graph
@@ -33,12 +35,17 @@ public interface NodeUpdateApi {
     /**
      * initialize a recently created object with properties entered by the user
      */
-    void initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+    void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+
+    /**
+     * as above, but this is for cases where there is no node  available
+     */
+    PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
 
     /**
      * delete/rollback creation of a recently created object
      */
-    void deleteObject(Node node);
+    void deleteObject(ObjectMeta objectMeta);
 
     void createReference(Node parentNode, Object obj);
     void removeReference(Node referenceNode);

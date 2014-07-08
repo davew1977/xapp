@@ -34,7 +34,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
     private JButton m_removeButton;
     private JPopupMenu m_popUp;
     private boolean m_editable;
-    private ObjectMeta parentObj;
+    private ObjectLocation objLocation;
 
     public ObjectPropertyWidget(NodeUpdateApi nodeUpdateApi)
     {
@@ -158,19 +158,19 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final ObjectMeta instance = nodeUpdateApi.createObject((Node) parentObj.getAttachment(), validImpl);
+        final ObjectMeta instance = nodeUpdateApi.createObject(objLocation, validImpl);
         EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyUpdate> changes, boolean closing)
             {
                 updateState();
-                nodeUpdateApi.initObject(instance, changes);
+                nodeUpdateApi.initObject(objLocation, instance, changes);
             }
 
             @Override
             public void close() {
-                nodeUpdateApi.deleteObject((Node) instance.getAttachment());
+                nodeUpdateApi.deleteObject(instance);
             }
         });
         defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);
@@ -190,7 +190,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
     public void setValue(Object value, ObjectMeta target)
     {
         m_propertyValue = value;
-        parentObj = target;
+        objLocation = new ObjectLocation(target, getProperty());
         updateState();
     }
 

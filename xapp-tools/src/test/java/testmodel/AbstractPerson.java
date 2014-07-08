@@ -16,6 +16,7 @@ public abstract class AbstractPerson implements Person {
     private String secondName;
     private TextFile aboutMe;
     private DirMeta homeDir = new DirMeta("docs");
+    private PersonSettings personSettings;
 
     @Override
     @Key
@@ -61,6 +62,14 @@ public abstract class AbstractPerson implements Person {
 
     public void setHomeDir(DirMeta homeDir) {
         this.homeDir = homeDir;
+    }
+
+    public PersonSettings getPersonSettings() {
+        return personSettings;
+    }
+
+    public void setPersonSettings(PersonSettings personSettings) {
+        this.personSettings = personSettings;
     }
 
     @Override

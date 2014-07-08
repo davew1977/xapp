@@ -13,6 +13,7 @@
 package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.ContainerProperty;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 
@@ -86,7 +87,7 @@ public interface Application<T>
      * Notification that a node was added to the Application GUI tree
      * @param node
      */
-    void nodeAdded(ObjectMeta objectMeta);
+    void nodeAdded(Node node);
 
     /**
      * Notification that a node is about to be added to the Application GUI tree. The application cannot
@@ -95,7 +96,7 @@ public interface Application<T>
      * The notification is made before the Editor for the newChild is presented on the screen
      * @param newChild
      */
-    void nodeAboutToBeAdded(ObjectMeta newChild);
+    void nodeAboutToBeAdded(ObjectLocation homeLocation, ObjectMeta newChild);
 
     /**
      * A notification that a datamodel object has been edited. The user hit the save button in an editor

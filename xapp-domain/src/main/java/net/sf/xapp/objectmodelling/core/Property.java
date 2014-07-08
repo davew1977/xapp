@@ -119,7 +119,7 @@ public class Property<T> implements Comparable
         }
     }
 
-    public PropertyChange set(T target, Object newVal)
+    public RegularPropertyChange set(T target, Object newVal)
     {
         try
         {
@@ -131,7 +131,7 @@ public class Property<T> implements Comparable
                 {
                     listener.propertyChanged(this, target, oldVal, newVal);
                 }
-                return new PropertyChange(this, target, oldVal, newVal);
+                return new RegularPropertyChange(this, target, oldVal, newVal);
             }
         }
         catch (Exception e)

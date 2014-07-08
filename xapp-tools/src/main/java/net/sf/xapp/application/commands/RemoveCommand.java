@@ -42,7 +42,7 @@ public class RemoveCommand extends NodeCommand
         if(node.isReference()) {
             nodeUpdateApi.removeReference(node);
         } else {
-            nodeUpdateApi.deleteObject(node);
+            nodeUpdateApi.deleteObject(node.objectMeta());
         }
 
         //we want the selection path to be on above the node removed or the parent path if this does not exist

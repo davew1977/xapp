@@ -81,11 +81,12 @@ public class ListProperty extends ContainerProperty
     }
 
     @Override
-    public void addToMapOrCollection(Object mapOrCollection, int index, Object instance) {
+    public Object addToMapOrCollection(Object mapOrCollection, int index, Object instance) {
         if (index == -1) {
-            ((Collection) mapOrCollection).add(instance);
+            return ((Collection) mapOrCollection).add(instance);
         } else {
             ((List) mapOrCollection).add(index, instance);
+            return true;
         }
     }
 

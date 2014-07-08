@@ -56,8 +56,7 @@ public class ObjectLocation {
     public PropertyChange set(ObjectMeta ref, int index) {
         if (property.isContainer()) {
             ContainerProperty cp = (ContainerProperty) property;
-            cp.add(obj, index, ref);
-            return null;
+            return cp.add(obj, index, ref);
         } else {
             return obj.set(property, ref.getInstance());
         }
