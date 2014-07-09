@@ -77,6 +77,9 @@ And lived inside me]]></Text>
               </DirMeta>
             </Files>
           </HomeDir>
+          <PersonSettings favouriteWords="pop,">
+            <FavouriteHat colour="green" type="Straw"/>
+          </PersonSettings>
         </Teacher>
         <Pupil firstName="Elias" secondName="Webber" username="eliasw">
           <HomeDir name="docs"/>

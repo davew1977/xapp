@@ -98,8 +98,8 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
                     {
                         public void save(java.util.List<PropertyUpdate> changes, boolean closing)
                         {
-                            updateState();
                             nodeUpdateApi.updateObject(objValue, changes);
+                            updateState();
                         }
                     });
                     defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);
@@ -164,8 +164,9 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
         {
             public void save(List<PropertyUpdate> changes, boolean closing)
             {
-                updateState();
                 nodeUpdateApi.initObject(objLocation, instance, changes);
+                m_propertyValue = instance.getInstance();
+                updateState();
             }
 
             @Override

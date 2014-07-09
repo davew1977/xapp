@@ -36,6 +36,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         objectMeta.update(potentialUpdates);
         return objectMeta.setHome(homeLocation, true);
     }
+
     @Override
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         PropertyChange propertyChange = initObject(parentNode.toObjLocation(), objectMeta, potentialUpdates);
