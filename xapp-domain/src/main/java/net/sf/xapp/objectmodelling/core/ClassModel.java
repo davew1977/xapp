@@ -244,9 +244,12 @@ public class ClassModel<T> {
      * Create a new instance of the class.
      */
     public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation) {
+        return newInstance(objectLocation, -1);
+    }
+    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, int index) {
         try {
             T obj = m_class.newInstance();
-            return createObjMeta(objectLocation, obj, true);
+            return createObjMeta(objectLocation, obj, true, index);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
@@ -256,8 +259,8 @@ public class ClassModel<T> {
     /**
      * adds a previously unknown object to the model
      */
-    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef) {
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef);
+    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef, int index) {
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef, index);
         instances.add(objectMeta);
         return objectMeta;
     }
@@ -825,21 +828,11 @@ public class ClassModel<T> {
     public ObjectMeta<T> findOrCreate(ObjectLocation objectLocation, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = createObjMeta(objectLocation, (T) o1, false);
+            objectMeta = createObjMeta(objectLocation, (T) o1, false, -1);
         } else {
             //update the parent
-            objectMeta.setHome(objectLocation, false);
+            objectMeta.setHome(objectLocation, false, -1);
         }
-        return objectMeta;
-    }
-
-    /**
-     * Inserts an object at given location (which, if null, will make this a root object) and scan all its
-     * properties for other objects to insert
-     */
-    public ObjectMeta<T> insertInstance(ObjectLocation objectLocation, T o1) {
-        assert find(o1) == null;
-        ObjectMeta<T> objectMeta = createObjMeta(objectLocation, o1, true);
         return objectMeta;
     }
 

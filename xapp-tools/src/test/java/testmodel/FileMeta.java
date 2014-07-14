@@ -37,6 +37,8 @@ public class FileMeta implements Cloneable {
 
     @Override
     public FileMeta clone() throws CloneNotSupportedException {
-        return (FileMeta) super.clone();
+        FileMeta clone = (FileMeta) super.clone();
+        clone.setName(clone.getName() + " (copy)");
+        return clone;
     }
 }

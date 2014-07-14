@@ -25,7 +25,7 @@ public class ObjectMeta<T> implements Namespace{
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
 
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, int index) {
         final ClassDatabase cdb = classModel.getClassDatabase();
         this.classModel = classModel;
         this.instance = obj;
@@ -39,7 +39,7 @@ public class ObjectMeta<T> implements Namespace{
         this.id = classModel.registerWithClassDatabase(this);
         tryCall(instance, "setObjectMeta", this);
         key = (String) get(classModel.getKeyProperty());
-        setHome(home, updateModelHomeRef);
+        setHome(home, updateModelHomeRef, index);
 
         //add metas for children of this object
         List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
@@ -414,6 +414,9 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public PropertyChange setHome(ObjectLocation newLoc, boolean updateModel) {
+        return setHome(newLoc, updateModel, -1);
+    }
+    public PropertyChange setHome(ObjectLocation newLoc, boolean updateModel, int index) {
         ObjectLocation old = home;
         PropertyChange setHomeChange = null;
         if (!Property.objEquals(old, newLoc)) {
@@ -422,7 +425,7 @@ public class ObjectMeta<T> implements Namespace{
             }
             this.home = newLoc;
             if (updateModel && newLoc != null) {
-                setHomeChange = this.home.set(this);
+                setHomeChange = this.home.set(this, index);
             }
             updateMetaHierarchy(key);
         }
@@ -462,7 +465,7 @@ public class ObjectMeta<T> implements Namespace{
     public int updateIndex(ObjectLocation location, int index) {
         //find "my" location
         ObjectLocation myLocation = resolve(location);
-        return myLocation.updateIndex(this, index);
+        return myLocation.adjustIndex(this, index);
     }
 
     private ObjectLocation resolve(ObjectLocation location) {
@@ -509,7 +512,7 @@ public class ObjectMeta<T> implements Namespace{
         Set<ClassModel> result = new HashSet<ClassModel>();
         if (!isRoot()) {
             result.add(classModel);
-            ClassModel propertyClassModel = getHome().getProperty().getPropertyClassModel();
+            ClassModel propertyClassModel = getHome().getProperty().getMainTypeClassModel();
             result.add(propertyClassModel);
             result.addAll(propertyClassModel.getValidImplementations());
         }
@@ -542,5 +545,13 @@ public class ObjectMeta<T> implements Namespace{
             sb.append("\t\t").append(classSetEntry.getValue()).append("\n");
         }
         return sb.toString();
+    }
+
+    public boolean hasReferences() {
+        return !references.isEmpty();
+    }
+
+    public int index() {
+        return getHome().indexOf(this);
     }
 }

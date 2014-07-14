@@ -54,7 +54,7 @@ public class PasteXMLCommand extends NodeCommand
         }
 
 
-        if (!containedTypeClassModel.isInstance(clipboardObject))
+        if (!containedTypeClassModel.isInstance(clipboardObject.getInstance()))
         {
             System.out.println("WARNING: cannot paste a " + clipboardObject.getClass().getSimpleName() + " here!");
             return;

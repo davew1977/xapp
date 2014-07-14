@@ -184,6 +184,12 @@ my hobbies are knitting and tennis]]></Text>
         <Pupil firstName="John" secondName="Webber" username="jwebber">
           <HomeDir name="docs"/>
         </Pupil>
+        <Pupil firstName="James" secondName="Hadwin" username="jamesh">
+          <HomeDir name="docs"/>
+          <PersonSettings favouriteWords="cloud,">
+            <FavouriteHat colour="green" type="Straw"/>
+          </PersonSettings>
+        </Pupil>
       </People>
       <PicturesOfTheWeek>
         <ImageFile ref="eliasw/docs/pictures/home/2013/mum.jpg"/>

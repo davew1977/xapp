@@ -38,9 +38,7 @@ public class ChangeTypeCommand extends NodeCommand
     public void execute(final Node  node)
     {
         JPopupMenu menu = new JPopupMenu();
-        ListNodeContext parentListNodeContext = node.getParent().getListNodeContext();
         Set<ClassModel> classOptions = node.objectMeta().compatibleTypes();
-        final List containingList = parentListNodeContext.getList();
         final ApplicationContainer appContainer = node.getAppContainer();
         for (final ClassModel targetClassModel : classOptions)
         {
@@ -50,26 +48,8 @@ public class ChangeTypeCommand extends NodeCommand
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    //TODO rewrite for node update api
-                    ObjectMeta oldInstance = node.wrappedObject();
-                    ClassModel srcClassModel = oldInstance.getClassModel();
-                    List<Property> properties = srcClassModel.getAllProperties();
-                    ObjectMeta newInstance = targetClassModel.newInstance(node.getParent().toObjLocation());
-                    for (Property property : properties)
-                    {
-                        newInstance.set(property, oldInstance.get(property));
-                    }
-                    appContainer.getMainFrame().repaint();
-
-                    //replace object in containing list
-                    int index = containingList.indexOf(oldInstance);
-                    containingList.remove(oldInstance);
-                    containingList.add(index, newInstance);
-                    //refresh so a new Node will be created, then we must select that node
-                    //so that the whole operation is more transparent to the user
-                    int oldNodeIndex = node.getParent().indexOf(node);
-                    Node newNode = appContainer.getNodeBuilder().refresh(node.getParent());
-                    appContainer.setSelectedNode(newNode.getChildAt(oldNodeIndex));
+                    Node newNode = appContainer.getNodeUpdateApi().changeType(node.objectMeta(), targetClassModel);
+                    appContainer.setSelectedNode(newNode);
                 }
             });
             menu.add(menuItem);

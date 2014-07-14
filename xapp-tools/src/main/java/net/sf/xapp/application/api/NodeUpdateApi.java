@@ -53,4 +53,6 @@ public interface NodeUpdateApi {
     void moveInList(Node node, int delta);
 
     void updateReferences(Node node, List<Object> objects);
+
+    Node changeType(ObjectMeta obj, ClassModel targetClassModel);
 }

@@ -505,4 +505,8 @@ public class Property<T> implements Comparable
             propertyValueIterator.exec(new ObjectLocation(target, this), 0, val);
         }
     }
+
+    public ClassModel getMainTypeClassModel() {
+        return getClassDatabase().getClassModel(getMainType());
+    }
 }

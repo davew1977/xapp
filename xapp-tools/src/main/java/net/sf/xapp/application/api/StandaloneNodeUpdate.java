@@ -34,7 +34,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
-        return objectMeta.setHome(homeLocation, true);
+        return objectMeta.setHome(homeLocation, true, -1);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void insertObject(Node parentNode, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true);
+        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true, -1);
         //create the node
         Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
         appContainer.getApplication().nodeAdded(newNode);
@@ -114,6 +114,33 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
             map.put(containerProperty.getName(), new RegularPropertyChange(containerProperty, node.wrappedObject(), oldValues, newValues));
             node.getAppContainer().getApplication().nodeUpdated(node, map);
         }
+    }
+
+    @Override
+    public Node changeType(ObjectMeta obj, ClassModel targetClassModel) {
+        if(obj.hasReferences()) {
+            /*
+            to implement this we need to delete the references(done) and reset them where appropriate (not done)
+             */
+            throw new UnsupportedOperationException("cannot currently change type on an object which has references");
+        }
+        Node node = (Node) obj.getAttachment();
+        Node parent = node.getParent();
+        ClassModel srcClassModel = obj.getClassModel();
+        ObjectLocation objHome = obj.getHome();
+        int oldIndex = node.index();
+        ObjectMeta newInstance = targetClassModel.newInstance(objHome);
+        List<Property> properties = targetClassModel.getAllProperties();
+        for (Property property : properties)
+        {
+            newInstance.set(property, obj.get(property));
+        }
+        deleteObject(obj);
+
+        objHome.setIndex(newInstance, oldIndex);
+        //refresh so a new Node will be created, then we must select that node
+        //so that the whole operation is more transparent to the user
+        return appContainer.getNodeBuilder().createNode(parent, newInstance, oldIndex);
     }
 
     @Override

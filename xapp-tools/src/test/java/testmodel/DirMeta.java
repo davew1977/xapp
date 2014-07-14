@@ -39,7 +39,10 @@ public class DirMeta extends FileMeta {
         if(files != null) {
             dirMeta.files  = new ArrayList<FileMeta>();
             for (FileMeta file : files) {
-                dirMeta.files.add(file.clone());
+                String oldName = file.getName();
+                FileMeta clone = file.clone();
+                clone.setName(oldName);
+                dirMeta.files.add(clone);
             }
         }
         return dirMeta;

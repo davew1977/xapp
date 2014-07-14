@@ -93,12 +93,12 @@ public class ObjectNodeContext {
                     }
                 }
             }
+            commands.add(new CopyXMLCommand());
             //add commands that are only allowed when the surrounding list does NOT contain references
             if (parentNode == null || !parentNode.containsReferences()) {
                 //COPY and COPY_XML
                 if (classModel().isAllowed(CUT_COPY) && objectMeta.isCloneable()) {
                     commands.add(new CopyCommand());
-                    commands.add(new CopyXMLCommand());
                 }
                 //CUT
                 if (classModel().isAllowed(CUT_COPY)) {
