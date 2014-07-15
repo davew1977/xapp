@@ -436,8 +436,8 @@ public class ObjectMeta<T> implements Namespace{
         return classModel.getClassDatabase();
     }
 
-    public void update(List<PropertyUpdate> potentialUpdates) {
-        PropertyUpdate.execute(this, potentialUpdates);
+    public Map<String, PropertyChange> update(List<PropertyUpdate> potentialUpdates) {
+        return PropertyUpdate.execute(this, potentialUpdates);
     }
 
     public void createReference(ObjectLocation objectLocation) {

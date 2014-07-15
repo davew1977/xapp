@@ -14,7 +14,6 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
-import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
@@ -60,16 +59,6 @@ public class SimpleApplication<T> implements Application<T>
     }
 
     @Override
-    public void objectUpdated(ObjectMeta objectMeta, Map<String, PropertyChange> changes) {
-
-    }
-
-    @Override
-    public void objectUpdated(Node objectNode, ObjectMeta objectMeta, Map<String, PropertyChange> changes) {
-
-    }
-
-    @Override
     public void nodesSelected(List<Node> nodes, Class commonClass)
     {
 
@@ -90,7 +79,7 @@ public class SimpleApplication<T> implements Application<T>
         return false;
     }
 
-    public void nodeRemoved(Node node, boolean wasCut)
+    public void nodeAboutToBeRemoved(Node node, boolean wasCut)
     {
 
     }
@@ -131,11 +120,6 @@ public class SimpleApplication<T> implements Application<T>
         });
         SwingUtils.setFont(metaMenu);
         applicationContainer.getMenuBar().add(metaMenu);
-    }
-
-    public void nodesUpdated(List<PropertyChange> changes)
-    {
-
     }
 
     public ApplicationContainer<T> getAppContainer()

@@ -1,4 +1,4 @@
-<System personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis">
+<SchoolSystem personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis">
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
       <ClassRooms>
@@ -199,4 +199,4 @@ my hobbies are knitting and tennis]]></Text>
       </PicturesOfTheWeek>
     </School>
   </Schools>
-</System>
+</SchoolSystem>

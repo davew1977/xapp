@@ -81,7 +81,7 @@ public interface Application<T>
      * @param node
      * @param wasCut node was removed after being pasted somewhere else
      */
-    void nodeRemoved(Node node, boolean wasCut);
+    void nodeAboutToBeRemoved(Node node, boolean wasCut);
 
     /**
      * Notification that a node was added to the Application GUI tree
@@ -104,15 +104,6 @@ public interface Application<T>
      * @param changes
      */
     void nodeUpdated(Node objectNode, Map<String,PropertyChange> changes);
-    void objectUpdated(ObjectMeta objectMeta, Map<String,PropertyChange> changes);
-    void objectUpdated(Node objectNode, ObjectMeta objectMeta, Map<String,PropertyChange> changes);
-
-    /**
-     * A notification that a set of objects in the underlying data model have been edited. The user hit the
-     * save button in the "multi editor"
-     * @param changes
-     */
-    void nodesUpdated(List<PropertyChange> changes);
 
     /**
      * The node was moved up in its parent's child list

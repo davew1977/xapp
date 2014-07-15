@@ -4,6 +4,7 @@ import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Launcher;
 import net.sf.xapp.application.api.SimpleApplication;
+import testapp.SchoolApp;
 
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-public class System {
+public class SchoolSystem {
     private Pupil pupilOfTheYear;
     private Teacher teacherOfTheYear;
     private Person personOfTheYear;
@@ -53,14 +54,14 @@ public class System {
     }
 
     public static void main(String[] args) {
-        ApplicationContainer appContainer = Launcher.run(System.class, new SimpleApplication() {
+        ApplicationContainer appContainer = Launcher.run(SchoolSystem.class, new SchoolApp() {
             @Override
             public void handleUncaughtException(Throwable e) {
                 e.printStackTrace();
             }
         }, "db-system.xml");
 
-        System instance = (System) appContainer.getGuiContext().getInstance();
+        SchoolSystem instance = (SchoolSystem) appContainer.getGuiContext().getInstance();
         java.lang.System.out.println(instance.getSchools().get("Alfriston School").getClassRooms().get("Ruby").getHomeDir().getFiles());
     }
 }
