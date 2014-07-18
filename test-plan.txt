@@ -1,4 +1,3 @@
-TODO! test complex sub object creation : person : settings : favourite hat
 
 add simple object to list
 add simple object to set

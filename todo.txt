@@ -1,0 +1,33 @@
+create a xapp-codegen module {
+    problem here will be all the ng references
+}
+
+module structure {
+    xapp-net {
+        xapp-server-fwk
+        xapp-common-fwk
+        xapp-client-fwk
+    }
+    xapp-obj-server {
+        xapp-obj-server
+        xapp-obj-client
+    }
+    xapp-web (an adaptor to allow running xapp obj server inside a tomcat/spring mvc container
+}
+
+move ng-fwk-common to xapp-server-fwk
+
+Lookup (net.sf.xapp.common.fwk) should be an interface.. Would be required when we have a binary serialization version of xapp -obj server
+
+assume xml serialization of objects {
+    on initial load of model
+    when broadcasting new objects in the tree
+}
+
+MILESTONE
+first version {
+    no storage except for a periodic check in
+    xml for client server transport (on top of binary protocol "objadded" "objremoved" etc
+    obj ids last per jvm, checked in model does not persist object ids
+
+}

@@ -90,6 +90,9 @@
     <modules>
         <module>xapp-domain</module>
         <module>xapp-tools</module>
+        <module>xapp-net</module>
+        <module>xapp-obj</module>
+        <module>xapp-web</module>
     </modules>
 
 </project>
