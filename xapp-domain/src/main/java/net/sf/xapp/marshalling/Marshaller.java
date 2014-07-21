@@ -168,14 +168,6 @@ public class Marshaller<T>
                     {
                         //skip this one!
                     }
-                    //defaults to marshal as attribute for strings, enums and primitives
-                    else if (!property.isFormattedText() &&
-                             !isMultiline(value) &&
-                            (property.isMarshalAsAttribute() ||
-                                    (property.isStringPrimitiveOrEnum() && !property.isMarshalAsElement())))
-                    {
-                        writeAsAttr.add(new PropertyValuePair(property, value));
-                    }
                     else if (value instanceof StringSerializable)
                     {
                         StringSerializable ss = (StringSerializable) value;
@@ -204,6 +196,14 @@ public class Marshaller<T>
                         {
                             writeAsElements.add(new PropertyValuePair(property, value));
                         }
+                    }
+                    //defaults to marshal as attribute for strings, enums and primitives
+                    else if (!property.isFormattedText() &&
+                            !isMultiline(value) &&
+                            (property.isMarshalAsAttribute() ||
+                                    (property.isStringPrimitiveOrEnum() && !property.isMarshalAsElement())))
+                    {
+                        writeAsAttr.add(new PropertyValuePair(property, value));
                     }
                     else
                     {

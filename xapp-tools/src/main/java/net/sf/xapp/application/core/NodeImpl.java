@@ -104,6 +104,11 @@ public class NodeImpl implements Node {
     }
 
     @Override
+    public Class wrappedObjectClass() {
+        return wrappedObject().getClass();
+    }
+
+    @Override
     public <T> boolean isA(Class<T> aClass) {
         return aClass.isInstance(wrappedObject());
     }

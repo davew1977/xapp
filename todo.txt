@@ -15,7 +15,7 @@ module structure {
     xapp-web (an adaptor to allow running xapp obj server inside a tomcat/spring mvc container
 }
 
-move ng-fwk-common to xapp-server-fwk
+move ng-fwk-common to xapp-common-fwk
 
 Lookup (net.sf.xapp.common.fwk) should be an interface.. Would be required when we have a binary serialization version of xapp -obj server
 

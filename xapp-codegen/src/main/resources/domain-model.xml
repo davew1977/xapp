@@ -1,0 +1,3112 @@
+<Model corePackageName="ngpoker.common.types" messageIdStart="0" objectIdStart="2000" version="4">
+  <MessageIds>
+    <ObjectId id="0" name="CashGameServices_FindPlayer"/>
+    <ObjectId id="1" name="CashGameServices_ReserveMoney"/>
+    <ObjectId id="2" name="CashGameServices_WithdrawMoney"/>
+    <ObjectId id="3" name="CashGameServices_GetAccountBalance"/>
+    <ObjectId id="4" name="CashGameServicesReply_FindPlayerResponse"/>
+    <ObjectId id="5" name="CashGameServicesReply_ReserveMoneyResponse"/>
+    <ObjectId id="6" name="CashGameServicesReply_WithdrawMoneyResponse"/>
+    <ObjectId id="7" name="CashGameServicesReply_GetAccountBalanceResponse"/>
+    <ObjectId id="8" name="CashGamePlay_DoTakeSeat"/>
+    <ObjectId id="9" name="CashGamePlay_DoReserveAmount"/>
+    <ObjectId id="10" name="CashGamePlay_DoLeaveSeat"/>
+    <ObjectId id="11" name="CashGamePlay_DoGetAccountBalance"/>
+    <ObjectId id="12" name="CashGamePlay_DoSitOut"/>
+    <ObjectId id="13" name="CashGamePlay_DoSitIn"/>
+    <ObjectId id="14" name="CashGamePlay_DoLeaveTable"/>
+    <ObjectId id="15" name="CashGamePlay_PrepareForRemoval"/>
+    <ObjectId id="16" name="CashGamePlayReply_DoTakeSeatResponse"/>
+    <ObjectId id="17" name="CashGamePlayReply_DoReserveAmountResponse"/>
+    <ObjectId id="18" name="CashGamePlayReply_DoLeaveSeatResponse"/>
+    <ObjectId id="19" name="CashGamePlayReply_DoGetAccountBalanceResponse"/>
+    <ObjectId id="20" name="CashGamePlayReply_DoSitOutResponse"/>
+    <ObjectId id="21" name="CashGamePlayReply_DoSitInResponse"/>
+    <ObjectId id="22" name="CashGamePlayReply_DoLeaveTableResponse"/>
+    <ObjectId id="23" name="CashGamePlayReply_PrepareForRemovalResponse"/>
+    <ObjectId id="24" name="CashGameAdmin_Create"/>
+    <ObjectId id="25" name="CashGameAdmin_Remove"/>
+    <ObjectId id="26" name="CashGameAdminReply_CreateResponse"/>
+    <ObjectId id="27" name="CashGameAdminReply_RemoveResponse"/>
+    <ObjectId id="28" name="CashGameInternal_IdleTimeout"/>
+    <ObjectId id="29" name="CashGameInternal_SeatReservationTimeout"/>
+    <ObjectId id="30" name="BackendMoney_GetAccountBalanceResponse"/>
+    <ObjectId id="31" name="BackendMoney_GetAccountBalance"/>
+    <ObjectId id="32" name="BackendMoney_DebitPlayer"/>
+    <ObjectId id="33" name="BackendMoney_CreditPlayer"/>
+    <ObjectId id="34" name="BackendMoney_CreditOperator"/>
+    <ObjectId id="35" name="BackendMoney_SetAccountBalance"/>
+    <ObjectId id="36" name="PokerGamePlay_DoPlayAction"/>
+    <ObjectId id="37" name="PokerGamePlay_ShowCardsDecision"/>
+    <ObjectId id="38" name="PokerGamePlay_UpdatePreTurnAction"/>
+    <ObjectId id="39" name="PokerGamePlay_NewChatMessage"/>
+    <ObjectId id="40" name="PokerGamePlay_IAmBack"/>
+    <ObjectId id="41" name="PokerGamePlay_SelectCards"/>
+    <ObjectId id="42" name="PokerGameClient_SetGameState"/>
+    <ObjectId id="43" name="PokerGameInternal_CardsDealt"/>
+    <ObjectId id="44" name="PokerGameInternal_BettingDecisionTimeout"/>
+    <ObjectId id="45" name="PokerGameInternal_MuckDecisionTimeout"/>
+    <ObjectId id="46" name="PokerGameInternal_BlindsPaid"/>
+    <ObjectId id="47" name="PokerGameInternal_HighCardedForButton"/>
+    <ObjectId id="48" name="PokerGameInternal_CommunityCardsDealt"/>
+    <ObjectId id="49" name="PokerGameInternal_AllBettingComplete"/>
+    <ObjectId id="50" name="PokerGameInternal_BlindsDecisionTimeout"/>
+    <ObjectId id="51" name="PokerGameInternal_HandComplete"/>
+    <ObjectId id="52" name="PokerGameInternal_TryStartHand"/>
+    <ObjectId id="53" name="PokerGameInternal_PostBetDecision"/>
+    <ObjectId id="54" name="PokerGameInternal_PotCollected"/>
+    <ObjectId id="55" name="PokerGameInternal_CardSelectionTimeout"/>
+    <ObjectId id="56" name="PokerGameInternal_CardsShuffled"/>
+    <ObjectId id="57" name="IdSequenceStoreUpdate_SetSequenceSeq"/>
+    <ObjectId id="58" name="IdSequenceStoreListener_SequenceSeqChanged"/>
+    <ObjectId id="59" name="PlayerLookup_FindPlayerResponse"/>
+    <ObjectId id="60" name="PlayerLookup_FindPlayer"/>
+    <ObjectId id="61" name="UserApi_SignUp"/>
+    <ObjectId id="62" name="UserApi_Login"/>
+    <ObjectId id="63" name="UserApi_LoginAsGuest"/>
+    <ObjectId id="64" name="UserApi_ResetPassword"/>
+    <ObjectId id="65" name="UserApiReply_SignUpResponse"/>
+    <ObjectId id="66" name="UserApiReply_LoginResponse"/>
+    <ObjectId id="67" name="UserApiReply_LoginAsGuestResponse"/>
+    <ObjectId id="68" name="UserApiReply_ResetPasswordResponse"/>
+    <ObjectId id="69" name="UserAdmin_UpdateImage"/>
+    <ObjectId id="70" name="UserAdmin_UpdateStatus"/>
+    <ObjectId id="71" name="UserAdmin_UpdatePassword"/>
+    <ObjectId id="72" name="UserAdmin_GetImage"/>
+    <ObjectId id="73" name="UserAdmin_GetPlayerDetails"/>
+    <ObjectId id="74" name="UserAdmin_AddUserToFollow"/>
+    <ObjectId id="75" name="UserAdmin_RemoveUserToFollow"/>
+    <ObjectId id="76" name="UserAdmin_IsBot"/>
+    <ObjectId id="77" name="UserAdminReply_UpdateImageResponse"/>
+    <ObjectId id="78" name="UserAdminReply_UpdateStatusResponse"/>
+    <ObjectId id="79" name="UserAdminReply_UpdatePasswordResponse"/>
+    <ObjectId id="80" name="UserAdminReply_GetImageResponse"/>
+    <ObjectId id="81" name="UserAdminReply_GetPlayerDetailsResponse"/>
+    <ObjectId id="82" name="UserAdminReply_AddUserToFollowResponse"/>
+    <ObjectId id="83" name="UserAdminReply_RemoveUserToFollowResponse"/>
+    <ObjectId id="84" name="UserAdminReply_IsBotResponse"/>
+    <ObjectId id="85" name="LobbySessionManager_Subscribe"/>
+    <ObjectId id="86" name="LobbySessionManager_PageUp"/>
+    <ObjectId id="87" name="LobbySessionManager_PageDown"/>
+    <ObjectId id="88" name="LobbySessionManager_Pause"/>
+    <ObjectId id="89" name="LobbySessionManager_SwitchView"/>
+    <ObjectId id="90" name="LobbySessionManagerReply_SubscribeResponse"/>
+    <ObjectId id="91" name="LobbySessionManagerReply_PageUpResponse"/>
+    <ObjectId id="92" name="LobbySessionManagerReply_PageDownResponse"/>
+    <ObjectId id="93" name="LobbySessionManagerReply_PauseResponse"/>
+    <ObjectId id="94" name="LobbySessionManagerReply_SwitchViewResponse"/>
+    <ObjectId id="95" name="ClientLobbySession_EntityAdded"/>
+    <ObjectId id="96" name="ClientLobbySession_EntityRemoved"/>
+    <ObjectId id="97" name="ClientLobbySession_PropertyChanged"/>
+    <ObjectId id="98" name="ClientLobbySession_ListPropertyChanged"/>
+    <ObjectId id="99" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="100" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="101" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="102" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="103" name="RegisterService_Register"/>
+    <ObjectId id="104" name="RegisterService_Unregister"/>
+    <ObjectId id="105" name="RegisterService_PrepareForRemoval"/>
+    <ObjectId id="106" name="RegisterServiceReply_RegisterResponse"/>
+    <ObjectId id="107" name="RegisterServiceReply_UnregisterResponse"/>
+    <ObjectId id="108" name="RegisterServiceReply_PrepareForRemovalResponse"/>
+    <ObjectId id="109" name="TournamentServices_RegisterPlayer"/>
+    <ObjectId id="110" name="TournamentServices_UnregisterPlayer"/>
+    <ObjectId id="111" name="TournamentServices_UnregisterAll"/>
+    <ObjectId id="112" name="TournamentServices_PayPrizes"/>
+    <ObjectId id="113" name="TournamentServicesReply_RegisterPlayerResponse"/>
+    <ObjectId id="114" name="TournamentServicesReply_UnregisterPlayerResponse"/>
+    <ObjectId id="115" name="TournamentServicesReply_UnregisterAllResponse"/>
+    <ObjectId id="116" name="TournamentServicesReply_PayPrizesResponse"/>
+    <ObjectId id="117" name="TourLifecycle_Init"/>
+    <ObjectId id="118" name="TourLifecycle_Start"/>
+    <ObjectId id="119" name="TourLifecycle_OpenRegistration"/>
+    <ObjectId id="120" name="TourLifecycle_Remove"/>
+    <ObjectId id="121" name="TourLifecycle_LevelUp"/>
+    <ObjectId id="122" name="TourLifecycle_Pause"/>
+    <ObjectId id="123" name="TourLifecycle_Resume"/>
+    <ObjectId id="124" name="TourTable_SeatPlayers"/>
+    <ObjectId id="125" name="TourTable_StartHand"/>
+    <ObjectId id="126" name="TourTable_AddPlayer"/>
+    <ObjectId id="127" name="TourTable_RemovePlayer"/>
+    <ObjectId id="128" name="TourTable_SetState"/>
+    <ObjectId id="129" name="TourTable_SetLevel"/>
+    <ObjectId id="130" name="TourHost_HandComplete"/>
+    <ObjectId id="131" name="TourHost_AllInSituation"/>
+    <ObjectId id="132" name="TourClient_SetGameState"/>
+    <ObjectId id="133" name="SngServices_CreateSngTour"/>
+    <ObjectId id="134" name="SngServicesReply_CreateSngTourResponse"/>
+    <ObjectId id="135" name="SngAdmin_Create"/>
+    <ObjectId id="136" name="SngAdmin_Remove"/>
+    <ObjectId id="137" name="SngAdminReply_CreateResponse"/>
+    <ObjectId id="138" name="SngAdminReply_RemoveResponse"/>
+    <ObjectId id="139" name="TourAdmin_CreateOneOff"/>
+    <ObjectId id="140" name="TourAdmin_CreateRecurring"/>
+    <ObjectId id="141" name="TourAdmin_RemoveTour"/>
+    <ObjectId id="142" name="TourAdmin_RemoveRecurring"/>
+    <ObjectId id="143" name="TourAdmin_RegisterPlayers"/>
+    <ObjectId id="144" name="TourAdmin_UnregisterPlayers"/>
+    <ObjectId id="145" name="TourAdminReply_CreateOneOffResponse"/>
+    <ObjectId id="146" name="TourAdminReply_CreateRecurringResponse"/>
+    <ObjectId id="147" name="TourAdminReply_RemoveTourResponse"/>
+    <ObjectId id="148" name="TourAdminReply_RemoveRecurringResponse"/>
+    <ObjectId id="149" name="TourAdminReply_RegisterPlayersResponse"/>
+    <ObjectId id="150" name="TourAdminReply_UnregisterPlayersResponse"/>
+    <ObjectId id="151" name="TourStatsService_GetStats"/>
+    <ObjectId id="152" name="TourStatsServiceReply_GetStatsResponse"/>
+    <ObjectId id="153" name="MultiTourClient_SetGameState"/>
+    <ObjectId id="154" name="MeleeTourClient_SetGameState"/>
+    <ObjectId id="155" name="SngInternal_SngIdleTimeout"/>
+    <ObjectId id="156" name="MessageSender_Broadcast"/>
+    <ObjectId id="157" name="MessageSender_Post"/>
+    <ObjectId id="158" name="ConnectionListener_PlayerConnected"/>
+    <ObjectId id="159" name="ConnectionListener_PlayerDisconnected"/>
+    <ObjectId id="160" name="NewsFeedUpdate_AddItem"/>
+    <ObjectId id="161" name="ClientControl_SetInitialInfo"/>
+    <ObjectId id="162" name="ClientControl_ForceJoinChannel"/>
+    <ObjectId id="163" name="ClientControl_SetUser"/>
+    <ObjectId id="164" name="Channel_Join"/>
+    <ObjectId id="165" name="Channel_Leave"/>
+    <ObjectId id="166" name="Channel_PlayerConnected"/>
+    <ObjectId id="167" name="Channel_PlayerDisconnected"/>
+    <ObjectId id="168" name="ChannelReply_JoinResponse"/>
+    <ObjectId id="169" name="ChannelReply_LeaveResponse"/>
+    <ObjectId id="170" name="ChannelReply_PlayerConnectedResponse"/>
+    <ObjectId id="171" name="ChannelReply_PlayerDisconnectedResponse"/>
+    <ObjectId id="172" name="ChannelClient_AppState"/>
+    <ObjectId id="173" name="NodeEntryPoint_ReceiveAsyncMessage"/>
+    <ObjectId id="174" name="NodeEntryPoint_ReceiveSyncResponse"/>
+    <ObjectId id="175" name="NodeEntryPoint_ReceiveSyncRequest"/>
+    <ObjectId id="176" name="NodeExitPoint_SendAsyncMessage"/>
+    <ObjectId id="177" name="NodeExitPoint_SendSyncResponse"/>
+    <ObjectId id="178" name="NodeExitPoint_SendSyncRequest"/>
+    <ObjectId id="179" name="NodeExitPoint_SendToTopic"/>
+    <ObjectId id="180" name="Admin_CreateEntity"/>
+    <ObjectId id="181" name="Out_Failure"/>
+    <ObjectId id="182" name="Out_Success"/>
+    <ObjectId id="183" name="ChatApp_NewChatMessage"/>
+    <ObjectId id="184" name="ChatAppReply_NewChatMessageResponse"/>
+    <ObjectId id="185" name="ChatClient_ChatBroadcast"/>
+    <ObjectId id="186" name="ChatClient_PlayerJoined"/>
+    <ObjectId id="187" name="ChatClient_PlayerLeft"/>
+    <ObjectId id="188" name="ChatPlayer_ChatChannelState"/>
+    <ObjectId id="189" name="ChatAppAdmin_Create"/>
+    <ObjectId id="190" name="HandHistoryClient_GetRoundIds"/>
+    <ObjectId id="191" name="HandHistoryClient_GetRounds"/>
+    <ObjectId id="192" name="HandHistoryClientReply_GetRoundIdsResponse"/>
+    <ObjectId id="193" name="HandHistoryClientReply_GetRoundsResponse"/>
+    <ObjectId id="194" name="HandHistoryStore_Store"/>
+    <ObjectId id="195" name="ForumAdmin_CreateThread"/>
+    <ObjectId id="196" name="ForumAdmin_GetThread"/>
+    <ObjectId id="197" name="ForumAdmin_MakePost"/>
+    <ObjectId id="198" name="ForumAdmin_LikePost"/>
+    <ObjectId id="199" name="ForumAdmin_DeletePost"/>
+    <ObjectId id="200" name="ForumAdmin_ReportAbuse"/>
+    <ObjectId id="201" name="ForumAdmin_GetPost"/>
+    <ObjectId id="202" name="ForumAdmin_RemoveThread"/>
+    <ObjectId id="203" name="ForumAdminReply_CreateThreadResponse"/>
+    <ObjectId id="204" name="ForumAdminReply_GetThreadResponse"/>
+    <ObjectId id="205" name="ForumAdminReply_MakePostResponse"/>
+    <ObjectId id="206" name="ForumAdminReply_LikePostResponse"/>
+    <ObjectId id="207" name="ForumAdminReply_DeletePostResponse"/>
+    <ObjectId id="208" name="ForumAdminReply_ReportAbuseResponse"/>
+    <ObjectId id="209" name="ForumAdminReply_GetPostResponse"/>
+    <ObjectId id="210" name="ForumAdminReply_RemoveThreadResponse"/>
+    <ObjectId id="211" name="NewsFeedUpdate_AddItems"/>
+    <ObjectId id="212" name="NewsFeedUpdate_RemoveItem"/>
+    <ObjectId id="213" name="NewsFeedUpdate_ClearItems"/>
+    <ObjectId id="214" name="NewsFeedListener_ItemAdded"/>
+    <ObjectId id="215" name="NewsFeedListener_ItemsAdded"/>
+    <ObjectId id="216" name="NewsFeedListener_ItemRemoved"/>
+    <ObjectId id="217" name="NewsFeedListener_ItemsCleared"/>
+    <ObjectId id="218" name="UserEntityUpdate_SetUserInfoPassword"/>
+    <ObjectId id="219" name="UserEntityUpdate_SetAccountBalance"/>
+    <ObjectId id="220" name="UserEntityUpdate_SetLastImageUploadTime"/>
+    <ObjectId id="221" name="UserEntityUpdate_SetLastLoginTime"/>
+    <ObjectId id="222" name="UserEntityUpdate_SetStatus"/>
+    <ObjectId id="223" name="UserEntityUpdate_AddFollowedUser"/>
+    <ObjectId id="224" name="UserEntityUpdate_AddFollowedUsers"/>
+    <ObjectId id="225" name="UserEntityUpdate_RemoveFollowedUser"/>
+    <ObjectId id="226" name="UserEntityUpdate_ClearFollowedUsers"/>
+    <ObjectId id="227" name="UserEntityUpdate_SetPlayerPoints"/>
+    <ObjectId id="228" name="UserEntityUpdate_AddEnabledCharacter"/>
+    <ObjectId id="229" name="UserEntityUpdate_AddEnabledCharacters"/>
+    <ObjectId id="230" name="UserEntityUpdate_RemoveEnabledCharacter"/>
+    <ObjectId id="231" name="UserEntityUpdate_ClearEnabledCharacters"/>
+    <ObjectId id="232" name="UserEntityListener_UserInfoPasswordChanged"/>
+    <ObjectId id="233" name="UserEntityListener_AccountBalanceChanged"/>
+    <ObjectId id="234" name="UserEntityListener_LastImageUploadTimeChanged"/>
+    <ObjectId id="235" name="UserEntityListener_LastLoginTimeChanged"/>
+    <ObjectId id="236" name="UserEntityListener_StatusChanged"/>
+    <ObjectId id="237" name="UserEntityListener_FollowedUserAdded"/>
+    <ObjectId id="238" name="UserEntityListener_FollowedUsersAdded"/>
+    <ObjectId id="239" name="UserEntityListener_FollowedUserRemoved"/>
+    <ObjectId id="240" name="UserEntityListener_FollowedUsersCleared"/>
+    <ObjectId id="241" name="UserEntityListener_PlayerPointsChanged"/>
+    <ObjectId id="242" name="UserEntityListener_EnabledCharacterAdded"/>
+    <ObjectId id="243" name="UserEntityListener_EnabledCharactersAdded"/>
+    <ObjectId id="244" name="UserEntityListener_EnabledCharacterRemoved"/>
+    <ObjectId id="245" name="UserEntityListener_EnabledCharactersCleared"/>
+    <ObjectId id="246" name="MoneySessionUpdate_AddPlayerCredit"/>
+    <ObjectId id="247" name="MoneySessionUpdate_AddPlayerCredits"/>
+    <ObjectId id="248" name="MoneySessionUpdate_RemovePlayerCredit"/>
+    <ObjectId id="249" name="MoneySessionUpdate_ClearPlayerCredits"/>
+    <ObjectId id="250" name="MoneySessionUpdate_SetPlayerCreditAmount"/>
+    <ObjectId id="251" name="MoneySessionUpdate_AddOperatorCredit"/>
+    <ObjectId id="252" name="MoneySessionUpdate_AddOperatorCredits"/>
+    <ObjectId id="253" name="MoneySessionUpdate_RemoveOperatorCredit"/>
+    <ObjectId id="254" name="MoneySessionUpdate_ClearOperatorCredits"/>
+    <ObjectId id="255" name="MoneySessionUpdate_SetOperatorCreditAmount"/>
+    <ObjectId id="256" name="MoneySessionListener_PlayerCreditAdded"/>
+    <ObjectId id="257" name="MoneySessionListener_PlayerCreditsAdded"/>
+    <ObjectId id="258" name="MoneySessionListener_PlayerCreditRemoved"/>
+    <ObjectId id="259" name="MoneySessionListener_PlayerCreditsCleared"/>
+    <ObjectId id="260" name="MoneySessionListener_PlayerCreditAmountChanged"/>
+    <ObjectId id="261" name="MoneySessionListener_OperatorCreditAdded"/>
+    <ObjectId id="262" name="MoneySessionListener_OperatorCreditsAdded"/>
+    <ObjectId id="263" name="MoneySessionListener_OperatorCreditRemoved"/>
+    <ObjectId id="264" name="MoneySessionListener_OperatorCreditsCleared"/>
+    <ObjectId id="265" name="MoneySessionListener_OperatorCreditAmountChanged"/>
+    <ObjectId id="266" name="PublicTourUpdate_SetRegisteringState"/>
+    <ObjectId id="267" name="PublicTourUpdate_AddRegisteringStateEntrant"/>
+    <ObjectId id="268" name="PublicTourUpdate_AddRegisteringStateEntrants"/>
+    <ObjectId id="269" name="PublicTourUpdate_RemoveRegisteringStateEntrant"/>
+    <ObjectId id="270" name="PublicTourUpdate_ClearRegisteringStateEntrants"/>
+    <ObjectId id="271" name="PublicTourUpdate_SetEntrantUnregisterPending"/>
+    <ObjectId id="272" name="PublicTourUpdate_SetRunningState"/>
+    <ObjectId id="273" name="PublicTourUpdate_SetPlayerStack"/>
+    <ObjectId id="274" name="PublicTourUpdate_SetPlayerFinalRank"/>
+    <ObjectId id="275" name="PublicTourUpdate_SetPlayerPrize"/>
+    <ObjectId id="276" name="PublicTourUpdate_SetPlayerEliminated"/>
+    <ObjectId id="277" name="PublicTourUpdate_SetPlayerMoveCount"/>
+    <ObjectId id="278" name="PublicTourUpdate_SetPlayerMarkedForMove"/>
+    <ObjectId id="279" name="PublicTourUpdate_SetPlayerRank"/>
+    <ObjectId id="280" name="PublicTourUpdate_SetRunningStateState"/>
+    <ObjectId id="281" name="PublicTourUpdate_AddTableSeat"/>
+    <ObjectId id="282" name="PublicTourUpdate_AddTableSeats"/>
+    <ObjectId id="283" name="PublicTourUpdate_RemoveTableSeat"/>
+    <ObjectId id="284" name="PublicTourUpdate_ClearTableSeats"/>
+    <ObjectId id="285" name="PublicTourUpdate_SetSeatTourPlayerId"/>
+    <ObjectId id="286" name="PublicTourUpdate_SetTableIdle"/>
+    <ObjectId id="287" name="PublicTourUpdate_SetTableRemoved"/>
+    <ObjectId id="288" name="PublicTourUpdate_SetRunningStateCurrentLevel"/>
+    <ObjectId id="289" name="LimitedDeckService_ShuffleDeck"/>
+    <ObjectId id="290" name="PublicTourUpdate_SetRunningStatePauseTimestamp"/>
+    <ObjectId id="291" name="PublicTourUpdate_SetState"/>
+    <ObjectId id="292" name="PublicTourListener_RegisteringStateChanged"/>
+    <ObjectId id="293" name="PublicTourListener_RegisteringStateEntrantAdded"/>
+    <ObjectId id="294" name="PublicTourListener_RegisteringStateEntrantsAdded"/>
+    <ObjectId id="295" name="PublicTourListener_RegisteringStateEntrantRemoved"/>
+    <ObjectId id="296" name="PublicTourListener_RegisteringStateEntrantsCleared"/>
+    <ObjectId id="297" name="PublicTourListener_EntrantUnregisterPendingChanged"/>
+    <ObjectId id="298" name="PublicTourListener_RunningStateChanged"/>
+    <ObjectId id="299" name="PublicTourListener_PlayerStackChanged"/>
+    <ObjectId id="300" name="PublicTourListener_PlayerFinalRankChanged"/>
+    <ObjectId id="301" name="PublicTourListener_PlayerPrizeChanged"/>
+    <ObjectId id="302" name="PublicTourListener_PlayerEliminatedChanged"/>
+    <ObjectId id="303" name="PublicTourListener_PlayerMoveCountChanged"/>
+    <ObjectId id="304" name="PublicTourListener_PlayerMarkedForMoveChanged"/>
+    <ObjectId id="305" name="PublicTourListener_PlayerRankChanged"/>
+    <ObjectId id="306" name="PublicTourListener_RunningStateStateChanged"/>
+    <ObjectId id="307" name="PublicTourListener_TableSeatAdded"/>
+    <ObjectId id="308" name="PublicTourListener_TableSeatsAdded"/>
+    <ObjectId id="309" name="PublicTourListener_TableSeatRemoved"/>
+    <ObjectId id="310" name="PublicTourListener_TableSeatsCleared"/>
+    <ObjectId id="311" name="PublicTourListener_SeatTourPlayerIdChanged"/>
+    <ObjectId id="312" name="PublicTourListener_TableIdleChanged"/>
+    <ObjectId id="313" name="PublicTourListener_TableRemovedChanged"/>
+    <ObjectId id="314" name="PublicTourListener_RunningStateCurrentLevelChanged"/>
+    <ObjectId id="315" name="PublicTourListener_RunningStatePauseTimestampChanged"/>
+    <ObjectId id="316" name="PublicTourListener_StateChanged"/>
+    <ObjectId id="317" name="PrivateTourStateUpdate_SetPrivateRunningState"/>
+    <ObjectId id="318" name="PrivateTourStateUpdate_SetPrivateRunningStateMyTableKey"/>
+    <ObjectId id="319" name="PrivateTourStateUpdate_SetPrivateRunningStateMyRank"/>
+    <ObjectId id="320" name="PrivateTourStateUpdate_SetPrivateRunningStateMyStack"/>
+    <ObjectId id="321" name="PrivateTourStateUpdate_SetPrivateRunningStateMyTourPlayerId"/>
+    <ObjectId id="322" name="PrivateTourStateUpdate_SetRegistered"/>
+    <ObjectId id="323" name="PrivateTourStateListener_PrivateRunningStateChanged"/>
+    <ObjectId id="324" name="PrivateTourStateListener_PrivateRunningStateMyTableKeyChanged"/>
+    <ObjectId id="325" name="PrivateTourStateListener_PrivateRunningStateMyRankChanged"/>
+    <ObjectId id="326" name="PrivateTourStateListener_PrivateRunningStateMyStackChanged"/>
+    <ObjectId id="327" name="PrivateTourStateListener_PrivateRunningStateMyTourPlayerIdChanged"/>
+    <ObjectId id="328" name="PrivateTourStateListener_RegisteredChanged"/>
+    <ObjectId id="329" name="RecurringTourUpdate_SetLastSpawnedTime"/>
+    <ObjectId id="330" name="RecurringTourListener_LastSpawnedTimeChanged"/>
+    <ObjectId id="331" name="MultiTourUpdate_AddTourKey"/>
+    <ObjectId id="332" name="MultiTourUpdate_AddTourKeys"/>
+    <ObjectId id="333" name="MultiTourUpdate_RemoveTourKey"/>
+    <ObjectId id="334" name="MultiTourUpdate_ClearTourKeys"/>
+    <ObjectId id="335" name="LimitedDeckService_ShowOne"/>
+    <ObjectId id="336" name="MultiTourListener_TourKeyAdded"/>
+    <ObjectId id="337" name="MultiTourListener_TourKeysAdded"/>
+    <ObjectId id="338" name="MultiTourListener_TourKeyRemoved"/>
+    <ObjectId id="339" name="MultiTourListener_TourKeysCleared"/>
+    <ObjectId id="340" name="MeleeTourUpdate_SetStartTime"/>
+    <ObjectId id="341" name="MeleeTourUpdate_AddLevel"/>
+    <ObjectId id="342" name="MeleeTourUpdate_AddLevels"/>
+    <ObjectId id="343" name="MeleeTourUpdate_RemoveLevel"/>
+    <ObjectId id="344" name="MeleeTourUpdate_ClearLevels"/>
+    <ObjectId id="345" name="MeleeTourUpdate_SetRunningMelee"/>
+    <ObjectId id="346" name="MeleeTourUpdate_SetPlayerPoints"/>
+    <ObjectId id="347" name="MeleeTourListener_StartTimeChanged"/>
+    <ObjectId id="348" name="MeleeTourListener_LevelAdded"/>
+    <ObjectId id="349" name="MeleeTourListener_LevelsAdded"/>
+    <ObjectId id="350" name="MeleeTourListener_LevelRemoved"/>
+    <ObjectId id="351" name="MeleeTourListener_LevelsCleared"/>
+    <ObjectId id="352" name="MeleeTourListener_RunningMeleeChanged"/>
+    <ObjectId id="353" name="MeleeTourListener_PlayerPointsChanged"/>
+    <ObjectId id="354" name="PrivatePlayerUpdate_SetAccountBalance"/>
+    <ObjectId id="355" name="PrivatePlayerUpdate_AddPocketCard"/>
+    <ObjectId id="356" name="PrivatePlayerUpdate_AddPocketCards"/>
+    <ObjectId id="357" name="PrivatePlayerUpdate_RemovePocketCard"/>
+    <ObjectId id="358" name="PrivatePlayerUpdate_ClearPocketCards"/>
+    <ObjectId id="359" name="PrivatePlayerUpdate_AddAllowedAction"/>
+    <ObjectId id="360" name="PrivatePlayerUpdate_AddAllowedActions"/>
+    <ObjectId id="361" name="PrivatePlayerUpdate_RemoveAllowedAction"/>
+    <ObjectId id="362" name="PrivatePlayerUpdate_ClearAllowedActions"/>
+    <ObjectId id="363" name="PrivatePlayerUpdate_SetUiState"/>
+    <ObjectId id="364" name="PrivatePlayerUpdate_SetMySeat"/>
+    <ObjectId id="365" name="PrivatePlayerUpdate_SetPreTurnAction"/>
+    <ObjectId id="366" name="PrivatePlayerListener_AccountBalanceChanged"/>
+    <ObjectId id="367" name="PrivatePlayerListener_PocketCardAdded"/>
+    <ObjectId id="368" name="PrivatePlayerListener_PocketCardsAdded"/>
+    <ObjectId id="369" name="PrivatePlayerListener_PocketCardRemoved"/>
+    <ObjectId id="370" name="PrivatePlayerListener_PocketCardsCleared"/>
+    <ObjectId id="371" name="PrivatePlayerListener_AllowedActionAdded"/>
+    <ObjectId id="372" name="PrivatePlayerListener_AllowedActionsAdded"/>
+    <ObjectId id="373" name="PrivatePlayerListener_AllowedActionRemoved"/>
+    <ObjectId id="374" name="PrivatePlayerListener_AllowedActionsCleared"/>
+    <ObjectId id="375" name="PrivatePlayerListener_UiStateChanged"/>
+    <ObjectId id="376" name="PrivatePlayerListener_MySeatChanged"/>
+    <ObjectId id="377" name="PrivatePlayerListener_PreTurnActionChanged"/>
+    <ObjectId id="378" name="PublicPokerGameUpdate_SetSeatPlayer"/>
+    <ObjectId id="379" name="PublicPokerGameUpdate_SetPlayerUsername"/>
+    <ObjectId id="380" name="PublicPokerGameUpdate_SetPlayerStack"/>
+    <ObjectId id="381" name="PublicPokerGameUpdate_AddPlayerVisibleCard"/>
+    <ObjectId id="382" name="PublicPokerGameUpdate_AddPlayerVisibleCards"/>
+    <ObjectId id="383" name="PublicPokerGameUpdate_RemovePlayerVisibleCard"/>
+    <ObjectId id="384" name="PublicPokerGameUpdate_ClearPlayerVisibleCards"/>
+    <ObjectId id="385" name="PublicPokerGameUpdate_SetPlayerAccountBalance"/>
+    <ObjectId id="386" name="PublicPokerGameUpdate_SetPlayerCurrentBet"/>
+    <ObjectId id="387" name="PublicPokerGameUpdate_SetPlayerNoHiddenCards"/>
+    <ObjectId id="388" name="PublicPokerGameUpdate_SetPlayerLatestPokerAction"/>
+    <ObjectId id="389" name="PublicPokerGameUpdate_SetPlayerBettingState"/>
+    <ObjectId id="390" name="PublicPokerGameUpdate_SetPlayerHighCard"/>
+    <ObjectId id="391" name="PublicPokerGameUpdate_SetPlayerState"/>
+    <ObjectId id="392" name="PublicPokerGameUpdate_SetPlayerDisconnected"/>
+    <ObjectId id="393" name="PublicPokerGameUpdate_SetPlayerMarkedForRemoval"/>
+    <ObjectId id="394" name="PublicPokerGameUpdate_SetPlayerAway"/>
+    <ObjectId id="395" name="PublicPokerGameUpdate_SetPlayerWinChances"/>
+    <ObjectId id="396" name="PublicPokerGameUpdate_AddCommunityCard"/>
+    <ObjectId id="397" name="PublicPokerGameUpdate_AddCommunityCards"/>
+    <ObjectId id="398" name="PublicPokerGameUpdate_RemoveCommunityCard"/>
+    <ObjectId id="399" name="PublicPokerGameUpdate_ClearCommunityCards"/>
+    <ObjectId id="400" name="PublicPokerGameUpdate_SetDealerButton"/>
+    <ObjectId id="401" name="PublicPokerGameUpdate_SetState"/>
+    <ObjectId id="402" name="PublicPokerGameUpdate_AddPot"/>
+    <ObjectId id="403" name="PublicPokerGameUpdate_AddPots"/>
+    <ObjectId id="404" name="PublicPokerGameUpdate_RemovePot"/>
+    <ObjectId id="405" name="PublicPokerGameUpdate_ClearPots"/>
+    <ObjectId id="406" name="PublicPokerGameUpdate_AddPotPotAmount"/>
+    <ObjectId id="407" name="PublicPokerGameUpdate_AddPotPotAmounts"/>
+    <ObjectId id="408" name="PublicPokerGameUpdate_RemovePotPotAmount"/>
+    <ObjectId id="409" name="PublicPokerGameUpdate_ClearPotPotAmounts"/>
+    <ObjectId id="410" name="PublicPokerGameUpdate_SetCurrentBetDecision"/>
+    <ObjectId id="411" name="PublicPokerGameUpdate_SetCurrentMuckDecision"/>
+    <ObjectId id="412" name="PublicPokerGameUpdate_SetBigBlindSeat"/>
+    <ObjectId id="413" name="PublicPokerGameUpdate_SetBettingRound"/>
+    <ObjectId id="414" name="PublicPokerGameUpdate_SetResult"/>
+    <ObjectId id="415" name="PublicPokerGameUpdate_AddChatMessage"/>
+    <ObjectId id="416" name="PublicPokerGameUpdate_AddChatMessages"/>
+    <ObjectId id="417" name="PublicPokerGameUpdate_RemoveChatMessage"/>
+    <ObjectId id="418" name="PublicPokerGameUpdate_ClearChatMessages"/>
+    <ObjectId id="419" name="PublicPokerGameUpdate_SetCurrentMinimumBet"/>
+    <ObjectId id="420" name="PublicPokerGameUpdate_SetRoundCounter"/>
+    <ObjectId id="421" name="PublicPokerGameUpdate_SetMarkedForRemoval"/>
+    <ObjectId id="422" name="PublicPokerGameUpdate_SetFixedBetSettings"/>
+    <ObjectId id="423" name="PublicPokerGameListener_SeatPlayerChanged"/>
+    <ObjectId id="424" name="PublicPokerGameListener_PlayerUsernameChanged"/>
+    <ObjectId id="425" name="PublicPokerGameListener_PlayerStackChanged"/>
+    <ObjectId id="426" name="PublicPokerGameListener_PlayerVisibleCardAdded"/>
+    <ObjectId id="427" name="PublicPokerGameListener_PlayerVisibleCardsAdded"/>
+    <ObjectId id="428" name="PublicPokerGameListener_PlayerVisibleCardRemoved"/>
+    <ObjectId id="429" name="PublicPokerGameListener_PlayerVisibleCardsCleared"/>
+    <ObjectId id="430" name="PublicPokerGameListener_PlayerAccountBalanceChanged"/>
+    <ObjectId id="431" name="PublicPokerGameListener_PlayerCurrentBetChanged"/>
+    <ObjectId id="432" name="PublicPokerGameListener_PlayerNoHiddenCardsChanged"/>
+    <ObjectId id="433" name="PublicPokerGameListener_PlayerLatestPokerActionChanged"/>
+    <ObjectId id="434" name="PublicPokerGameListener_PlayerBettingStateChanged"/>
+    <ObjectId id="435" name="PublicPokerGameListener_PlayerHighCardChanged"/>
+    <ObjectId id="436" name="PublicPokerGameListener_PlayerStateChanged"/>
+    <ObjectId id="437" name="PublicPokerGameListener_PlayerDisconnectedChanged"/>
+    <ObjectId id="438" name="PublicPokerGameListener_PlayerMarkedForRemovalChanged"/>
+    <ObjectId id="439" name="PublicPokerGameListener_PlayerAwayChanged"/>
+    <ObjectId id="440" name="PublicPokerGameListener_PlayerWinChancesChanged"/>
+    <ObjectId id="441" name="PublicPokerGameListener_CommunityCardAdded"/>
+    <ObjectId id="442" name="PublicPokerGameListener_CommunityCardsAdded"/>
+    <ObjectId id="443" name="PublicPokerGameListener_CommunityCardRemoved"/>
+    <ObjectId id="444" name="PublicPokerGameListener_CommunityCardsCleared"/>
+    <ObjectId id="445" name="PublicPokerGameListener_DealerButtonChanged"/>
+    <ObjectId id="446" name="PublicPokerGameListener_StateChanged"/>
+    <ObjectId id="447" name="PublicPokerGameListener_PotAdded"/>
+    <ObjectId id="448" name="PublicPokerGameListener_PotsAdded"/>
+    <ObjectId id="449" name="PublicPokerGameListener_PotRemoved"/>
+    <ObjectId id="450" name="PublicPokerGameListener_PotsCleared"/>
+    <ObjectId id="451" name="PublicPokerGameListener_PotPotAmountAdded"/>
+    <ObjectId id="452" name="PublicPokerGameListener_PotPotAmountsAdded"/>
+    <ObjectId id="453" name="PublicPokerGameListener_PotPotAmountRemoved"/>
+    <ObjectId id="454" name="PublicPokerGameListener_PotPotAmountsCleared"/>
+    <ObjectId id="455" name="PublicPokerGameListener_CurrentBetDecisionChanged"/>
+    <ObjectId id="456" name="PublicPokerGameListener_CurrentMuckDecisionChanged"/>
+    <ObjectId id="457" name="PublicPokerGameListener_BigBlindSeatChanged"/>
+    <ObjectId id="458" name="PublicPokerGameListener_BettingRoundChanged"/>
+    <ObjectId id="459" name="PublicPokerGameListener_ResultChanged"/>
+    <ObjectId id="460" name="PublicPokerGameListener_ChatMessageAdded"/>
+    <ObjectId id="461" name="PublicPokerGameListener_ChatMessagesAdded"/>
+    <ObjectId id="462" name="PublicPokerGameListener_ChatMessageRemoved"/>
+    <ObjectId id="463" name="PublicPokerGameListener_ChatMessagesCleared"/>
+    <ObjectId id="464" name="PublicPokerGameListener_CurrentMinimumBetChanged"/>
+    <ObjectId id="465" name="PublicPokerGameListener_RoundCounterChanged"/>
+    <ObjectId id="466" name="PublicPokerGameListener_MarkedForRemovalChanged"/>
+    <ObjectId id="467" name="PublicPokerGameListener_FixedBetSettingsChanged"/>
+    <ObjectId id="468" name="CashGameTableUpdate_SetRoundSeq"/>
+    <ObjectId id="469" name="CashGameTableListener_RoundSeqChanged"/>
+    <ObjectId id="470" name="SngUpdate_AddEntrant"/>
+    <ObjectId id="471" name="SngUpdate_AddEntrants"/>
+    <ObjectId id="472" name="SngUpdate_RemoveEntrant"/>
+    <ObjectId id="473" name="SngUpdate_ClearEntrants"/>
+    <ObjectId id="474" name="SngUpdate_SetEntrantUnregisterPending"/>
+    <ObjectId id="475" name="SngListener_EntrantAdded"/>
+    <ObjectId id="476" name="SngListener_EntrantsAdded"/>
+    <ObjectId id="477" name="SngListener_EntrantRemoved"/>
+    <ObjectId id="478" name="SngListener_EntrantsCleared"/>
+    <ObjectId id="479" name="SngListener_EntrantUnregisterPendingChanged"/>
+    <ObjectId id="480" name="ForumThreadUpdate_AddPost"/>
+    <ObjectId id="481" name="ForumThreadUpdate_AddPosts"/>
+    <ObjectId id="482" name="ForumThreadUpdate_RemovePost"/>
+    <ObjectId id="483" name="ForumThreadUpdate_ClearPosts"/>
+    <ObjectId id="484" name="ForumThreadUpdate_SetPostContent"/>
+    <ObjectId id="485" name="TourHost_LevelUp"/>
+    <ObjectId id="486" name="ForumThreadUpdate_SetPostLastEdited"/>
+    <ObjectId id="487" name="LimitedDeckService_PeekHoleCards"/>
+    <ObjectId id="488" name="ForumThreadUpdate_AddPostLike"/>
+    <ObjectId id="489" name="ForumThreadUpdate_AddPostLikes"/>
+    <ObjectId id="490" name="ForumThreadUpdate_RemovePostLike"/>
+    <ObjectId id="491" name="LimitedDeckServiceClient_SetExtensionState"/>
+    <ObjectId id="492" name="ForumThreadUpdate_ClearPostLikes"/>
+    <ObjectId id="493" name="ForumThreadListener_PostAdded"/>
+    <ObjectId id="494" name="ForumThreadListener_PostsAdded"/>
+    <ObjectId id="495" name="ForumThreadListener_PostRemoved"/>
+    <ObjectId id="496" name="ForumThreadListener_PostsCleared"/>
+    <ObjectId id="497" name="ForumThreadListener_PostContentChanged"/>
+    <ObjectId id="498" name="ForumThreadListener_PostLastEditedChanged"/>
+    <ObjectId id="499" name="ForumThreadListener_PostLikeAdded"/>
+    <ObjectId id="500" name="ForumThreadListener_PostLikesAdded"/>
+    <ObjectId id="501" name="ForumThreadListener_PostLikeRemoved"/>
+    <ObjectId id="502" name="ForumThreadListener_PostLikesCleared"/>
+    <ObjectId id="503" name="PokerGameInternal_RoundComplete"/>
+    <ObjectId id="504" name="LimitedDeckExtensionUpdate_AddPlayer"/>
+    <ObjectId id="505" name="LimitedDeckExtensionUpdate_RemovePlayer"/>
+    <ObjectId id="506" name="LimitedDeckExtensionUpdate_ClearPlayers"/>
+    <ObjectId id="507" name="LimitedDeckExtensionUpdate_SetPlayerPeek"/>
+    <ObjectId id="508" name="LimitedDeckExtensionUpdate_SetPlayerPoints"/>
+    <ObjectId id="509" name="LimitedDeckExtensionUpdate_AddPlayerShownCard"/>
+    <ObjectId id="510" name="LimitedDeckExtensionUpdate_AddPlayerShownCards"/>
+    <ObjectId id="511" name="LimitedDeckExtensionUpdate_ClearPlayerShownCards"/>
+    <ObjectId id="512" name="LimitedDeckExtensionUpdate_AddPlayerPeekedCard"/>
+    <ObjectId id="513" name="LimitedDeckExtensionUpdate_AddPlayerPeekedCards"/>
+    <ObjectId id="514" name="LimitedDeckExtensionUpdate_RemovePlayerPeekedCard"/>
+    <ObjectId id="515" name="LimitedDeckExtensionUpdate_ClearPlayerPeekedCards"/>
+    <ObjectId id="516" name="LimitedDeckExtensionUpdate_SetPlayerHandsWon"/>
+    <ObjectId id="517" name="LimitedDeckExtensionUpdate_SetPlayerFinalRank"/>
+    <ObjectId id="518" name="LimitedDeckExtensionUpdate_SetPlayerShuffler"/>
+    <ObjectId id="519" name="LimitedDeckExtensionUpdate_SetPlayerShowOne"/>
+    <ObjectId id="520" name="LimitedDeckExtensionUpdate_AddPlayerResource"/>
+    <ObjectId id="521" name="LimitedDeckExtensionUpdate_AddPlayerResources"/>
+    <ObjectId id="522" name="LimitedDeckExtensionUpdate_RemovePlayerResource"/>
+    <ObjectId id="523" name="LimitedDeckExtensionUpdate_ClearPlayerResources"/>
+    <ObjectId id="524" name="LimitedDeckExtensionUpdate_SetPlayerUncontestedHandsWon"/>
+    <ObjectId id="525" name="LimitedDeckExtensionUpdate_AddPointEvent"/>
+    <ObjectId id="526" name="LimitedDeckExtensionUpdate_AddPointEvents"/>
+    <ObjectId id="527" name="LimitedDeckExtensionUpdate_RemovePointEvent"/>
+    <ObjectId id="528" name="LimitedDeckExtensionUpdate_ClearPointEvents"/>
+    <ObjectId id="529" name="LimitedDeckExtensionUpdate_SetLatestCheckpoint"/>
+    <ObjectId id="530" name="LimitedDeckExtensionUpdate_SetRoundCount"/>
+    <ObjectId id="531" name="LimitedDeckExtensionListener_PlayerAdded"/>
+    <ObjectId id="532" name="LimitedDeckExtensionListener_PlayerRemoved"/>
+    <ObjectId id="533" name="LimitedDeckExtensionListener_PlayersCleared"/>
+    <ObjectId id="534" name="LimitedDeckExtensionListener_PlayerPeekChanged"/>
+    <ObjectId id="535" name="LimitedDeckExtensionListener_PlayerPointsChanged"/>
+    <ObjectId id="536" name="LimitedDeckExtensionListener_PlayerShownCardAdded"/>
+    <ObjectId id="537" name="LimitedDeckExtensionListener_PlayerShownCardsAdded"/>
+    <ObjectId id="538" name="LimitedDeckExtensionListener_PlayerShownCardsCleared"/>
+    <ObjectId id="539" name="LimitedDeckExtensionListener_PlayerPeekedCardAdded"/>
+    <ObjectId id="540" name="LimitedDeckExtensionListener_PlayerPeekedCardsAdded"/>
+    <ObjectId id="541" name="LimitedDeckExtensionListener_PlayerPeekedCardRemoved"/>
+    <ObjectId id="542" name="LimitedDeckExtensionListener_PlayerPeekedCardsCleared"/>
+    <ObjectId id="543" name="LimitedDeckExtensionListener_PlayerHandsWonChanged"/>
+    <ObjectId id="544" name="LimitedDeckExtensionListener_PlayerFinalRankChanged"/>
+    <ObjectId id="545" name="LimitedDeckExtensionListener_PlayerShufflerChanged"/>
+    <ObjectId id="546" name="LimitedDeckExtensionListener_PlayerShowOneChanged"/>
+    <ObjectId id="547" name="LimitedDeckExtensionListener_PlayerResourceAdded"/>
+    <ObjectId id="548" name="LimitedDeckExtensionListener_PlayerResourcesAdded"/>
+    <ObjectId id="549" name="LimitedDeckExtensionListener_PlayerResourceRemoved"/>
+    <ObjectId id="550" name="LimitedDeckExtensionListener_PlayerResourcesCleared"/>
+    <ObjectId id="551" name="LimitedDeckExtensionListener_PlayerUncontestedHandsWonChanged"/>
+    <ObjectId id="552" name="LimitedDeckExtensionListener_PointEventAdded"/>
+    <ObjectId id="553" name="LimitedDeckExtensionListener_PointEventsAdded"/>
+    <ObjectId id="554" name="LimitedDeckExtensionListener_PointEventRemoved"/>
+    <ObjectId id="555" name="LimitedDeckExtensionListener_PointEventsCleared"/>
+    <ObjectId id="556" name="LimitedDeckExtensionListener_LatestCheckpointChanged"/>
+    <ObjectId id="557" name="LimitedDeckExtensionListener_RoundCountChanged"/>
+    <ObjectId id="558" name="PrivateLimitedDeckStateUpdate_AddPlayerInfo"/>
+    <ObjectId id="559" name="PrivateLimitedDeckStateUpdate_RemovePlayerInfo"/>
+    <ObjectId id="560" name="PrivateLimitedDeckStateUpdate_ClearPlayerInfos"/>
+    <ObjectId id="561" name="PrivateLimitedDeckStateUpdate_AddPlayerInfoPeekedCard"/>
+    <ObjectId id="562" name="PrivateLimitedDeckStateUpdate_AddPlayerInfoPeekedCards"/>
+    <ObjectId id="563" name="PrivateLimitedDeckStateUpdate_RemovePlayerInfoPeekedCard"/>
+    <ObjectId id="564" name="PrivateLimitedDeckStateUpdate_ClearPlayerInfoPeekedCards"/>
+    <ObjectId id="565" name="PrivateLimitedDeckStateUpdate_AddPlayerInfoShownCard"/>
+    <ObjectId id="566" name="PrivateLimitedDeckStateUpdate_AddPlayerInfoShownCards"/>
+    <ObjectId id="567" name="PrivateLimitedDeckStateUpdate_RemovePlayerInfoShownCard"/>
+    <ObjectId id="568" name="PrivateLimitedDeckStateUpdate_ClearPlayerInfoShownCards"/>
+    <ObjectId id="569" name="UserAdmin_UpdatePoints"/>
+    <ObjectId id="570" name="UserAdmin_UpdateCharacters"/>
+    <ObjectId id="571" name="UserAdminReply_UpdatePointsResponse"/>
+    <ObjectId id="572" name="UserAdminReply_UpdateCharactersResponse"/>
+    <ObjectId id="573" name="UserAdmin_AddPoints"/>
+    <ObjectId id="574" name="UserAdminReply_AddPointsResponse"/>
+    <ObjectId id="575" name="NewsFeedClient_SetNewsFeedState"/>
+    <ObjectId id="576" name="PrivateLimitedDeckStateUpdate_AddUsedCard"/>
+    <ObjectId id="577" name="PrivateLimitedDeckStateUpdate_AddUsedCards"/>
+    <ObjectId id="578" name="PrivateLimitedDeckStateUpdate_RemoveUsedCard"/>
+    <ObjectId id="579" name="PrivateLimitedDeckStateUpdate_ClearUsedCards"/>
+    <ObjectId id="580" name="PrivateLimitedDeckStateUpdate_SetResult"/>
+    <ObjectId id="581" name="PrivateLimitedDeckStateListener_PlayerInfoAdded"/>
+    <ObjectId id="582" name="PrivateLimitedDeckStateListener_PlayerInfoRemoved"/>
+    <ObjectId id="583" name="PrivateLimitedDeckStateListener_PlayerInfosCleared"/>
+    <ObjectId id="584" name="PokerGameInternal_AntesPaid"/>
+    <ObjectId id="585" name="TourLifecycle_Prepare"/>
+    <ObjectId id="586" name="PrivateLimitedDeckStateListener_PlayerInfoPeekedCardAdded"/>
+    <ObjectId id="587" name="PrivateLimitedDeckStateListener_PlayerInfoPeekedCardsAdded"/>
+    <ObjectId id="588" name="LimitedDeckServiceReply_PeekHoleCardsResponse"/>
+    <ObjectId id="589" name="LimitedDeckServiceReply_ShuffleDeckResponse"/>
+    <ObjectId id="590" name="LimitedDeckServiceReply_ShowOneResponse"/>
+    <ObjectId id="591" name="PrivateLimitedDeckStateListener_PlayerInfoPeekedCardRemoved"/>
+    <ObjectId id="592" name="PrivateLimitedDeckStateListener_PlayerInfoPeekedCardsCleared"/>
+    <ObjectId id="593" name="PrivateLimitedDeckStateListener_PlayerInfoShownCardAdded"/>
+    <ObjectId id="594" name="PrivateLimitedDeckStateListener_PlayerInfoShownCardsAdded"/>
+    <ObjectId id="595" name="PrivateLimitedDeckStateListener_PlayerInfoShownCardRemoved"/>
+    <ObjectId id="596" name="PrivateLimitedDeckStateListener_PlayerInfoShownCardsCleared"/>
+    <ObjectId id="597" name="PrivateLimitedDeckStateListener_UsedCardAdded"/>
+    <ObjectId id="598" name="PrivateLimitedDeckStateListener_UsedCardsAdded"/>
+    <ObjectId id="599" name="PrivateLimitedDeckStateListener_UsedCardRemoved"/>
+    <ObjectId id="600" name="PrivateLimitedDeckStateListener_UsedCardsCleared"/>
+    <ObjectId id="601" name="PrivateLimitedDeckStateListener_ResultChanged"/>
+    <ObjectId id="603" name="UserBackend_AddUser"/>
+    <ObjectId id="604" name="UserBackend_AddUserResponse"/>
+    <ObjectId id="605" name="UserBackend_AuthenticatePasswordResponse"/>
+    <ObjectId id="606" name="UserBackend_AuthenticatePassword"/>
+    <ObjectId id="607" name="UserApi_SignUpResponse"/>
+    <ObjectId id="608" name="UserApi_LoginResponse"/>
+    <ObjectId id="609" name="UserApi_LoginAsGuestResponse"/>
+    <ObjectId id="610" name="UserApi_LoginWithToken"/>
+    <ObjectId id="611" name="UserApiReply_LoginWithTokenResponse"/>
+  </MessageIds>
+  <Modules>
+    <Module name="ng-fwk-common" outDir="ng-fwk-common/target/generated-sources/ng-codegen-plugin">
+      <ApiTree name="Apis">
+        <Children>
+          <Tree name="connectionserver">
+            <Children>
+              <Api apiType="ASYNC" clientVisible="true" errors="" name="ClientControl" packageName="ngpoker.connectionserver.clientcontrol" principalType="PlayerId">
+                <Messages>
+                  <Message description="called when a user logs in to tell client the apps that the player is associated with. i.e. what tables they are sitting at and what tournaments they are registered to" name="SetInitialInfo">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="locations" type="PlayerLocation"/>
+                      <Field access="READ_ONLY" name="serverTime" type="Long"/>
+                      <Field access="READ_ONLY" name="guest" type="Boolean"/>
+                    </Fields>
+                    <Response name="SetInitialInfoResponse"/>
+                  </Message>
+                  <Message description="used to direct the client to join a channel, for example when a sng spawns, the client should join the created tournament" name="ForceJoinChannel">
+                    <Fields>
+                      <Field access="READ_ONLY" name="channelId" type="String"/>
+                      <Field access="READ_ONLY" name="appType" type="AppType"/>
+                    </Fields>
+                    <Response name="ForceJoinChannelResponse"/>
+                  </Message>
+                  <Message description="sets the high level user state on the client" name="SetUser">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="user" type="UserEntity"/>
+                    </Fields>
+                    <Response name="SetUserResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="MessageSender" packageName="ngpoker.connectionserver.messagesender">
+                <Messages>
+                  <Message name="Post">
+                    <Fields>
+                      <Field access="READ_ONLY" name="player" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="message" type="Message"/>
+                    </Fields>
+                    <Response name="PostResponse"/>
+                  </Message>
+                  <Message name="Broadcast">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="players" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="message" type="Message"/>
+                    </Fields>
+                    <Response name="BroadcastResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" list="true" name="players" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener" packageName="ngpoker.connectionserver.listener">
+                <Messages>
+                  <Message name="PlayerConnected">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="nodeId" type="NodeId"/>
+                    </Fields>
+                    <Response name="PlayerConnectedResponse"/>
+                  </Message>
+                  <Message name="PlayerDisconnected">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                    </Fields>
+                    <Response name="PlayerDisconnectedResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="channelserver">
+            <Children>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="PLAYER_ALREADY_JOINED,PLAYER_NOT_JOINED," hideEntityKey="true" name="Channel" packageName="ngpoker.client.channel" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message description="a player wants to join a channel" name="Join">
+                    <Response name="JoinResponse"/>
+                  </Message>
+                  <Message description="A player wants to leave a channel" name="Leave">
+                    <Response name="LeaveResponse"/>
+                  </Message>
+                  <Message name="PlayerConnected">
+                    <Response name="PlayerConnectedResponse"/>
+                  </Message>
+                  <Message name="PlayerDisconnected">
+                    <Response name="PlayerDisconnectedResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChannelClient" packageName="ngpoker.server.channels.channelclient">
+                <Messages>
+                  <Message name="AppState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="publicAppState" type="PublicAppState"/>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="privateAppState" type="PrivateAppState"/>
+                    </Fields>
+                    <Response name="AppStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="NodeEntryPoint" packageName="ngpoker.nodeentrypoint">
+                <Messages>
+                  <Message description="correlation id has a value if comm type is SYNC_RESPONSE or SYNC_REQUEST" name="ReceiveAsyncMessage">
+                    <Fields>
+                      <Field access="READ_ONLY" name="sender" type="NodeId"/>
+                      <Field access="READ_ONLY" name="message" type="InMessage"/>
+                    </Fields>
+                    <Response name="ReceiveAsyncMessageResponse"/>
+                  </Message>
+                  <Message name="ReceiveSyncResponse">
+                    <Fields>
+                      <Field access="READ_ONLY" name="sender" type="NodeId"/>
+                      <Field access="READ_ONLY" name="correlationId" type="Long"/>
+                      <Field access="READ_ONLY" name="response" optional="true" type="Response"/>
+                      <Field access="READ_ONLY" name="errorCode" optional="true" type="ErrorCode"/>
+                    </Fields>
+                    <Response name="ReceiveSyncResponseResponse"/>
+                  </Message>
+                  <Message name="ReceiveSyncRequest">
+                    <Fields>
+                      <Field access="READ_ONLY" name="sender" type="NodeId"/>
+                      <Field access="READ_ONLY" name="correlationId" optional="true" type="Long"/>
+                      <Field access="READ_ONLY" name="request" type="InMessage"/>
+                    </Fields>
+                    <Response name="ReceiveSyncRequestResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="NodeExitPoint" packageName="ngpoker.nodeexitpoint">
+                <Messages>
+                  <Message name="SendAsyncMessage">
+                    <Fields>
+                      <Field access="READ_ONLY" name="receiver" type="NodeId"/>
+                      <Field access="READ_ONLY" name="message" type="InMessage"/>
+                    </Fields>
+                    <Response name="SendAsyncMessageResponse"/>
+                  </Message>
+                  <Message name="SendSyncResponse">
+                    <Fields>
+                      <Field access="READ_ONLY" name="receiver" type="NodeId"/>
+                      <Field access="READ_ONLY" name="response" optional="true" type="Response"/>
+                      <Field access="READ_ONLY" name="correlationId" type="Long"/>
+                      <Field access="READ_ONLY" name="errorCode" optional="true" type="ErrorCode"/>
+                    </Fields>
+                    <Response name="SendSyncResponseResponse"/>
+                  </Message>
+                  <Message name="SendSyncRequest">
+                    <Fields>
+                      <Field access="READ_ONLY" name="receiver" type="NodeId"/>
+                      <Field access="READ_ONLY" name="request" type="InMessage"/>
+                      <Field access="READ_ONLY" name="correlationId" type="Long"/>
+                    </Fields>
+                    <Response name="SendSyncRequestResponse"/>
+                  </Message>
+                  <Message name="SendToTopic">
+                    <Fields>
+                      <Field access="READ_ONLY" name="topicName" type="String"/>
+                      <Field access="READ_ONLY" name="message" type="InMessage"/>
+                    </Fields>
+                    <Response name="SendToTopicResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="SYNCHRONOUS" errors="" hideEntityKey="true" name="Admin" packageName="ngpoker.admin">
+                <Messages>
+                  <Message name="CreateEntity">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                    </Fields>
+                    <Response name="CreateEntityResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="ENTITY_ALREADY_EXISTS,ENTITY_DOES_NOT_EXIST_IN_CLUSTER,FORWARDING_TO_APPROPRIATE_NODE,NODE_IS_SHUTTING_DOWN," hideEntityKey="true" name="Out" packageName="ngpoker.appserver">
+                <Messages>
+                  <Message name="Failure">
+                    <Fields>
+                      <Field access="READ_ONLY" name="messageType" type="ObjectType"/>
+                      <Field access="READ_ONLY" name="resultCode" type="ErrorCode"/>
+                      <Field access="READ_ONLY" name="detail" optional="true" type="String"/>
+                    </Fields>
+                    <Response name="FailureResponse"/>
+                  </Message>
+                  <Message name="Success">
+                    <Fields>
+                      <Field access="READ_ONLY" name="messageType" type="ObjectType"/>
+                    </Fields>
+                    <Response name="SuccessResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="backend">
+            <Children>
+              <Api apiType="SYNC_WITH_REPLY_API" clientVisible="true" errors="INVALID_PASSWORD,NICKNAME_NOT_UNIQUE,INVALID_EMAIL,USER_NOT_FOUND," name="UserApi" packageName="ngpoker.backend.userapi">
+                <Messages>
+                  <Message name="SignUp">
+                    <Fields>
+                      <Field access="READ_ONLY" name="userInfo" type="UserInfo"/>
+                      <Field access="READ_ONLY" name="profileImage" optional="true" type="ImageData"/>
+                    </Fields>
+                    <Response name="SignUpResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="Login">
+                    <Fields>
+                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                      <Field access="READ_ONLY" name="password" type="String"/>
+                    </Fields>
+                    <Response name="LoginResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="LoginAsGuest">
+                    <Fields>
+                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                    </Fields>
+                    <Response name="LoginAsGuestResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="tempPlayerId" optional="true" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message description="user enters email address to help prevent other users maliciously reseting passwords" name="ResetPassword">
+                    <Fields>
+                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                      <Field access="READ_ONLY" name="emailAddress" type="String"/>
+                    </Fields>
+                    <Response name="ResetPasswordResponse"/>
+                  </Message>
+                  <Message name="LoginWithToken">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="token" optional="true" type="String"/>
+                      <Field access="READ_ONLY" name="bot" type="Boolean"/>
+                    </Fields>
+                    <Response name="LoginWithTokenResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" errors="USER_ALREADY_FOLLOWED,NOT_FOLLOWING_USER,CANNOT_FOLLOW_SELF,INCORRECT_EMAIL,CANNOT_FOLLOW_GUEST," name="UserAdmin" packageName="ngpoker.backend.useradmin" principalType="PlayerId">
+                <Messages>
+                  <Message name="UpdateImage">
+                    <Fields>
+                      <Field access="READ_ONLY" name="profileImage" optional="true" type="ImageData"/>
+                    </Fields>
+                    <Response name="UpdateImageResponse"/>
+                  </Message>
+                  <Message name="UpdateStatus">
+                    <Fields>
+                      <Field access="READ_ONLY" name="status" type="String"/>
+                    </Fields>
+                    <Response name="UpdateStatusResponse"/>
+                  </Message>
+                  <Message name="UpdatePassword">
+                    <Fields>
+                      <Field access="READ_ONLY" name="oldPassword" type="String"/>
+                      <Field access="READ_ONLY" name="newPassword" type="String"/>
+                    </Fields>
+                    <Response name="UpdatePasswordResponse"/>
+                  </Message>
+                  <Message name="UpdatePoints">
+                    <Fields>
+                      <Field access="READ_ONLY" name="newValue" type="Long"/>
+                    </Fields>
+                    <Response name="UpdatePointsResponse"/>
+                  </Message>
+                  <Message description="add or remove (using a negative number) points for this user" name="AddPoints">
+                    <Fields>
+                      <Field access="READ_ONLY" name="delta" type="Long"/>
+                    </Fields>
+                    <Response name="AddPointsResponse"/>
+                  </Message>
+                  <Message name="UpdateCharacters">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="newValue" type="PokerCharacter"/>
+                    </Fields>
+                    <Response name="UpdateCharactersResponse"/>
+                  </Message>
+                  <Message name="GetImage">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                    </Fields>
+                    <Response name="GetImageResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                        <Field access="READ_ONLY" name="image" optional="true" type="ImageData"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="GetPlayerDetails">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                    </Fields>
+                    <Response name="GetPlayerDetailsResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                        <Field access="READ_ONLY" list="true" name="locations" optional="true" type="PlayerLocation"/>
+                        <Field access="READ_ONLY" list="true" name="usersFollowed" optional="true" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="AddUserToFollow">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                    </Fields>
+                    <Response name="AddUserToFollowResponse"/>
+                  </Message>
+                  <Message name="RemoveUserToFollow">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                    </Fields>
+                    <Response name="RemoveUserToFollowResponse"/>
+                  </Message>
+                  <Message description="the this user currently being possessed by a bot" name="IsBot">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                    </Fields>
+                    <Response name="IsBotResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                        <Field access="READ_ONLY" name="bot" optional="true" type="Boolean"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="SYNCHRONOUS" errors="PLAYER_NOT_FOUND," hideEntityKey="true" name="PlayerLookup" packageName="ngpoker.playerlookup">
+                <Messages>
+                  <Message name="FindPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="id" type="PlayerId"/>
+                    </Fields>
+                    <Response name="FindPlayerResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="player" type="Player"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="SYNCHRONOUS" errors="INVALID_TOKEN,INVALID_CREDENTIALS,INVALID_EMAIL," name="UserBackend" packageName="ngpoker.userbackend">
+                <Messages>
+                  <Message name="AddUser">
+                    <Fields>
+                      <Field access="READ_ONLY" name="userInfo" type="UserInfo"/>
+                      <Field access="READ_ONLY" name="profileImage" type="ImageData"/>
+                    </Fields>
+                    <Response name="AddUserResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="AuthenticatePassword">
+                    <Response name="AuthenticatePasswordResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="lobby">
+            <Children>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="CANNOT_PAGE_UP,CANNOT_PAGE_DOWN,VIEW_DOES_NOT_EXIST,VIEW_NOT_ACTIVE," hideEntityKey="true" name="LobbySessionManager" packageName="ngpoker.lobby.session" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message description="shifts the client&apos;s view up one page. Assumes client will have retained the static state from the shifted page" name="PageUp">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                    </Fields>
+                    <Response name="PageUpResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="page" optional="true" type="Page"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="PageDown">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                    </Fields>
+                    <Response name="PageDownResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="page" optional="true" type="Page"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message description="pauses updates sent to the client" name="Pause">
+                    <Response name="PauseResponse"/>
+                  </Message>
+                  <Message description="uses specified view id to subscribe to the query. Will cancel a subscription previously assigned to the view id" name="Subscribe">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="pageSize" type="Integer"/>
+                      <Field access="READ_ONLY" name="query" type="QueryData"/>
+                    </Fields>
+                    <Response name="SubscribeResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="page" optional="true" type="Page"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message description="resumes the updates sent to the client. The client provides a view id of the view they want to rejoin. If another view is active then it will be deactivated" name="SwitchView">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                    </Fields>
+                    <Response name="SwitchViewResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="page" optional="true" type="Page"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ClientLobbySession" packageName="ngpoker.lobby.clientlobbysession" principalType="PlayerId">
+                <Messages>
+                  <Message name="EntityAdded">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="entity" type="LobbyEntity"/>
+                    </Fields>
+                    <Response name="EntityAddedResponse"/>
+                  </Message>
+                  <Message name="EntityRemoved">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                    </Fields>
+                    <Response name="EntityRemovedResponse"/>
+                  </Message>
+                  <Message name="PropertyChanged">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="propName" type="String"/>
+                      <Field access="READ_ONLY" name="value" type="String"/>
+                    </Fields>
+                    <Response name="PropertyChangedResponse"/>
+                  </Message>
+                  <Message name="ListPropertyChanged">
+                    <Fields>
+                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="propName" type="String"/>
+                      <Field access="READ_ONLY" name="value" type="String"/>
+                      <Field access="READ_ONLY" name="index" type="Integer"/>
+                      <Field access="READ_ONLY" name="listOp" type="ListOp"/>
+                    </Fields>
+                    <Response name="ListPropertyChangedResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="LobbyInternal" packageName="ngpoker.lobby.internal">
+                <Messages>
+                  <Message name="EntityAdded">
+                    <Fields>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="entity" type="LobbyEntity"/>
+                    </Fields>
+                    <Response name="EntityAddedResponse"/>
+                  </Message>
+                  <Message name="EntityRemoved">
+                    <Fields>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                    </Fields>
+                    <Response name="EntityRemovedResponse"/>
+                  </Message>
+                  <Message name="PropertyChanged">
+                    <Fields>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="property" type="LobbyPropertyEnum"/>
+                      <Field access="READ_ONLY" name="value" type="String"/>
+                    </Fields>
+                    <Response name="PropertyChangedResponse"/>
+                  </Message>
+                  <Message name="ListPropertyChanged">
+                    <Fields>
+                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="property" type="LobbyPropertyEnum"/>
+                      <Field access="READ_ONLY" name="index" type="Integer"/>
+                      <Field access="READ_ONLY" name="value" type="String"/>
+                      <Field access="READ_ONLY" name="listOp" type="ListOp"/>
+                    </Fields>
+                    <Response name="ListPropertyChangedResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="chat">
+            <Children>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ChatClient" packageName="ngpoker.chat.client">
+                <Messages>
+                  <Message name="ChatBroadcast">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="message" type="String"/>
+                      <Field access="READ_ONLY" name="senderNickname" type="String"/>
+                    </Fields>
+                    <Response name="ChatBroadcastResponse"/>
+                  </Message>
+                  <Message name="PlayerJoined">
+                    <Fields>
+                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                    </Fields>
+                    <Response name="PlayerJoinedResponse"/>
+                  </Message>
+                  <Message name="PlayerLeft">
+                    <Fields>
+                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                    </Fields>
+                    <Response name="PlayerLeftResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" errors="" hideEntityKey="true" name="ChatPlayer" packageName="ngpoker.chat.player" principalType="PlayerId">
+                <Messages>
+                  <Message name="ChatChannelState">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="members" type="String"/>
+                    </Fields>
+                    <Response name="ChatChannelStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="" hideEntityKey="true" name="ChatApp" packageName="ngpoker.chat.chatapp" principalType="PlayerId">
+                <Messages>
+                  <Message name="NewChatMessage">
+                    <Fields>
+                      <Field access="READ_ONLY" name="message" type="String"/>
+                    </Fields>
+                    <Response name="NewChatMessageResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChatAppAdmin" packageName="ngpoker.chat.admin">
+                <Messages>
+                  <Message name="Create">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="language" type="Language"/>
+                      <Field access="READ_ONLY" name="maxOccupants" type="Integer"/>
+                      <Field access="READ_ONLY" name="name" type="String"/>
+                    </Fields>
+                    <Response name="CreateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="money">
+            <Children>
+              <Api apiType="SYNCHRONOUS" errors="NOT_ENOUGH_MONEY,ACCOUNT_DOES_NOT_EXIST," hideEntityKey="true" name="BackendMoney" packageName="ngpoker.moneysystem.backend">
+                <Messages>
+                  <Message name="GetAccountBalance">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                    </Fields>
+                    <Response name="GetAccountBalanceResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="balance" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="DebitPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                    </Fields>
+                    <Response name="DebitPlayerResponse"/>
+                  </Message>
+                  <Message name="CreditPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                    </Fields>
+                    <Response name="CreditPlayerResponse"/>
+                  </Message>
+                  <Message name="CreditOperator">
+                    <Fields>
+                      <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                    </Fields>
+                    <Response name="CreditOperatorResponse"/>
+                  </Message>
+                  <Message name="SetAccountBalance">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                    </Fields>
+                    <Response name="SetAccountBalanceResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="cashgame">
+            <Children>
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="NOT_ENOUGH_MONEY,PLAYER_DOES_NOT_EXIST,INVALID_MONEY_TYPE_FOR_PLAYER,TIMEOUT," name="CashGameServices" packageName="ngpoker.cashgame.services" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message name="FindPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                    </Fields>
+                    <Response name="FindPlayerResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="player" optional="true" type="Player"/>
+                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="ReserveMoney">
+                    <Fields>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="reason" type="ReserveMoneyReason"/>
+                    </Fields>
+                    <Response name="ReserveMoneyResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="reason" optional="true" type="ReserveMoneyReason"/>
+                        <Field access="READ_ONLY" name="amount" optional="true" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="WithdrawMoney">
+                    <Fields>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                    </Fields>
+                    <Response name="WithdrawMoneyResponse"/>
+                  </Message>
+                  <Message name="GetAccountBalance">
+                    <Fields>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                    </Fields>
+                    <Response name="GetAccountBalanceResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="balance" optional="true" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" errors="PLAYER_NOT_ALLOWED," hideEntityKey="true" name="CashGameAdmin" packageName="ngpoker.cashgameadmin" principalType="PlayerId">
+                <Messages>
+                  <Message name="Create">
+                    <Fields>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                      <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                      <Field access="READ_ONLY" name="smallBet" type="Long"/>
+                      <Field access="READ_ONLY" name="noOfSeats" type="Integer"/>
+                      <Field access="READ_ONLY" name="numberToCreate" type="Integer"/>
+                    </Fields>
+                    <Response name="CreateResponse"/>
+                  </Message>
+                  <Message description="remove one or more cashgame tables" name="Remove">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                    </Fields>
+                    <Response name="RemoveResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="CashGameInternal" packageName="ngpoker.cashgame.internal">
+                <Messages>
+                  <Message description="a player has been inactive too long" name="IdleTimeout">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                    </Fields>
+                    <Response name="IdleTimeoutResponse"/>
+                  </Message>
+                  <Message name="SeatReservationTimeout">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                    </Fields>
+                    <Response name="SeatReservationTimeoutResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="SEAT_NOT_EMPTY,INVALID_SEAT_ID,NOT_ENOUGH_MONEY,ACCOUNT_BALANCE_NOT_RETRIEVED,PLAYER_NOT_SEATED,PLAYER_ALREADY_SEATED,PLAYER_CANNOT_LEAVE,PLAYER_ALREADY_LEAVING,INVALID_AMOUNT,PLAYER_NOT_RESERVING,INVALID_PLAYER_STATE," hideEntityKey="true" name="CashGamePlay" packageName="ngpoker.cashgame.play" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message name="DoTakeSeat">
+                    <Fields>
+                      <Field access="READ_ONLY" name="seat" type="Integer"/>
+                    </Fields>
+                    <Response name="DoTakeSeatResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="DoReserveAmount">
+                    <Fields>
+                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="reason" type="ReserveMoneyReason"/>
+                    </Fields>
+                    <Response name="DoReserveAmountResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="amountReserved" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="reason" optional="true" type="ReserveMoneyReason"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="DoLeaveSeat">
+                    <Response name="DoLeaveSeatResponse"/>
+                  </Message>
+                  <Message name="DoGetAccountBalance">
+                    <Response name="DoGetAccountBalanceResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="DoSitOut">
+                    <Response name="DoSitOutResponse"/>
+                  </Message>
+                  <Message name="DoSitIn">
+                    <Response name="DoSitInResponse"/>
+                  </Message>
+                  <Message name="DoLeaveTable">
+                    <Response name="DoLeaveTableResponse"/>
+                  </Message>
+                  <Message description="really an admin request. Game App should call back (on another API) when it is ready to be removed" name="PrepareForRemoval">
+                    <Response name="PrepareForRemovalResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="pokergame">
+            <Children>
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="PokerGameInternal" packageName="ngpoker.pokertimeouts">
+                <Messages>
+                  <Message name="CardsDealt">
+                    <Response name="CardsDealtResponse"/>
+                  </Message>
+                  <Message name="BettingDecisionTimeout">
+                    <Response name="BettingDecisionTimeoutResponse"/>
+                  </Message>
+                  <Message name="MuckDecisionTimeout">
+                    <Response name="MuckDecisionTimeoutResponse"/>
+                  </Message>
+                  <Message name="BlindsPaid">
+                    <Response name="BlindsPaidResponse"/>
+                  </Message>
+                  <Message name="HighCardedForButton">
+                    <Response name="HighCardedForButtonResponse"/>
+                  </Message>
+                  <Message name="CommunityCardsDealt">
+                    <Response name="CommunityCardsDealtResponse"/>
+                  </Message>
+                  <Message description="all betting is done, it is time for results and possible showdown" name="AllBettingComplete">
+                    <Response name="AllBettingCompleteResponse"/>
+                  </Message>
+                  <Message name="BlindsDecisionTimeout">
+                    <Response name="BlindsDecisionTimeoutResponse"/>
+                  </Message>
+                  <Message name="HandComplete">
+                    <Response name="HandCompleteResponse"/>
+                  </Message>
+                  <Message name="TryStartHand">
+                    <Response name="TryStartHandResponse"/>
+                  </Message>
+                  <Message description="called after a slight delay, after a player has acted. Gives clients time to animate previous player&apos;s action" name="PostBetDecision">
+                    <Response name="PostBetDecisionResponse"/>
+                  </Message>
+                  <Message description="end of a time given to allow clients to animate bets to pot" name="PotCollected">
+                    <Response name="PotCollectedResponse"/>
+                  </Message>
+                  <Message description="the time allowed for players to choose cards" name="CardSelectionTimeout">
+                    <Response name="CardSelectionTimeoutResponse"/>
+                  </Message>
+                  <Message name="CardsShuffled">
+                    <Response name="CardsShuffledResponse"/>
+                  </Message>
+                  <Message description="called after handComplete()" name="RoundComplete">
+                    <Response name="RoundCompleteResponse"/>
+                  </Message>
+                  <Message name="AntesPaid">
+                    <Response name="AntesPaidResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="INVALID_PLAYER,INVALID_GAME_STATE,INVALID_ACTION,BET_RAISE_TOO_BIG,BET_RAISE_TOO_SMALL,CANNOT_CALL,NOT_CHECKABLE,PLAYER_NOT_AWAY," hideEntityKey="true" name="PokerGamePlay" packageName="ngpoker.pokergameplay" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message description="general poker play action, such as bet, raise, fold etc" name="DoPlayAction">
+                    <Fields>
+                      <Field access="READ_ONLY" name="action" type="PokerAction"/>
+                      <Field access="READ_ONLY" name="betAmount" optional="true" type="Long"/>
+                    </Fields>
+                    <Response name="DoPlayActionResponse"/>
+                  </Message>
+                  <Message description="allows players to show one or both of their cards" name="ShowCardsDecision">
+                    <Fields>
+                      <Field access="READ_ONLY" name="showCard1" type="Boolean"/>
+                      <Field access="READ_ONLY" name="showCard2" type="Boolean"/>
+                    </Fields>
+                    <Response name="ShowCardsDecisionResponse"/>
+                  </Message>
+                  <Message name="UpdatePreTurnAction">
+                    <Fields>
+                      <Field access="READ_ONLY" name="action" optional="true" type="PreTurnAction"/>
+                    </Fields>
+                    <Response name="UpdatePreTurnActionResponse"/>
+                  </Message>
+                  <Message name="NewChatMessage">
+                    <Fields>
+                      <Field access="READ_ONLY" name="message" type="String"/>
+                    </Fields>
+                    <Response name="NewChatMessageResponse"/>
+                  </Message>
+                  <Message name="IAmBack">
+                    <Response name="IAmBackResponse"/>
+                  </Message>
+                  <Message description="allows the user to send a set of cards. Example of use is for the discard a card feature in pineapple games" name="SelectCards">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="cards" type="Card"/>
+                    </Fields>
+                    <Response name="SelectCardsResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="PokerGameClient" packageName="ngpoker.pokergameplayer" principalType="PlayerId">
+                <Messages>
+                  <Message name="SetGameState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="publicState" type="PublicPokerGame"/>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="privateState" type="PrivatePlayer"/>
+                    </Fields>
+                    <Response name="SetGameStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="NOT_ENOUGH_POINTS,INVALID_CHARACTER,RESOURCE_ALREADY_USED,PLAYER_HAS_FOLDED," hideEntityKey="true" name="LimitedDeckService" packageName="ngpoker.limiteddeckservice" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message name="PeekHoleCards">
+                    <Fields>
+                      <Field access="READ_ONLY" name="player" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="publicPeek" type="Boolean"/>
+                    </Fields>
+                    <Response name="PeekHoleCardsResponse"/>
+                  </Message>
+                  <Message name="ShuffleDeck">
+                    <Fields>
+                      <Field access="READ_ONLY" name="player" type="PlayerId"/>
+                    </Fields>
+                    <Response name="ShuffleDeckResponse"/>
+                  </Message>
+                  <Message name="ShowOne">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                    </Fields>
+                    <Response name="ShowOneResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="PEEK_PENDING," hideEntityKey="true" name="LimitedDeckServiceClient" packageName="ngpoker.limiteddeckservice" principalType="PlayerId">
+                <Messages>
+                  <Message name="SetExtensionState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="state" type="LimitedDeckExtension"/>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="privateState" type="PrivateLimitedDeckState"/>
+                    </Fields>
+                    <Response name="SetExtensionStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="tournament">
+            <Children>
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="NOT_ENOUGH_MONEY,PLAYER_DOES_NOT_EXIST,INVALID_MONEY_TYPE_FOR_PLAYER," name="TournamentServices" packageName="ngpoker.tournament.services" responseEntityKeyType="String">
+                <Messages>
+                  <Message name="RegisterPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="amountToPay" type="Long"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
+                    </Fields>
+                    <Response name="RegisterPlayerResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                        <Field access="READ_ONLY" name="player" optional="true" type="Player"/>
+                        <Field access="READ_ONLY" name="character" optional="true" type="PokerCharacter"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="UnregisterPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="amountToRefund" type="Long"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                    </Fields>
+                    <Response name="UnregisterPlayerResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="UnregisterAll">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="playerIds" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="amountToRefund" type="Long"/>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                    </Fields>
+                    <Response name="UnregisterAllResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" list="true" name="playerId" optional="true" type="PlayerId"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="PayPrizes">
+                    <Fields>
+                      <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                      <Field access="READ_ONLY" entityDeclaration="true" list="true" name="operatorFees" type="OperatorCredit"/>
+                      <Field access="READ_ONLY" list="true" name="playerPrizes" type="PlayerPrize"/>
+                    </Fields>
+                    <Response name="PayPrizesResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="TourLifecycle" packageName="ngpoker.tournament.tourlifecycle">
+                <Messages>
+                  <Message name="Init">
+                    <Fields>
+                      <Field access="READ_ONLY" name="scheduleStart" type="Boolean"/>
+                    </Fields>
+                    <Response name="InitResponse"/>
+                  </Message>
+                  <Message name="Start">
+                    <Response name="StartResponse"/>
+                  </Message>
+                  <Message name="OpenRegistration">
+                    <Response name="OpenRegistrationResponse"/>
+                  </Message>
+                  <Message name="Remove">
+                    <Response name="RemoveResponse"/>
+                  </Message>
+                  <Message name="LevelUp">
+                    <Response name="LevelUpResponse"/>
+                  </Message>
+                  <Message description="will pause the tournament. The currently running hands will continue" name="Pause">
+                    <Response name="PauseResponse"/>
+                  </Message>
+                  <Message description="unpause the tournament. Will resume play on paused tables" name="Resume">
+                    <Response name="ResumeResponse"/>
+                  </Message>
+                  <Message description="called before start to allow clients time to connect before play actually starts" name="Prepare">
+                    <Response name="PrepareResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="TourTable" packageName="ngpoker.tournament.tourtable">
+                <Messages>
+                  <Message name="SeatPlayers">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="players" type="PlayerSeatTuple"/>
+                    </Fields>
+                    <Response name="SeatPlayersResponse"/>
+                  </Message>
+                  <Message description="only relevant for hand by hand play" name="StartHand">
+                    <Response name="StartHandResponse"/>
+                  </Message>
+                  <Message name="AddPlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="player" type="PlayerSeatTuple"/>
+                    </Fields>
+                    <Response name="AddPlayerResponse"/>
+                  </Message>
+                  <Message name="RemovePlayer">
+                    <Fields>
+                      <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                    </Fields>
+                    <Response name="RemovePlayerResponse"/>
+                  </Message>
+                  <Message name="SetState">
+                    <Fields>
+                      <Field access="READ_ONLY" name="state" type="RunningTourState"/>
+                    </Fields>
+                    <Response name="SetStateResponse"/>
+                  </Message>
+                  <Message name="SetLevel">
+                    <Fields>
+                      <Field access="READ_ONLY" name="level" type="LevelInfo"/>
+                    </Fields>
+                    <Response name="SetLevelResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="TourHost" packageName="ngpoker.tournament.tourhost">
+                <Messages>
+                  <Message description="eliminated players will have a stack of zero" name="HandComplete">
+                    <Fields>
+                      <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                      <Field access="READ_ONLY" list="true" name="players" type="PlayerSeatTuple"/>
+                    </Fields>
+                    <Response name="HandCompleteResponse"/>
+                  </Message>
+                  <Message description="notify the tour host that a showdown is happening" name="AllInSituation">
+                    <Fields>
+                      <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                    </Fields>
+                    <Response name="AllInSituationResponse"/>
+                  </Message>
+                  <Message description="applicable for tournaments where the table controls when the level up occurs" name="LevelUp">
+                    <Fields>
+                      <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                    </Fields>
+                    <Response name="LevelUpResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="" name="SngServices" packageName="ngpoker.tournament.sngservices" responseEntityKeyType="String">
+                <Messages>
+                  <Message name="CreateSngTour">
+                    <Fields>
+                      <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                      <Field access="READ_ONLY" entityDeclaration="true" list="true" name="entrants" type="Entrant"/>
+                    </Fields>
+                    <Response name="CreateSngTourResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="sngTourKey" optional="true" type="String"/>
+                        <Field access="READ_ONLY" entityDeclaration="true" list="true" name="entrants" optional="true" type="Entrant"/>
+                        <Field access="READ_ONLY" name="settings" optional="true" type="TourSettings"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" errors="" name="SngAdmin" packageName="ngpoker.sng.sngadmin" principalType="PlayerId">
+                <Messages>
+                  <Message name="Create">
+                    <Fields>
+                      <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                    </Fields>
+                    <Response name="CreateResponse"/>
+                  </Message>
+                  <Message description="Remove one or more sng waiting lists" name="Remove">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                    </Fields>
+                    <Response name="RemoveResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" errors="" name="TourAdmin" packageName="ngpoker.tournament.touradmin" principalType="PlayerId">
+                <Messages>
+                  <Message name="CreateOneOff">
+                    <Fields>
+                      <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                      <Field access="READ_ONLY" name="startTime" type="Long"/>
+                      <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="Float"/>
+                      <Field access="READ_ONLY" defaultValue="1" name="multiple" type="Integer"/>
+                    </Fields>
+                    <Response name="CreateOneOffResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" name="tourKey" optional="true" type="String"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="CreateRecurring">
+                    <Description><![CDATA[use the every field to create at a regular interval. e.g., a value of 60 will create one tournament every hour
+
+precreate span is in days]]></Description>
+                    <Fields>
+                      <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                      <Field access="READ_ONLY" list="true" name="rules" type="RecurRule"/>
+                      <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="Float"/>
+                      <Field access="READ_ONLY" name="precreateSpan" type="Integer"/>
+                      <Field access="READ_ONLY" name="frequency" optional="true" type="Frequency"/>
+                    </Fields>
+                    <Response name="CreateRecurringResponse"/>
+                  </Message>
+                  <Message description="remove one or more tournament" name="RemoveTour">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                    </Fields>
+                    <Response name="RemoveTourResponse"/>
+                  </Message>
+                  <Message name="RemoveRecurring">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                    </Fields>
+                    <Response name="RemoveRecurringResponse"/>
+                  </Message>
+                  <Message description="forcibly register players to a tournament" name="RegisterPlayers">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="playerIds" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="nicknames" type="String"/>
+                    </Fields>
+                    <Response name="RegisterPlayersResponse"/>
+                  </Message>
+                  <Message description="forcibly unregister players to a tournament" name="UnregisterPlayers">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="playerIds" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="nicknames" type="String"/>
+                    </Fields>
+                    <Response name="UnregisterPlayersResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" errors="" name="SngInternal" packageName="ngpoker.sng.sngcontrol">
+                <Messages>
+                  <Message description="called after the sng has been idle for x minutes" name="SngIdleTimeout">
+                    <Response name="SngIdleTimeoutResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="INVALID_PASSWORD,PLAYER_NOT_REGISTERED,PLAYER_ALREADY_REGISTERED,HARDWARE_ADDRESS_NOT_UNIQUE,IP_ADDRESS_NOT_UNIQUE,TOUR_FULL,TOUR_NOT_OPEN," hideEntityKey="true" name="RegisterService" packageName="ngpoker.tournament.registration" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message name="Register">
+                    <Fields>
+                      <Field access="READ_ONLY" name="ipAddress" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="hardwareAddresses" type="String"/>
+                      <Field access="READ_ONLY" name="password" optional="true" type="String"/>
+                      <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
+                    </Fields>
+                    <Response name="RegisterResponse"/>
+                  </Message>
+                  <Message name="Unregister">
+                    <Response name="UnregisterResponse"/>
+                  </Message>
+                  <Message name="PrepareForRemoval">
+                    <Response name="PrepareForRemovalResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="TourClient" packageName="ngpoker.tournament.tourclient" principalType="PlayerId">
+                <Messages>
+                  <Message name="SetGameState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="publicState" type="PublicTour"/>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="privateState" type="PrivateTourState"/>
+                    </Fields>
+                    <Response name="SetGameStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="TourStatsService" packageName="ngpoker.tournament.tourstats" principalType="PlayerId" responseEntityKeyType="String">
+                <Messages>
+                  <Message description="get player stats for this tournament" name="GetStats">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="playerIndexes" type="Integer"/>
+                    </Fields>
+                    <Response name="GetStatsResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" list="true" name="stats" optional="true" type="TourPlayerStats"/>
+                        <Field access="READ_ONLY" list="true" name="playerIndexes" optional="true" type="Integer"/>
+                        <Field access="READ_ONLY" name="timeSinceStart" optional="true" type="Long"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="MultiTourClient" packageName="ngpoker.tournament.multitour" principalType="PlayerId">
+                <Messages>
+                  <Message name="SetGameState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="multiTour" type="MultiTour"/>
+                    </Fields>
+                    <Response name="SetGameStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="MeleeTourClient" packageName="ngpoker.tournament.meleetour" principalType="PlayerId">
+                <Messages>
+                  <Message name="SetGameState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="meleeTour" type="MeleeTour"/>
+                    </Fields>
+                    <Response name="SetGameStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="handhistory">
+            <Children>
+              <Api apiType="ASYNC" errors="" name="HandHistoryStore" packageName="ngpoker.poker.handhistory">
+                <Messages>
+                  <Message name="Store">
+                    <Fields>
+                      <Field access="READ_ONLY" name="round" type="Round"/>
+                      <Field access="READ_ONLY" list="true" name="playersInRound" type="PlayerId"/>
+                    </Fields>
+                    <Response name="StoreResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" errors="" name="HandHistoryClient" packageName="ngpoker.handhistory" principalType="PlayerId">
+                <Messages>
+                  <Message name="GetRoundIds">
+                    <Description><![CDATA[get a bunch of hand ids. They are ordered newest first. startRoundId is the round id of the first hand to retrieve,
+if null then the latest will be the first in the returned list. The "limit" indicates the max number of results to return]]></Description>
+                    <Fields>
+                      <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                      <Field access="READ_ONLY" name="startRoundId" optional="true" type="String"/>
+                      <Field access="READ_ONLY" name="limit" type="Integer"/>
+                    </Fields>
+                    <Response name="GetRoundIdsResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" list="true" name="roundIds" optional="true" type="String"/>
+                        <Field access="READ_ONLY" name="total" optional="true" type="Integer"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message description="loads a list of rounds" name="GetRounds">
+                    <Fields>
+                      <Field access="READ_ONLY" list="true" name="roundIds" type="String"/>
+                    </Fields>
+                    <Response name="GetRoundsResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" list="true" name="rounds" optional="true" type="Round"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="newsfeed">
+            <Children>
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="NewsFeedClient" packageName="ngpoker.newsfeed" principalType="PlayerId">
+                <Messages>
+                  <Message name="SetNewsFeedState">
+                    <Fields>
+                      <Field access="READ_ONLY" entityDeclaration="true" name="state" type="NewsFeed"/>
+                    </Fields>
+                    <Response name="SetNewsFeedStateResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+          <Tree name="forum">
+            <Children>
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" errors="OP_NOT_ALLOWED," name="ForumAdmin" packageName="ngpoker.forum.admin" principalType="PlayerId">
+                <Messages>
+                  <Message name="CreateThread">
+                    <Fields>
+                      <Field access="READ_ONLY" name="title" type="String"/>
+                      <Field access="READ_ONLY" name="summary" type="String"/>
+                    </Fields>
+                    <Response name="CreateThreadResponse"/>
+                  </Message>
+                  <Message name="GetThread">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                    </Fields>
+                    <Response name="GetThreadResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" entityDeclaration="true" name="thread" optional="true" type="ForumThread"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="MakePost">
+                    <Fields>
+                      <Field access="READ_ONLY" name="threadKey" type="String"/>
+                      <Field access="READ_ONLY" name="parentPost" optional="true" type="String"/>
+                      <Field access="READ_ONLY" name="content" type="String"/>
+                    </Fields>
+                    <Response name="MakePostResponse"/>
+                  </Message>
+                  <Message name="LikePost">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="like" type="Boolean"/>
+                    </Fields>
+                    <Response name="LikePostResponse"/>
+                  </Message>
+                  <Message name="DeletePost">
+                    <Fields>
+                      <Field access="READ_ONLY" name="threadKey" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                    </Fields>
+                    <Response name="DeletePostResponse"/>
+                  </Message>
+                  <Message name="ReportAbuse">
+                    <Fields>
+                      <Field access="READ_ONLY" name="postKey" type="String"/>
+                    </Fields>
+                    <Response name="ReportAbuseResponse"/>
+                  </Message>
+                  <Message name="GetPost">
+                    <Fields>
+                      <Field access="READ_ONLY" name="threadKey" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                    </Fields>
+                    <Response name="GetPostResponse">
+                      <Fields>
+                        <Field access="READ_ONLY" entityDeclaration="true" name="post" optional="true" type="Post"/>
+                      </Fields>
+                    </Response>
+                  </Message>
+                  <Message name="RemoveThread">
+                    <Fields>
+                      <Field access="READ_ONLY" name="key" type="String"/>
+                    </Fields>
+                    <Response name="RemoveThreadResponse"/>
+                  </Message>
+                </Messages>
+              </Api>
+            </Children>
+          </Tree>
+        </Children>
+      </ApiTree>
+      <Packages>
+        <Package name="infrastructure" packageName="ngpoker.infrastructure.types">
+          <Types>
+            <ValueObject name="NodeId">
+              <Fields>
+                <Field access="READ_ONLY" name="value" type="String"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="CommType" values="SYNC_REQUEST,ASYNC_MESSAGE,SYNC_RESPONSE,"/>
+            <EnumType name="PublicNodeState" values="RUNNING,SHUTDOWN,"/>
+            <Entity name="NodeData">
+              <Fields>
+                <Field access="READ_ONLY" name="nodeId" type="NodeId"/>
+                <Field access="READ_ONLY" name="nodeState" type="PublicNodeState"/>
+                <Field access="READ_ONLY" name="version" type="String"/>
+              </Fields>
+            </Entity>
+            <EnumType description="the kinds of entities that get persisted in the system" name="EntityType" values="sng,cashgame,player,tournament,recurring_tournament,multi_tournament,forum_thread,forum_post,"/>
+            <Entity name="IdSequence">
+              <Fields>
+                <Field access="READ_ONLY" name="entityType" type="EntityType"/>
+                <Field access="READ_WRITE" name="seq" type="Long"/>
+              </Fields>
+            </Entity>
+            <Entity name="IdSequenceStore">
+              <Fields>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="sequences" type="IdSequence"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+          </Types>
+        </Package>
+        <Package name="primitives" packageName="java.lang">
+          <Types>
+            <PrimitiveType name="String"/>
+            <PrimitiveType javaMapping="int" name="Integer"/>
+            <PrimitiveType javaMapping="long" name="Long"/>
+            <PrimitiveType javaMapping="boolean" name="Boolean"/>
+            <PrimitiveType name="Object"/>
+            <PrimitiveType javaMapping="float" name="Float"/>
+            <PrimitiveType javaMapping="byte" name="Byte"/>
+          </Types>
+        </Package>
+        <Package name="common" packageName="ngpoker.common.types">
+          <Types>
+            <ValueObject name="PlayerId">
+              <Fields>
+                <Field access="READ_ONLY" name="value" type="String"/>
+              </Fields>
+            </ValueObject>
+            <EnumType description="list operations, add is a &quot;set at last index&quot;" name="ListOp" values="ADD,REMOVE,UPDATE,"/>
+            <ValueObject name="PlayerLocation">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="appType" type="AppType"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="AppType" values="SNG,TOUR,CASH_GAME,TOUR_TABLE,LOBBY,CHAT,MULTI_TOUR,FORUM_THREAD,SINGLE_TABLE_TOUR,NEWSFEED,"/>
+            <ValueObject name="Coord">
+              <Fields>
+                <Field access="READ_ONLY" name="x" type="Integer"/>
+                <Field access="READ_ONLY" name="y" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="AccountType">
+              <Fields>
+                <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
+                <Field access="READ_ONLY" name="currency" type="String"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="MoneyType" values="REAL_MONEY,PLAY_MONEY,"/>
+            <ValueObject name="OperatorId">
+              <Fields>
+                <Field access="READ_ONLY" name="value" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject description="contains the binary data of a jpg image" name="ImageData">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="data" type="Byte"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="Language" values="ENGLISH,FRENCH,GERMAN,CHINESE,"/>
+            <EnumType name="BettingType" values="NO_LIMIT,FIXED_LIMIT,POT_LIMIT,"/>
+            <EnumType name="GameType" values="TEXAS_HOLDEM,SEVEN_CARD_STUD,OMAHA_HI,OMAHA_HI_LO,FIVE_CARD_DRAW,CRAZY_PINEAPPLE,CHEAT,LIMITED_DECK_PINEAPPLE,"/>
+            <ValueObject name="DeckData">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="cardsRemaining" type="Card"/>
+                <Field access="READ_ONLY" list="true" name="drawnCards" type="Card"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="Player">
+              <Fields>
+                <Field access="READ_ONLY" name="id" type="PlayerId"/>
+                <Field access="READ_ONLY" name="username" type="String"/>
+                <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
+                <Field access="READ_ONLY" name="country" type="Country"/>
+                <Field access="READ_ONLY" name="guest" type="Boolean"/>
+                <Field access="READ_ONLY" name="admin" type="Boolean"/>
+                <Field access="READ_ONLY" name="email" type="String"/>
+              </Fields>
+            </ValueObject>
+            <Entity abstract="true" name="PrivateAppState"/>
+            <Entity abstract="true" name="PublicAppState"/>
+            <ValueObject name="CashGameKey" superType="GlobalKey"/>
+            <ValueObject name="TransactionId">
+              <Fields>
+                <Field access="READ_ONLY" name="value" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="PotResult">
+              <Fields>
+                <Field access="READ_ONLY" name="potIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="amount" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="RoundResult">
+              <Fields>
+                <Field access="READ_ONLY" name="rake" type="Long"/>
+                <Field access="READ_ONLY" list="true" name="potResults" type="PotResult"/>
+                <Field access="READ_ONLY" list="true" name="communityCards" type="Card"/>
+                <Field access="READ_ONLY" name="buttonIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="seqNo" type="Integer"/>
+                <Field access="READ_ONLY" list="true" name="handResults" type="HandResult"/>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="players" type="PublicPlayer"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="Card" skipGeneration="true" values=""/>
+            <ValueObject name="HandResult">
+              <Fields>
+                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" list="true" name="cards" type="Card"/>
+                <Field access="READ_ONLY" name="totalBet" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject abstract="true" name="GlobalKey">
+              <Fields>
+                <Field access="READ_ONLY" name="value" type="String"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="TournamentKey" superType="GlobalKey"/>
+            <ValueObject name="GameSettings">
+              <Fields>
+                <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                <Field access="READ_ONLY" name="tableName" type="String"/>
+                <Field access="READ_ONLY" name="smallBet" type="Long"/>
+                <Field access="READ_ONLY" name="ante" type="Long"/>
+                <Field access="READ_ONLY" name="noOfSeats" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="PokerAction" values="BET,RAISE,CALL,CHECK,FOLD,"/>
+            <EnumType name="BlindsDecision" values="YES,NO,WAIT_FOR_BIG_BLIND,"/>
+            <EnumType name="PreTurnAction" values="BET_ANY,RAISE_ANY,CALL_ANY,CALL,CHECK_FOLD,CHECK,FOLD,"/>
+            <EnumType name="ReserveMoneyReason" values="SIT_DOWN,RESERVE_MORE,"/>
+            <EnumType name="TableSize" values="HEADS_UP,FULL_TABLE,SHORT_HANDED,"/>
+            <EnumType name="ObjectType" skipGeneration="true" values=""/>
+            <EnumType name="ApiType" skipGeneration="true" values=""/>
+            <ValueObject abstract="true" alternativePackage="ngpoker.common.framework" name="Message" skipGeneration="true"/>
+            <EnumType name="ErrorCode" skipGeneration="true" values=""/>
+            <ValueObject abstract="true" alternativePackage="ngpoker.common.framework" name="InMessage" skipGeneration="true" superType="Message"/>
+            <ValueObject abstract="true" alternativePackage="ngpoker.common.framework" name="Response" skipGeneration="true" superType="Message"/>
+            <EnumType name="MessageTypeEnum" skipGeneration="true" values=""/>
+            <ValueObject name="Property">
+              <Fields>
+                <Field access="READ_ONLY" name="name" type="String"/>
+                <Field access="READ_ONLY" name="value" type="String"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="LobbyPropertyEnum" skipGeneration="true" values=""/>
+            <EnumType name="Rank" skipGeneration="true" values=""/>
+            <EnumType name="Suit" skipGeneration="true" values=""/>
+            <ValueObject name="ChatMessage">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="sender" type="String"/>
+                <Field access="READ_ONLY" name="message" type="String"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="Event">
+              <Fields>
+                <Field access="READ_ONLY" name="timestamp" type="Long"/>
+                <Field access="READ_ONLY" name="content" type="InMessage"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="Country" skipGeneration="true" values=""/>
+            <ValueObject name="NewsItem">
+              <Fields>
+                <Field access="READ_ONLY" name="timestamp" type="Long"/>
+                <Field access="READ_ONLY" name="title" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="content" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="type" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="imgName" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="sender" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="externalLink" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="internalLink" optional="true" type="String"/>
+              </Fields>
+            </ValueObject>
+            <Entity name="NewsFeed">
+              <Fields>
+                <Field access="READ_WRITE" list="true" name="items" type="NewsItem"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+          </Types>
+        </Package>
+        <Package name="user" packageName="ngpoker.user">
+          <Types>
+            <Entity name="UserEntity">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="userInfo" type="UserInfo"/>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="accounts" type="Account"/>
+                <Field access="READ_ONLY" name="userspaceLocation" type="Coord"/>
+                <Field access="READ_WRITE" name="lastImageUploadTime" type="Long"/>
+                <Field access="READ_WRITE" name="lastLoginTime" type="Long"/>
+                <Field access="READ_WRITE" name="status" optional="true" type="String"/>
+                <Field access="READ_WRITE" list="true" name="followedUsers" type="PlayerId"/>
+                <Field access="READ_WRITE" name="playerPoints" type="Long"/>
+                <Field access="READ_WRITE" list="true" name="enabledCharacters" type="PokerCharacter"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <ValueObject name="UserInfo">
+              <Fields>
+                <Field access="READ_ONLY" name="firstName" type="String"/>
+                <Field access="READ_ONLY" name="lastName" type="String"/>
+                <Field access="READ_WRITE" name="password" type="String"/>
+                <Field access="READ_ONLY" name="nickname" type="String"/>
+                <Field access="READ_ONLY" name="country" type="Country"/>
+                <Field access="READ_ONLY" name="email" type="String"/>
+              </Fields>
+            </ValueObject>
+          </Types>
+        </Package>
+        <Package name="moneysystem" packageName="ngpoker.moneysystem.types">
+          <Types>
+            <Entity name="Account">
+              <Fields>
+                <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                <Field access="READ_WRITE" name="balance" type="Long"/>
+              </Fields>
+            </Entity>
+            <Entity name="MoneySession">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                <Field access="READ_WRITE" entityDeclaration="true" list="true" name="playerCredits" type="PlayerCredit"/>
+                <Field access="READ_WRITE" entityDeclaration="true" list="true" name="operatorCredits" type="OperatorCredit"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <Entity name="PlayerCredit">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_WRITE" name="amount" type="Long"/>
+              </Fields>
+            </Entity>
+            <Entity name="OperatorCredit">
+              <Fields>
+                <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
+                <Field access="READ_WRITE" name="amount" type="Long"/>
+              </Fields>
+            </Entity>
+          </Types>
+        </Package>
+        <Package name="extensions" packageName="ngpoker.limiteddeck">
+          <Types>
+            <EnumType name="PokerCharacter" values="NONE,CAT,BIG_STACK,TIGER_LILY,SHUFFLER,SUPERMAN,"/>
+          </Types>
+        </Package>
+        <Package name="lobby" packageName="ngpoker.lobby.types">
+          <Types>
+            <ValueObject name="Query">
+              <Fields>
+                <Field access="READ_ONLY" name="query" type="String"/>
+                <Field access="READ_ONLY" name="limit" type="Integer"/>
+                <Field access="READ_ONLY" list="true" name="orderBy" type="String"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="QueryData">
+              <Description><![CDATA[contains a list of clauses to match (ANDed together)
+OR, a list of keys to match. If the retrieveall flag is set then all will be returned and the other fields will be ignored]]></Description>
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="clauses" type="Clause"/>
+                <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                <Field access="READ_ONLY" name="retrieveAll" type="Boolean"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="Clause">
+              <Fields>
+                <Field access="READ_ONLY" name="property" type="String"/>
+                <Field access="READ_ONLY" list="true" name="values" type="String"/>
+              </Fields>
+            </ValueObject>
+            <LobbyType abstract="true" name="LobbyEntity">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String" unique="true"/>
+                <Field access="READ_ONLY" name="name" type="String" unique="true"/>
+              </Fields>
+            </LobbyType>
+            <ValueObject name="Page">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="lobbyEntities" type="LobbyEntity"/>
+                <Field access="READ_ONLY" name="firstIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="total" type="Integer"/>
+                <Field access="READ_ONLY" name="viewId" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <LobbyType name="ChatroomInLobby" superType="LobbyEntity">
+              <Fields>
+                <Field access="READ_ONLY" name="maxEntrants" type="Integer"/>
+                <Field access="READ_ONLY" name="language" type="Language"/>
+              </Fields>
+            </LobbyType>
+            <LobbyType name="PokerroomInLobby" superType="LobbyEntity">
+              <Fields>
+                <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
+                <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                <Field access="READ_ONLY" name="tableSize" type="Integer"/>
+                <Field access="READ_WRITE" name="occupiedSeats" type="Integer"/>
+                <Field access="READ_ONLY" name="smallBet" type="Integer"/>
+                <Field access="READ_WRITE" list="true" name="seats" type="String"/>
+              </Fields>
+            </LobbyType>
+            <LobbyType name="TourInLobby" superType="LobbyEntity">
+              <Fields>
+                <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
+                <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                <Field access="READ_WRITE" name="noRegistered" type="Integer"/>
+                <Field access="READ_WRITE" name="state" type="TourState"/>
+                <Field access="READ_ONLY" name="startTime" type="Long"/>
+                <Field access="READ_ONLY" name="type" type="String"/>
+                <Field access="READ_ONLY" name="buyin" type="Long"/>
+                <Field access="READ_ONLY" name="fee" type="Long"/>
+                <Field access="READ_ONLY" name="sng" type="Boolean"/>
+                <Field access="READ_ONLY" list="true" name="rules" optional="true" type="RecurRule"/>
+                <Field access="READ_ONLY" name="parentRecurringTour" optional="true" type="String"/>
+              </Fields>
+            </LobbyType>
+            <LobbyType name="SngInLobby" superType="LobbyEntity">
+              <Fields>
+                <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
+                <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                <Field access="READ_WRITE" name="noRegistered" type="Integer"/>
+                <Field access="READ_ONLY" name="buyin" type="Long"/>
+                <Field access="READ_ONLY" name="fee" type="Long"/>
+                <Field access="READ_ONLY" name="noSeats" type="Integer"/>
+                <Field access="READ_WRITE" name="lastRegisteredTime" type="Long"/>
+                <Field access="READ_WRITE" list="true" name="entrants" type="String"/>
+                <Field access="READ_ONLY" name="privateTour" type="Boolean"/>
+              </Fields>
+            </LobbyType>
+            <LobbyType name="PlayerInLobby" superType="LobbyEntity">
+              <Fields>
+                <Field access="READ_WRITE" name="lastLoginTime" type="Long"/>
+                <Field access="READ_WRITE" name="lastImageUploadTime" type="Long"/>
+                <Field access="READ_ONLY" name="x" type="Integer"/>
+                <Field access="READ_ONLY" name="y" type="Integer"/>
+                <Field access="READ_WRITE" name="online" type="Boolean"/>
+                <Field access="READ_WRITE" name="status" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="country" type="Country"/>
+                <Field access="READ_WRITE" name="points" type="Long"/>
+                <Field access="READ_WRITE" name="enabledCharacters" optional="true" type="String"/>
+              </Fields>
+            </LobbyType>
+            <LobbyType name="ThreadInLobby" superType="LobbyEntity">
+              <Fields>
+                <Field access="READ_WRITE" name="lastAddedPostKey" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="summary" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="noOfPosts" type="Integer"/>
+                <Field access="READ_WRITE" name="lastRemovedPostKey" optional="true" type="String"/>
+              </Fields>
+            </LobbyType>
+            <Entity name="Table">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
+                <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                <Field access="READ_ONLY" name="size" type="TableSize"/>
+              </Fields>
+            </Entity>
+          </Types>
+        </Package>
+        <Package name="tour" packageName="ngpoker.tour.types">
+          <Types>
+            <EnumType name="TourState" values="ANNOUNCED,REGISTERING,RUNNING,FINISHED,CANCELLED,"/>
+            <ValueObject name="RecurRule">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="days" type="Day"/>
+                <Field access="READ_ONLY" list="true" name="startTimes" type="StartTime"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="Day" values="Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,"/>
+            <ValueObject name="StartTime">
+              <Fields>
+                <Field access="READ_ONLY" name="hour" type="Integer"/>
+                <Field access="READ_ONLY" name="minute" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="FeeType" values="FREE,TEN_PERCENT,FIVE_PERCENT,"/>
+            <Entity name="Tournament">
+              <Fields>
+                <Field access="READ_ONLY" entityDeclaration="true" name="publicTour" type="PublicTour"/>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="privatePlayerStates" optional="true" type="PrivateTourState"/>
+              </Fields>
+            </Entity>
+            <Entity name="TourPlayer">
+              <Fields>
+                <Field access="READ_ONLY" name="tourPlayerId" type="Integer"/>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="nickname" type="String"/>
+                <Field access="READ_WRITE" name="stack" type="Long"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="finalRank" type="Integer"/>
+                <Field access="READ_WRITE" name="prize" optional="true" type="Prize"/>
+                <Field access="READ_WRITE" name="eliminated" type="Boolean"/>
+                <Field access="READ_WRITE" name="moveCount" type="Integer"/>
+                <Field access="READ_WRITE" name="markedForMove" type="Boolean"/>
+                <Field access="READ_WRITE" name="rank" type="Integer"/>
+                <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="Fingerprint">
+              <Fields>
+                <Field access="READ_ONLY" name="ip" type="String"/>
+                <Field access="READ_ONLY" list="true" name="hwAddresses" type="String"/>
+              </Fields>
+            </ValueObject>
+            <Entity name="PublicTour">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_WRITE" entityDeclaration="true" name="registeringState" optional="true" type="RegisteringState"/>
+                <Field access="READ_WRITE" entityDeclaration="true" name="runningState" optional="true" type="RunningState"/>
+                <Field access="READ_ONLY" name="tourSettings" type="ScheduledTourSettings"/>
+                <Field access="READ_WRITE" defaultValue="TourState.ANNOUNCED" name="state" type="TourState"/>
+                <Field access="READ_ONLY" name="parentKey" optional="true" type="String"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <Entity name="RegisteringState">
+              <Fields>
+                <Field access="READ_WRITE" entityDeclaration="true" list="true" name="entrants" type="Entrant"/>
+              </Fields>
+            </Entity>
+            <Entity name="RunningState">
+              <Fields>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="players" type="TourPlayer"/>
+                <Field access="READ_WRITE" name="state" type="RunningTourState"/>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="tables" type="TTable"/>
+                <Field access="READ_WRITE" name="currentLevel" optional="true" type="LevelInfo"/>
+                <Field access="READ_WRITE" name="pauseTimestamp" type="Long"/>
+              </Fields>
+            </Entity>
+            <Entity name="Entrant">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="nickname" type="String"/>
+                <Field access="READ_WRITE" name="unregisterPending" type="Boolean"/>
+                <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="PlayerSeatTuple">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="stack" type="Long"/>
+                <Field access="READ_ONLY" name="nickname" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
+              </Fields>
+            </ValueObject>
+            <EnumType defaultValue="PREPARE" name="RunningTourState" values="PAUSED,RUNNING,HAND_BY_HAND,BREAK,PREPARE,"/>
+            <Entity description="player indexes refer to the index of players in the player list" name="TTable">
+              <Fields>
+                <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="ref" type="String"/>
+                <Field access="READ_WRITE" entityDeclaration="true" list="true" name="seats" type="TSeat"/>
+                <Field access="READ_WRITE" name="idle" type="Boolean"/>
+                <Field access="READ_WRITE" name="removed" type="Boolean"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="TourSettings">
+              <Fields>
+                <Field access="READ_ONLY" name="gameType" type="GameType"/>
+                <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
+                <Field access="READ_ONLY" name="seatsPerTable" type="Integer"/>
+                <Field access="READ_ONLY" name="initialStackSize" type="Long"/>
+                <Field access="READ_ONLY" name="buyIn" type="Long"/>
+                <Field access="READ_ONLY" name="fee" type="Long"/>
+                <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+                <Field access="READ_ONLY" name="name" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="password" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="minPlayers" type="Integer"/>
+                <Field access="READ_ONLY" name="maxPlayers" type="Integer"/>
+                <Field access="READ_ONLY" name="type" type="String"/>
+                <Field access="READ_ONLY" name="levelLength" type="Float"/>
+                <Field access="READ_ONLY" name="levelStrategy" type="LevelStrategyEnum"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject abstract="true" name="Prize"/>
+            <ValueObject name="CashPrize" superType="Prize">
+              <Fields>
+                <Field access="READ_ONLY" name="amount" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="TicketPrize" superType="Prize">
+              <Fields>
+                <Field access="READ_ONLY" name="tourRef" optional="true" type="String"/>
+                <Field access="READ_ONLY" list="true" name="tourAnnotations" type="String"/>
+              </Fields>
+            </ValueObject>
+            <Entity name="TSeat">
+              <Fields>
+                <Field access="READ_ONLY" name="index" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="tourPlayerId" optional="true" type="Integer"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="Level">
+              <Fields>
+                <Field access="READ_ONLY" name="levelIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="smallBet" type="Long"/>
+                <Field access="READ_ONLY" name="ante" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <EnumType defaultValue="REGULAR" name="LevelStrategyEnum" values="REGULAR,CONTROLLED_BY_GAME,"/>
+            <ValueObject name="ScheduledTourSettings">
+              <Fields>
+                <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                <Field access="READ_ONLY" name="openTime" type="Long"/>
+                <Field access="READ_ONLY" name="startTime" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <Entity name="PrivateTourState">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_WRITE" entityDeclaration="true" name="privateRunningState" optional="true" type="PrivateRunningState"/>
+                <Field access="READ_WRITE" name="registered" type="Boolean"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <Entity name="PrivateRunningState">
+              <Fields>
+                <Field access="READ_WRITE" name="myTableKey" optional="true" type="String"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="myRank" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1L" name="myStack" type="Long"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="myTourPlayerId" type="Integer"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="PlayerPrize">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="prize" type="Prize"/>
+              </Fields>
+            </ValueObject>
+            <Entity name="RecurringTour">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                <Field access="READ_ONLY" list="true" name="rules" type="RecurRule"/>
+                <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="Float"/>
+                <Field access="READ_WRITE" name="lastSpawnedTime" type="Long"/>
+                <Field access="READ_ONLY" name="precreateSpan" type="Integer"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <ValueObject description="wraps a level plus its start time" name="LevelInfo">
+              <Fields>
+                <Field access="READ_ONLY" name="level" type="Level"/>
+                <Field access="READ_ONLY" name="startTime" type="Long"/>
+                <Field access="READ_ONLY" name="levelLeft" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject description="a player stack at a certain point of time in the tournament" name="PlayerStackStat">
+              <Fields>
+                <Field access="READ_ONLY" name="stack" type="Long"/>
+                <Field access="READ_ONLY" name="time" type="Long"/>
+                <Field access="READ_ONLY" name="roundId" type="String"/>
+                <Field access="READ_ONLY" name="rank" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject description="stats collected for a player during the tournament" name="TourPlayerStats">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="stackStats" type="PlayerStackStat"/>
+              </Fields>
+            </ValueObject>
+            <Entity description="a collection of tournaments" name="MultiTour" superType="Sng">
+              <Fields>
+                <Field access="READ_ONLY" name="noOfTours" type="Integer"/>
+                <Field access="READ_ONLY" name="startTime" type="Long"/>
+                <Field access="READ_WRITE" list="true" name="tourKeys" type="String"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <ValueObject description="a set of tour ids" name="MeleeLevel">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="sngs" type="MeleeSng"/>
+              </Fields>
+            </ValueObject>
+            <Entity description="a special tournament challenge" name="MeleeTour" superType="Sng">
+              <Fields>
+                <Field access="READ_WRITE" name="startTime" type="Long"/>
+                <Field access="READ_ONLY" name="noOfLevels" type="Integer"/>
+                <Field access="READ_WRITE" list="true" name="levels" type="MeleeLevel"/>
+                <Field access="READ_WRITE" entityDeclaration="true" name="runningMelee" optional="true" type="RunningMelee"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <ValueObject name="MeleeSng">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" list="true" name="players" type="PlayerId"/>
+              </Fields>
+            </ValueObject>
+            <Entity description="a tuple representing a player and points in a multitour" name="MultiPlayer">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_WRITE" name="points" type="Integer"/>
+              </Fields>
+            </Entity>
+            <Entity description="melee data when a melee is running" name="RunningMelee">
+              <Fields>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="players" type="MultiPlayer"/>
+              </Fields>
+            </Entity>
+            <ValueObject description="encapsulates a rule for a fixed rate recurrence. Times in minutes" name="Frequency">
+              <Fields>
+                <Field access="READ_ONLY" name="offset" type="Integer"/>
+                <Field access="READ_ONLY" name="gap" type="Integer"/>
+              </Fields>
+            </ValueObject>
+          </Types>
+        </Package>
+        <Package name="game" packageName="ngpoker.game.types">
+          <Types>
+            <Entity name="PokerGame">
+              <Fields>
+                <Field access="READ_ONLY" entityDeclaration="true" name="publicState" type="PublicPokerGame"/>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="privatePlayers" type="PrivatePlayer"/>
+                <Field access="READ_ONLY" list="true" name="drawnCards" type="Card"/>
+                <Field access="READ_WRITE" name="biggestBet" type="Long"/>
+              </Fields>
+            </Entity>
+            <Entity name="CashGame">
+              <Fields>
+                <Field access="READ_ONLY" name="cashgameKey" type="CashGameKey"/>
+                <Field access="READ_ONLY" entityDeclaration="true" name="pokerGame" type="PokerGame"/>
+                <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+              </Fields>
+            </Entity>
+            <Entity name="Seat">
+              <Fields>
+                <Field access="READ_WRITE" entityDeclaration="true" name="player" optional="true" type="PublicPlayer"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="Pot">
+              <Fields>
+                <Field access="READ_WRITE" list="true" name="potAmounts" type="PotAmount"/>
+                <Field access="READ_ONLY" name="deadBetAmount" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="PotAllocation">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="potAmounts" type="PotAmount"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject description="tuple of player to amount bet" name="PotAmount">
+              <Fields>
+                <Field access="READ_ONLY" name="seat" type="Integer"/>
+                <Field access="READ_ONLY" name="amount" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <EnumType defaultValue="WAITING" description="post round: after the showdown is complete, allows any extensions a window to perform any adjustments to the model before the tour or cash game contexts get hold of it" name="GameState" values="WAITING,EXPECTING_MUCK_DECISION,EXPECTING_BET_DECISION,EXPECTING_CARD_SELECTION,DEALING_CARDS,EXPECTING_BLINDS_DECISION,PAYING_BLINDS,HIGH_CARD_FOR_BUTTON,DEALING_FLOP,DEALING_TURN,DEALING_RIVER,ENDING_HAND,ALL_IN_SEQUENCE,SHOWDOWN,POST_BET_DECISION,POST_BETTING_ROUND,SHUFFLING_CARDS,PAYING_ANTES,POST_ROUND,"/>
+            <Entity name="PublicPlayer">
+              <Fields>
+                <Field access="READ_ONLY" name="id" type="PlayerId"/>
+                <Field access="READ_WRITE" name="username" optional="true" type="String"/>
+                <Field access="READ_WRITE" defaultValue="new Stack()" name="stack" type="Stack"/>
+                <Field access="READ_WRITE" list="true" name="visibleCards" type="Card"/>
+                <Field access="READ_WRITE" name="accountBalance" type="Long"/>
+                <Field access="READ_WRITE" defaultValue="new Bet()" name="currentBet" optional="true" type="Bet"/>
+                <Field access="READ_WRITE" name="noHiddenCards" optional="true" type="Integer"/>
+                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_WRITE" name="latestPokerAction" optional="true" type="PokerAction"/>
+                <Field access="READ_WRITE" name="bettingState" optional="true" type="BettingState"/>
+                <Field access="READ_WRITE" name="highCard" optional="true" type="Card"/>
+                <Field access="READ_WRITE" name="state" type="PublicPlayerState"/>
+                <Field access="READ_WRITE" name="disconnected" type="Boolean"/>
+                <Field access="READ_WRITE" name="markedForRemoval" type="Boolean"/>
+                <Field access="READ_WRITE" name="away" type="Boolean"/>
+                <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
+                <Field access="READ_WRITE" name="winChances" optional="true" type="WinChances"/>
+              </Fields>
+            </Entity>
+            <Entity name="PrivatePlayer" superType="PrivateAppState">
+              <Fields>
+                <Field access="READ_WRITE" name="accountBalance" type="Long"/>
+                <Field access="READ_WRITE" list="true" name="pocketCards" type="Card"/>
+                <Field access="READ_WRITE" list="true" name="allowedActions" type="PokerAction"/>
+                <Field access="READ_WRITE" name="uiState" type="PrivatePlayerState"/>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="mySeat" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" name="preTurnAction" optional="true" type="PreTurnAction"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <Entity name="PublicPokerGame" superType="PublicAppState">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="settings" type="GameSettings"/>
+                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="seats" type="Seat"/>
+                <Field access="READ_WRITE" list="true" name="communityCards" type="Card"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="dealerButton" type="Integer"/>
+                <Field access="READ_WRITE" name="state" type="GameState"/>
+                <Field access="READ_WRITE" list="true" name="pots" type="Pot"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="currentBetDecision" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="currentMuckDecision" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="bigBlindSeat" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" name="bettingRound" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" name="result" optional="true" type="Result"/>
+                <Field access="READ_ONLY" name="gameContext" type="GameContext"/>
+                <Field access="READ_WRITE" list="true" name="chatMessages" type="ChatMessage"/>
+                <Field access="READ_WRITE" name="currentMinimumBet" type="Long"/>
+                <Field access="READ_WRITE" name="roundCounter" type="Long"/>
+                <Field access="READ_WRITE" name="markedForRemoval" type="Boolean"/>
+                <Field access="READ_WRITE" name="fixedBetSettings" type="FixedBetSettings"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <EnumType defaultValue="ONLOOKER" name="PrivatePlayerState" values="OUT_OF_MONEY,IDLE,PLAYING,WANT_TO_PLAY_ASAP,WAITING_FOR_BIG_BLIND,WANT_TO_SIT_OUT,RESERVING,ONLOOKER,"/>
+            <EnumType defaultValue="RESERVING" name="PublicPlayerState" values="PLAYING,WANT_TO_PLAY_ASAP,WAITING_FOR_BIG_BLIND,RESERVING,IDLE,WANT_TO_SIT_OUT,"/>
+            <EnumType name="BettingState" values="ALL_IN,FOLDED,PASSIVE,ACTION_REQUIRED,CHECKABLE,"/>
+            <ValueObject abstract="true" name="HandToken" skipGeneration="true">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="cards" type="Card"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="PairToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="rank" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="ThreeOfAKindToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="rank" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="FourOfAKindToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="rank" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="FlushToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="highestRank" type="Rank"/>
+                <Field access="READ_ONLY" name="suit" type="Suit"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="FullHouseToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="lowPair" type="Rank"/>
+                <Field access="READ_ONLY" name="highThreeOfAKind" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="StraightToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="straightLow" type="Rank"/>
+                <Field access="READ_ONLY" name="straightHigh" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="HighCardToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="rank" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="RoyalFlushToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="suit" type="Suit"/>
+                <Field access="READ_ONLY" name="straightLow" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="StraightFlushToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="straightLow" type="Rank"/>
+                <Field access="READ_ONLY" name="straightHigh" type="Rank"/>
+                <Field access="READ_ONLY" name="suit" type="Suit"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="TwoPairToken" superType="HandToken">
+              <Fields>
+                <Field access="READ_ONLY" name="lowPair" type="Rank"/>
+                <Field access="READ_ONLY" name="highPair" type="Rank"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="Result">
+              <Fields>
+                <Field access="READ_ONLY" list="true" name="potAllocation" type="PotAllocation"/>
+                <Field access="READ_ONLY" list="true" name="shownHands" type="ShownHand"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="ShownHand">
+              <Fields>
+                <Field access="READ_ONLY" name="seat" type="Integer"/>
+                <Field access="READ_ONLY" name="hand" optional="true" type="HandToken"/>
+                <Field access="READ_ONLY" list="true" name="pocketCards" type="Card"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="GameContext" values="CASHGAME,TOURNAMENT,"/>
+            <ValueObject name="Round">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" entityDeclaration="true" name="startSnapshot" type="PokerGame"/>
+                <Field access="READ_ONLY" list="true" name="events" type="Event"/>
+              </Fields>
+            </ValueObject>
+            <Entity description="the persisted settings and round counter for a cashgame" name="CashGameTable">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="settings" type="GameSettings"/>
+                <Field access="READ_WRITE" name="roundSeq" type="Long"/>
+                <Field access="READ_ONLY" name="accountType" type="AccountType"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <ValueObject name="Stack">
+              <Fields>
+                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="latestUpdate" type="StackUpdateType"/>
+              </Fields>
+            </ValueObject>
+            <EnumType defaultValue="NONE" name="StackUpdateType" values="REBUY,BUY_IN,STACK_DOWN,BET,BLIND,ANTE,RETURNED_BET,POT_WIN,NONE,"/>
+            <ValueObject name="Bet">
+              <Fields>
+                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="betType" type="BetType"/>
+              </Fields>
+            </ValueObject>
+            <EnumType defaultValue="NONE" name="BetType" values="BET,BIG_BLIND,SMALL_BLIND,ANTE,NONE,"/>
+            <ValueObject name="FixedBetSettings">
+              <Fields>
+                <Field access="READ_ONLY" name="smallBlind" type="Long"/>
+                <Field access="READ_ONLY" name="bigBlind" type="Long"/>
+                <Field access="READ_ONLY" name="ante" type="Long"/>
+                <Field access="READ_ONLY" name="communalAnte" type="Long"/>
+                <Field access="READ_ONLY" name="communalAntePerPlayer" type="Long"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject description="array of win chances, if all in preflop then the array will contain a value for preflop,flop,turn and river chances" name="WinChances">
+              <Fields>
+                <Field access="READ_ONLY" mapKeyType="Integer" name="chances" type="Integer"/>
+              </Fields>
+            </ValueObject>
+          </Types>
+        </Package>
+        <Package name="sng" packageName="ngpoker.sng">
+          <Types>
+            <Entity description="manages a waiting list to play on demand tournaments" name="Sng">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="settings" type="TourSettings"/>
+                <Field access="READ_WRITE" entityDeclaration="true" list="true" name="entrants" type="Entrant"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+          </Types>
+        </Package>
+        <Package name="bot" packageName="ngpoker.bot">
+          <Types>
+            <ValueObject name="BotConfig">
+              <Fields>
+                <Field access="READ_ONLY" name="noOfBots" type="Integer"/>
+                <Field access="READ_ONLY" name="sngQuery" optional="true" type="QueryData"/>
+                <Field access="READ_ONLY" name="cashgameQuery" optional="true" type="QueryData"/>
+                <Field access="READ_ONLY" name="tourQuery" optional="true" type="QueryData"/>
+                <Field access="READ_ONLY" name="staySeated" type="Boolean"/>
+                <Field access="READ_ONLY" defaultValue="2000" name="decisionTime" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="1" name="noSimultaneousTours" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="new DecisionWeightings()" name="decisionWeightings" type="DecisionWeightings"/>
+                <Field access="READ_ONLY" name="connectTimeSettings" optional="true" type="TimeSettings"/>
+                <Field access="READ_ONLY" name="disconnectTimeSettings" optional="true" type="TimeSettings"/>
+                <Field access="READ_ONLY" name="accountSettings" optional="true" type="AccountSettings"/>
+                <Field access="READ_ONLY" name="password" optional="true" type="String"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="DecisionWeightings">
+              <Fields>
+                <Field access="READ_ONLY" defaultValue="5" name="betOrRaiseAllin" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="betOrRaiseFullPot" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="10" name="betOrRaiseHalfPot" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="20" name="betOrRaiseMinBet" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="80" name="call" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="80" name="check" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="40" name="fold" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject name="TimeSettings">
+              <Fields>
+                <Field access="READ_ONLY" name="min" type="Integer"/>
+                <Field access="READ_ONLY" name="max" type="Integer"/>
+                <Field access="READ_ONLY" name="random" type="Boolean"/>
+              </Fields>
+            </ValueObject>
+            <ValueObject description="stores settings for bot&apos;s auto payment settings" name="AccountSettings">
+              <Fields>
+                <Field access="READ_ONLY" name="minPlayBalance" type="Long"/>
+                <Field access="READ_ONLY" name="minRealBalance" type="Long"/>
+                <Field access="READ_ONLY" defaultValue="50000L" name="creditAmount" type="Long"/>
+              </Fields>
+            </ValueObject>
+          </Types>
+        </Package>
+        <Package name="forum" packageName="ngpoker.forum">
+          <Types>
+            <Entity name="Post">
+              <Fields>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="parentThread" type="String"/>
+                <Field access="READ_ONLY" name="author" type="PlayerId"/>
+                <Field access="READ_WRITE" name="content" type="String"/>
+                <Field access="READ_ONLY" name="parentPost" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="lastEdited" type="Long"/>
+                <Field access="READ_ONLY" name="created" type="Long"/>
+                <Field access="READ_WRITE" list="true" name="likes" type="PlayerId"/>
+                <Field access="READ_ONLY" name="authorNick" type="String"/>
+              </Fields>
+            </Entity>
+            <Entity name="ForumThread">
+              <Fields>
+                <Field access="READ_WRITE" entityDeclaration="true" list="true" name="posts" type="Post"/>
+                <Field access="READ_ONLY" name="title" type="String"/>
+                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="summary" type="String"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+          </Types>
+        </Package>
+        <Package name="extensions" packageName="ngpoker.limiteddeck">
+          <Types>
+            <Entity name="LimitedDeckExtension" superType="ExtensionModel">
+              <Fields>
+                <Field access="READ_WRITE" entityDeclaration="true" mapKeyType="PlayerId" name="players" type="LimitedDeckPlayer"/>
+                <Field access="READ_WRITE" list="true" name="pointEvents" type="PointEvent"/>
+                <Field access="READ_ONLY" defaultValue="new LimitedDeckConfig()" name="config" type="LimitedDeckConfig"/>
+                <Field access="READ_WRITE" name="latestCheckpoint" type="Checkpoint"/>
+                <Field access="READ_WRITE" name="roundCount" type="Integer"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <Entity abstract="true" name="ExtensionModel"/>
+            <Entity name="LimitedDeckPlayer">
+              <Fields>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_WRITE" name="peek" optional="true" type="Peek"/>
+                <Field access="READ_WRITE" name="points" type="Float"/>
+                <Field access="READ_WRITE" list="true" name="shownCards" preventDuplicates="true" type="Card"/>
+                <Field access="READ_WRITE" list="true" name="peekedCards" type="Card"/>
+                <Field access="READ_WRITE" name="handsWon" type="Integer"/>
+                <Field access="READ_ONLY" name="username" optional="true" type="String"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="finalRank" type="Integer"/>
+                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_WRITE" name="shuffler" optional="true" type="PlayerId"/>
+                <Field access="READ_ONLY" name="pokerCharacter" type="PokerCharacter"/>
+                <Field access="READ_WRITE" name="showOne" optional="true" type="PlayerId"/>
+                <Field access="READ_WRITE" list="true" name="resources" type="Resource"/>
+                <Field access="READ_WRITE" name="uncontestedHandsWon" type="Integer"/>
+              </Fields>
+            </Entity>
+            <ValueObject description="encapsulates a peek at a players hole cards" name="Peek">
+              <Fields>
+                <Field access="READ_ONLY" name="peeker" type="PlayerId"/>
+                <Field access="READ_ONLY" name="publicPeek" type="Boolean"/>
+              </Fields>
+            </ValueObject>
+            <Entity name="PrivateLimitedDeckState">
+              <Fields>
+                <Field access="READ_WRITE" entityDeclaration="true" mapKeyType="PlayerId" name="playerInfos" type="PlayerInfo"/>
+                <Field access="READ_WRITE" list="true" name="usedCards" type="Card"/>
+                <Field access="READ_WRITE" name="result" optional="true" type="SngResult"/>
+              </Fields>
+              <ObservableMeta/>
+            </Entity>
+            <Entity name="PlayerInfo">
+              <Fields>
+                <Field access="READ_WRITE" list="true" name="peekedCards" type="Card"/>
+                <Field access="READ_WRITE" list="true" name="shownCards" type="Card"/>
+              </Fields>
+            </Entity>
+            <ValueObject name="LimitedDeckConfig">
+              <Fields>
+                <Field access="READ_ONLY" defaultValue="5" name="stackedPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="200" name="stackedBlindsToReach" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="firstBloodPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="stayingAlivePoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="15" name="stayingAliveHandToSurvive" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="7" name="doubleTroublePoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="-10" name="bustoPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="2" name="bustoBottomPositionCount" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="10" name="perfectPerfectPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="perfectPerfectMinPlayers" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="2f" name="winPointsMultiplier" type="Float"/>
+                <Field access="READ_ONLY" defaultValue="5" name="epicWinPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="acesDownPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="1f" name="runnerUpPointsMultiplier" type="Float"/>
+                <Field access="READ_ONLY" defaultValue="4" name="runnerUpMinPlayers" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="-5" name="epicLossPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="1" name="offToTheRacesPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="notAFlukePoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="notAFlukeHandWonCount" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="8" name="crushingPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="1" name="coinFlipPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="2" name="dominatedPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="gotchaPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="smoothSailingHandWonCount" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="smoothSailingPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="6" name="inControlHandWonCount" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="10" name="inControlPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="doubleUpPoints" type="Integer"/>
+              </Fields>
+            </ValueObject>
+            <EnumType name="PointEventType" values="STACKED,FIRST_BLOOD,STAYING_ALIVE,DOUBLE_TROUBLE,CRUSHING,BUSTO,PERFECT_PERFECT,WIN,EPIC_WIN,ACES_DOWN,RUNNER_UP,EPIC_LOSS,OFF_TO_THE_RACES,NOT_A_FLUKE,COIN_FLIP,DOMINATED,GOTCHA,SMOOTH_SAILING,IN_CONTROL,DOUBLE_UP,"/>
+            <ValueObject description="describes a point award or penalty. Negative points means penalty" name="PointEvent">
+              <Fields>
+                <Field access="READ_ONLY" name="type" type="PointEventType"/>
+                <Field access="READ_ONLY" name="timestamp" type="Long"/>
+                <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
+                <Field access="READ_ONLY" name="points" type="Float"/>
+              </Fields>
+            </ValueObject>
+            <EnumType defaultValue="NONE" name="Checkpoint" values="NONE,_6_HANDS_PLAYED,_18_HANDS_PLAYED,SUDDEN_DEATH,SUDDEN_DEATH_OVERTIME,ELIMINATION_ROUND,"/>
+            <EnumType name="Ability" values="EXTRA_LIVES,BIGGER_STACK,SHOW_ONE,SHUFFLE_DECK,PROTECTED_CARDS,"/>
+            <EnumType name="Resource" values="EXTRA_LIFE,SHUFFLE,SHOW_ONE,PEEK,"/>
+            <ValueObject name="SngResult">
+              <Fields>
+                <Field access="READ_ONLY" name="elimitedPlayerCount" type="Integer"/>
+                <Field access="READ_ONLY" list="true" name="donkEvents" type="PointEvent"/>
+                <Field access="READ_ONLY" list="true" name="winLossEvents" type="PointEvent"/>
+                <Field access="READ_ONLY" name="finalRank" type="Integer"/>
+                <Field access="READ_ONLY" name="finalRankPoints" type="Integer"/>
+                <Field access="READ_ONLY" name="donkPoints" type="Integer"/>
+                <Field access="READ_ONLY" name="winLossPoints" type="Integer"/>
+                <Field access="READ_ONLY" name="handsWon" type="Integer"/>
+                <Field access="READ_ONLY" name="handsWonPoints" type="Integer"/>
+                <Field access="READ_ONLY" name="eliminatedPlayerPoints" type="Integer"/>
+                <Field access="READ_ONLY" name="characterMultiplier" type="Float"/>
+                <Field access="READ_ONLY" name="netTotalPoints" type="Float"/>
+                <Field access="READ_ONLY" name="grossTotalPoints" type="Float"/>
+              </Fields>
+            </ValueObject>
+          </Types>
+        </Package>
+      </Packages>
+    </Module>
+  </Modules>
+  <ObjectIds>
+    <ObjectId id="2000" name="ngpoker_infrastructure_types_NodeId"/>
+    <ObjectId id="2001" name="ngpoker_infrastructure_types_NodeData"/>
+    <ObjectId id="2002" name="ngpoker_infrastructure_types_IdSequence"/>
+    <ObjectId id="2003" name="ngpoker_infrastructure_types_IdSequenceStore"/>
+    <ObjectId id="2004" name="ngpoker_common_types_PlayerId"/>
+    <ObjectId id="2005" name="ngpoker_common_types_PlayerLocation"/>
+    <ObjectId id="2006" name="ngpoker_common_types_Coord"/>
+    <ObjectId id="2007" name="ngpoker_common_types_AccountType"/>
+    <ObjectId id="2008" name="ngpoker_common_types_OperatorId"/>
+    <ObjectId id="2009" name="ngpoker_common_types_ImageData"/>
+    <ObjectId id="2010" name="ngpoker_common_types_DeckData"/>
+    <ObjectId id="2011" name="ngpoker_common_types_Player"/>
+    <ObjectId id="2014" name="ngpoker_common_types_CashGameKey"/>
+    <ObjectId id="2015" name="ngpoker_common_types_TransactionId"/>
+    <ObjectId id="2016" name="ngpoker_common_types_PotResult"/>
+    <ObjectId id="2017" name="ngpoker_common_types_RoundResult"/>
+    <ObjectId id="2018" name="ngpoker_common_types_HandResult"/>
+    <ObjectId id="2020" name="ngpoker_common_types_TournamentKey"/>
+    <ObjectId id="2021" name="ngpoker_common_types_GameSettings"/>
+    <ObjectId id="2025" name="ngpoker_common_types_Property"/>
+    <ObjectId id="2026" name="ngpoker_common_types_ChatMessage"/>
+    <ObjectId id="2027" name="ngpoker_common_types_Event"/>
+    <ObjectId id="2028" name="ngpoker_common_types_NewsItem"/>
+    <ObjectId id="2029" name="ngpoker_common_types_NewsFeed"/>
+    <ObjectId id="2030" name="ngpoker_user_UserEntity"/>
+    <ObjectId id="2031" name="ngpoker_user_UserInfo"/>
+    <ObjectId id="2032" name="ngpoker_moneysystem_types_Account"/>
+    <ObjectId id="2033" name="ngpoker_moneysystem_types_MoneySession"/>
+    <ObjectId id="2034" name="ngpoker_moneysystem_types_PlayerCredit"/>
+    <ObjectId id="2035" name="ngpoker_moneysystem_types_OperatorCredit"/>
+    <ObjectId id="2036" name="ngpoker_lobby_types_Query"/>
+    <ObjectId id="2037" name="ngpoker_lobby_types_QueryData"/>
+    <ObjectId id="2038" name="ngpoker_lobby_types_Clause"/>
+    <ObjectId id="2040" name="ngpoker_lobby_types_Page"/>
+    <ObjectId id="2041" name="ngpoker_lobby_types_ChatroomInLobby"/>
+    <ObjectId id="2042" name="ngpoker_lobby_types_PokerroomInLobby"/>
+    <ObjectId id="2043" name="ngpoker_lobby_types_TourInLobby"/>
+    <ObjectId id="2044" name="ngpoker_lobby_types_SngInLobby"/>
+    <ObjectId id="2045" name="ngpoker_lobby_types_PlayerInLobby"/>
+    <ObjectId id="2046" name="ngpoker_lobby_types_ThreadInLobby"/>
+    <ObjectId id="2047" name="ngpoker_lobby_types_Table"/>
+    <ObjectId id="2048" name="ngpoker_tour_types_RecurRule"/>
+    <ObjectId id="2049" name="ngpoker_tour_types_StartTime"/>
+    <ObjectId id="2050" name="ngpoker_tour_types_Tournament"/>
+    <ObjectId id="2051" name="ngpoker_tour_types_TourPlayer"/>
+    <ObjectId id="2052" name="ngpoker_tour_types_Fingerprint"/>
+    <ObjectId id="2053" name="ngpoker_tour_types_PublicTour"/>
+    <ObjectId id="2054" name="ngpoker_tour_types_RegisteringState"/>
+    <ObjectId id="2055" name="ngpoker_tour_types_RunningState"/>
+    <ObjectId id="2056" name="ngpoker_tour_types_Entrant"/>
+    <ObjectId id="2057" name="ngpoker_tour_types_PlayerSeatTuple"/>
+    <ObjectId id="2058" name="ngpoker_tour_types_TTable"/>
+    <ObjectId id="2059" name="ngpoker_tour_types_TourSettings"/>
+    <ObjectId id="2061" name="ngpoker_tour_types_CashPrize"/>
+    <ObjectId id="2062" name="ngpoker_tour_types_TicketPrize"/>
+    <ObjectId id="2063" name="ngpoker_tour_types_TSeat"/>
+    <ObjectId id="2064" name="ngpoker_tour_types_Level"/>
+    <ObjectId id="2065" name="ngpoker_tour_types_ScheduledTourSettings"/>
+    <ObjectId id="2066" name="ngpoker_tour_types_PrivateTourState"/>
+    <ObjectId id="2067" name="ngpoker_tour_types_PrivateRunningState"/>
+    <ObjectId id="2068" name="ngpoker_tour_types_PlayerPrize"/>
+    <ObjectId id="2069" name="ngpoker_tour_types_RecurringTour"/>
+    <ObjectId id="2070" name="ngpoker_tour_types_LevelInfo"/>
+    <ObjectId id="2071" name="ngpoker_tour_types_PlayerStackStat"/>
+    <ObjectId id="2072" name="ngpoker_tour_types_TourPlayerStats"/>
+    <ObjectId id="2073" name="ngpoker_tour_types_MultiTour"/>
+    <ObjectId id="2074" name="ngpoker_tour_types_MeleeLevel"/>
+    <ObjectId id="2075" name="ngpoker_tour_types_MeleeTour"/>
+    <ObjectId id="2076" name="ngpoker_tour_types_MeleeSng"/>
+    <ObjectId id="2077" name="ngpoker_tour_types_MultiPlayer"/>
+    <ObjectId id="2078" name="ngpoker_tour_types_RunningMelee"/>
+    <ObjectId id="2079" name="ngpoker_tour_types_Frequency"/>
+    <ObjectId id="2080" name="ngpoker_game_types_PokerGame"/>
+    <ObjectId id="2081" name="ngpoker_game_types_CashGame"/>
+    <ObjectId id="2082" name="ngpoker_game_types_Seat"/>
+    <ObjectId id="2083" name="ngpoker_game_types_Pot"/>
+    <ObjectId id="2084" name="ngpoker_game_types_PotAllocation"/>
+    <ObjectId id="2085" name="ngpoker_game_types_PotAmount"/>
+    <ObjectId id="2086" name="ngpoker_game_types_PublicPlayer"/>
+    <ObjectId id="2087" name="ngpoker_game_types_PrivatePlayer"/>
+    <ObjectId id="2088" name="ngpoker_game_types_PublicPokerGame"/>
+    <ObjectId id="2090" name="ngpoker_game_types_PairToken"/>
+    <ObjectId id="2091" name="ngpoker_game_types_ThreeOfAKindToken"/>
+    <ObjectId id="2092" name="ngpoker_game_types_FourOfAKindToken"/>
+    <ObjectId id="2093" name="ngpoker_game_types_FlushToken"/>
+    <ObjectId id="2094" name="ngpoker_game_types_FullHouseToken"/>
+    <ObjectId id="2095" name="ngpoker_game_types_StraightToken"/>
+    <ObjectId id="2096" name="ngpoker_game_types_HighCardToken"/>
+    <ObjectId id="2097" name="ngpoker_game_types_RoyalFlushToken"/>
+    <ObjectId id="2098" name="ngpoker_game_types_StraightFlushToken"/>
+    <ObjectId id="2099" name="ngpoker_game_types_TwoPairToken"/>
+    <ObjectId id="2100" name="ngpoker_game_types_Result"/>
+    <ObjectId id="2101" name="ngpoker_game_types_ShownHand"/>
+    <ObjectId id="2102" name="ngpoker_game_types_Round"/>
+    <ObjectId id="2103" name="ngpoker_game_types_CashGameTable"/>
+    <ObjectId id="2104" name="ngpoker_game_types_Stack"/>
+    <ObjectId id="2105" name="ngpoker_game_types_Bet"/>
+    <ObjectId id="2106" name="ngpoker_game_types_FixedBetSettings"/>
+    <ObjectId id="2107" name="ngpoker_game_types_WinChances"/>
+    <ObjectId id="2108" name="ngpoker_sng_Sng"/>
+    <ObjectId id="2109" name="ngpoker_bot_BotConfig"/>
+    <ObjectId id="2110" name="ngpoker_bot_DecisionWeightings"/>
+    <ObjectId id="2111" name="ngpoker_bot_TimeSettings"/>
+    <ObjectId id="2112" name="ngpoker_bot_AccountSettings"/>
+    <ObjectId id="2113" name="ngpoker_forum_Post"/>
+    <ObjectId id="2114" name="ngpoker_forum_ForumThread"/>
+    <ObjectId id="2115" name="ngpoker_limiteddeck_LimitedDeckExtension"/>
+    <ObjectId id="2117" name="ngpoker_limiteddeck_LimitedDeckPlayer"/>
+    <ObjectId id="2118" name="ngpoker_limiteddeck_Peek"/>
+    <ObjectId id="2119" name="ngpoker_limiteddeck_PrivateLimitedDeckState"/>
+    <ObjectId id="2120" name="ngpoker_limiteddeck_PlayerInfo"/>
+    <ObjectId id="2121" name="ngpoker_limiteddeck_LimitedDeckConfig"/>
+    <ObjectId id="2122" name="ngpoker_limiteddeck_PointEvent"/>
+    <ObjectId id="2123" name="ngpoker_limiteddeck_SngResult"/>
+  </ObjectIds>
+</Model>

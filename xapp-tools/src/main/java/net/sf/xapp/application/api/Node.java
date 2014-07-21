@@ -77,6 +77,7 @@ public interface Node
      * @return the data object wrapped by this node, null if a simple list node
      */
     <T> T wrappedObject();
+    Class wrappedObjectClass();
 
     /**
      * return true if the wrapped object is of type aClass

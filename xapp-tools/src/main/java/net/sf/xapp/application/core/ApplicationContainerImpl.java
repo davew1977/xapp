@@ -1195,7 +1195,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         {
             if (node.wrappedObject() != null)
             {
-                classList.add(node.wrappedObject().getClass());
+                classList.add(node.wrappedObjectClass());
             }
         }
 
