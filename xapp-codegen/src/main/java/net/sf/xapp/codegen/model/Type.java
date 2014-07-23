@@ -20,10 +20,8 @@ public interface Type extends Cloneable, Artifact
 
     List<String> validate();
 
-    String getAlternativePackage();
+    String getPackageName();
 
     void setPackageName(String aPackage);
-
-    String derivePackage();
 
 }

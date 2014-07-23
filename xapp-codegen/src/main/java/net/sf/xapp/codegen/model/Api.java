@@ -7,6 +7,7 @@
 package net.sf.xapp.codegen.model;
 
 import net.sf.xapp.annotations.application.Container;
+import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.tree.TreeNode;
@@ -17,8 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 @Container(listProperty = "messages")
-public class Api extends TreeNode implements Artifact
+public class Api extends FileMeta implements Artifact
 {
+    protected String name;
     protected String packageName;
     protected List<Message> messages = new ArrayList<Message>();
     protected List<String> errors = new ArrayList<String>();
@@ -49,6 +51,14 @@ public class Api extends TreeNode implements Artifact
             message.setPackageName(messagePackageName());
             message.setModule(module);
         }
+    }
+    @Key
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public ApiType getApiType()

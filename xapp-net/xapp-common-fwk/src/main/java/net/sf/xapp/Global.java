@@ -1,4 +1,4 @@
-package ng;
+package net.sf.xapp;
 
 import net.sf.xapp.marshalling.Unmarshaller;
 import ngpoker.codegen.model.ComplexType;
@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * © 2013 Newera Education Ltd
- * Created by dwebber
+ * This class must be replaced (as opposed to overridden) by the most specific project using the framework
  */
 public class Global {
     public static Model model = Unmarshaller.load(Model.class, "classpath:///domain-model.xml");

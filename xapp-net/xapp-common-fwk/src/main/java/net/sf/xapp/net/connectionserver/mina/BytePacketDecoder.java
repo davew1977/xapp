@@ -6,8 +6,7 @@
  */
 package net.sf.xapp.net.connectionserver.mina;
 
-import ng.Global;
-import net.sf.xapp.net.common.framework.Message;
+import net.sf.xapp.Global;
 import net.sf.xapp.net.common.framework.TransportObject;
 import ngpoker.common.types.MessageTypeEnum;
 import org.apache.mina.common.ByteBuffer;

@@ -1,9 +1,12 @@
 package net.sf.xapp.codegen.model;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.application.utils.codegen.CodeFile;
 import net.sf.xapp.application.utils.codegen.JavaFile;
+import net.sf.xapp.objectmodelling.core.Namespace;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.codegen.mixins.GenericMixIn;
@@ -17,21 +20,17 @@ import java.util.Map;
 /**
  * Created by dwebber
  */
+@NamespaceFor(FileMeta.class)
 public class Module {
+    private ObjectMeta objMeta;
     private String name;
     private String outDir;
     private Tree apiTree = new Tree("Apis");
     private List<Package> packages = new ArrayList<Package>();
-    private Model model;
+    private DirMeta src;
 
-    public void init(Model model) {
-        this.model = model;
-        for (Package aPackage : packages) {
-            aPackage.init(this);
-        }
-        for (Api api : allApis()) {
-            api.init(this);
-        }
+    private void setObjMeta(ObjectMeta objMeta) {
+        this.objMeta = objMeta;
     }
 
     @Key
@@ -40,7 +39,7 @@ public class Module {
     }
 
     public Model model() {
-        return model;
+        return (Model) objMeta.root().getInstance();
     }
 
     public void setName(String name) {
@@ -63,6 +62,14 @@ public class Module {
         this.packages = packages;
     }
 
+    public DirMeta getSrc() {
+        return src;
+    }
+
+    public void setSrc(DirMeta src) {
+        this.src = src;
+    }
+
     @TreeMeta(leafTypes = {Tree.class, Api.class})
     public Tree getApiTree() {
         return apiTree;
@@ -78,7 +85,7 @@ public class Module {
     }
 
     public List<Api> allApis() {
-        return apiTree.enumerate(Api.class);
+        return src.all(Api.class);
     }
 
     public File outDir() {

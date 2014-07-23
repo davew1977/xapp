@@ -28,7 +28,7 @@ public class JavaBeanMixIn implements MixIn<ComplexType>
         }
         for (Type type : complexType.fieldTypes())
         {
-            String alt = type.getAlternativePackage();
+            String alt = type.getPackageName();
             if (alt != null)
             {
                 ct.addImport(alt + "." + type.getName());

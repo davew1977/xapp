@@ -12,123 +12,83 @@ import net.sf.xapp.annotations.marshalling.PropertyOrder;
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.application.editor.widgets.FreeTextPropertyWidget;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractType implements Type, Artifact
-{
-    private String m_name;
-    private String m_description;
-    private boolean m_skipGeneration;
-    private String m_alternativePackage;
-    private String packageName;
-    private boolean changedInSession;
+public abstract class AbstractType extends FileMeta implements Type, Artifact {
+    private String description;
+    private boolean skipGeneration;
+    private String alternativePackageName;
     private Module module;
+    private boolean changedInSession;
 
-    public AbstractType(String name)
-    {
-        m_name = name;
+    public AbstractType(String name) {
+        super(name);
     }
 
-    public AbstractType()
-    {
+    public AbstractType() {
     }
 
     @Transient
     public String getPackageName() {
-        return packageName;
-    }
-
-    @Key
-    @PropertyOrder(-1)
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public void setName(String name)
-    {
-        m_name = name;
+        return alternativePackageName != null ? alternativePackageName : packageName();
     }
 
     @EditorWidget(FreeTextPropertyWidget.class)
     @PropertyOrder(1)
-    public String getDescription()
-    {
-        return m_description;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescription(String description)
-    {
-        m_description = description;
-    }
-
-    public String getAlternativePackage()
-    {
-        return m_alternativePackage;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
-    public void setPackageName(String packageName)
-    {
-        this.packageName = packageName;
-
+    public void setPackageName(String packageName) {
+        this.alternativePackageName = packageName;
     }
 
-    @Override
-    public String derivePackage()
-    {
-        if(m_alternativePackage!=null)
-        {
-            return m_alternativePackage;
-        }
-        return packageName;
+    public String getAlternativePackageName() {
+        return alternativePackageName;
     }
 
-    public void setAlternativePackage(String alternativePackage)
-    {
-        m_alternativePackage = alternativePackage;
+    public void setAlternativePackageName(String alternativePackageName) {
+        this.alternativePackageName = alternativePackageName;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return getName();
     }
 
-    public AbstractType clone() throws CloneNotSupportedException
-    {
+    public AbstractType clone() throws CloneNotSupportedException {
         return (AbstractType) super.clone();
     }
 
-    public List<String> validate()
-    {
+    public List<String> validate() {
         return new ArrayList<String>();
     }
 
-    public boolean isSkipGeneration()
-    {
-        return m_skipGeneration;
+    public boolean isSkipGeneration() {
+        return skipGeneration;
     }
 
-    public void setSkipGeneration(boolean skipGeneration)
-    {
-        m_skipGeneration = skipGeneration;
+    public void setSkipGeneration(boolean skipGeneration) {
+        this.skipGeneration = skipGeneration;
     }
 
-    public boolean shouldGenerate()
-    {
+    public boolean shouldGenerate() {
         return changedInSession && !isSkipGeneration();
     }
 
     @Transient
-    public boolean isChangedInSession()
-    {
+    public boolean isChangedInSession() {
         return changedInSession;
     }
 
-    public void setChangedInSession(boolean changedInSession)
-    {
+    public void setChangedInSession(boolean changedInSession) {
         this.changedInSession = changedInSession;
     }
 
@@ -139,12 +99,11 @@ public abstract class AbstractType implements Type, Artifact
 
     @Transient
     public Module getModule() {
-        return module;
+        return module != null ? module : module();
     }
 
-    public String className()
-    {
-        return derivePackage() + "." + getName();
+    public String className() {
+        return getPackageName() + "." + getName();
     }
 
     public Model model() {

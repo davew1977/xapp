@@ -554,4 +554,13 @@ public class ObjectMeta<T> implements Namespace{
     public int index() {
         return getHome().indexOf(this);
     }
+
+    public <A> ObjectMeta<A> findAncestor(Class<A> type) {
+        if(!isRoot()) {
+            ObjectMeta parent = getParent();
+            return parent.isInstance(type) ?  parent : parent.findAncestor(type);
+        } else {
+            return null;
+        }
+    }
 }

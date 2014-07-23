@@ -6,6 +6,7 @@
  */
 package net.sf.xapp.net.common.framework;
 
+import net.sf.xapp.Global;
 import ngpoker.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.util.StringUtils;
 
@@ -82,7 +83,7 @@ public class TransportHelper
         {
             DataInput din = new DataInputStream(new ByteArrayInputStream(bytes));
             int type = din.readInt();
-            TransportObject message = ng.Global.create(type);
+            TransportObject message = Global.create(type);
             message.readData(din);
             return (T) message;
         }
@@ -100,7 +101,7 @@ public class TransportHelper
     public static <T extends Message> T fromString(String s)
     {
         List<Object> data = StringUtils.parse(s);
-        T message = (T) ng.Global.create((String) data.get(0));
+        T message = (T) Global.create((String) data.get(0));
         message.populateFrom((List)data.get(1));
         return message;
     }
