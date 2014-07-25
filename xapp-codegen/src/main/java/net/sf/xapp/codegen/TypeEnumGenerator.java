@@ -30,10 +30,10 @@ public class TypeEnumGenerator
         Set<ComplexType> subTypes = model.findSubTypes(superType);
         CodeFile cf = genContext.createJavaFile(superType);
         String typeName = superType.getName() + TYPE_ENUM_SUFFIX;
-        new GenericMixIn(superType.derivePackage()).mixIn(typeName, cf);
+        new GenericMixIn(superType.getPackageName()).mixIn(typeName, cf);
         for (ComplexType subType : subTypes)
         {
-            cf.addImport(subType.derivePackage() + ".*");
+            cf.addImport(subType.getPackageName() + ".*");
             String subTypeName = subType.getName();
             EnumContext context = cf.newEnumValue(subTypeName);
             context.method("create", subTypeName);

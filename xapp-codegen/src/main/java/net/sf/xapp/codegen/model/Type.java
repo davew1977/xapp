@@ -12,7 +12,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
 import java.util.List;
 
-@ValidImplementations({PrimitiveType.class, EnumType.class, Entity.class, ValueObject.class, WrapperType.class, LobbyType.class})
+@ValidImplementations({PrimitiveType.class, EnumType.class, Entity.class, ValueObject.class, LobbyType.class})
 public interface Type extends Cloneable, Artifact
 {
     @Key

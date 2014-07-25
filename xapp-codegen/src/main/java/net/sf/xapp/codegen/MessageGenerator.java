@@ -67,7 +67,7 @@ public class MessageGenerator
         //may need to import the return type if not a response
         if (message.getReturnType() != null)
         {
-            ct.addImport(message.getReturnType().derivePackage() + "." + message.getReturnType());
+            ct.addImport(message.getReturnType().getPackageName() + "." + message.getReturnType());
         }
         ct.setSuper(format("AbstractInMessage<%s, %s>", api.getName(), returnType));
         List<Method> constructors = ct.getConstructors();

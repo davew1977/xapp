@@ -122,10 +122,4 @@ public class Message extends ValueObject
         String rt = returnType();
         return rt.equals("void") ? "Void" : rt;
     }
-
-    @Override
-    @Transient
-    public Module getModule() {
-        return api.getModule();
-    }
 }

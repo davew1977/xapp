@@ -34,7 +34,7 @@ public class XappListenerGenerator {
         String updateType = cn + "Update";
         String vn = decapitaliseFirst(cn);
         String un = decapitaliseFirst(updateType);
-        new GenericMixIn(entity.derivePackage()).mixIn("Xapp" + cn + "Listener", ct);
+        new GenericMixIn(entity.getPackageName()).mixIn("Xapp" + cn + "Listener", ct);
 
         ct.addImport("net.sf.xapp.objectmodelling.api.ClassDatabase");
         ct.addImport("net.sf.xapp.application.api.*");
@@ -70,7 +70,7 @@ public class XappListenerGenerator {
             for (int i = 0; i < complexFieldSets.size(); i++) {
                 FieldSet fieldSet = complexFieldSets.get(i);
                 Field last = fieldSet.last();
-                ct.addImport(last.getType().derivePackage() + ".*");
+                ct.addImport(last.getType().getPackageName() + ".*");
                 String tn = last.typeName();
                 ct.startBlock("%sif(node.isA(%s.class))", i > 0 ? "else " : "", tn);
                 ct.line("%s obj = node.wrappedObject()", tn);
@@ -98,7 +98,7 @@ public class XappListenerGenerator {
             for (int i = 0; i < complexFieldSets.size(); i++) {
                 FieldSet fieldSet = complexFieldSets.get(i);
                 Field last = fieldSet.last();
-                ct.addImport(last.getType().derivePackage() + ".*");
+                ct.addImport(last.getType().getPackageName() + ".*");
                 String tn = last.typeName();
                 ct.startBlock("%sif(node.isA(%s.class))", i > 0 ? "else " : "", tn);
                 if (last.isMap()) {

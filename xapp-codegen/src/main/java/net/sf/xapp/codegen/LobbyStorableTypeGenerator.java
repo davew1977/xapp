@@ -42,7 +42,7 @@ public class LobbyStorableTypeGenerator
     public CodeFile generateStorableType(LobbyType lobbyType)
     {
         CodeFile cf = genContext.createJavaFile(lobbyType);
-        new GenericMixIn(lobbyType.derivePackage()).mixIn(lobbyType.getName() + "Type", cf);
+        new GenericMixIn(lobbyType.getPackageName()).mixIn(lobbyType.getName() + "Type", cf);
         cf.addImplements("StorableType");
         cf.addImport("ngpoker.server.framework.memdb.StorableType");
         cf.addImport("java.util.*");

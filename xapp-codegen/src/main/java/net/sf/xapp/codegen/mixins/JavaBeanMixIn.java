@@ -48,9 +48,9 @@ public class JavaBeanMixIn implements MixIn<ComplexType>
             ComplexType superType = complexType.getSuperType();
             String superName = superType.getName();
             ct.setSuper(superName);
-            if(!superType.derivePackage().equals(complexType.derivePackage()))
+            if(!superType.getPackageName().equals(complexType.getPackageName()))
             {
-                ct.addImport(superType.derivePackage() + "." + superType.getName());
+                ct.addImport(superType.getPackageName() + "." + superType.getName());
             }
             /*if (superType.isAbstract())
             {

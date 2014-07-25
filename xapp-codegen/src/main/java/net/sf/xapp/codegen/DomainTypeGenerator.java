@@ -35,7 +35,7 @@ public class DomainTypeGenerator {
         ct.addImport("java.util.Map");
         ct.addImport("java.util.LinkedHashMap");
         ct.addImport("java.util.LinkedHashSet");
-        new GenericMixIn(complexType.derivePackage()).mixIn(complexType, ct);
+        new GenericMixIn(complexType.getPackageName()).mixIn(complexType, ct);
         new JavaBeanMixIn().mixIn(complexType, ct);
         Collection<String> otherImports = complexType.resolvePackages();
         for (String otherImport : otherImports) {

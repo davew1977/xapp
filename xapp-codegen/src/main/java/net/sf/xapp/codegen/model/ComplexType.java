@@ -226,7 +226,7 @@ public abstract class ComplexType extends AbstractType
         LinkedHashSet<String> h = new LinkedHashSet<String>();
         for (Type type : fieldTypes())
         {
-            h.add(type.derivePackage());
+            h.add(type.getPackageName());
         }
         return h;
     }

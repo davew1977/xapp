@@ -17,12 +17,9 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractType extends FileMeta implements Type, Artifact {
-    private String description;
+public abstract class AbstractType extends AbstractArtifact implements Type, Artifact {
     private boolean skipGeneration;
     private String alternativePackageName;
-    private Module module;
-    private boolean changedInSession;
 
     public AbstractType(String name) {
         super(name);
@@ -34,16 +31,6 @@ public abstract class AbstractType extends FileMeta implements Type, Artifact {
     @Transient
     public String getPackageName() {
         return alternativePackageName != null ? alternativePackageName : packageName();
-    }
-
-    @EditorWidget(FreeTextPropertyWidget.class)
-    @PropertyOrder(1)
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override
@@ -59,18 +46,6 @@ public abstract class AbstractType extends FileMeta implements Type, Artifact {
         this.alternativePackageName = alternativePackageName;
     }
 
-    public String toString() {
-        return getName();
-    }
-
-    public AbstractType clone() throws CloneNotSupportedException {
-        return (AbstractType) super.clone();
-    }
-
-    public List<String> validate() {
-        return new ArrayList<String>();
-    }
-
     public boolean isSkipGeneration() {
         return skipGeneration;
     }
@@ -80,33 +55,6 @@ public abstract class AbstractType extends FileMeta implements Type, Artifact {
     }
 
     public boolean shouldGenerate() {
-        return changedInSession && !isSkipGeneration();
-    }
-
-    @Transient
-    public boolean isChangedInSession() {
-        return changedInSession;
-    }
-
-    public void setChangedInSession(boolean changedInSession) {
-        this.changedInSession = changedInSession;
-    }
-
-    @Override
-    public void setModule(Module module) {
-        this.module = module;
-    }
-
-    @Transient
-    public Module getModule() {
-        return module != null ? module : module();
-    }
-
-    public String className() {
-        return getPackageName() + "." + getName();
-    }
-
-    public Model model() {
-        return getModule().model();
+        return isChangedInSession() && !isSkipGeneration();
     }
 }

@@ -21,8 +21,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Container(listProperty = "Modules")
-public class Model
-{
+public class Model {
     public ClassDatabase<Model> cdb;
     private String m_version;
     private String m_name;
@@ -35,13 +34,11 @@ public class Model
     private boolean xappPluginEnabled;
     private boolean generateSetters;
 
-    public String getName()
-    {
+    public String getName() {
         return m_name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         m_name = name;
     }
 
@@ -53,13 +50,11 @@ public class Model
         this.generateSetters = generateSetters;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return m_version;
     }
 
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         m_version = version;
     }
 
@@ -89,15 +84,12 @@ public class Model
         this.objectIds = objectIds;
     }
 
-    public List<String> validate()
-    {
+    public List<String> validate() {
         ArrayList<String> errors = new ArrayList<String>();
-        for (Package aPackage : allPackages())
-        {
+        for (Package aPackage : allPackages()) {
             aPackage.validate(errors);
         }
-        for (Api api : allApis())
-        {
+        for (Api api : allApis()) {
             api.validate(errors);
         }
         return errors;
@@ -120,15 +112,9 @@ public class Model
     }
 
     @PostInit
-    public void init()
-    {
-        for (Module module : modules) {
-            module.init(this);
-        }
-        for (ComplexType complexType : complexTypes())
-        {
-            if(complexType.getSuperType()!=null)
-            {
+    public void init() {
+        for (ComplexType complexType : complexTypes()) {
+            if (complexType.getSuperType() != null) {
                 complexType.getSuperType().addSubType(complexType);
             }
         }
@@ -136,14 +122,11 @@ public class Model
         updateObjectIds();
     }
 
-    public Set<ComplexType> findSubTypes(ComplexType superType)
-    {
+    public Set<ComplexType> findSubTypes(ComplexType superType) {
         LinkedHashSet<ComplexType> subTypes = new LinkedHashSet<ComplexType>();
         List<ComplexType> complexTypes = complexTypes();
-        for (ComplexType ct : complexTypes)
-        {
-            if (superType.equals(ct.getSuperType()))
-            {
+        for (ComplexType ct : complexTypes) {
+            if (superType.equals(ct.getSuperType())) {
                 subTypes.add(ct);
             }
         }
@@ -159,42 +142,33 @@ public class Model
         });
     }
 
-    public List<ComplexType> complexTypes()
-    {
+    public List<ComplexType> complexTypes() {
         List<ComplexType> types = new ArrayList<ComplexType>();
-        for (Package aPackage : allPackages())
-        {
+        for (Package aPackage : allPackages()) {
             types.addAll(aPackage.complexTypes());
         }
         return types;
     }
 
-    private <T> Collection<T> types(Class<T> aClass)
-    {
+    private <T> Collection<T> types(Class<T> aClass) {
         List<T> types = new ArrayList<T>();
-        for (Package aPackage : allPackages())
-        {
+        for (Package aPackage : allPackages()) {
             types.addAll(aPackage.types(aClass));
         }
         return types;
     }
 
-    public Map<String, Type> createTypeLookUp()
-    {
+    public Map<String, Type> createTypeLookUp() {
         Map<String, Type> m = new HashMap<String, Type>();
-        for (Package aPackage : allPackages())
-        {
-            for (Type type : aPackage.getTypes())
-            {
+        for (Package aPackage : allPackages()) {
+            for (Type type : aPackage.getTypes()) {
                 m.put(type.getName(), type);
                 //add possible list mappings
                 m.put(GenHelper.listTypeDecl(type), type);
                 //add extra mapping for primitives
-                if (type instanceof PrimitiveType)
-                {
+                if (type instanceof PrimitiveType) {
                     PrimitiveType primitiveType = (PrimitiveType) type;
-                    if (primitiveType.getJavaMapping() != null)
-                    {
+                    if (primitiveType.getJavaMapping() != null) {
                         m.put(primitiveType.getJavaMapping(), type);
                     }
                 }
@@ -203,8 +177,7 @@ public class Model
         return m;
     }
 
-    public List<TransientApi> deriveApis()
-    {
+    public List<TransientApi> deriveApis() {
         Map<String, Type> typeLookup = createTypeLookUp();
         ArrayList<TransientApi> results = new ArrayList<TransientApi>();
         for (Module module : modules) {
@@ -213,50 +186,41 @@ public class Model
         return results;
     }
 
-    public List<TransientApi> observableApis(Entity entity)
-    {
+    public List<TransientApi> observableApis(Entity entity) {
         return Module.observableApis(entity, createTypeLookUp());
     }
 
-    public Collection<LobbyType> lobbyTypes()
-    {
+    public Collection<LobbyType> lobbyTypes() {
         return types(LobbyType.class);
     }
 
-    public Map<String, ComplexType> deriveAllTypes()
-    {
+    public Map<String, ComplexType> deriveAllTypes() {
         Map<String, ComplexType> types = new HashMap<String, ComplexType>();
-        for (ComplexType complexType : complexTypes())
-        {
+        for (ComplexType complexType : complexTypes()) {
             ComplexType put = types.put(complexType.className(), complexType);
             assert put == null;
         }
-        for (TransientApi api : deriveApis())
-        {
-            for (Message message : api.getMessages())
-            {
-                Message m=  new Message();
+        for (TransientApi api : deriveApis()) {
+            for (Message message : api.getMessages()) {
+                Message m = new Message();
                 m.setApi(api);
                 m.setName(message.getName());
-                m.setPackageName(message.derivePackage());
+                m.setPackageName(message.getPackageName());
                 m.setFields(message.resolveFields(true));
                 m.setSuperType(message.getSuperType());
 
                 ComplexType put = types.put(message.className(), m);
-                assert put==null;
+                assert put == null;
             }
         }
         return types;
     }
 
-    public void setAllArtifactsChanged(boolean b)
-    {
-        for (AbstractType type : types(AbstractType.class))
-        {
+    public void setAllArtifactsChanged(boolean b) {
+        for (AbstractType type : types(AbstractType.class)) {
             type.setChangedInSession(b);
         }
-        for (Api api : allApis())
-        {
+        for (Api api : allApis()) {
             api.setChangedInSession(b);
         }
     }
@@ -286,7 +250,7 @@ public class Model
         return createMessageIdMap();
     }
 
-    public  List<Message> deriveAllMessages() {
+    public List<Message> deriveAllMessages() {
         List<TransientApi> apis = deriveApis();
         List<Message> messages = new ArrayList<Message>();
         for (TransientApi api : apis) {
@@ -305,7 +269,7 @@ public class Model
         for (ComplexType complexType : complexTypes) {
             String key = complexType.uniqueObjectKey();
             ObjectId objectId = objectIdMap.remove(key);
-            if(objectId == null) {
+            if (objectId == null) {
                 objectId = new ObjectId(key, ids.next());
                 objectIds.add(objectId);
             }
@@ -329,7 +293,7 @@ public class Model
     private Map<String, ObjectId> createMessageIdMap() {
         Map<String, ObjectId> messageIdMap = new HashMap<String, ObjectId>();
         for (ObjectId messageId : messageIds) {
-           messageIdMap.put(messageId.getName(), messageId);
+            messageIdMap.put(messageId.getName(), messageId);
         }
         return messageIdMap;
     }
@@ -337,13 +301,12 @@ public class Model
     private Map<String, ObjectId> createObjectIdMap() {
         Map<String, ObjectId> objectIdMap = new HashMap<String, ObjectId>();
         for (ObjectId objectId : objectIds) {
-           objectIdMap.put(objectId.getName(), objectId);
+            objectIdMap.put(objectId.getName(), objectId);
         }
         return objectIdMap;
     }
 
-    public static Model loadModel(GenContext genContext)
-    {
+    public static Model loadModel(GenContext genContext) {
         ClassDatabase<Model> cdb = new ClassModelManager<Model>(Model.class);
         Model model = cdb.getRootUnmarshaller().unmarshalURL(genContext.getModelFilePath()).getInstance();
         model.cdb = cdb;
@@ -355,7 +318,7 @@ public class Model
         Pattern pattern = Pattern.compile(".*" + text + ".*", Pattern.CASE_INSENSITIVE);
         List<Artifact> result = new ArrayList<Artifact>();
         for (Artifact artifact : allArtifacts()) {
-            if(pattern.matcher(artifact.getName()).matches()) {
+            if (pattern.matcher(artifact.getName()).matches()) {
                 result.add(artifact);
             }
         }

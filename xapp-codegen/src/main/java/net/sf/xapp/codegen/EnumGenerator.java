@@ -27,7 +27,7 @@ public class EnumGenerator
     public CodeFile genEnum(EnumType enumType)
     {
         CodeFile ct = genContext.createJavaFile(enumType);
-        new GenericMixIn(enumType.derivePackage()).mixIn(enumType, ct);
+        new GenericMixIn(enumType.getPackageName()).mixIn(enumType, ct);
         Set<String> stringList = new LinkedHashSet<String>(enumType.getValues());
         List<String> values = new ArrayList<String>();
         for (String s : stringList)

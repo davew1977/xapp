@@ -15,6 +15,7 @@ import java.util.List;
 public class TransientApi extends Api
 {
     private final TransientApiType type;
+    private String packageName;
 
     public TransientApi(TransientApiType type)
     {
@@ -28,7 +29,7 @@ public class TransientApi extends Api
         this.entityKeyType = original.entityKeyType;
         this.errors = original.errors;
         this.messages = original.messages;
-        this.packageName = original.packageName;
+        this.packageName = original.getPackageName();
         this.principalType = original.principalType;
         this.responseEntityKeyType = original.responseEntityKeyType;
         this.hideEntityKey = original.hideEntityKey;
@@ -37,6 +38,16 @@ public class TransientApi extends Api
         this.hidePrincipalField = original.hidePrincipalField;
         this.setName(original.getName());
         this.setModule(original.getModule());
+    }
+    public void init(Module module)
+    {
+        setModule(module);
+        for (Message message : messages)
+        {
+            message.setApi(this);
+            message.setPackageName(messagePackageName());
+            message.setModule(module);
+        }
     }
 
     private boolean isDefault()
@@ -78,4 +89,11 @@ public class TransientApi extends Api
         return messages;
     }
 
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
 }

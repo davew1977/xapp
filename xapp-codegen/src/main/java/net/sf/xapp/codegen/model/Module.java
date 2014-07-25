@@ -116,17 +116,16 @@ public class Module {
     {
         ArrayList<TransientApi> results = new ArrayList<TransientApi>();
         TransientApi updaterApi = ObserverAPIMixin.createApi(createObserverUpdater(entity), typeLookup, TransientApiType.DEFAULT);
-        updaterApi.setPackageName(entity.derivePackage());
+        updaterApi.setPackageName(entity.getPackageName());
         updaterApi.setChangedInSession(entity.isChangedInSession());
         updaterApi.setEntityKeyType(new PrimitiveType("String"));
         updaterApi.setHideEntityKey(true);
-        updaterApi.setModule(entity.getModule());
-        updaterApi.init();
+        updaterApi.init(entity.getModule());
         results.add(updaterApi);
         TransientApi listenerApi = ObserverAPIMixin.createApi(createObserverListener(entity), typeLookup, TransientApiType.ENTITY);
         listenerApi.setEntityKeyType(new PrimitiveType("String"));
         listenerApi.setHideEntityKey(true);
-        listenerApi.setPackageName(entity.derivePackage());
+        listenerApi.setPackageName(entity.getPackageName());
         listenerApi.setClientVisible(true);
         listenerApi.setChangedInSession(entity.isChangedInSession());
         listenerApi.init(entity.getModule());
@@ -139,7 +138,7 @@ public class Module {
     {
         CodeFile cf = new JavaFile(null, false);
         cf.setInterface();
-        new GenericMixIn(e.derivePackage()).mixIn(e.getName() + "Listener", cf);
+        new GenericMixIn(e.getPackageName()).mixIn(e.getName() + "Listener", cf);
         new ObserverAPIMixin(true).mixIn(e, cf);
         return cf;
     }
@@ -148,7 +147,7 @@ public class Module {
     {
         CodeFile cf = new JavaFile(null, false);
         cf.setInterface();
-        new GenericMixIn(e.derivePackage()).mixIn(e.getName() + "Update", cf);
+        new GenericMixIn(e.getPackageName()).mixIn(e.getName() + "Update", cf);
         new ObserverAPIMixin(false).mixIn(e, cf);
         return cf;
     }

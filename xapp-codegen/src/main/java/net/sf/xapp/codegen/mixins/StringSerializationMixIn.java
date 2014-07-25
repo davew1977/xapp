@@ -157,7 +157,7 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             ct.line("%s.writeString(sb)", varname);
             append(ct, "]");
         }
-        else if (type instanceof ComplexType || type instanceof WrapperType)
+        else if (type instanceof ComplexType)
         {
             ct.line("%s.writeString(sb)", varname);
         }
@@ -257,7 +257,7 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             ct.line("%s = (%s) ng.Global.create(%sType)", varname, tn, dtn);
             ct.line("%s.populateFrom((List) args.get(1))", varname);
         }
-        else if (type instanceof ComplexType || type instanceof WrapperType)
+        else if (type instanceof ComplexType)
         {
             ct.line("%s = new %s()", varname, tn);
             ct.line("%s.populateFrom((List) _value)", varname);

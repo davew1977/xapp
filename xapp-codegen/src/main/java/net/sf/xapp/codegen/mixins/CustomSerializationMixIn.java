@@ -95,7 +95,7 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
         } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract()) {
             ct.line("out.writeInt(%s.type().getId())", varname, tn);
             ct.line("%s.writeData(out)", varname);
-        } else if (type instanceof ComplexType || type instanceof WrapperType) {
+        } else if (type instanceof ComplexType) {
             ct.line("%s.writeData(out)", varname);
         } else if (type instanceof PrimitiveType) {
             ct.line("out.write%2$s(%1$s)", varname, ioNameForPrimitive(tn));
@@ -157,7 +157,7 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
         } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract()) {
             ct.line("%s = (%s) ng.Global.create(in.readInt())", varname, tn);
             ct.line("%s.readData(in)", varname);
-        } else if (type instanceof ComplexType || type instanceof WrapperType) {
+        } else if (type instanceof ComplexType) {
             ct.line("%s = new %s()", varname, tn);
             ct.line("%s.readData(in)", varname);
         } else if (type instanceof PrimitiveType) {

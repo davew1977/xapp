@@ -18,10 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 @Container(listProperty = "messages")
-public class Api extends FileMeta implements Artifact
+public class Api extends AbstractArtifact implements Artifact
 {
     protected String name;
-    protected String packageName;
     protected List<Message> messages = new ArrayList<Message>();
     protected List<String> errors = new ArrayList<String>();
     protected Type entityKeyType;
@@ -31,34 +30,10 @@ public class Api extends FileMeta implements Artifact
     protected boolean hideEntityKey;
     protected boolean hidePrincipalField;
     protected boolean clientVisible;
-    protected boolean changedInSession;
     protected Module module;
 
     public Api()
     {
-    }
-
-    public void init() {
-        assert module!=null;
-        init(module);
-    }
-    public void init(Module module)
-    {
-        setModule(module);
-        for (Message message : messages)
-        {
-            message.setApi(this);
-            message.setPackageName(messagePackageName());
-            message.setModule(module);
-        }
-    }
-    @Key
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ApiType getApiType()
@@ -69,16 +44,6 @@ public class Api extends FileMeta implements Artifact
     public void setApiType(ApiType apiType)
     {
         this.apiType = apiType;
-    }
-
-    public String getPackageName()
-    {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName)
-    {
-        this.packageName = packageName;
     }
 
     public boolean hasPrincipal()
@@ -218,11 +183,11 @@ public class Api extends FileMeta implements Artifact
         }
         if(entityKeyType!=null)
         {
-            h.add(entityKeyType.derivePackage());
+            h.add(entityKeyType.getPackageName());
         }
         if(principalType!=null)
         {
-            h.add(principalType.derivePackage());
+            h.add(principalType.getPackageName());
         }
         return h;
     }
@@ -252,28 +217,6 @@ public class Api extends FileMeta implements Artifact
         this.clientVisible = clientVisible;
     }
 
-    @Override
-    @Transient
-    public boolean isChangedInSession()
-    {
-        return changedInSession;
-    }
-
-    @Override
-    public void setChangedInSession(boolean changed)
-    {
-        changedInSession = changed;
-    }
-
-    @Transient
-    public Module getModule() {
-        return module;
-    }
-
-    public void setModule(Module module) {
-        this.module = module;
-    }
-
     public List<TransientApi> deriveApis() {
 
         ArrayList<TransientApi> results = new ArrayList<TransientApi>();
@@ -289,7 +232,6 @@ public class Api extends FileMeta implements Artifact
             replyApi.setHideEntityKey(isHideEntityKey());
             replyApi.setClientVisible(isClientVisible());
             replyApi.setChangedInSession(isChangedInSession());
-            replyApi.setModule(getModule());
             for (Message message : getMessages())
             {
                 Message response = message.getResponse().createMessage(null);
@@ -300,7 +242,7 @@ public class Api extends FileMeta implements Artifact
                 }
                 replyApi.add(response);
             }
-            replyApi.init();
+            replyApi.init(getModule());
             results.add(replyApi);
         }
         return results;
