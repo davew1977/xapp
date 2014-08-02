@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.utils.svn;
 
+import org.tmatesoft.svn.core.wc.SVNConflictChoice;
+
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public interface SVNFacade
 {
+    void setConflictHandler(ConflictHandler conflictHandler);
+    void setAutoResolveConflicts(SVNConflictChoice choice);
 	/**
 	 * Updates to head
 	 *

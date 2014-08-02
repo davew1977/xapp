@@ -29,11 +29,11 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
     private UpdateAction m_updateAction = new UpdateAction();
     private CommitAction m_commitAction = new CommitAction();
     private RevertAction m_revertAction = new RevertAction();
-    private SVNFacade m_svnFacade;
+    private SVNFacade svnFacade;
 
     public SvnApp(SVNFacade svnFacade)
     {
-        m_svnFacade = svnFacade;
+        this.svnFacade = svnFacade;
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
             appContainer.addBeforeHook(DefaultAction.QUIT, new ExitCommitHook());
             Box b = Box.createHorizontalBox();
             b.add(Box.createHorizontalStrut(10));
-            b.add(new JLabel("user: " + m_svnFacade.getUsername()));
+            b.add(new JLabel("user: " + svnFacade.getUsername()));
             SwingUtils.setFont(b);
             appContainer.getToolBar().add(b);
         }
@@ -71,7 +71,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
 
     private boolean isSVNMode()
     {
-        return m_svnFacade != null;
+        return svnFacade != null;
     }
 
     private class CommitAction extends AbstractAction
@@ -84,7 +84,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         public void actionPerformed(ActionEvent e)
         {
             trySave();
-            if(m_svnFacade.hasLocalChanges(currentFile())) {
+            if(svnFacade.hasLocalChanges(currentFile())) {
                 String commitMessage = getCommitMessage();
                 if (commitMessage!=null)
                 {
@@ -121,7 +121,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         {
             if (SwingUtils.askUser(appContainer.getMainFrame(), "Are you sure you want to undo all changes\nsince your last commit?"))
             {
-                m_svnFacade.revert(svnFiles());
+                svnFacade.revert(svnFiles());
 
                 reloadFile();
             }
@@ -140,8 +140,11 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         public void actionPerformed(ActionEvent e)
         {
             trySave();
-            UpdateResult result = m_svnFacade.update(svnFiles());
-            if (result.isConflict())
+            UpdateResult result = svnFacade.update(svnFiles());
+            if(result.isConflict() && result.isConflictsHandled()) {
+                SwingUtils.warnUser(appContainer.getMainFrame(), "There were conflicts, but they were automatically resolved");
+            }
+            else if (result.isConflict())
             {
                 SwingUtils.warnUser(appContainer.getMainFrame(), "You have a conflict. You should close the application and fix it manually\n" +
                         "You can revert the file, but then you will lose your changes");
@@ -160,7 +163,11 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
 
     public String getCurrentUser()
     {
-        return m_svnFacade!=null ? m_svnFacade.getUsername() : "";
+        return svnFacade !=null ? svnFacade.getUsername() : "";
+    }
+
+    public SVNFacade getSvnFacade() {
+        return svnFacade;
     }
 
     private File currentFile()
@@ -173,7 +180,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         public void execute()
         {
             trySave();
-            if(m_svnFacade.hasLocalChanges(currentFile())) {
+            if(svnFacade.hasLocalChanges(currentFile())) {
                 int i = JOptionPane.showOptionDialog(appContainer.getMainFrame(),
                         "Would you like to commit your changes?", "SVN Commit",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -202,7 +209,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         trySave();
         try
         {
-            m_svnFacade.commit(message, svnFiles());
+            svnFacade.commit(message, svnFiles());
         }
         catch (RuntimeException e)
         {

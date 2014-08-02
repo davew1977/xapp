@@ -13,6 +13,7 @@ public class UpdateResult
 {
     private long rev;
     private List<Conflict> conflicts;
+    private boolean conflictsHandled;
 
     public UpdateResult()
     {
@@ -47,5 +48,13 @@ public class UpdateResult
            sb.append(m_conflict);
         }
         return sb.toString();
+    }
+
+    public void setConflictsHandled() {
+        conflictsHandled = true;
+    }
+
+    public boolean isConflictsHandled() {
+        return conflictsHandled;
     }
 }

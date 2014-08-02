@@ -12,13 +12,17 @@ import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.SVNCancelException;
 
+import static org.tmatesoft.svn.core.wc.SVNStatusType.*;
+
 public class UpdateEventHandler implements ISVNEventHandler
 {
     private UpdateResult m_updateResult;
+    private ConflictHandler conflictHandler;
 
-    public UpdateEventHandler(UpdateResult updateResult)
+    public UpdateEventHandler(UpdateResult updateResult, ConflictHandler conflictHandler)
     {
         m_updateResult = updateResult;
+        this.conflictHandler = conflictHandler;
     }
 
     /*
@@ -58,7 +62,7 @@ public class UpdateEventHandler implements ISVNEventHandler
              * SVNStatusType  who contains information on the state of an item.
              */
             SVNStatusType contentsStatus = event.getContentsStatus();
-            if (contentsStatus == SVNStatusType.CHANGED)
+            if (contentsStatus == CHANGED)
             {
                 /*
                  * the  item  was  modified in the repository (got  the changes
@@ -66,7 +70,7 @@ public class UpdateEventHandler implements ISVNEventHandler
                  */
                 pathChangeType = "U";
             }
-            else if (contentsStatus == SVNStatusType.CONFLICTED)
+            else if (contentsStatus == CONFLICTED)
             {
                 /*
                  * The file item is in  a  state  of Conflict. That is, changes
@@ -74,9 +78,14 @@ public class UpdateEventHandler implements ISVNEventHandler
                  * local changes the user has in his working copy.
                  */
                 pathChangeType = "C";
-                m_updateResult.getConflicts().add(new Conflict(event.getFile(), event.getPreviousRevision(), event.getRevision()));
+                Conflict e = new Conflict(event.getFile(), event.getPreviousRevision(), event.getRevision());
+                m_updateResult.getConflicts().add(e);
+                boolean handled = conflictHandler.handle(event);
+                if(handled) {
+                    m_updateResult.setConflictsHandled();
+                }
             }
-            else if (contentsStatus == SVNStatusType.MERGED)
+            else if (contentsStatus == MERGED)
             {
                 /*
                  * The file item was merGed (those  changes that came from  the
@@ -132,21 +141,21 @@ public class UpdateEventHandler implements ISVNEventHandler
          * At first consider properties are normal (unchanged).
          */
         String propertiesChangeType = " ";
-        if (propertiesStatus == SVNStatusType.CHANGED)
+        if (propertiesStatus == CHANGED)
         {
             /*
              * Properties were updated.
              */
             propertiesChangeType = "U";
         }
-        else if (propertiesStatus == SVNStatusType.CONFLICTED)
+        else if (propertiesStatus == CONFLICTED)
         {
             /*
              * Properties are in conflict with the repository.
              */
             propertiesChangeType = "C";
         }
-        else if (propertiesStatus == SVNStatusType.MERGED)
+        else if (propertiesStatus == MERGED)
         {
             /*
              * Properties that came from the repository were  merged  with  the
@@ -161,7 +170,7 @@ public class UpdateEventHandler implements ISVNEventHandler
         String lockLabel = " ";
         SVNStatusType lockType = event.getLockStatus();
 
-        if (lockType == SVNStatusType.LOCK_UNLOCKED)
+        if (lockType == LOCK_UNLOCKED)
         {
             /*
              * The lock is broken by someone.
