@@ -211,6 +211,7 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         {
             boolean updated = svnFacade.commit(message, svnFiles());
             if(updated) {
+                System.out.println("reloading xml file because of update");
                 appContainer.disposeAndReload();
             }
         }
