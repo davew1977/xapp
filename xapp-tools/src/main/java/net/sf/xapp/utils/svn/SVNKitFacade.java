@@ -426,6 +426,8 @@ public class SVNKitFacade implements SVNFacade
         }
 		catch(SVNException svne)
 		{
+            System.out.println(svne.getMessage());
+            System.out.println("trying update...");
             //automatically try an update first
             //todo check exception is commit failed due to update required
             UpdateResult update = update(files);
