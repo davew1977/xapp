@@ -78,8 +78,8 @@ public interface SVNFacade
 	 * Commits to svn
      * @param message commit message to svn
      */
-	long commit(boolean keepLocks, String message, File... files);
-	long commit(String message, File... files);
+	boolean commit(boolean keepLocks, String message, File... files);
+	boolean commit(String message, File... files);
 
 
 	/**

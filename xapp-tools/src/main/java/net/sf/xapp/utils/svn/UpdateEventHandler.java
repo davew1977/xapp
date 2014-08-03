@@ -17,12 +17,10 @@ import static org.tmatesoft.svn.core.wc.SVNStatusType.*;
 public class UpdateEventHandler implements ISVNEventHandler
 {
     private UpdateResult m_updateResult;
-    private ConflictHandler conflictHandler;
 
-    public UpdateEventHandler(UpdateResult updateResult, ConflictHandler conflictHandler)
+    public UpdateEventHandler(UpdateResult updateResult)
     {
         m_updateResult = updateResult;
-        this.conflictHandler = conflictHandler;
     }
 
     /*
@@ -78,12 +76,7 @@ public class UpdateEventHandler implements ISVNEventHandler
                  * local changes the user has in his working copy.
                  */
                 pathChangeType = "C";
-                Conflict e = new Conflict(event.getFile(), event.getPreviousRevision(), event.getRevision());
-                m_updateResult.getConflicts().add(e);
-                boolean handled = conflictHandler.handle(event);
-                if(handled) {
-                    m_updateResult.setConflictsHandled();
-                }
+                m_updateResult.getConflicts().add(new Conflict(event));
             }
             else if (contentsStatus == MERGED)
             {

@@ -209,7 +209,10 @@ public abstract class SvnApp<T> extends SimpleApplication<T> {
         trySave();
         try
         {
-            svnFacade.commit(message, svnFiles());
+            boolean updated = svnFacade.commit(message, svnFiles());
+            if(updated) {
+                appContainer.disposeAndReload();
+            }
         }
         catch (RuntimeException e)
         {

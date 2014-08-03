@@ -13,7 +13,6 @@ public class UpdateResult
 {
     private long rev;
     private List<Conflict> conflicts;
-    private boolean conflictsHandled;
 
     public UpdateResult()
     {
@@ -50,11 +49,12 @@ public class UpdateResult
         return sb.toString();
     }
 
-    public void setConflictsHandled() {
-        conflictsHandled = true;
-    }
-
     public boolean isConflictsHandled() {
-        return conflictsHandled;
+        for (Conflict conflict : conflicts) {
+            if(!conflict.isHandled()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

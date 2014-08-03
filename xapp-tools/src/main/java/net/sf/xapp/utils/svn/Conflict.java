@@ -6,50 +6,29 @@
  */
 package net.sf.xapp.utils.svn;
 
+import org.tmatesoft.svn.core.wc.SVNEvent;
+
 import java.io.File;
 
 public class Conflict
 {
-    private File m_conflictedFile;
-    private File m_mine;
-    private File m_base;
-    private File m_theirs;
+    private SVNEvent svnEvent;
+    private boolean handled;
 
-    public Conflict(File conflictedFile, long previousRev, long rev)
+    public Conflict(SVNEvent event)
     {
-        m_conflictedFile = conflictedFile;
-        m_mine = new File(conflictedFile.getParentFile(), conflictedFile.getName() + ".mine");
-        m_base = new File(conflictedFile.getParentFile(), conflictedFile.getName() + "." + previousRev);
-        m_theirs = new File(conflictedFile.getParentFile(), conflictedFile.getName() + "." + rev);
+        this.svnEvent = event;
     }
 
-    public File getConflictedFile()
-    {
-        return m_conflictedFile;
+    public SVNEvent getSvnEvent() {
+        return svnEvent;
     }
 
-    public File getMine()
-    {
-        return m_mine;
+    public void handle(ConflictHandler conflictHandler) {
+        handled = conflictHandler.handle(svnEvent);
     }
 
-    public File getBase()
-    {
-        return m_base;
-    }
-
-    public File getTheirs()
-    {
-        return m_theirs;
-    }
-
-    @Override
-    public String toString() {
-        return "Conflict{" +
-                "m_conflictedFile=" + m_conflictedFile +
-                ", m_mine=" + m_mine +
-                ", m_base=" + m_base +
-                ", m_theirs=" + m_theirs +
-                '}';
+    public boolean isHandled() {
+        return handled;
     }
 }

@@ -87,12 +87,18 @@ public class SVNKitFacade implements SVNFacade
 		{
 
             UpdateResult result = new UpdateResult();
-            UpdateEventHandler eventHandler = new UpdateEventHandler(result, conflictHandler);
+            UpdateEventHandler eventHandler = new UpdateEventHandler(result);
             svnManager.setEventHandler(eventHandler);
             //update file, to revision, recursively, don't allow files not under version control to obstruct update, depth is not sticky
             long[] rev = svnManager.getUpdateClient().doUpdate(files, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+
             result.setRev(rev[0]);
             svnManager.setEventHandler(null);
+            if(result.isConflict()) {
+                for (Conflict conflict : result.getConflicts()) {
+                    conflict.handle(conflictHandler);
+                }
+            }
             return result;
 		}
 		catch(SVNException svne)
@@ -411,18 +417,19 @@ public class SVNKitFacade implements SVNFacade
      * @param message commit message to svn
      * @param files
      */
-	public long commit(String message, File... files)
+	public boolean commit(String message, File... files)
     {
         return commit(true, message, files);
     }
 
-    public long commit(boolean keepLocks, String message, File... files)
+    public boolean commit(boolean keepLocks, String message, File... files)
 	{
 		try
 		{
 			//commit path, keep locks, assign message, don't force it, no revision properties, no changelist, don't keep changelist, don't force, commit recursively
             SVNCommitInfo commitInfo = svnManager.getCommitClient().doCommit(files, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
-            return commitInfo.getNewRevision();
+            //commitInfo.getNewRevision();
+            return false;
         }
 		catch(SVNException svne)
 		{
@@ -436,7 +443,7 @@ public class SVNKitFacade implements SVNFacade
             }
             try {
                 SVNCommitInfo commitInfo = svnManager.getCommitClient().doCommit(files, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
-                return commitInfo.getNewRevision();
+                return true;
             }
             catch (SVNException e) {
                 throw new RuntimeException(e);
