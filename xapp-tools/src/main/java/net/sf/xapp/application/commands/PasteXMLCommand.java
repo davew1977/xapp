@@ -50,6 +50,7 @@ public class PasteXMLCommand extends NodeCommand
         catch (Exception e)
         {
             System.out.println("WARNING: could not paste XML from system clipboard: "+e.getMessage());
+            e.printStackTrace();
             return;
         }
 

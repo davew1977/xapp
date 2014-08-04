@@ -49,17 +49,17 @@ public class DirMeta extends FileMeta {
         return dirMeta;
     }
 
-    public <T extends FileMeta> List<T> all(final Class<? extends T> typeFilter) {
-        return all(new Filter<FileMeta>() {
+    public <T> List<T> all(final Class<T> typeFilter) {
+        return all(new Filter<T>() {
             @Override
-            public boolean matches(FileMeta fileMeta) {
+            public boolean matches(T fileMeta) {
                 return typeFilter.isInstance(fileMeta);
             }
         });
     }
 
-    public <T extends FileMeta> List<T> all(Filter<FileMeta> filter) {
-        List<FileMeta> result = new ArrayList<FileMeta>();
+    public <T> List<T> all(Filter filter) {
+        List result = new ArrayList();
         for (FileMeta file : files) {
             if(file instanceof DirMeta) {
                 result.addAll(((DirMeta) file).all(filter));

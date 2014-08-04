@@ -45,18 +45,7 @@ public class ClassModelFactory
             containerListProp = "children"; //hard code the container property for subtypes of Tree
         }
         ValidImplementations annotation = (ValidImplementations) aClass.getAnnotation(ValidImplementations.class);
-        List<ClassModel> validImplementations = new ArrayList<ClassModel>();
-        if (annotation != null)
-        {
-            Class[] vis = annotation.value();
-            for (Class vi : vis)
-            {
-                if (aClass.equals(vi))
-                    throw new XappException("class " + vi.getName() + " has itself as a valid implementation");
-
-                validImplementations.add(classModelManager.getClassModel(vi));
-            }
-        }
+        List<ClassModel> validImplementations = getValidSubClasses(classModelManager, aClass, annotation);
         EditorWidget bcAnnotation = (EditorWidget) aClass.getAnnotation(EditorWidget.class);
         BoundObjectType boAnnotation = (BoundObjectType) aClass.getAnnotation(BoundObjectType.class);
 
@@ -86,6 +75,22 @@ public class ClassModelFactory
                 containerListProp,
                 inspectionTuple.postInitMethod);
         return classModel;
+    }
+
+    private static List<ClassModel> getValidSubClasses(ClassModelManager classModelManager, Class aClass, ValidImplementations annotation) {
+        List<ClassModel> validImplementations = new ArrayList<ClassModel>();
+        if (annotation != null)
+        {
+            Class[] vis = annotation.value();
+            for (Class vi : vis)
+            {
+                if (aClass.equals(vi))
+                    throw new XappException("class " + vi.getName() + " has itself as a valid implementation");
+
+                validImplementations.add(classModelManager.getClassModel(vi));
+            }
+        }
+        return validImplementations;
     }
 
     private static InspectionTuple createInspectionTuple(ClassModelManager classModelManager, Class aClass)

@@ -385,7 +385,9 @@ public class ObjectMeta<T> implements Namespace{
 
 
         classModel.dispose(this);
-        home.unset(this);
+        if (home!=null) {
+            home.unset(this);
+        }
         return attachments;
     }
 

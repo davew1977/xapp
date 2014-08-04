@@ -14,7 +14,7 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 @ValidImplementations({DirMeta.class, Type.class, Api.class})
 public class FileMeta implements Cloneable {
     private ObjectMeta objMeta;
-    private String name;
+    private String name = "";
 
     public FileMeta(String name) {
         this.name = name;

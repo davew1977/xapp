@@ -34,6 +34,11 @@ public abstract class AbstractType extends AbstractArtifact implements Type, Art
     }
 
     @Override
+    public void validate(List<String> errors) {
+
+    }
+
+    @Override
     public void setPackageName(String packageName) {
         this.alternativePackageName = packageName;
     }

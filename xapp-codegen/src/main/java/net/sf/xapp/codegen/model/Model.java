@@ -86,21 +86,10 @@ public class Model {
 
     public List<String> validate() {
         ArrayList<String> errors = new ArrayList<String>();
-        for (Package aPackage : allPackages()) {
-            aPackage.validate(errors);
-        }
-        for (Api api : allApis()) {
-            api.validate(errors);
+        for (Module module : modules) {
+            module.validate(errors);
         }
         return errors;
-    }
-
-    public List<Package> allPackages() {
-        List<Package> result = new ArrayList<Package>();
-        for (Module module : modules) {
-            result.addAll(module.getPackages());
-        }
-        return result;
     }
 
     public List<Api> allApis() {
@@ -143,34 +132,20 @@ public class Model {
     }
 
     public List<ComplexType> complexTypes() {
-        List<ComplexType> types = new ArrayList<ComplexType>();
-        for (Package aPackage : allPackages()) {
-            types.addAll(aPackage.complexTypes());
-        }
-        return types;
-    }
-
-    private <T> Collection<T> types(Class<T> aClass) {
-        List<T> types = new ArrayList<T>();
-        for (Package aPackage : allPackages()) {
-            types.addAll(aPackage.types(aClass));
-        }
-        return types;
+        return all(ComplexType.class);
     }
 
     public Map<String, Type> createTypeLookUp() {
         Map<String, Type> m = new HashMap<String, Type>();
-        for (Package aPackage : allPackages()) {
-            for (Type type : aPackage.getTypes()) {
-                m.put(type.getName(), type);
-                //add possible list mappings
-                m.put(GenHelper.listTypeDecl(type), type);
-                //add extra mapping for primitives
-                if (type instanceof PrimitiveType) {
-                    PrimitiveType primitiveType = (PrimitiveType) type;
-                    if (primitiveType.getJavaMapping() != null) {
-                        m.put(primitiveType.getJavaMapping(), type);
-                    }
+        for (Type type: all(Type.class)) {
+            m.put(type.getName(), type);
+            //add possible list mappings
+            m.put(GenHelper.listTypeDecl(type), type);
+            //add extra mapping for primitives
+            if (type instanceof PrimitiveType) {
+                PrimitiveType primitiveType = (PrimitiveType) type;
+                if (primitiveType.getJavaMapping() != null) {
+                    m.put(primitiveType.getJavaMapping(), type);
                 }
             }
         }
@@ -191,7 +166,7 @@ public class Model {
     }
 
     public Collection<LobbyType> lobbyTypes() {
-        return types(LobbyType.class);
+        return all(LobbyType.class);
     }
 
     public Map<String, ComplexType> deriveAllTypes() {
@@ -217,11 +192,8 @@ public class Model {
     }
 
     public void setAllArtifactsChanged(boolean b) {
-        for (AbstractType type : types(AbstractType.class)) {
-            type.setChangedInSession(b);
-        }
-        for (Api api : allApis()) {
-            api.setChangedInSession(b);
+        for (Artifact artifact : all(Artifact.class)) {
+            artifact.setChangedInSession(b);
         }
     }
 
@@ -317,7 +289,7 @@ public class Model {
 
         Pattern pattern = Pattern.compile(".*" + text + ".*", Pattern.CASE_INSENSITIVE);
         List<Artifact> result = new ArrayList<Artifact>();
-        for (Artifact artifact : allArtifacts()) {
+        for (Artifact artifact : all(Artifact.class)) {
             if (pattern.matcher(artifact.getName()).matches()) {
                 result.add(artifact);
             }
@@ -325,11 +297,18 @@ public class Model {
         return result;
     }
 
-    private List<Artifact> allArtifacts() {
-        List<Artifact> result = new ArrayList<Artifact>();
-        result.addAll(allApis());
-        for (Package aPackage : allPackages()) {
-            result.addAll(aPackage.getTypes());
+    public <A > List<A> all(Class<A> type) {
+        List<A> result = new ArrayList<A>();
+        for (Module module : modules) {
+            result.addAll(module.all(type));
+        }
+        return result;
+    }
+
+    public <A > List<A> all(Filter filter) {
+        List<A> result = new ArrayList<A>();
+        for (Module module : modules) {
+            result.addAll((List)module.all(filter));
         }
         return result;
     }

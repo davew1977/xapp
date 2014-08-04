@@ -49,7 +49,7 @@ public class ClassModel<T> {
     private Map<String, Property> m_propertyMap;
     private Map<String, Property> m_propertyMapByXMLMapping;
     private List<ListProperty> m_listProperties;
-    private List<ClassModel<? extends T>> m_validImplementations;
+    private List<ClassModel> m_validImplementations;
     private Map<String, ClassModel> m_validImplementationMap;
     private int m_nextId;
     private BoundObjectType boundObjectType;
@@ -73,7 +73,7 @@ public class ClassModel<T> {
                       List<Property> properties,
                       List<ListProperty> listProperties,
                       List<ContainerProperty> mapProperties,
-                      List<ClassModel<? extends T>> validImplementations,
+                      List<ClassModel> validImplementations,
                       EditorWidget editorWidget,
                       BoundObjectType boundObjectType,
                       Property keyProperty,
@@ -85,7 +85,7 @@ public class ClassModel<T> {
         this.properties = properties;
         m_listProperties = listProperties;
         this.mapProperties = mapProperties;
-        m_validImplementations = validImplementations;
+        m_validImplementations = expand(validImplementations);
         m_propertyMap = new HashMap<String, Property>();
         m_propertyMapByXMLMapping = new HashMap<String, Property>();
         addProperties(properties);
@@ -115,6 +115,19 @@ public class ClassModel<T> {
             throw new XappException("class " + getSimpleName() + " is annotated with @TrackKeyChanges but has no primary key");
         }
         namespaceFor = m_class.getAnnotation(NamespaceFor.class);
+    }
+
+    private static List<ClassModel> expand(List<ClassModel> validImplementations) {
+
+        List<ClassModel> result = new ArrayList<ClassModel>();
+        for (ClassModel subClass : validImplementations) {
+            if(!subClass.getValidImplementations().isEmpty()) {
+                result.addAll(expand(subClass.getValidImplementations()));
+            } else {
+                result.add(subClass);
+            }
+        }
+        return result;
     }
 
     public NamespaceFor getNamespaceFor() {
@@ -218,7 +231,7 @@ public class ClassModel<T> {
         return m_class.getSimpleName();
     }
 
-    public List<ClassModel<? extends T>> getValidImplementations() {
+    public List<ClassModel> getValidImplementations() {
         return m_validImplementations;
     }
 

@@ -8,6 +8,7 @@ import net.sf.xapp.application.utils.codegen.JavaFile;
 import net.sf.xapp.objectmodelling.core.Namespace;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.tree.Tree;
+import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.codegen.mixins.GenericMixIn;
 import net.sf.xapp.codegen.mixins.ObserverAPIMixin;
@@ -25,9 +26,7 @@ public class Module {
     private ObjectMeta objMeta;
     private String name;
     private String outDir;
-    private Tree apiTree = new Tree("Apis");
-    private List<Package> packages = new ArrayList<Package>();
-    private DirMeta src;
+    private DirMeta src = new DirMeta();
 
     private void setObjMeta(ObjectMeta objMeta) {
         this.objMeta = objMeta;
@@ -54,14 +53,6 @@ public class Module {
         this.outDir = outDir;
     }
 
-    public List<Package> getPackages() {
-        return packages;
-    }
-
-    public void setPackages(List<Package> packages) {
-        this.packages = packages;
-    }
-
     public DirMeta getSrc() {
         return src;
     }
@@ -70,22 +61,25 @@ public class Module {
         this.src = src;
     }
 
-    @TreeMeta(leafTypes = {Tree.class, Api.class})
-    public Tree getApiTree() {
-        return apiTree;
-    }
-
-    public void setApiTree(Tree apiTree) {
-        this.apiTree = apiTree;
-    }
-
     @Override
     public String toString() {
         return name;
     }
 
+    public <A> List<A> all(Class<A> type) {
+        return src.all(type);
+    }
+
+    public <A> List<A> all(Filter filter) {
+        return src.all(filter);
+    }
+
     public List<Api> allApis() {
         return src.all(Api.class);
+    }
+
+    public List<Entity> allEntities() {
+        return src.all(Entity.class);
     }
 
     public File outDir() {
@@ -98,14 +92,11 @@ public class Module {
         {
             results.addAll(api.deriveApis());
         }
-        for (Package aPackage : packages)
-        {
-            for (Entity entity : aPackage.entities())
+        for (Entity entity : allEntities()) {
+
+            if (entity.isObservable())
             {
-                if (entity.isObservable())
-                {
-                    results.addAll(observableApis(entity, typeLookup));
-                }
+                results.addAll(observableApis(entity, typeLookup));
             }
         }
         return results;
@@ -160,5 +151,11 @@ public class Module {
         }
         sb.append("MsgTypeEnum");
         return sb.toString();
+    }
+
+    public void validate(ArrayList<String> errors) {
+        for (Artifact artifact : all(Artifact.class)) {
+            artifact.validate(errors);
+        }
     }
 }
