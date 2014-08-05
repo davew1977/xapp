@@ -26,8 +26,8 @@ public class DomainTypeGenerator {
         ct.addImport(NGPGenerator.FWK_PACKAGE_NAME() + ".*");
         ct.addImport(complexType.model().getCorePackageName() + ".MessageTypeEnum");
         ct.addImport(complexType.model().getCorePackageName() + ".ObjectTypeEnum");
-        ct.addImport("ngpoker.common.types.*");
-        String utilPackageName = "ngpoker.common.util";
+        ct.addImport("net.sf.xapp.net.common.types.*");
+        String utilPackageName = "net.sf.xapp.net.common.util";
         ct.addImport(utilPackageName + ".StringUtils");
         ct.addImport("java.util.List");
         ct.addImport("java.util.ArrayList");

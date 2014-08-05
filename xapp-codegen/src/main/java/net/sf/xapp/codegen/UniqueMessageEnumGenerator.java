@@ -43,8 +43,8 @@ public class UniqueMessageEnumGenerator
         //generate an enum for all error codes
         CodeFile cf = genContext.createJavaFile(model);
         new GenericMixIn(model.getCorePackageName()).mixIn(targetClassName, cf);
-        cf.addImport("ngpoker.common.framework.Message");
-        cf.addImport("ngpoker.common.framework.ObjectType");
+        cf.addImport("net.sf.xapp.net.common.framework.Message");
+        cf.addImport("net.sf.xapp.net.common.framework.ObjectType");
         cf.addImplements("ObjectType");
         for (ComplexType message : complexTypes) {
             String enumValue = String.format("%s(%s)", message.uniqueObjectKey(), helper.getId(message));
@@ -73,7 +73,7 @@ public class UniqueMessageEnumGenerator
             String enumValue = String.format("%s(%s)", message.uniqueObjectKey(), helper.getId(message));
             cf.addSimpleEnumValue(enumValue);
         }
-        cf.addImport("ngpoker.common.framework.Message");
+        cf.addImport("net.sf.xapp.net.common.framework.Message");
         cf.startBlock("switch(this)");
         for (Message message : messages)
         {

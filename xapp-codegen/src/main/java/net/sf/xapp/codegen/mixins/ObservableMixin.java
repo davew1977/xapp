@@ -24,7 +24,7 @@ public class ObservableMixin implements MixIn<Entity>
     @Override
     public void mixIn(Entity ct, CodeFile cf)
     {
-        cf.addImport("static ngpoker.common.util.GeneralUtils.*");
+        cf.addImport("static net.sf.xapp.net.common.util.GeneralUtils.*");
         cf.field(ct.getName() + "Listener", "listener", Access.PRIVATE,
                 format("new %1$sListenerAdaptor(null, new Multicaster<%1$sListener>())", ct.getName()));
         cf.method("addListener","void",ct.getName() + "Listener li");

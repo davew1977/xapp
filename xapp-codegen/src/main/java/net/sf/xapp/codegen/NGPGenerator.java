@@ -144,7 +144,7 @@ public class NGPGenerator
 
     static String FWK_PACKAGE_NAME()
     {
-        return "ngpoker.common.framework";
+        return "net.sf.xapp.net.common.framework";
     }
 
     public List<CodeFile> genApiClasses(List<TransientApi> transientApiList)

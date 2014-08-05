@@ -18,7 +18,7 @@ public class StorableMixIn implements MixIn<ComplexType>
     public void mixIn(ComplexType vo, CodeFile ct)
     {
         ct.addImplements("Storable");
-        ct.addImport("ngpoker.common.framework.Storable");
+        ct.addImport("net.sf.xapp.net.common.framework.Storable");
         if (!vo.isAbstract())
         {
             ct.method("get", "String", "String propName");

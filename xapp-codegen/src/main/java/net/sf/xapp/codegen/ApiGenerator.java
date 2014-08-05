@@ -53,8 +53,8 @@ public class ApiGenerator
     {
         CodeFile cf =genContext.createJavaFile(api);
         cf.setInterface();
-        cf.addImport("ngpoker.common.framework.*");
-        cf.addImport("ngpoker.common.types.*");
+        cf.addImport("net.sf.xapp.net.common.framework.*");
+        cf.addImport("net.sf.xapp.net.common.types.*");
         new GenericMixIn(api.getPackageName()).mixIn(api.getName(), cf);
         new MessageInterfaceMixIn().mixIn(api, cf);
         return cf;
@@ -70,7 +70,7 @@ public class ApiGenerator
         String adaptorType = format("Adaptor<%s>", api.getName());
         new MessageInterfaceMixIn().mixIn(api, cf);
         cf.addImport(NGPGenerator.FWK_PACKAGE_NAME() + ".*");
-        cf.addImport("ngpoker.common.types.*");
+        cf.addImport("net.sf.xapp.net.common.types.*");
         if (!api.isEmpty())
         {
             cf.addImport(api.messagePackageName() + ".*");

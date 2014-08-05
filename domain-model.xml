@@ -1,5 +1,5 @@
 <Model corePackageName="net.sf.xapp.net.common.types" messageIdStart="0" objectIdStart="2000" version="4">
-  <Module name="xapp-common-fwk" outDir="xapp-common-fwk/target/generated-sources/xapp-codegen-plugin">
+  <Module name="xapp-common-fwk" outDir="xapp-net/xapp-common-fwk/target/generated-sources/xapp-codegen-plugin">
     <DirMeta name="primitives">
       <PrimitiveType name="String"/>
       <PrimitiveType javaMapping="int" name="Integer"/>
@@ -12,9 +12,11 @@
     <DirMeta name="net">
       <DirMeta name="sf">
         <DirMeta name="xapp">
-          <DirMeta name="common">
-            <DirMeta name="types">
-              <ValueObject name="QueryData"/>
+          <DirMeta name="net">
+            <DirMeta name="common">
+              <DirMeta name="types">
+                <ValueObject name="QueryData"/>
+              </DirMeta>
             </DirMeta>
           </DirMeta>
         </DirMeta>
@@ -22,6 +24,6 @@
     </DirMeta>
   </Module>
   <ObjectIds>
-    <ObjectId id="2000" name="net_sf_xapp_common_types_QueryData"/>
+    <ObjectId id="2001" name="net_sf_xapp_net_common_types_QueryData"/>
   </ObjectIds>
 </Model>

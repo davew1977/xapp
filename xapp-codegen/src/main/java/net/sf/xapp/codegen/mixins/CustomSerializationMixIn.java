@@ -19,7 +19,7 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
         //ct.addImplements("Serializable");
         //ct.addImplements("DataSerializable");
         ct.addImport("java.io.*");
-        //ct.addImport("ngpoker.common.framework.DataSerializable");
+        //ct.addImport("net.sf.xapp.net.common.framework.DataSerializable");
         //ct.addImport("java.io.Serializable");
     }
 

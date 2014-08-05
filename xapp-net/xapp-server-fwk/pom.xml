@@ -6,29 +6,23 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>com.webatron</groupId>
-        <artifactId>ng</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>net.sf.xapp</groupId>
+        <artifactId>xapp-net</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ng-fwk-server</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>xapp-server-fwk</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.webatron</groupId>
-            <artifactId>ng-fwk-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>net.sf.xapp</groupId>
+            <artifactId>xapp-common-fwk</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.webatron</groupId>
-            <artifactId>ng-codegen</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>
