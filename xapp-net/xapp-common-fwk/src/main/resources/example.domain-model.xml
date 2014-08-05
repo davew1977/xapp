@@ -618,7 +618,7 @@
         <Children>
           <Tree name="connectionserver">
             <Children>
-              <Api apiType="ASYNC" clientVisible="true" errors="" name="ClientControl" packageName="ngpoker.connectionserver.clientcontrol" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" errors="" name="ClientControl" packageName="net.sf.xapp.net.server.connectionserver.clientcontrol" principalType="PlayerId">
                 <Messages>
                   <Message description="called when a user logs in to tell client the apps that the player is associated with. i.e. what tables they are sitting at and what tournaments they are registered to" name="SetInitialInfo">
                     <Fields>
@@ -643,7 +643,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="MessageSender" packageName="ngpoker.connectionserver.messagesender">
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="MessageSender" packageName="net.sf.xapp.net.server.connectionserver.messagesender">
                 <Messages>
                   <Message name="Post">
                     <Fields>
@@ -665,7 +665,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener" packageName="ngpoker.connectionserver.listener">
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener" packageName="net.sf.xapp.net.server.connectionserver.listener">
                 <Messages>
                   <Message name="PlayerConnected">
                     <Fields>
@@ -702,7 +702,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChannelClient" packageName="ngpoker.server.channels.channelclient">
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChannelClient" packageName="net.sf.xapp.net.server.channels.channelclient">
                 <Messages>
                   <Message name="AppState">
                     <Fields>
@@ -986,7 +986,7 @@
           </Tree>
           <Tree name="lobby">
             <Children>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="CANNOT_PAGE_UP,CANNOT_PAGE_DOWN,VIEW_DOES_NOT_EXIST,VIEW_NOT_ACTIVE," hideEntityKey="true" name="LobbySessionManager" packageName="ngpoker.lobby.session" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="CANNOT_PAGE_UP,CANNOT_PAGE_DOWN,VIEW_DOES_NOT_EXIST,VIEW_NOT_ACTIVE," hideEntityKey="true" name="LobbySessionManager" packageName="net.sf.xapp.net.server.lobby.session" principalType="PlayerId" responseEntityKeyType="String">
                 <Messages>
                   <Message description="shifts the client&apos;s view up one page. Assumes client will have retained the static state from the shifted page" name="PageUp">
                     <Fields>
@@ -1035,7 +1035,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ClientLobbySession" packageName="ngpoker.lobby.clientlobbysession" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ClientLobbySession" packageName="net.sf.xapp.net.server.lobby.clientlobbysession" principalType="PlayerId">
                 <Messages>
                   <Message name="EntityAdded">
                     <Fields>
@@ -1073,7 +1073,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="LobbyInternal" packageName="ngpoker.lobby.internal">
+              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="LobbyInternal" packageName="net.sf.xapp.net.server.lobby.internal">
                 <Messages>
                   <Message name="EntityAdded">
                     <Fields>
@@ -1112,7 +1112,7 @@
           </Tree>
           <Tree name="chat">
             <Children>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ChatClient" packageName="ngpoker.chat.client">
+              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ChatClient" packageName="net.sf.xapp.net.server.chat.client">
                 <Messages>
                   <Message name="ChatBroadcast">
                     <Fields>
@@ -1136,7 +1136,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" errors="" hideEntityKey="true" name="ChatPlayer" packageName="ngpoker.chat.player" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" errors="" hideEntityKey="true" name="ChatPlayer" packageName="net.sf.xapp.net.server.chat.player" principalType="PlayerId">
                 <Messages>
                   <Message name="ChatChannelState">
                     <Fields>
@@ -1146,7 +1146,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="" hideEntityKey="true" name="ChatApp" packageName="ngpoker.chat.chatapp" principalType="PlayerId">
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="" hideEntityKey="true" name="ChatApp" packageName="net.sf.xapp.net.server.chat.chatapp" principalType="PlayerId">
                 <Messages>
                   <Message name="NewChatMessage">
                     <Fields>
@@ -1156,7 +1156,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChatAppAdmin" packageName="ngpoker.chat.admin">
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChatAppAdmin" packageName="net.sf.xapp.net.server.chat.admin">
                 <Messages>
                   <Message name="Create">
                     <Fields>
@@ -2208,7 +2208,7 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <EnumType name="PokerCharacter" values="NONE,CAT,BIG_STACK,TIGER_LILY,SHUFFLER,SUPERMAN,"/>
           </Types>
         </Package>
-        <Package name="lobby" packageName="ngpoker.lobby.types">
+        <Package name="lobby" packageName="net.sf.xapp.net.server.lobby.types">
           <Types>
             <ValueObject name="Query">
               <Fields>

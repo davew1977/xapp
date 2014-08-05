@@ -35,9 +35,9 @@
             <version>2.5.6.SEC01</version>
         </dependency>
         <dependency>
-            <groupId>com.webatron</groupId>
-            <artifactId>ng-codegen</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>net.sf.xapp</groupId>
+            <artifactId>xapp-codegen</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -77,7 +77,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <modelFilePath>${project.parent.basedir}/ng-codegen/src/main/resources/domain-model.xml</modelFilePath>
+                            <modelFilePath>${project.basedir}/src/main/resources/domain-model.xml</modelFilePath>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,4 +1,5 @@
-list property annotation should also apply to the generated xml
+DONE: figure out how to specify a special path separator
+DONE: list property annotation should also apply to the generated xml
 
 create a xapp-codegen module {
     problem here will be all the ng references

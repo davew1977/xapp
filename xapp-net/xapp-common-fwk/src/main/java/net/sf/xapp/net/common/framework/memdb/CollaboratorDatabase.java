@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.common.framework.memdb;
 
-import ngpoker.lobby.types.Clause;
-import ngpoker.lobby.types.QueryData;
+import net.sf.xapp.net.server.lobby.types.Clause;
+import net.sf.xapp.net.server.lobby.types.QueryData;
 
 import java.util.*;
 

@@ -1,8 +1,8 @@
 package net.sf.xapp.net.connectionserver.mina;
 
 import net.sf.xapp.Global;
-import ngpoker.lobby.clientlobbysession.to.EntityAdded;
-import ngpoker.lobby.types.PokerroomInLobby;
+import net.sf.xapp.net.server.lobby.clientlobbysession.to.EntityAdded;
+import net.sf.xapp.net.server.lobby.types.PokerroomInLobby;
 import org.apache.mina.common.ByteBuffer;
 import org.apache.mina.common.WriteFuture;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;

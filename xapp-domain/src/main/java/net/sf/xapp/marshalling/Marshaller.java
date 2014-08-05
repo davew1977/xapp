@@ -287,7 +287,9 @@ public class Marshaller<T>
 
             Collection col = containerProperty.getCollection(parentObject);
             boolean elementsExist = !col.isEmpty();
-            out.writeOpeningTag(tagName, null, elementsExist);
+            if (!containerProperty.isContainerListProperty()) {
+                out.writeOpeningTag(tagName, null, elementsExist);
+            }
 
             if (elementsExist)
             {
@@ -321,7 +323,9 @@ public class Marshaller<T>
                         getMarshaller(aClass).marshalInternal(out, listItem, null, false);
                     }
                 }
-                out.writeClosingTag(tagName);
+                if (!containerProperty.isContainerListProperty()) {
+                    out.writeClosingTag(tagName);
+                }
             }
         }
         else if (getResourceURL(parentObject, property) != null)

@@ -7,8 +7,8 @@
 package net.sf.xapp.net.common.framework.memdb;
 
 import ngpoker.common.types.ListOp;
-import ngpoker.lobby.types.LobbyEntity;
-import ngpoker.lobby.types.QueryData;
+import net.sf.xapp.net.server.lobby.types.LobbyEntity;
+import net.sf.xapp.net.server.lobby.types.QueryData;
 
 import java.util.Set;
 

@@ -5,10 +5,10 @@ import net.sf.xapp.net.common.framework.InMessage;
 import ngpoker.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.util.GeneralUtils;
 import net.sf.xapp.net.common.util.StringUtils;
-import ngpoker.connectionserver.messagesender.MessageSender;
-import ngpoker.connectionserver.messagesender.MessageSenderAdaptor;
-import ngpoker.connectionserver.messagesender.to.Broadcast;
-import ngpoker.connectionserver.messagesender.to.Post;
+import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
+import net.sf.xapp.net.server.connectionserver.messagesender.MessageSenderAdaptor;
+import net.sf.xapp.net.server.connectionserver.messagesender.to.Broadcast;
+import net.sf.xapp.net.server.connectionserver.messagesender.to.Post;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

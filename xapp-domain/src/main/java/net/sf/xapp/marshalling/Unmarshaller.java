@@ -200,7 +200,11 @@ public class Unmarshaller<T>
             }
 
             Property property = m_classModel.getProperty(nodeName);
-            if (property == null || property.isReadOnly())
+            if (property == null && m_classModel.getContainerProperty() != null) {
+                unmarshalListItem(context, m_classModel.getContainerProperty(), (Element) node);
+                continue;
+            }
+            else if (property == null || property.isReadOnly())
             {
                 if (m_verbose) System.out.println("method set" + nodeName + "() not found in " + m_classModel);
                 continue;
@@ -268,12 +272,8 @@ public class Unmarshaller<T>
 
     private void unmarshalList(Node node, Property property, GlobalContext context, ObjectMeta parentOb) throws Exception
     {
-        ClassDatabase classDatabase = m_classModel.getClassDatabase();
         ContainerProperty listProperty = (ContainerProperty) property;
-        Object al = listProperty.createCollection();
         NodeList nl = node.getChildNodes();
-        Class collectionClass = listProperty.getContainedType();
-        ClassModel classModel = classDatabase.getClassModel(collectionClass);
         if (!listProperty.containsReferences())
         {
 
@@ -282,34 +282,9 @@ public class Unmarshaller<T>
                 Node itNode = nl.item(j);
                 if (itNode.getNodeType() == Node.ELEMENT_NODE)
                 {
-                    Element listElement = (Element) itNode;
-                    Object nextObject = null;
-                    Node includeResource = listElement.getAttributes().getNamedItem(DJW_INCLUDE_TAG);
-                    if (classModel.isEnum())
-                    {
-                        nextObject = Enum.valueOf(collectionClass, listElement.getFirstChild().getNodeValue());
-                    }
-                    else if (classModel.isAbstract())
-                    {
-                        //need to find implementation type
-                        ClassModel validImplementation = classModel.getValidImplementation(listElement.getNodeName());
-                        Unmarshaller unmarshaller = getUnmarshaller(validImplementation);
-                        nextObject = unmarshaller.unmarshal(listElement, context, property).getInstance();
-                    }
-                    else if (includeResource != null)
-                    {
-                        nextObject = getIncludedResource(includeResource, classModel, context);
-                        m_classModel.getClassDatabase().getMarshallerContext().mapIncludedResourceURL(nextObject, includeResource.getNodeValue());
-                    }
-                    else
-                    {
-                        Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
-                        nextObject = unmarshaller.unmarshal(listElement, context, property).getInstance();
-                    }
-                    listProperty.addToMapOrCollection(al, -1, nextObject);
+                    unmarshalListItem(context, listProperty, (Element) itNode);
                 }
             }
-            parentOb.set(property, al);
         }
         else
         {
@@ -326,6 +301,39 @@ public class Unmarshaller<T>
             }
             context.add(setReferenceListTask);
         }
+    }
+
+    private void unmarshalListItem(GlobalContext context, ContainerProperty listProperty, Element itNode) throws Exception {
+        ClassDatabase classDatabase = m_classModel.getClassDatabase();
+        Object al = listProperty.get(context.currentContext().objectMeta.getInstance());
+
+        Class collectionClass = listProperty.getContainedType();
+        ClassModel classModel = classDatabase.getClassModel(collectionClass);
+        Element listElement = (Element) itNode;
+        Object nextObject = null;
+        Node includeResource = listElement.getAttributes().getNamedItem(DJW_INCLUDE_TAG);
+        if (classModel.isEnum())
+        {
+            nextObject = Enum.valueOf(collectionClass, listElement.getFirstChild().getNodeValue());
+        }
+        else if (classModel.isAbstract())
+        {
+            //need to find implementation type
+            ClassModel validImplementation = classModel.getValidImplementation(listElement.getNodeName());
+            Unmarshaller unmarshaller = getUnmarshaller(validImplementation);
+            nextObject = unmarshaller.unmarshal(listElement, context, listProperty).getInstance();
+        }
+        else if (includeResource != null)
+        {
+            nextObject = getIncludedResource(includeResource, classModel, context);
+            m_classModel.getClassDatabase().getMarshallerContext().mapIncludedResourceURL(nextObject, includeResource.getNodeValue());
+        }
+        else
+        {
+            Unmarshaller unmarshaller = getUnmarshaller(classModel.getClassDatabase().getClassModel(collectionClass));
+            nextObject = unmarshaller.unmarshal(listElement, context, listProperty).getInstance();
+        }
+        //could be a problem if we reimplement includeresource listProperty.addToMapOrCollection(al, -1, nextObject);
     }
 
     private void unmarshalComplexType(Property property, GlobalContext context, Node node, ObjectMeta parentOb) throws Exception

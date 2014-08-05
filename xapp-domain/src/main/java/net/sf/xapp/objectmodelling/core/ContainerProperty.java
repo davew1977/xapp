@@ -154,4 +154,8 @@ public class ContainerProperty extends Property
             }
         }
     }
+
+    public boolean isContainerListProperty() {
+        return getClassDatabase().getClassModel(getParentClass()).getContainerProperty() == this;
+    }
 }
