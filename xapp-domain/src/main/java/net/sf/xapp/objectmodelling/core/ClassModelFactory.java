@@ -16,6 +16,7 @@ import net.sf.xapp.annotations.application.BoundObjectType;
 import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.objectmodelling.PostInit;
+import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.tree.Tree;
@@ -30,18 +31,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ClassModelFactory
-{
+public class ClassModelFactory {
     private static PropertyFactory m_propFactory = new PropertyFactoryImpl();
 
-    public static ClassModel createClassModel(ClassModelManager classModelManager, Class aClass)
-    {
+    public static ClassModel createClassModel(ClassModelManager classModelManager, Class aClass) {
         InspectionTuple inspectionTuple = createInspectionTuple(classModelManager, aClass);
         //is this a container?
         Container containerAnnotation = (Container) ClassUtils.getAnnotationInHeirarchy(Container.class, aClass);
         String containerListProp = containerAnnotation != null ? containerAnnotation.listProperty() : null;
-        if (Tree.class.isAssignableFrom(aClass))
-        {
+        if (Tree.class.isAssignableFrom(aClass)) {
             containerListProp = "children"; //hard code the container property for subtypes of Tree
         }
         ValidImplementations annotation = (ValidImplementations) aClass.getAnnotation(ValidImplementations.class);
@@ -54,10 +52,8 @@ public class ClassModelFactory
 
         //find the primary key
         Property keyProperty = null;
-        for (Property property : inspectionTuple.properties)
-        {
-            if (property.isKey())
-            {
+        for (Property property : inspectionTuple.properties) {
+            if (property.isKey()) {
                 if (keyProperty != null)
                     throw new XappException("There can only be one global key!: " + property + " " + keyProperty);
                 keyProperty = property;
@@ -65,25 +61,20 @@ public class ClassModelFactory
         }
         ClassModel classModel = new ClassModel(classModelManager,
                 aClass,
-                inspectionTuple.properties,
-                inspectionTuple.listProperties,
-                inspectionTuple.mapProperties,
+                inspectionTuple,
                 validImplementations,
                 bcAnnotation,
                 boAnnotation,
                 keyProperty,
-                containerListProp,
-                inspectionTuple.postInitMethod);
+                containerListProp);
         return classModel;
     }
 
     private static List<ClassModel> getValidSubClasses(ClassModelManager classModelManager, Class aClass, ValidImplementations annotation) {
         List<ClassModel> validImplementations = new ArrayList<ClassModel>();
-        if (annotation != null)
-        {
+        if (annotation != null) {
             Class[] vis = annotation.value();
-            for (Class vi : vis)
-            {
+            for (Class vi : vis) {
                 if (aClass.equals(vi))
                     throw new XappException("class " + vi.getName() + " has itself as a valid implementation");
 
@@ -93,29 +84,25 @@ public class ClassModelFactory
         return validImplementations;
     }
 
-    private static InspectionTuple createInspectionTuple(ClassModelManager classModelManager, Class aClass)
-    {
+    private static InspectionTuple createInspectionTuple(ClassModelManager classModelManager, Class aClass) {
         Method[] methods = aClass.getMethods();
         InspectionTuple inspectionTuple = new InspectionTuple();
         InspectionType inspectionType = classModelManager.getInspectionType();
-        for (Method method : methods)
-        {
-            if (inspectionType == InspectionType.METHOD && isAccessor(method))
-            {
+        for (Method method : methods) {
+            if (inspectionType == InspectionType.METHOD && isAccessor(method)) {
                 MethodProperty propertyAccess = new MethodProperty(method);
                 createProperty(classModelManager, aClass, inspectionTuple, propertyAccess);
             }
-            if (method.getAnnotation(PostInit.class) != null)
-            {
+            if (method.getAnnotation(PostInit.class) != null) {
                 inspectionTuple.postInitMethod = method;
             }
+            if (method.getAnnotation(PreInit.class) != null) {
+                inspectionTuple.preInitMethod = method;
+            }
         }
-        if(inspectionType== InspectionType.FIELD)
-        {
-            for (Field field : selectFields(aClass))
-            {
-                if(Modifier.isStatic(field.getModifiers()))
-                {
+        if (inspectionType == InspectionType.FIELD) {
+            for (Field field : selectFields(aClass)) {
+                if (Modifier.isStatic(field.getModifiers())) {
                     continue;
                 }
                 PropertyAccess propertyAccess = new FieldProperty(field);
@@ -125,28 +112,23 @@ public class ClassModelFactory
         return inspectionTuple;
     }
 
-    protected static List<Field> selectFields(Class aClass)
-    {
+    protected static List<Field> selectFields(Class aClass) {
         ArrayList<Field> fields = new ArrayList<Field>();
-        if(!aClass.equals(Object.class))
-        {
+        if (!aClass.equals(Object.class)) {
             fields.addAll(Arrays.asList(aClass.getDeclaredFields()));
-            if(aClass.getSuperclass()!=null && !aClass.getSuperclass().equals(Object.class))
-            {
+            if (aClass.getSuperclass() != null && !aClass.getSuperclass().equals(Object.class)) {
                 fields.addAll(selectFields(aClass.getSuperclass()));
             }
         }
         return fields;
     }
 
-    private static void createProperty(ClassModelManager classModelManager, Class aClass, InspectionTuple inspectionTuple, PropertyAccess propertyAccess)
-    {
+    private static void createProperty(ClassModelManager classModelManager, Class aClass, InspectionTuple inspectionTuple, PropertyAccess propertyAccess) {
         Property property = m_propFactory.createProperty(classModelManager, propertyAccess, aClass);
         inspectionTuple.addProperty(property);
     }
 
-    private static boolean isAccessor(Method method)
-    {
+    private static boolean isAccessor(Method method) {
         String name = method.getName();
         return (name.startsWith("get") || name.startsWith("is")) &&
                 !name.equals("getDeclaringClass") &&
@@ -156,22 +138,19 @@ public class ClassModelFactory
                 !(method.getReturnType().isAssignableFrom(List.class) && method.getAnnotation(Transient.class)!=null)*/;
     }
 
-    public static class InspectionTuple
-    {
+    public static class InspectionTuple {
         List<Property> properties = new ArrayList<Property>();
         List<ListProperty> listProperties = new ArrayList<ListProperty>();
         List<ContainerProperty> mapProperties = new ArrayList<ContainerProperty>();
-        Method postInitMethod = null;
+        Method postInitMethod;
+        Method preInitMethod;
 
         public void addProperty(Property property) {
-            if (property instanceof ListProperty)
-            {
+            if (property instanceof ListProperty) {
                 listProperties.add((ListProperty) property);
-            } else if(property instanceof ContainerProperty) {
+            } else if (property instanceof ContainerProperty) {
                 mapProperties.add((ContainerProperty) property);
-            }
-            else
-            {
+            } else {
                 properties.add(property);
             }
         }

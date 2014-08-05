@@ -1,6 +1,41 @@
 <Model corePackageName="net.sf.xapp.net.common.types" messageIdStart="0" objectIdStart="2000" version="4">
   <Modules>
-    <Module name="xapp-common-fwk" outDir="xapp-common-fwk/target/generated-sources/ng-codegen-plugin">
+    <Module name="xapp-common-fwk" outDir="xapp-common-fwk/target/generated-sources/xapp-codegen-plugin">
+      <Files>
+        <DirMeta name="primitives">
+          <Files>
+              <PrimitiveType name="String"/>
+              <PrimitiveType javaMapping="int" name="Integer"/>
+              <PrimitiveType javaMapping="long" name="Long"/>
+              <PrimitiveType javaMapping="boolean" name="Boolean"/>
+              <PrimitiveType name="Object"/>
+              <PrimitiveType javaMapping="float" name="Float"/>
+              <PrimitiveType javaMapping="byte" name="Byte"/>
+          </Files>
+        </DirMeta>
+          <DirMeta name="net">
+              <Files>
+                  <DirMeta name="sf">
+                      <Files>
+                          <DirMeta name="xapp">
+                              <Files>
+                                  <DirMeta name="common">
+                                      <Files>
+                                          <DirMeta name="types">
+                                              <Files>
+                                                  <ValueObject name="QueryData"/>
+                                              </Files>
+                                          </DirMeta>
+                                      </Files>
+                                  </DirMeta>
+                              </Files>
+                          </DirMeta>
+                      </Files>
+                  </DirMeta>
+              </Files>
+          </DirMeta>
+
+      </Files>
     </Module>
   </Modules>
 </Model>

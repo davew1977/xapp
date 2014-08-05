@@ -48,7 +48,7 @@ public class ClassModel<T> {
     private List<Property> properties;
     private Map<String, Property> m_propertyMap;
     private Map<String, Property> m_propertyMapByXMLMapping;
-    private List<ListProperty> m_listProperties;
+    private List<ListProperty> listProperties;
     private List<ClassModel> m_validImplementations;
     private Map<String, ClassModel> m_validImplementationMap;
     private int m_nextId;
@@ -56,8 +56,8 @@ public class ClassModel<T> {
     private EditorWidget editorWidget;
     private Property keyProperty;
     private List<ObjectMeta<T>> instances;
-    private Method m_setClassModelMethod;
-    private Method m_postInitMethod;
+    private Method postInitMethod;
+    private Method preInitMethod;
     private ListProperty m_containerListProperty;
     private Set<Rights> m_restrictedRights;
     private TrackKeyChanges m_trackKeyChanges;
@@ -70,21 +70,21 @@ public class ClassModel<T> {
 
     public ClassModel(ClassDatabase classDatabase,
                       Class aClass,
-                      List<Property> properties,
-                      List<ListProperty> listProperties,
-                      List<ContainerProperty> mapProperties,
+                      ClassModelFactory.InspectionTuple inspectionTuple,
                       List<ClassModel> validImplementations,
                       EditorWidget editorWidget,
                       BoundObjectType boundObjectType,
                       Property keyProperty,
-                      String containerListProp, Method postInitMethod) {
+                      String containerListProp) {
         m_class = aClass;
 
-        m_postInitMethod = postInitMethod;
+        postInitMethod = inspectionTuple.postInitMethod;
+        preInitMethod = inspectionTuple.preInitMethod;
+
         m_classDatabase = classDatabase;
-        this.properties = properties;
-        m_listProperties = listProperties;
-        this.mapProperties = mapProperties;
+        properties = inspectionTuple.properties;
+        listProperties = inspectionTuple.listProperties;
+        mapProperties = inspectionTuple.mapProperties;
         m_validImplementations = expand(validImplementations);
         m_propertyMap = new HashMap<String, Property>();
         m_propertyMapByXMLMapping = new HashMap<String, Property>();
@@ -102,11 +102,9 @@ public class ClassModel<T> {
         if (this.keyProperty != null) {
             this.keyProperty.addChangeListener(new PrimaryKeyChangedListener());
         }
-        try {
-            m_setClassModelMethod = aClass.getMethod("setClassModel", ClassModel.class);
-        } catch (NoSuchMethodException e) {
+        if (containerListProp != null) {
+            m_containerListProperty = (ListProperty) getProperty(containerListProp);
         }
-        if (containerListProp != null) m_containerListProperty = (ListProperty) getProperty(containerListProp);
 
         m_restrictedRights = new HashSet<Rights>();
 
@@ -181,7 +179,7 @@ public class ClassModel<T> {
                 list.add(property);
             }
         }
-        for (ListProperty listProperty : m_listProperties) {
+        for (ListProperty listProperty : listProperties) {
             if (listProperty.hasSpecialBoundComponent()) {
                 list.add(listProperty);
             }
@@ -203,7 +201,7 @@ public class ClassModel<T> {
 
     public List<ListProperty> getNonTransientPrimitiveLists() {
         List<ListProperty> list = new ArrayList<ListProperty>();
-        for (ListProperty property : m_listProperties) {
+        for (ListProperty property : listProperties) {
             if (!property.isTransient() && !property.hasSpecialBoundComponent() && (
                     property.getContainedType() == String.class ||
                             property.getContainedType() == Integer.class ||
@@ -216,7 +214,7 @@ public class ClassModel<T> {
     }
 
     public List<ListProperty> getListProperties() {
-        return m_listProperties;
+        return listProperties;
     }
 
     public List<ContainerProperty> getMapProperties() {
@@ -250,7 +248,7 @@ public class ClassModel<T> {
     }
 
     public int getNoOfProperties() {
-        return m_listProperties.size() + properties.size();
+        return listProperties.size() + properties.size();
     }
 
     /**
@@ -274,6 +272,9 @@ public class ClassModel<T> {
      */
     public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef, int index) {
         ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef, index);
+        if(hasPreInit()) {
+            tryAndInvoke(obj, preInitMethod, objectMeta);
+        }
         instances.add(objectMeta);
         return objectMeta;
     }
@@ -414,7 +415,7 @@ public class ClassModel<T> {
         if (typeMatches && patternMatches && propertiesMatch) {
             results.add(instance);
         }
-        for (ListProperty listProperty : m_listProperties) {
+        for (ListProperty listProperty : listProperties) {
             if (listProperty.isTransient()) continue;
             Collection list = listProperty.get(instance);
             if (list != null) {
@@ -433,7 +434,7 @@ public class ClassModel<T> {
         instancesSearched.add(instance);
         HashSet results = new HashSet();
         //search for properties with target type
-        for (ListProperty listProperty : m_listProperties) {
+        for (ListProperty listProperty : listProperties) {
             Collection list = listProperty.get(instance);
             if (listProperty.getContainedType().isAssignableFrom(type)) {
                 results.addAll(list);
@@ -532,9 +533,10 @@ public class ClassModel<T> {
         return m_containerListProperty;
     }
 
-    public static Object tryAndInvoke(Object target, Method method) {
+    public static Object tryAndInvoke(Object target, Method method, Object... args) {
         try {
-            return method.invoke(target);
+            method.setAccessible(true);
+            return method.invoke(target, args);
         } catch (IllegalAccessException e) {
             throw new XappException(e);
         } catch (InvocationTargetException e) {
@@ -572,11 +574,19 @@ public class ClassModel<T> {
     }
 
     public Method getPostInitMethod() {
-        return m_postInitMethod;
+        return postInitMethod;
     }
 
-    public boolean hasPostInitMethod() {
-        return m_postInitMethod != null;
+    public boolean hasPostInit() {
+        return postInitMethod != null;
+    }
+
+    public Method getPreInitMethod() {
+        return preInitMethod;
+    }
+
+    public boolean hasPreInit() {
+        return preInitMethod != null;
     }
 
     public boolean isTreeType() {
@@ -750,7 +760,7 @@ public class ClassModel<T> {
         //go through list properties, iterating their contents and comparing values
         //handle list properties with @ContainReferences annotation
         //with lists of references we only need to handle added and removed nodes
-        for (ListProperty listProperty : m_listProperties) {
+        for (ListProperty listProperty : listProperties) {
             if (listProperty.isTransient()) continue;
             String propertyName = listProperty.getName();
             String containerClass = o1.getClass().getSimpleName();

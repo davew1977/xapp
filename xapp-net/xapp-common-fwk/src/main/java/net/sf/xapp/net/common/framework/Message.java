@@ -7,7 +7,7 @@
 package net.sf.xapp.net.common.framework;
 
 
-import ngpoker.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.types.MessageTypeEnum;
 
 public interface Message extends TransportObject
 {

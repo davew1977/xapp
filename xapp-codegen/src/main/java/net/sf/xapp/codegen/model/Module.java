@@ -2,6 +2,7 @@ package net.sf.xapp.codegen.model;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
+import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.application.utils.codegen.CodeFile;
 import net.sf.xapp.application.utils.codegen.JavaFile;
@@ -21,28 +22,12 @@ import java.util.Map;
 /**
  * Created by dwebber
  */
-@NamespaceFor(FileMeta.class)
-public class Module {
-    private ObjectMeta objMeta;
-    private String name;
+public class Module extends DirMeta {
     private String outDir;
-    private DirMeta src = new DirMeta();
 
-    private void setObjMeta(ObjectMeta objMeta) {
-        this.objMeta = objMeta;
-    }
-
-    @Key
-    public String getName() {
-        return name;
-    }
 
     public Model model() {
         return (Model) objMeta.root().getInstance();
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getOutDir() {
@@ -53,33 +38,12 @@ public class Module {
         this.outDir = outDir;
     }
 
-    public DirMeta getSrc() {
-        return src;
-    }
-
-    public void setSrc(DirMeta src) {
-        this.src = src;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public <A> List<A> all(Class<A> type) {
-        return src.all(type);
-    }
-
-    public <A> List<A> all(Filter filter) {
-        return src.all(filter);
-    }
-
     public List<Api> allApis() {
-        return src.all(Api.class);
+        return all(Api.class);
     }
 
     public List<Entity> allEntities() {
-        return src.all(Entity.class);
+        return all(Entity.class);
     }
 
     public File outDir() {
@@ -144,7 +108,7 @@ public class Module {
     }
 
     public String messageTypeEnumName() {
-        String[] s = name.split("-");
+        String[] s = getName().split("-");
         StringBuilder sb = new StringBuilder();
         for (String c : s) {
             sb.append(StringUtils.capitalizeFirst(c));

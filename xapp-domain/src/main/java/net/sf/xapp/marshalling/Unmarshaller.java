@@ -236,7 +236,7 @@ public class Unmarshaller<T>
         //now unmarshal attributes (will overwrite nested elements)
         unmarshalAttributes(element, objectMeta, context);
 
-        if (m_classModel.hasPostInitMethod())
+        if (m_classModel.hasPostInit())
         {
             context.m_objectsWithPostInit.put(objectMeta.getInstance(), m_classModel.getPostInitMethod());
         }

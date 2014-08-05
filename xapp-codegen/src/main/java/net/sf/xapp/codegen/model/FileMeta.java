@@ -1,6 +1,7 @@
 package net.sf.xapp.codegen.model;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
@@ -13,7 +14,7 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
  */
 @ValidImplementations({DirMeta.class, Type.class, Api.class})
 public class FileMeta implements Cloneable {
-    private ObjectMeta objMeta;
+    protected ObjectMeta objMeta;
     private String name = "";
 
     public FileMeta(String name) {
@@ -23,7 +24,8 @@ public class FileMeta implements Cloneable {
     public FileMeta() {
     }
 
-    private void setObjMeta(ObjectMeta objMeta) {
+    @PreInit
+    public void preInit(ObjectMeta objMeta) {
         this.objMeta = objMeta;
     }
 

@@ -37,7 +37,6 @@ public class ObjectMeta<T> implements Namespace{
             }
         }
         this.id = classModel.registerWithClassDatabase(this);
-        tryCall(instance, "setObjectMeta", this);
         key = (String) get(classModel.getKeyProperty());
         setHome(home, updateModelHomeRef, index);
 
