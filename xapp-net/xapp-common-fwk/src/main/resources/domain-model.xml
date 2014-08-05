@@ -1,41 +1,27 @@
 <Model corePackageName="net.sf.xapp.net.common.types" messageIdStart="0" objectIdStart="2000" version="4">
-  <Modules>
-    <Module name="xapp-common-fwk" outDir="xapp-common-fwk/target/generated-sources/xapp-codegen-plugin">
-      <Files>
-        <DirMeta name="primitives">
-          <Files>
-              <PrimitiveType name="String"/>
-              <PrimitiveType javaMapping="int" name="Integer"/>
-              <PrimitiveType javaMapping="long" name="Long"/>
-              <PrimitiveType javaMapping="boolean" name="Boolean"/>
-              <PrimitiveType name="Object"/>
-              <PrimitiveType javaMapping="float" name="Float"/>
-              <PrimitiveType javaMapping="byte" name="Byte"/>
-          </Files>
-        </DirMeta>
-          <DirMeta name="net">
-              <Files>
-                  <DirMeta name="sf">
-                      <Files>
-                          <DirMeta name="xapp">
-                              <Files>
-                                  <DirMeta name="common">
-                                      <Files>
-                                          <DirMeta name="types">
-                                              <Files>
-                                                  <ValueObject name="QueryData"/>
-                                              </Files>
-                                          </DirMeta>
-                                      </Files>
-                                  </DirMeta>
-                              </Files>
-                          </DirMeta>
-                      </Files>
-                  </DirMeta>
-              </Files>
+  <Module name="xapp-common-fwk" outDir="xapp-common-fwk/target/generated-sources/xapp-codegen-plugin">
+    <DirMeta name="primitives">
+      <PrimitiveType name="String"/>
+      <PrimitiveType javaMapping="int" name="Integer"/>
+      <PrimitiveType javaMapping="long" name="Long"/>
+      <PrimitiveType javaMapping="boolean" name="Boolean"/>
+      <PrimitiveType name="Object"/>
+      <PrimitiveType javaMapping="float" name="Float"/>
+      <PrimitiveType javaMapping="byte" name="Byte"/>
+    </DirMeta>
+    <DirMeta name="net">
+      <DirMeta name="sf">
+        <DirMeta name="xapp">
+          <DirMeta name="common">
+            <DirMeta name="types">
+              <ValueObject name="QueryData"/>
+            </DirMeta>
           </DirMeta>
-
-      </Files>
-    </Module>
-  </Modules>
+        </DirMeta>
+      </DirMeta>
+    </DirMeta>
+  </Module>
+  <ObjectIds>
+    <ObjectId id="2000" name="net_sf_xapp_common_types_QueryData"/>
+  </ObjectIds>
 </Model>
