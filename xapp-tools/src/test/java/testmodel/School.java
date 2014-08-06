@@ -24,6 +24,10 @@ public class School {
     private Map<String, ClassRoom> classRooms = new HashMap<String, ClassRoom>();
     private List<ImageFile> picturesOfTheWeek = new ArrayList<ImageFile>();
 
+    public School() {
+        System.out.println("here");
+    }
+
     @Key
     public String getName() {
         return name;

@@ -1,6 +1,7 @@
 package net.sf.xapp.objectmodelling.core;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * encapsulates the location of an object
@@ -114,5 +115,17 @@ public class ObjectLocation {
 
     public ClassModel getPropClassModel() {
         return isCollection() ? ((ContainerProperty) property).getContainedTypeClassModel() : property.getPropertyClassModel();
+    }
+
+    public boolean isMap() {
+        return property.isMap();
+    }
+
+    public void keyChanged(String oldVal, String newVal) {
+        assert isMap();
+        ContainerProperty cp = (ContainerProperty) property;
+        Map map = (Map) cp.get(obj.getInstance());
+        Object item = map.remove(String.valueOf(oldVal));
+        map.put(String.valueOf(newVal), item);
     }
 }

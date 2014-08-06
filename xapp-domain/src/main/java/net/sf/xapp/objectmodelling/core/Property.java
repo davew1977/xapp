@@ -25,10 +25,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A property encapsulates meta data about a class's property. A property is an attribute of a class that is
@@ -307,6 +304,11 @@ public class Property<T> implements Comparable
     public boolean isList()
     {
         return List.class.isAssignableFrom(m_class);
+    }
+
+    public boolean isMap()
+    {
+        return Map.class.isAssignableFrom(m_class);
     }
 
     public boolean isSetCollection() {

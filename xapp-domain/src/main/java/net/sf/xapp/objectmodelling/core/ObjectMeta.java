@@ -227,11 +227,14 @@ public class ObjectMeta<T> implements Namespace{
                     objectMeta.removeReference(new ObjectLocation(this, property));
                 }
             } else {
-                if (property.isKey() && change != null) {
+                if (property.isKey()) {
                     String oldVal = (String) change.oldVal;
                     assert Property.objEquals(oldVal, key);
                     String newVal = (String) change.newVal;
                     updateMetaHierarchy(newVal);
+                    if(home !=null && home.isMap()) {
+                        home.keyChanged(oldVal, newVal);
+                    }
                 }
             }
         }
