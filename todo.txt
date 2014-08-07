@@ -1,3 +1,6 @@
+auto widen reference drop downs
+add a "package" class which can extend dirmeta, but will allow providing an alias for the package name to improve usability in the editor
+
 DONE: figure out how to specify a special path separator
 DONE: list property annotation should also apply to the generated xml
 

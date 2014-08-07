@@ -85,4 +85,6 @@ public interface ClassDatabase<T>
 
     ObjectMeta findOrCreateObjMeta(ObjectLocation objectLocation, Object value);
     ObjectMeta find(Object value);
+
+    void removeInstance(ObjectMeta objectMeta);
 }

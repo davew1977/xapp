@@ -35,8 +35,7 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-
+    public PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         return null;
     }
 

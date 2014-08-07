@@ -119,6 +119,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return classModel.find(value);
     }
 
+    @Override
+    public void removeInstance(ObjectMeta objectMeta) {
+        instanceMap.remove(objectMeta.getId());
+    }
+
     public Unmarshaller getRootUnmarshaller()
     {
         return createUnmarshaller(rootType);

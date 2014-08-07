@@ -61,7 +61,7 @@ public class Launcher
         File file = null;
         if (fileNameOrURL == null)
         {
-            rootObj = classModel.newInstance(null);
+            rootObj = classModel.newInstance(null, true);
         }
         else
         {

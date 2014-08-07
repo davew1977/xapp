@@ -535,7 +535,7 @@ public class Unmarshaller<T>
 
 
         public  ObjectMeta<E> newInstance(Property property) {
-            objectMeta = classModel.newInstance(!isRoot() ? new ObjectLocation(parentObjMeta(), property) : null);
+            objectMeta = classModel.newInstance(!isRoot() ? new ObjectLocation(parentObjMeta(), property) : null, true);
 
             /*if (classModel.hasKey()) {
                 LocalContext namespace = getNamespace(classModel.getContainedClass());

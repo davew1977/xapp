@@ -40,7 +40,7 @@ public interface NodeUpdateApi {
     /**
      * as above, but this is for cases where there is no node  available
      */
-    PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
+    PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates);
 
     /**
      * delete/rollback creation of a recently created object

@@ -420,20 +420,27 @@ public class ObjectMeta<T> implements Namespace{
     public PropertyChange setHome(ObjectLocation newLoc, boolean updateModel) {
         return setHome(newLoc, updateModel, -1);
     }
+
+    public PropertyChange setHomeRef() {
+        return setHomeRef(-1);
+    }
+    public PropertyChange setHomeRef(int index) {
+        return this.home.set(this, index);
+    }
+
     public PropertyChange setHome(ObjectLocation newLoc, boolean updateModel, int index) {
         ObjectLocation old = home;
-        PropertyChange setHomeChange = null;
         if (!Property.objEquals(old, newLoc)) {
             if (updateModel && old != null) {
                 old.unset(this);
             }
             this.home = newLoc;
             if (updateModel && newLoc != null) {
-                setHomeChange = this.home.set(this, index);
+                return setHomeRef(index);
             }
             updateMetaHierarchy(key);
         }
-        return setHomeChange;
+        return null;
     }
 
     public ClassDatabase getClassDatabase() {

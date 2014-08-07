@@ -254,13 +254,13 @@ public class ClassModel<T> {
     /**
      * Create a new instance of the class.
      */
-    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation) {
-        return newInstance(objectLocation, -1);
+    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, boolean updateModelHomeRef) {
+        return newInstance(objectLocation, updateModelHomeRef, -1);
     }
-    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, int index) {
+    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, boolean updateModelHomeRef, int index) {
         try {
             T obj = m_class.newInstance();
-            return createObjMeta(objectLocation, obj, true, index);
+            return createObjMeta(objectLocation, obj, updateModelHomeRef, index);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e);
@@ -288,6 +288,7 @@ public class ClassModel<T> {
     }
     public void dispose(ObjectMeta objectMeta) {
         instances.remove(objectMeta);
+        m_classDatabase.removeInstance(objectMeta);
         if (keyProperty != null) {
             String oldKeyVal = (String) objectMeta.get(keyProperty);
             m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(

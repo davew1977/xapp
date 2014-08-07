@@ -32,14 +32,14 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public PropertyChange initObject(ObjectLocation homeLocation, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+    public PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
-        return objectMeta.setHome(homeLocation, true, -1);
+        return objectMeta.setHomeRef();
     }
 
     @Override
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        PropertyChange propertyChange = initObject(parentNode.toObjLocation(), objectMeta, potentialUpdates);
+        PropertyChange propertyChange = initObject(objectMeta, potentialUpdates);
         if(propertyChange.succeeded()) { //could fail if we're added an identical object to a set
             Node node = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
             appContainer.getApplication().nodeAdded(node);
@@ -48,7 +48,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
-        ObjectMeta objMeta = type.newInstance(null);
+        ObjectMeta objMeta = type.newInstance(homeLocation, false);
         appContainer.getApplication().nodeAboutToBeAdded(homeLocation, objMeta);
         return objMeta;
     }
@@ -126,10 +126,9 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         }
         Node node = (Node) obj.getAttachment();
         Node parent = node.getParent();
-        ClassModel srcClassModel = obj.getClassModel();
         ObjectLocation objHome = obj.getHome();
         int oldIndex = node.index();
-        ObjectMeta newInstance = targetClassModel.newInstance(objHome);
+        ObjectMeta newInstance = targetClassModel.newInstance(objHome, true);
         List<Property> properties = targetClassModel.getAllProperties();
         for (Property property : properties)
         {

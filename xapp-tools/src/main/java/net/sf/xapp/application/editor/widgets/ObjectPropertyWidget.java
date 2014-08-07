@@ -158,20 +158,20 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final ObjectMeta instance = nodeUpdateApi.createObject(objLocation, validImpl);
-        EditableContext editableContext = new SingleTargetEditableContext(instance, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
+        final ObjectMeta objMeta = nodeUpdateApi.createObject(objLocation, validImpl);
+        EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
         Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
         {
             public void save(List<PropertyUpdate> changes, boolean closing)
             {
-                nodeUpdateApi.initObject(objLocation, instance, changes);
-                m_propertyValue = instance.getInstance();
+                nodeUpdateApi.initObject(objMeta, changes);
+                m_propertyValue = objMeta.getInstance();
                 updateState();
             }
 
             @Override
             public void close() {
-                nodeUpdateApi.deleteObject(instance);
+                nodeUpdateApi.deleteObject(objMeta);
             }
         });
         defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);
