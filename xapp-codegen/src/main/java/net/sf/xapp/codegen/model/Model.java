@@ -10,6 +10,7 @@ package net.sf.xapp.codegen.model;
 import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.application.Hide;
 import net.sf.xapp.annotations.objectmodelling.PostInit;
+import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
 import net.sf.xapp.utils.CollectionsUtils;
@@ -33,6 +34,7 @@ public class Model {
     private String corePackageName;
     private boolean xappPluginEnabled;
     private boolean generateSetters;
+    private Module baseModule;
 
     public String getName() {
         return m_name;
@@ -313,8 +315,13 @@ public class Model {
         return result;
     }
 
-    public Module generationModule() {
-        return getModules().get(0);
+    @Reference
+    public Module getBaseModule() {
+        return baseModule;
+    }
+
+    public void setBaseModule(Module baseModule) {
+        this.baseModule = baseModule;
     }
 
     public int getMessageIdStart() {

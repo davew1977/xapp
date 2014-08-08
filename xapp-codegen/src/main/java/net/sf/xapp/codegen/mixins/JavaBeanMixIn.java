@@ -26,14 +26,6 @@ public class JavaBeanMixIn implements MixIn<ComplexType>
         {
             ct.addImport("java.util.*");
         }
-        for (Type type : complexType.fieldTypes())
-        {
-            String alt = type.getPackageName();
-            if (alt != null)
-            {
-                ct.addImport(alt + "." + type.getName());
-            }
-        }
         genConstructors(complexType, ct);
         genGettersAndSetters(complexType, ct);
 

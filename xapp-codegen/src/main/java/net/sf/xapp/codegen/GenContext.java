@@ -37,7 +37,7 @@ public class GenContext
     }
 
     public JavaFile createJavaFile(Model model) {
-        return createJavaFile(model.generationModule());
+        return createJavaFile(model.getBaseModule());
     }
 
     public JavaFile createJavaFile(Module module) {

@@ -45,7 +45,8 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
         //get Options
         m_comboBox = new JComboBox();
         m_comboBox.setEditable(false);
-        m_comboBox.setPreferredSize(new Dimension(160, 20));
+        m_comboBox.setPreferredSize(new Dimension(300, 20));
+        //m_comboBox.setMinimumSize(new Dimension(260, 20));
         m_comboBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
         KeyStroke controlT = KeyStroke.getKeyStroke("control SPACE");
         getTextField().getInputMap().put(controlT, controlT);

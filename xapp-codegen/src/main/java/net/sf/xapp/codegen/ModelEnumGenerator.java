@@ -37,7 +37,7 @@ public class ModelEnumGenerator
         allErrorsEnum.addAll(errors);
         allErrorsEnum.add("PRINCIPAL_ALREADY_HAS_PENDING_REQUEST");
         allErrorsEnum.setPackageName(model.getCorePackageName());
-        allErrorsEnum.setModule(model.generationModule());
+        allErrorsEnum.setModule(model.getBaseModule());
         CodeFile codeFile = enumGenerator.genEnum(allErrorsEnum);
         return codeFile;
     }
@@ -51,7 +51,7 @@ public class ModelEnumGenerator
             allApisEnum.add(StringUtils.camelToUpper(api.getName()));
         }
         allApisEnum.setPackageName(model.getCorePackageName());
-        allApisEnum.setModule(model.generationModule());
+        allApisEnum.setModule(model.getBaseModule());
         return enumGenerator.genEnum(allApisEnum);
     }
 }

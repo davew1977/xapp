@@ -22,7 +22,7 @@ public class VersionFileGenerator
 
     public CodeFile genVersionFile(Model model)
     {
-        CodeFile cf = genContext.createJavaFile(model.generationModule());
+        CodeFile cf = genContext.createJavaFile(model.getBaseModule());
         cf.setInterface();
         new GenericMixIn("xapp").mixIn("Version", cf);
         cf._static()._final().field("String", "VERSION", Access.PUBLIC, String.format("\"%s\"", model.getVersion()));

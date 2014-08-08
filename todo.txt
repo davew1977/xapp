@@ -1,4 +1,7 @@
-auto widen reference drop downs
+
+prevent module from being a namespace for the java files
+
+POSTPONE: (statically widened them instead) auto widen reference drop downs
 add a "package" class which can extend dirmeta, but will allow providing an alias for the package name to improve usability in the editor
 
 DONE: figure out how to specify a special path separator

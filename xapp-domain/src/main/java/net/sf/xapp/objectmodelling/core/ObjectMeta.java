@@ -128,9 +128,12 @@ public class ObjectMeta<T> implements Namespace{
         return isNamespaceFor(aClass) ? this : getParent().getNamespace(aClass);
     }
 
+    /**
+     * return path of object, not including this one
+     */
     public NamespacePath namespacePath(Class aClass) {
         NamespacePath path = new NamespacePath();
-        ObjectMeta objectMeta = this;
+        ObjectMeta objectMeta = getParent();
         while(objectMeta != null) {
             if (objectMeta.isNamespaceFor(aClass)) {
                 path.addFirst(objectMeta);
@@ -244,10 +247,6 @@ public class ObjectMeta<T> implements Namespace{
     public void updateMetaHierarchy(String newKeyVal) {
 
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
-        //if last element is this object, then remove it
-        if(!isRoot() && namespacePath.getLast() == this) {
-            namespacePath.removeLast();
-        }
         ObjectMeta closestNamespace = namespacePath.removeLast();
         if (key != null) {
             closestNamespace.remove(this);

@@ -24,7 +24,7 @@ public class LobbyPropertyEnumGenerator
     public CodeFile generate(Model model)
     {
         //generate an enum for all error codes
-        CodeFile cf = genContext.createJavaFile(model.generationModule());
+        CodeFile cf = genContext.createJavaFile(model.getBaseModule());
         new GenericMixIn(model.getCorePackageName()).mixIn("LobbyPropertyEnum", cf);
         for (LobbyType lobbyType: model.lobbyTypes())
         {
