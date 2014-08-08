@@ -16,15 +16,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ArtifactSetPanel extends JTable{
-    private final Editor editor;
     private List<Artifact> artifacts;
-    public ArtifactSetPanel(Editor editor) {
-        this.editor = editor;
-    }
-
-    public void init(final List<Artifact> artifacts) {
-        this.artifacts = artifacts ;
-        setModel(new ArtifactTableModel());
+    public ArtifactSetPanel(final Editor editor) {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -35,6 +28,12 @@ public class ArtifactSetPanel extends JTable{
                 }
             }
         });
+    }
+
+    public void init(final List<Artifact> artifacts) {
+        this.artifacts = artifacts ;
+        setModel(new ArtifactTableModel());
+
     }
 
     private class ArtifactTableModel extends AbstractTableModel {

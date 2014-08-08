@@ -1,8 +1,8 @@
 package net.sf.xapp.net.common.framework;
 
-import net.sf.xapp.objectmodelling.api.ClassDatabase;
-import ngpoker.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.GenericException;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 
 import java.util.HashMap;
 import java.util.Map;

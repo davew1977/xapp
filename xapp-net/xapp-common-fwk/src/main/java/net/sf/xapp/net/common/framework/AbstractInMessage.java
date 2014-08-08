@@ -7,8 +7,7 @@
 package net.sf.xapp.net.common.framework;
 
 
-import ngpoker.common.types.ApiType;
-import ngpoker.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.types.ApiType;
 
 public abstract class AbstractInMessage<I,V> extends AbstractObject implements InMessage<I,V>
 {

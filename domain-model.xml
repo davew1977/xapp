@@ -20,8 +20,9 @@
             <DirMeta name="common">
               <DirMeta name="types">
                 <ValueObject name="QueryData">
-                  <Field access="READ_ONLY" name="foo" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="foo" type="java/lang/String"/>
                 </ValueObject>
+                <EnumType description="list operations, add is a &quot;set at last index&quot;" name="ListOp" values="ADD,REMOVE,UPDATE,"/>
               </DirMeta>
             </DirMeta>
           </DirMeta>

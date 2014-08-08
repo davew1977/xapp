@@ -2234,8 +2234,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <LobbyType abstract="true" name="LobbyEntity">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String" unique="true"/>
-                <Field access="READ_ONLY" name="name" type="String" unique="true"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String" unique="true"/>
+                <Field access="READ_ONLY" name="name" type="java/lang/String" unique="true"/>
               </Fields>
             </LobbyType>
             <ValueObject name="Page">

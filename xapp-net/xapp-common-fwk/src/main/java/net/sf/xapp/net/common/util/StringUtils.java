@@ -8,7 +8,6 @@
 package net.sf.xapp.net.common.util;
 
 import net.sf.xapp.net.common.framework.StringBuildable;
-import ngpoker.common.types.GameType;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -262,11 +261,6 @@ public class StringUtils
 
     }
 
-    public static String toString(Card card)
-    {
-        return card.rank() + " of " + card.suit();
-    }
-
     public static String makeReadable(String name)
     {
         name = name.toLowerCase();
@@ -291,9 +285,6 @@ public class StringUtils
 
     public static String upperToLower(String s)
     {
-        if(GameType.LIMITED_DECK_PINEAPPLE.name().equals(s) ){
-            return "demo game";
-        }
         return s.toLowerCase().replace('_', ' ');
     }
 }

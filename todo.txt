@@ -1,4 +1,4 @@
-
+paste xml not working when there is a reference in the pasted object
 prevent module from being a namespace for the java files
 
 POSTPONE: (statically widened them instead) auto widen reference drop downs

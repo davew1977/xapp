@@ -234,9 +234,11 @@ public class ObjectMeta<T> implements Namespace{
                     String oldVal = (String) change.oldVal;
                     assert Property.objEquals(oldVal, key);
                     String newVal = (String) change.newVal;
-                    updateMetaHierarchy(newVal);
-                    if(home !=null && home.isMap()) {
-                        home.keyChanged(oldVal, newVal);
+                    if(home != null) {
+                        updateMetaHierarchy(newVal);
+                        if(home.isMap()) {
+                            home.keyChanged(oldVal, newVal);
+                        }
                     }
                 }
             }
@@ -245,7 +247,7 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void updateMetaHierarchy(String newKeyVal) {
-
+        assert home != null;
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
         ObjectMeta closestNamespace = namespacePath.removeLast();
         if (key != null) {
@@ -328,8 +330,17 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public String meta() {
-        return String.format("id: %s, class: %s, key: %s, global key: %s", id, getType(), key, fullPath(root(), this));
+        return String.format("id: %s, class: %s, key: %s, global key: %s", id, getType(), key, getGlobalKey());
     }
+
+    public String getGlobalKey() {
+        return getGlobalKey(NamespacePath.PATH_SEPARATOR);
+    }
+
+    public String getGlobalKey(String pathSeparator){
+        return fullPath(root(), this, pathSeparator);
+    }
+
 
     public Class<T> getType() {
         return classModel.getContainedClass();

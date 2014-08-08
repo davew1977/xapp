@@ -8,7 +8,6 @@ package net.sf.xapp.net.connectionserver.mina;
 
 import net.sf.xapp.Global;
 import net.sf.xapp.net.common.framework.TransportObject;
-import ngpoker.common.types.MessageTypeEnum;
 import org.apache.mina.common.ByteBuffer;
 import org.apache.mina.common.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;

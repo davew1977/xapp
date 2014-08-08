@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.common.framework;
 
-import ngpoker.common.types.ApiType;
+import net.sf.xapp.net.common.types.ApiType;
 
 public interface InMessage<I,V> extends Message
 {

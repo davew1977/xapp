@@ -7,7 +7,7 @@
 package net.sf.xapp.net.common.framework.memdb;
 
 
-import ngpoker.common.types.ListOp;
+import net.sf.xapp.net.common.types.ListOp;
 
 public interface LiveQueryListener<T>
 {

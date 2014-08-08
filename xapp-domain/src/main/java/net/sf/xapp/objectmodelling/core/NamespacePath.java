@@ -24,13 +24,25 @@ public class NamespacePath extends LinkedList<ObjectMeta> {
 
     @Override
     public String toString() {
-        return getPathFrom(getFirst());
+        return asString();
+    }
+
+    public String asString() {
+        return asString(PATH_SEPARATOR);
+    }
+
+    public String asString(String pathSeparator) {
+        return getPathFrom(getFirst(), pathSeparator);
     }
 
     public static String fullPath(Namespace namespace, ObjectMeta obj) {
+        return fullPath(namespace, obj, PATH_SEPARATOR);
+    }
+
+    public static String fullPath(Namespace namespace, ObjectMeta obj, String pathSeparator) {
         NamespacePath path = obj.getPath();
-        String pathString = path.getPathFrom(namespace);
+        String pathString = path.getPathFrom(namespace, pathSeparator);
         String key = obj.getKey();
-        return !pathString.isEmpty() ? pathString + PATH_SEPARATOR+key : key;
+        return !pathString.isEmpty() ? pathString + pathSeparator +key : key;
     }
 }

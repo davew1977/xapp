@@ -129,15 +129,7 @@ public class ClassModel<T> {
     }
 
     public NamespaceFor getNamespaceFor() {
-        Class aClass = m_class;
-        while(aClass != Object.class) {
-            NamespaceFor namespaceFor = (NamespaceFor) aClass.getAnnotation(NamespaceFor.class);
-            if(namespaceFor != null) {
-                return namespaceFor;
-            }
-            aClass = aClass.getSuperclass();
-        }
-        return null;
+        return m_class.getAnnotation(NamespaceFor.class);
     }
 
     private void addProperties(List<? extends Property> properties) {
