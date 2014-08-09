@@ -18,17 +18,17 @@ public class TypeEnumGenerator
 {
     private static final String TYPE_ENUM_SUFFIX = "TypeEnum";
 
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public TypeEnumGenerator(GenContext genContext)
+    public TypeEnumGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public CodeFile genTypeEnum(Model model, ComplexType superType)
     {
         Set<ComplexType> subTypes = model.findSubTypes(superType);
-        CodeFile cf = genContext.createJavaFile(superType);
+        CodeFile cf = generatorContext.createJavaFile(superType);
         String typeName = superType.getName() + TYPE_ENUM_SUFFIX;
         new GenericMixIn(superType.getPackageName()).mixIn(typeName, cf);
         for (ComplexType subType : subTypes)

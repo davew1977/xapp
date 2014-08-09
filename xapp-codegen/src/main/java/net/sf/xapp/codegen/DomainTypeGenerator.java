@@ -15,15 +15,15 @@ import java.util.Collection;
 import static java.lang.String.format;
 
 public class DomainTypeGenerator {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public DomainTypeGenerator(GenContext genContext) {
-        this.genContext = genContext;
+    public DomainTypeGenerator(GeneratorContext generatorContext) {
+        this.generatorContext = generatorContext;
     }
 
     public CodeFile genDomainClass(ComplexType complexType) {
-        CodeFile ct = genContext.createJavaFile(complexType);
-        ct.addImport(NGPGenerator.FWK_PACKAGE_NAME() + ".*");
+        CodeFile ct = generatorContext.createJavaFile(complexType);
+        ct.addImport(Generator.FWK_PACKAGE_NAME() + ".*");
         ct.addImport(complexType.model().getCorePackageName() + ".MessageTypeEnum");
         ct.addImport(complexType.model().getCorePackageName() + ".ObjectTypeEnum");
         ct.addImport("net.sf.xapp.net.common.types.*");
@@ -45,7 +45,7 @@ public class DomainTypeGenerator {
         }
         if (!complexType.isAbstract()) {
             new CustomSerializationMixIn().mixIn(complexType, ct);
-            if (!genContext.isLight()) {
+            if (!generatorContext.isLight()) {
                 new ToStringMixin().mixIn(complexType, ct);
                 new StringSerializationMixIn(utilPackageName).mixIn(complexType, ct);
                 new PrettyPrintMixIn("expandToString").mixIn(complexType, ct);

@@ -1,13 +1,11 @@
 package net.sf.xapp;
 
+import net.sf.xapp.codegen.model.Model;
 import net.sf.xapp.marshalling.Unmarshaller;
-import ngpoker.codegen.model.ComplexType;
-import ngpoker.codegen.model.Message;
-import ngpoker.codegen.model.Model;
 import net.sf.xapp.net.common.framework.ObjectType;
 import net.sf.xapp.net.common.framework.TransportObject;
-import ngpoker.common.types.MessageTypeEnum;
-import ngpoker.common.types.ObjectTypeEnum;
+import net.sf.xapp.net.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.types.ObjectTypeEnum;
 
 import java.util.HashMap;
 import java.util.List;

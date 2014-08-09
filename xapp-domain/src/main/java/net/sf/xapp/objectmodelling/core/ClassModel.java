@@ -620,6 +620,12 @@ public class ClassModel<T> {
         return getClassDatabase().registerInstance(objectMeta);
     }
 
+    public void tryAndCallPostInit(ObjectMeta objectMeta) {
+        if(hasPostInit()) {
+            tryAndInvoke(objectMeta.getInstance(), postInitMethod);
+        }
+    }
+
     private class PrimaryKeyChangedListener implements PropertyChangeListener {
 
         public void propertyChanged(Property property, Object target, Object oldVal, Object newVal) {

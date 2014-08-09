@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenContext
+public class GeneratorContext
 {
     private File overrideOutDir;
     private File baseDir = new File(".");
@@ -23,7 +23,7 @@ public class GenContext
     private boolean isLight;
     private List<Module> activeModules = new ArrayList<Module>();
 
-    public GenContext(boolean isLight)
+    public GeneratorContext(boolean isLight)
     {
         this.isLight = isLight;
     }

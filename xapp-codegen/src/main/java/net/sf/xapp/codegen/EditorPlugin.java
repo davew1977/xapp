@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NGPGeneratorPlugin implements GeneratorPlugin
+public class EditorPlugin implements GeneratorPlugin
 {
-    private final NGPGenerator generator;
+    private final Generator generator;
 
-    public NGPGeneratorPlugin()
+    public EditorPlugin()
     {
-        generator = new NGPGenerator();
+        generator = new Generator();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.sf.xapp.codegen.plugin;
 
 import net.sf.xapp.application.utils.codegen.AbstractCodeFile;
+import net.sf.xapp.codegen.Generator;
 import net.sf.xapp.utils.XappLoggerAdaptor;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -10,7 +11,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import net.sf.xapp.codegen.NGPGenerator;
 import net.sf.xapp.codegen.model.Model;
 import net.sf.xapp.codegen.model.Module;
 
@@ -41,7 +41,7 @@ public class CodegenMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         System.setProperty("model.file.path", modelFilePath);
-        NGPGenerator generator = new NGPGenerator();
+        Generator generator = new Generator();
         Model model = generator.loadModel();
         Module module = model.cdb.getInstance(Module.class, moduleName);
         File targetDir = new File(baseDir, module.getOutDir());
@@ -54,7 +54,7 @@ public class CodegenMojo extends AbstractMojo {
         AbstractCodeFile.logger = new MyXappLogger();
         getLog().info(modelFilePath);
         getLog().info(targetDir.getAbsolutePath());
-        generator.getGenContext().setBaseDir(baseDir);
+        generator.getGeneratorContext().setBaseDir(baseDir);
         generator.generateAndWrite(model, Arrays.asList(module), true);
     }
 

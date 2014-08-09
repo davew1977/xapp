@@ -117,6 +117,10 @@ public class ObjectLocation {
         return isCollection() ? ((ContainerProperty) property).getContainedTypeClassModel() : property.getPropertyClassModel();
     }
 
+    public Class getPropertyClass() {
+        return property.getMainType();
+    }
+
     public boolean isMap() {
         return property.isMap();
     }
@@ -127,5 +131,21 @@ public class ObjectLocation {
         Map map = (Map) cp.get(obj.getInstance());
         Object item = map.remove(String.valueOf(oldVal));
         map.put(String.valueOf(newVal), item);
+    }
+
+    public boolean isReference() {
+        return getProperty().isReference();
+    }
+
+    public void set(String strValueOfProperty) {
+        property.setSpecial(obj, strValueOfProperty);
+    }
+
+    public Namespace getNamespace() {
+        return obj.getNamespace(getPropertyClass());
+    }
+
+    public void addPendingRef(String key) {
+        getNamespace().addPendingRef(this, key);
     }
 }

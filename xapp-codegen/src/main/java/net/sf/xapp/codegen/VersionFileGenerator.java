@@ -13,16 +13,16 @@ import net.sf.xapp.codegen.model.Model;
 
 public class VersionFileGenerator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public VersionFileGenerator(GenContext genContext)
+    public VersionFileGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public CodeFile genVersionFile(Model model)
     {
-        CodeFile cf = genContext.createJavaFile(model.getBaseModule());
+        CodeFile cf = generatorContext.createJavaFile(model.getBaseModule());
         cf.setInterface();
         new GenericMixIn("xapp").mixIn("Version", cf);
         cf._static()._final().field("String", "VERSION", Access.PUBLIC, String.format("\"%s\"", model.getVersion()));

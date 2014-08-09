@@ -17,16 +17,16 @@ import java.util.Set;
 
 public class EnumGenerator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public EnumGenerator(GenContext genContext)
+    public EnumGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public CodeFile genEnum(EnumType enumType)
     {
-        CodeFile ct = genContext.createJavaFile(enumType);
+        CodeFile ct = generatorContext.createJavaFile(enumType);
         new GenericMixIn(enumType.getPackageName()).mixIn(enumType, ct);
         Set<String> stringList = new LinkedHashSet<String>(enumType.getValues());
         List<String> values = new ArrayList<String>();

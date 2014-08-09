@@ -14,17 +14,17 @@ import net.sf.xapp.codegen.model.Model;
 
 public class LobbyPropertyEnumGenerator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public LobbyPropertyEnumGenerator(GenContext genContext)
+    public LobbyPropertyEnumGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public CodeFile generate(Model model)
     {
         //generate an enum for all error codes
-        CodeFile cf = genContext.createJavaFile(model.getBaseModule());
+        CodeFile cf = generatorContext.createJavaFile(model.getBaseModule());
         new GenericMixIn(model.getCorePackageName()).mixIn("LobbyPropertyEnum", cf);
         for (LobbyType lobbyType: model.lobbyTypes())
         {

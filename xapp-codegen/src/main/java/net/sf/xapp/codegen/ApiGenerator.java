@@ -24,11 +24,11 @@ import static java.lang.String.format;
 
 public class ApiGenerator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public ApiGenerator(GenContext genContext)
+    public ApiGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public List<CodeFile> genApiClasses(List<TransientApi> apis)
@@ -51,7 +51,7 @@ public class ApiGenerator
 
     public CodeFile genInInterface(Api api)
     {
-        CodeFile cf =genContext.createJavaFile(api);
+        CodeFile cf = generatorContext.createJavaFile(api);
         cf.setInterface();
         cf.addImport("net.sf.xapp.net.common.framework.*");
         cf.addImport("net.sf.xapp.net.common.types.*");
@@ -62,14 +62,14 @@ public class ApiGenerator
 
     CodeFile genAdaptor(TransientApi api)
     {
-        CodeFile cf = genContext.createJavaFile(api);
+        CodeFile cf = generatorContext.createJavaFile(api);
         //cf.setAbstract();
         String classSuffix = "Adaptor";
         new GenericMixIn(api.getPackageName()).mixIn(api.getName() + classSuffix, cf);
         String reqHandlerType = format("MessageHandler<%s>", api.getName());
         String adaptorType = format("Adaptor<%s>", api.getName());
         new MessageInterfaceMixIn().mixIn(api, cf);
-        cf.addImport(NGPGenerator.FWK_PACKAGE_NAME() + ".*");
+        cf.addImport(Generator.FWK_PACKAGE_NAME() + ".*");
         cf.addImport("net.sf.xapp.net.common.types.*");
         if (!api.isEmpty())
         {

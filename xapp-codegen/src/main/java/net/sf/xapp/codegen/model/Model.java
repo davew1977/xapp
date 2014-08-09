@@ -15,7 +15,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
 import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
-import net.sf.xapp.codegen.GenContext;
+import net.sf.xapp.codegen.GeneratorContext;
 import net.sf.xapp.codegen.mixins.GenHelper;
 
 import java.util.*;
@@ -280,9 +280,9 @@ public class Model {
         return objectIdMap;
     }
 
-    public static Model loadModel(GenContext genContext) {
+    public static Model loadModel(GeneratorContext generatorContext) {
         ClassDatabase<Model> cdb = new ClassModelManager<Model>(Model.class);
-        Model model = cdb.getRootUnmarshaller().unmarshalURL(genContext.getModelFilePath()).getInstance();
+        Model model = cdb.getRootUnmarshaller().unmarshalURL(generatorContext.getModelFilePath()).getInstance();
         model.cdb = cdb;
         return model;
     }

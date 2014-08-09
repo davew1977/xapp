@@ -2228,8 +2228,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <ValueObject name="Clause">
               <Fields>
-                <Field access="READ_ONLY" name="property" type="String"/>
-                <Field access="READ_ONLY" list="true" name="values" type="String"/>
+                <Field access="READ_ONLY" name="property" type="java/lang/String"/>
+                <Field access="READ_ONLY" list="true" name="values" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <LobbyType abstract="true" name="LobbyEntity">

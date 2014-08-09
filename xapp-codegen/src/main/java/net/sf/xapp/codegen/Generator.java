@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NGPGenerator
+public class Generator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
     private final TypeGenerator typeGenerator;
     private final MessageGenerator messageGenerator;
     private final VersionFileGenerator versionFileGenerator;
@@ -31,46 +31,46 @@ public class NGPGenerator
     private final LobbyStorableTypeGenerator lobbyStorableTypeGenerator;
     private final LobbyPropertyEnumGenerator lobbyPropertyEnumGenerator;
 
-    public NGPGenerator()
+    public Generator()
     {
-        genContext = new GenContext(Boolean.getBoolean("light"));
-        genContext.setModelFilePath(System.getProperty("model.file.path"));
-        domainTypeGenerator = new DomainTypeGenerator(genContext);
-        typeEnumGenerator = new TypeEnumGenerator(genContext);
-        enumGenerator = new EnumGenerator(genContext);
-        typeGenerator = new TypeGenerator(genContext, domainTypeGenerator, typeEnumGenerator, enumGenerator);
-        versionFileGenerator = new VersionFileGenerator(genContext);
-        messageGenerator = new MessageGenerator(genContext);
-        uniqueMessageEnumGenerator = new UniqueMessageEnumGenerator(genContext);
-        apiGenerator = new ApiGenerator(genContext);
+        generatorContext = new GeneratorContext(Boolean.getBoolean("light"));
+        generatorContext.setModelFilePath(System.getProperty("model.file.path"));
+        domainTypeGenerator = new DomainTypeGenerator(generatorContext);
+        typeEnumGenerator = new TypeEnumGenerator(generatorContext);
+        enumGenerator = new EnumGenerator(generatorContext);
+        typeGenerator = new TypeGenerator(generatorContext, domainTypeGenerator, typeEnumGenerator, enumGenerator);
+        versionFileGenerator = new VersionFileGenerator(generatorContext);
+        messageGenerator = new MessageGenerator(generatorContext);
+        uniqueMessageEnumGenerator = new UniqueMessageEnumGenerator(generatorContext);
+        apiGenerator = new ApiGenerator(generatorContext);
         modelEnumGenerator = new ModelEnumGenerator(enumGenerator);
-        lobbyStorableTypeGenerator = new LobbyStorableTypeGenerator(genContext);
-        lobbyPropertyEnumGenerator = new LobbyPropertyEnumGenerator(genContext);
+        lobbyStorableTypeGenerator = new LobbyStorableTypeGenerator(generatorContext);
+        lobbyPropertyEnumGenerator = new LobbyPropertyEnumGenerator(generatorContext);
     }
 
     public Model loadModel() {
-        return Model.loadModel(genContext);
+        return Model.loadModel(generatorContext);
     }
 
     public static void main(String[] args)
     {
         System.out.println(Arrays.asList(args));
-        NGPGenerator generator = new NGPGenerator();
+        Generator generator = new Generator();
         generator.run(args);
     }
 
-    public GenContext getGenContext() {
-        return genContext;
+    public GeneratorContext getGeneratorContext() {
+        return generatorContext;
     }
 
     public void run(String[] args)
     {
         if (args.length > 0 && args[0].equals("edit"))
         {
-            Launcher.run(Model.class, new Editor(new NGPGeneratorPlugin(), this), genContext.getModelFilePath());
+            Launcher.run(Model.class, new Editor(new EditorPlugin(), this), generatorContext.getModelFilePath());
         }
         else if (args.length > 0 && !args[0].equals("${arg}")) {
-            Model model = Model.loadModel(genContext);
+            Model model = Model.loadModel(generatorContext);
             for (String arg : args)
             {
                 model.cdb.getInstance(Type.class, arg).setChangedInSession(true);
@@ -79,7 +79,7 @@ public class NGPGenerator
         }
         else
         {
-            Model model = Model.loadModel(genContext);
+            Model model = Model.loadModel(generatorContext);
             generateAndWrite(model, true);
         }
     }
@@ -93,7 +93,7 @@ public class NGPGenerator
         if(generateAll) {
             model.setAllArtifactsChanged(true);
         }
-        genContext.setActiveModules(modules);
+        generatorContext.setActiveModules(modules);
         writeFiles(generate(model));
     }
 

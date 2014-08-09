@@ -1,6 +1,7 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
+import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.utils.XappException;
@@ -23,7 +24,7 @@ public class ObjectMeta<T> implements Namespace{
     private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
-
+    private List<PendingObjectReference> pendingRefsToSet = new ArrayList<PendingObjectReference>();
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, int index) {
         final ClassDatabase cdb = classModel.getClassDatabase();
@@ -307,6 +308,11 @@ public class ObjectMeta<T> implements Namespace{
         return result;
     }
 
+    @Override
+    public void addPendingRef(ObjectLocation targetLocation, String key) {
+        pendingRefsToSet.add(new PendingObjectReference(targetLocation, key));
+    }
+
     private <E> Map<String, ObjectMeta<E>> allDirectDescendants(Class<E> aClass) {
         Map<String, ObjectMeta<E>> result = new LinkedHashMap<String, ObjectMeta<E>>();
         for (Map.Entry<Class<?>, Map<String, ObjectMeta>> e : lookupMap.entrySet()) {
@@ -583,5 +589,19 @@ public class ObjectMeta<T> implements Namespace{
         } else {
             return null;
         }
+    }
+
+    public void postInit() {
+        flushPendingRefs();
+        classModel.tryAndCallPostInit(this);
+    }
+
+    private void flushPendingRefs() {
+        for (PendingObjectReference pendingObjectReference : pendingRefsToSet) {
+            ObjectLocation targetLocation = pendingObjectReference.getTargetLocation();
+            String key = pendingObjectReference.getKey();
+            find(targetLocation.getPropertyClass(), key).createAndSetReference(targetLocation);
+        }
+        pendingRefsToSet.clear();
     }
 }

@@ -8,7 +8,7 @@
 package net.sf.xapp.codegen.mixins;
 
 import net.sf.xapp.application.utils.codegen.CodeFile;
-import net.sf.xapp.codegen.GenContext;
+import net.sf.xapp.codegen.GeneratorContext;
 import net.sf.xapp.codegen.model.ComplexType;
 import net.sf.xapp.codegen.model.Entity;
 import net.sf.xapp.codegen.model.Field;
@@ -76,10 +76,10 @@ public class XappMixIn implements MixIn<ComplexType>
         }
     }
 
-    public Collection<CodeFile> generate(GenContext genContext, ComplexType complexType) {
+    public Collection<CodeFile> generate(GeneratorContext generatorContext, ComplexType complexType) {
         Collection<CodeFile> result = new ArrayList<CodeFile>();
         if(complexType instanceof Entity && ((Entity) complexType).isObservable()) {
-            result.add(new XappListenerGenerator(genContext).generate((Entity) complexType));
+            result.add(new XappListenerGenerator(generatorContext).generate((Entity) complexType));
         }
         return result;
     }

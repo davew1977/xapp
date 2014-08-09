@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TypeGenerator {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
     private final DomainTypeGenerator domainTypeGenerator;
     private final TypeEnumGenerator typeEnumGenerator;
     private final EnumGenerator enumGenerator;
 
-    public TypeGenerator(GenContext genContext, DomainTypeGenerator domainTypeGenerator, TypeEnumGenerator typeEnumGenerator, EnumGenerator enumGenerator) {
-        this.genContext = genContext;
+    public TypeGenerator(GeneratorContext generatorContext, DomainTypeGenerator domainTypeGenerator, TypeEnumGenerator typeEnumGenerator, EnumGenerator enumGenerator) {
+        this.generatorContext = generatorContext;
         this.domainTypeGenerator = domainTypeGenerator;
         this.typeEnumGenerator = typeEnumGenerator;
         this.enumGenerator = enumGenerator;
@@ -36,7 +36,7 @@ public class TypeGenerator {
                 files.add(domainTypeGenerator.genDomainClass(complexType));
             }
             if (model.isXappPluginEnabled()) {
-                files.addAll(new XappMixIn().generate(genContext, complexType));
+                files.addAll(new XappMixIn().generate(generatorContext, complexType));
             }
         }
         List<EnumType> enumTypes = model.all(EnumType.class);

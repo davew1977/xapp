@@ -17,11 +17,11 @@ import java.util.Map;
 
 public class UniqueMessageEnumGenerator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public UniqueMessageEnumGenerator(GenContext genContext)
+    public UniqueMessageEnumGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public CodeFile generate(Model model, List<TransientApi> apis)
@@ -29,7 +29,7 @@ public class UniqueMessageEnumGenerator
         List<Message> messages = model.deriveAllMessages();
 
         ObjectIdHelper helper = new ObjectIdHelper(model.updateMessageIds());
-        return genContext.isLight() ?
+        return generatorContext.isLight() ?
                 generateClientVersion(model, messages, helper) :
                 generateServerVersion(model, messages, helper, "MessageTypeEnum");
     }
@@ -41,7 +41,7 @@ public class UniqueMessageEnumGenerator
     private CodeFile generateServerVersion(Model model, List<? extends ComplexType> complexTypes, ObjectIdHelper helper, String targetClassName)
     {
         //generate an enum for all error codes
-        CodeFile cf = genContext.createJavaFile(model);
+        CodeFile cf = generatorContext.createJavaFile(model);
         new GenericMixIn(model.getCorePackageName()).mixIn(targetClassName, cf);
         cf.addImport("net.sf.xapp.net.common.framework.Message");
         cf.addImport("net.sf.xapp.net.common.framework.ObjectType");
@@ -66,7 +66,7 @@ public class UniqueMessageEnumGenerator
     private CodeFile generateClientVersion(Model model, List<Message> messages, ObjectIdHelper helper)
     {
         //generate an enum for all error codes
-        CodeFile cf = genContext.createJavaFile(model);
+        CodeFile cf = generatorContext.createJavaFile(model);
         new GenericMixIn(model.getCorePackageName()).mixIn("MessageTypeEnum", cf);
         for (Message message : messages)
         {

@@ -10,10 +10,10 @@ package net.sf.xapp.codegen.editor;
 import net.sf.xapp.application.api.*;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.application.utils.codegen.CodeFile;
+import net.sf.xapp.codegen.Generator;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.codegen.AntFacade;
 import net.sf.xapp.codegen.ChangeMeta;
-import net.sf.xapp.codegen.NGPGenerator;
 import net.sf.xapp.codegen.model.*;
 
 import javax.swing.*;
@@ -46,13 +46,13 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
     private Set<Node> removedNodes = new HashSet<Node>();
     private boolean apiOrMessageRenamed;
 
-    private NGPGenerator ngpGenerator;
+    private Generator generator;
     private ArtifactSetPanel artifactSetPanel;
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    public Editor(GeneratorPlugin generatorPlugin, NGPGenerator ngpGenerator) {
-        this.ngpGenerator = ngpGenerator;
+    public Editor(GeneratorPlugin generatorPlugin, Generator generator) {
+        this.generator = generator;
         SwingUtils.DEFAULT_FONT = Font.decode("Tahoma-11");
         m_generatorPlugin = generatorPlugin;
         m_codeTabbedPane = new CodeTabbedPane();
@@ -110,9 +110,9 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                Model originalModel = Model.loadModel(ngpGenerator.getGenContext());
+                Model originalModel = Model.loadModel(generator.getGeneratorContext());
                 originalModel.setAllArtifactsChanged(true);
-                filesAtStart.addAll(ngpGenerator.generate(originalModel));
+                filesAtStart.addAll(generator.generate(originalModel));
                 System.out.println("will generate " + filesAtStart.size() + " files");
             }
         });
@@ -164,7 +164,7 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
             commands.add(new AbstractCommand("Generate All Module Code", "", "alt G") {
                 @Override
                 public void execute(Object params) {
-                    ngpGenerator.generateAndWrite(model(), Arrays.asList(module), true);
+                    generator.generateAndWrite(model(), Arrays.asList(module), true);
                     model().setAllArtifactsChanged(false);
                 }
             });
@@ -317,9 +317,9 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
             Model model = model();
             if (option == 0) {
                 model.setAllArtifactsChanged(true);
-                ngpGenerator.generateAndWrite(model, true);
+                generator.generateAndWrite(model, true);
             } else if (option == 1) {
-                ngpGenerator.generateAndWrite(model, false);
+                generator.generateAndWrite(model, false);
             }
 
             if (option == 1 || option == 0) {
@@ -330,7 +330,7 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
         private void postGenerate(Model model) {
             //detect removed files
             model.setAllArtifactsChanged(true);
-            List<CodeFile> files = ngpGenerator.generate(model);
+            List<CodeFile> files = generator.generate(model);
             filesAtStart.removeAll(files);
             if (!filesAtStart.isEmpty()) {
                 String message = "Remove the following files?\n";

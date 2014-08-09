@@ -22,9 +22,9 @@ public class MessageGenerator
 {
     private final DomainTypeGenerator domainTypeGenerator;
 
-    public MessageGenerator(GenContext genContext)
+    public MessageGenerator(GeneratorContext generatorContext)
     {
-        domainTypeGenerator = new DomainTypeGenerator(genContext);
+        domainTypeGenerator = new DomainTypeGenerator(generatorContext);
     }
 
     public List<CodeFile> genMessageClasses(TransientApi api)

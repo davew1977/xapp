@@ -3,7 +3,7 @@ package net.sf.xapp.codegen.mixins;
 import net.sf.xapp.application.utils.codegen.CodeFile;
 import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
-import net.sf.xapp.codegen.GenContext;
+import net.sf.xapp.codegen.GeneratorContext;
 import net.sf.xapp.codegen.model.*;
 
 import java.util.ArrayList;
@@ -21,15 +21,15 @@ import static net.sf.xapp.utils.StringUtils.*;
  * To change this template use File | Settings | File Templates.
  */
 public class XappListenerGenerator {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public XappListenerGenerator(GenContext genContext) {
-        this.genContext = genContext;
+    public XappListenerGenerator(GeneratorContext generatorContext) {
+        this.generatorContext = generatorContext;
     }
 
 
     public CodeFile generate(Entity entity) {
-        CodeFile ct = genContext.createJavaFile(entity);
+        CodeFile ct = generatorContext.createJavaFile(entity);
         String cn = entity.getName();
         String updateType = cn + "Update";
         String vn = decapitaliseFirst(cn);

@@ -18,11 +18,11 @@ import java.util.List;
 
 public class LobbyStorableTypeGenerator
 {
-    private final GenContext genContext;
+    private final GeneratorContext generatorContext;
 
-    public LobbyStorableTypeGenerator(GenContext genContext)
+    public LobbyStorableTypeGenerator(GeneratorContext generatorContext)
     {
-        this.genContext = genContext;
+        this.generatorContext = generatorContext;
     }
 
     public List<CodeFile> generate(Model model)
@@ -41,7 +41,7 @@ public class LobbyStorableTypeGenerator
 
     public CodeFile generateStorableType(LobbyType lobbyType)
     {
-        CodeFile cf = genContext.createJavaFile(lobbyType);
+        CodeFile cf = generatorContext.createJavaFile(lobbyType);
         new GenericMixIn(lobbyType.getPackageName()).mixIn(lobbyType.getName() + "Type", cf);
         cf.addImplements("StorableType");
         cf.addImport("net.sf.xapp.server.framework.memdb.StorableType");
