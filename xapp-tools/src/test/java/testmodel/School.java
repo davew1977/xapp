@@ -25,7 +25,7 @@ public class School {
     private List<ImageFile> picturesOfTheWeek = new ArrayList<ImageFile>();
 
     public School() {
-        System.out.println("here");
+        java.lang.System.out.println("here");
     }
 
     @Key

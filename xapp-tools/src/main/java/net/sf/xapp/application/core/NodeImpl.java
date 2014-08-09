@@ -207,7 +207,7 @@ public class NodeImpl implements Node {
 
     public String toString() {
         //special root handling, default to file name minus suffix
-        if (isRoot() && !objectNodeContext.hasToStringMethod()) {
+        if (isRoot() && isObjectNode() && !objectNodeContext.hasToStringMethod()) {
             File currentFile = appContainer.getGuiContext().getCurrentFile();
             if (currentFile != null) {
                 String filename = currentFile.getName();
@@ -216,7 +216,7 @@ public class NodeImpl implements Node {
                 return objectMeta().getSimpleClassName();
             }
         }
-        if (wrappedObject() != null) {
+        else if (isObjectNode()) {
             return objectNodeContext.toString();
         }
         return listNodeContext.getContainerProperty().getName();
