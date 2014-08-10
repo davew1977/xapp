@@ -155,7 +155,7 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
         if (type instanceof ComplexType && reference) {
             ct.line("%s = new Ref<%s>(%s.class, in.readUTF())", varname, tn, tn);
         } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract()) {
-            ct.line("%s = (%s) ng.Global.create(in.readInt())", varname, tn);
+            ct.line("%s = (%s) net.sf.xapp.Global.create(in.readInt())", varname, tn);
             ct.line("%s.readData(in)", varname);
         } else if (type instanceof ComplexType) {
             ct.line("%s = new %s()", varname, tn);
@@ -163,7 +163,7 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
         } else if (type instanceof PrimitiveType) {
             ct.line("%s = in.read%s()", varname, ioNameForPrimitive(tn));
         } else if (tn.equals("ObjectType")) {
-            ct.line("%s = ng.Global.getObjectType(in.readInt())", varname);
+            ct.line("%s = net.sf.xapp.Global.getObjectType(in.readInt())", varname);
         } else if (type instanceof EnumType) {
             ct.line("%1$s = %2$s.values()[in.readInt()]", varname, tn);
         }

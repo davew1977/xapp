@@ -36,7 +36,10 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     @Override
     public PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         objectMeta.update(potentialUpdates);
-        return objectMeta.setHomeRef();
+        PropertyChange propertyChange = objectMeta.setHomeRef();
+        //try call post init on the parent object //todo this is a trial to see if it is good
+        objectMeta.getParent().postInit();
+        return propertyChange;
     }
 
     @Override

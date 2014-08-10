@@ -1,0 +1,89 @@
+<Model baseModule="xapp-common-fwk" corePackageName="net.sf.xapp.net.common.types" messageIdStart="0" objectIdStart="2000" version="4">
+  <MessageIds>
+    <ObjectId id="0" name="MessageSender_Post"/>
+    <ObjectId id="1" name="MessageSender_Broadcast"/>
+    <ObjectId id="2" name="ExampleApi_DoSomething"/>
+  </MessageIds>
+  <Module name="provided">
+    <DirMeta name="java">
+      <DirMeta name="lang">
+        <PrimitiveType name="String"/>
+        <PrimitiveType javaMapping="int" name="Integer"/>
+        <PrimitiveType javaMapping="long" name="Long"/>
+        <PrimitiveType javaMapping="boolean" name="Boolean"/>
+        <PrimitiveType name="Object"/>
+        <PrimitiveType javaMapping="float" name="Float"/>
+        <PrimitiveType javaMapping="byte" name="Byte"/>
+      </DirMeta>
+    </DirMeta>
+  </Module>
+  <Module name="xapp-common-fwk" outDir="xapp-net/xapp-common-fwk/target/generated-sources/xapp-codegen-plugin">
+    <DirMeta name="net">
+      <DirMeta name="sf">
+        <DirMeta name="xapp">
+          <DirMeta name="net">
+            <DirMeta name="common">
+              <DirMeta name="types">
+                <EnumType description="list operations, add is a &quot;set at last index&quot;" name="ListOp" values="ADD,REMOVE,UPDATE,"/>
+                <ValueObject name="Clause">
+                  <Field access="READ_ONLY" name="property" type="java/lang/String"/>
+                  <Field access="READ_ONLY" list="true" name="values" type="java/lang/String"/>
+                </ValueObject>
+                <ValueObject name="QueryData">
+                  <Description><![CDATA[contains a list of clauses to match (ANDed together)
+OR, a list of keys to match. If the retrieveall flag is set then all will be returned and the other fields will be ignored]]></Description>
+                  <Field access="READ_ONLY" list="true" name="clauses" type="net/sf/xapp/net/common/types/Clause"/>
+                  <Field access="READ_ONLY" list="true" name="keys" type="java/lang/String"/>
+                  <Field access="READ_ONLY" name="retrieveAll" type="java/lang/Boolean"/>
+                </ValueObject>
+                <LobbyType abstract="true" name="LobbyEntity">
+                  <Field access="READ_ONLY" name="key" type="java/lang/String" unique="true"/>
+                  <Field access="READ_ONLY" name="name" type="java/lang/String" unique="true"/>
+                </LobbyType>
+                <ValueObject name="UserId">
+                  <Field access="READ_ONLY" name="value" type="java/lang/String"/>
+                </ValueObject>
+                <ValueObject abstract="true" name="Message" skipGeneration="true"/>
+                <ValueObject abstract="true" name="InMessage" skipGeneration="true"/>
+                <ValueObject abstract="true" name="Response" skipGeneration="true"/>
+              </DirMeta>
+            </DirMeta>
+            <DirMeta name="api">
+              <DirMeta name="messagesender">
+                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="MessageSender">
+                  <Message name="Post">
+                    <Field access="READ_ONLY" name="player" type="net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
+                    <Response name="PostResponse"/>
+                  </Message>
+                  <Message name="Broadcast">
+                    <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
+                    <Response name="BroadcastResponse">
+                      <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
+                    </Response>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="exampleapi">
+                <Api apiType="ASYNC" errors="" name="ExampleApi">
+                  <Message name="DoSomething">
+                    <Field access="READ_ONLY" name="name" type="java/lang/String"/>
+                    <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
+                    <Field access="READ_ONLY" list="true" name="anIntList" type="java/lang/Integer"/>
+                    <Response name="DoSomethingResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+            </DirMeta>
+          </DirMeta>
+        </DirMeta>
+      </DirMeta>
+    </DirMeta>
+  </Module>
+  <ObjectIds>
+    <ObjectId id="2000" name="net_sf_xapp_net_common_types_Clause"/>
+    <ObjectId id="2001" name="net_sf_xapp_net_common_types_QueryData"/>
+    <ObjectId id="2002" name="net_sf_xapp_net_common_types_UserId"/>
+  </ObjectIds>
+</Model>

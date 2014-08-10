@@ -8,6 +8,7 @@ package net.sf.xapp.codegen.model;
 
 import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.PostInit;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.tree.TreeNode;
@@ -34,6 +35,13 @@ public class Api extends AbstractArtifact implements Artifact
 
     public Api()
     {
+    }
+
+    @PostInit
+    public void init() {
+        for (Message message : messages) {
+            message.setApi(this);
+        }
     }
 
     public ApiType getApiType()

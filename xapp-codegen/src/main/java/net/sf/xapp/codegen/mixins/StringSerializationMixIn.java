@@ -254,7 +254,7 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             ct.line("args = (List) _value");
             String dtn = StringUtils.decapitaliseFirst(tn);
             ct.line("String %sType = (String) args.get(0)", dtn);
-            ct.line("%s = (%s) ng.Global.create(%sType)", varname, tn, dtn);
+            ct.line("%s = (%s) net.sf.xapp.Global.create(%sType)", varname, tn, dtn);
             ct.line("%s.populateFrom((List) args.get(1))", varname);
         }
         else if (type instanceof ComplexType)
@@ -307,7 +307,7 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             }
         }
         else if (tn.equals("ObjectType")) {
-            return format("ng.Global.getObjectType(%s)", var);
+            return format("net.sf.xapp.Global.getObjectType(%s)", var);
         }
         else if (type instanceof EnumType)
         {

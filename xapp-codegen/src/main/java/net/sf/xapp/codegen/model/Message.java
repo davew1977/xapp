@@ -68,6 +68,11 @@ public class Message extends ValueObject
         return (Message) super.clone();
     }
 
+    @Override
+    protected String packageName() {
+        return api.messagePackageName();
+    }
+
     public static Message create(String name, List<Field> fields)
     {
         Message m = new Message();

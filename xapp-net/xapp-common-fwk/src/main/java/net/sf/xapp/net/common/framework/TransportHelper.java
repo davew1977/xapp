@@ -7,7 +7,6 @@
 package net.sf.xapp.net.common.framework;
 
 import net.sf.xapp.Global;
-import ngpoker.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.util.StringUtils;
 
 import java.io.*;

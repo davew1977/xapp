@@ -1,8 +1,7 @@
 package net.sf.xapp.net.connectionserver.mina;
 
 import net.sf.xapp.Global;
-import net.sf.xapp.net.server.lobby.clientlobbysession.to.EntityAdded;
-import net.sf.xapp.net.server.lobby.types.PokerroomInLobby;
+import net.sf.xapp.net.api.exampleapi.to.DoSomething;
 import org.apache.mina.common.ByteBuffer;
 import org.apache.mina.common.WriteFuture;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
@@ -12,6 +11,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,30 +32,29 @@ public class BytePacketCodecTest {
         ProtocolEncoder encoder = sf.getEncoder();
         BytePacketDecoder decoder = (BytePacketDecoder) cf.getDecoder();
 
-        EntityAdded m = new EntityAdded("key", new PlayerId("100"), 1,
-                new PokerroomInLobby(GameType.TEXAS_HOLDEM, MoneyType.PLAY_MONEY, BettingType.NO_LIMIT, 10, 50, "key", "alfriston"));
+        DoSomething m = new DoSomething("woowowow", 2992833L,Arrays.asList(1,2,3,4,56));
         ProtocolEncoderOutputImpl output = new ProtocolEncoderOutputImpl();
         encoder.encode(null, m, output);
 
         ByteBuffer buf = output.buffer;
 
-        assertEquals(67, buf.getInt(0));
-        assertEquals(71, buf.limit());
+        assertEquals(46, buf.getInt(0));
+        assertEquals(50, buf.limit());
 
-        byte[] bytes = new byte[63];
-        assertEquals(67, buf.getInt());
+        byte[] bytes = new byte[42];
+        assertEquals(46, buf.getInt());
         int messageType = buf.getInt();
-        EntityAdded message = (EntityAdded) Global.create(messageType);
+        DoSomething message = (DoSomething) Global.create(messageType);
         buf.get(bytes);
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         message.readData(new DataInputStream(bis));
 
         assertEquals(message.toString(), m.toString());
-        assertEquals(71, buf.limit());
+        assertEquals(50, buf.limit());
 
 
         buf.flip();
-        assertEquals(71, buf.limit());
+        assertEquals(50, buf.limit());
         assertEquals(0, buf.position());
 
         ProtocolDecoderOutputImpl protocolDecoderOutput = new ProtocolDecoderOutputImpl();

@@ -1,5 +1,7 @@
 package net.sf.xapp;
 
+import net.sf.xapp.codegen.model.ComplexType;
+import net.sf.xapp.codegen.model.Message;
 import net.sf.xapp.codegen.model.Model;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.common.framework.ObjectType;

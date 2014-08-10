@@ -77,7 +77,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <modelFilePath>${project.parent.parent.basedir}/domain-model.xml</modelFilePath>
+                            <modelFilePath>${project.basedir}/src/main/resources/domain-model.xml</modelFilePath>
                             <baseDir>${project.parent.parent.basedir}</baseDir>
                         </configuration>
                     </execution>

@@ -26,7 +26,7 @@ public class MathUtils
     /**
      * shaves the remainder off the number
      * @param n
-     * @param mod
+     * @param divider
      * @return
      */
     public static int floor(int n, int divider)

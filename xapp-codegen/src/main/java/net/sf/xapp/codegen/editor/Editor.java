@@ -15,6 +15,8 @@ import net.sf.xapp.objectmodelling.core.PropertyChange;
 import net.sf.xapp.codegen.AntFacade;
 import net.sf.xapp.codegen.ChangeMeta;
 import net.sf.xapp.codegen.model.*;
+import net.sf.xapp.utils.CollectionsUtils;
+import net.sf.xapp.utils.Filter;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -88,7 +90,12 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
         cleanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Module> modules = model().getModules();
+                List<Module> modules = CollectionsUtils.filter(model().getModules(), new Filter<Module>() {
+                    @Override
+                    public boolean matches(Module module) {
+                        return module.getOutDir() != null;
+                    }
+                });
                 StringBuilder sb = new StringBuilder("Clear the following directories?\n");
                 for (Module module : modules) {
                     sb.append("\t").append(module.getOutDir()).append("\n");
@@ -203,6 +210,10 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
         addedNodes.add(node);
         markChanged(node);
         markHeirarchyChanged(node);
+
+        if(node.isA(Api.class)) {
+            Api api = node.wrappedObject();
+        }
     }
 
 

@@ -623,14 +623,14 @@
                   <Message description="called when a user logs in to tell client the apps that the player is associated with. i.e. what tables they are sitting at and what tournaments they are registered to" name="SetInitialInfo">
                     <Fields>
                       <Field access="READ_ONLY" list="true" name="locations" type="PlayerLocation"/>
-                      <Field access="READ_ONLY" name="serverTime" type="Long"/>
-                      <Field access="READ_ONLY" name="guest" type="Boolean"/>
+                      <Field access="READ_ONLY" name="serverTime" type="java/lang/Long"/>
+                      <Field access="READ_ONLY" name="guest" type="java/lang/Boolean"/>
                     </Fields>
                     <Response name="SetInitialInfoResponse"/>
                   </Message>
                   <Message description="used to direct the client to join a channel, for example when a sng spawns, the client should join the created tournament" name="ForceJoinChannel">
                     <Fields>
-                      <Field access="READ_ONLY" name="channelId" type="String"/>
+                      <Field access="READ_ONLY" name="channelId" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="appType" type="AppType"/>
                     </Fields>
                     <Response name="ForceJoinChannelResponse"/>
@@ -647,25 +647,25 @@
                 <Messages>
                   <Message name="Post">
                     <Fields>
-                      <Field access="READ_ONLY" name="player" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="message" type="Message"/>
+                      <Field access="READ_ONLY" name="player" type="net/sf/xapp/net/common/types/UserId"/>
+                      <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
                     </Fields>
                     <Response name="PostResponse"/>
                   </Message>
                   <Message name="Broadcast">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="players" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="message" type="Message"/>
+                      <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
+                      <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
                     </Fields>
                     <Response name="BroadcastResponse">
                       <Fields>
-                        <Field access="READ_ONLY" list="true" name="players" type="PlayerId"/>
+                        <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
                       </Fields>
                     </Response>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener" packageName="net.sf.xapp.net.server.connectionserver.listener">
+              <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener" packageName="net/sfxapp.net.server.connectionserver.listener">
                 <Messages>
                   <Message name="PlayerConnected">
                     <Fields>
@@ -686,7 +686,7 @@
           </Tree>
           <Tree name="channelserver">
             <Children>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="PLAYER_ALREADY_JOINED,PLAYER_NOT_JOINED," hideEntityKey="true" name="Channel" packageName="ngpoker.client.channel" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeytype="java/lang/String" errors="PLAYER_ALREADY_JOINED,PLAYER_NOT_JOINED," hideEntityKey="true" name="Channel" packageName="ngpoker.client.channel" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message description="a player wants to join a channel" name="Join">
                     <Response name="JoinResponse"/>
@@ -725,7 +725,7 @@
                   <Message name="ReceiveSyncResponse">
                     <Fields>
                       <Field access="READ_ONLY" name="sender" type="NodeId"/>
-                      <Field access="READ_ONLY" name="correlationId" type="Long"/>
+                      <Field access="READ_ONLY" name="correlationId" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="response" optional="true" type="Response"/>
                       <Field access="READ_ONLY" name="errorCode" optional="true" type="ErrorCode"/>
                     </Fields>
@@ -734,7 +734,7 @@
                   <Message name="ReceiveSyncRequest">
                     <Fields>
                       <Field access="READ_ONLY" name="sender" type="NodeId"/>
-                      <Field access="READ_ONLY" name="correlationId" optional="true" type="Long"/>
+                      <Field access="READ_ONLY" name="correlationId" optional="true" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="request" type="InMessage"/>
                     </Fields>
                     <Response name="ReceiveSyncRequestResponse"/>
@@ -754,7 +754,7 @@
                     <Fields>
                       <Field access="READ_ONLY" name="receiver" type="NodeId"/>
                       <Field access="READ_ONLY" name="response" optional="true" type="Response"/>
-                      <Field access="READ_ONLY" name="correlationId" type="Long"/>
+                      <Field access="READ_ONLY" name="correlationId" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="errorCode" optional="true" type="ErrorCode"/>
                     </Fields>
                     <Response name="SendSyncResponseResponse"/>
@@ -763,13 +763,13 @@
                     <Fields>
                       <Field access="READ_ONLY" name="receiver" type="NodeId"/>
                       <Field access="READ_ONLY" name="request" type="InMessage"/>
-                      <Field access="READ_ONLY" name="correlationId" type="Long"/>
+                      <Field access="READ_ONLY" name="correlationId" type="java/lang/Long"/>
                     </Fields>
                     <Response name="SendSyncRequestResponse"/>
                   </Message>
                   <Message name="SendToTopic">
                     <Fields>
-                      <Field access="READ_ONLY" name="topicName" type="String"/>
+                      <Field access="READ_ONLY" name="topicName" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="message" type="InMessage"/>
                     </Fields>
                     <Response name="SendToTopicResponse"/>
@@ -780,7 +780,7 @@
                 <Messages>
                   <Message name="CreateEntity">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                     </Fields>
                     <Response name="CreateEntityResponse"/>
                   </Message>
@@ -792,7 +792,7 @@
                     <Fields>
                       <Field access="READ_ONLY" name="messageType" type="ObjectType"/>
                       <Field access="READ_ONLY" name="resultCode" type="ErrorCode"/>
-                      <Field access="READ_ONLY" name="detail" optional="true" type="String"/>
+                      <Field access="READ_ONLY" name="detail" optional="true" type="java/lang/String"/>
                     </Fields>
                     <Response name="FailureResponse"/>
                   </Message>
@@ -823,8 +823,8 @@
                   </Message>
                   <Message name="Login">
                     <Fields>
-                      <Field access="READ_ONLY" name="nickname" type="String"/>
-                      <Field access="READ_ONLY" name="password" type="String"/>
+                      <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="password" type="java/lang/String"/>
                     </Fields>
                     <Response name="LoginResponse">
                       <Fields>
@@ -834,7 +834,7 @@
                   </Message>
                   <Message name="LoginAsGuest">
                     <Fields>
-                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                      <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
                     </Fields>
                     <Response name="LoginAsGuestResponse">
                       <Fields>
@@ -844,16 +844,16 @@
                   </Message>
                   <Message description="user enters email address to help prevent other users maliciously reseting passwords" name="ResetPassword">
                     <Fields>
-                      <Field access="READ_ONLY" name="nickname" type="String"/>
-                      <Field access="READ_ONLY" name="emailAddress" type="String"/>
+                      <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="emailAddress" type="java/lang/String"/>
                     </Fields>
                     <Response name="ResetPasswordResponse"/>
                   </Message>
                   <Message name="LoginWithToken">
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="token" optional="true" type="String"/>
-                      <Field access="READ_ONLY" name="bot" type="Boolean"/>
+                      <Field access="READ_ONLY" name="token" optional="true" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="bot" type="java/lang/Boolean"/>
                     </Fields>
                     <Response name="LoginWithTokenResponse"/>
                   </Message>
@@ -869,26 +869,26 @@
                   </Message>
                   <Message name="UpdateStatus">
                     <Fields>
-                      <Field access="READ_ONLY" name="status" type="String"/>
+                      <Field access="READ_ONLY" name="status" type="java/lang/String"/>
                     </Fields>
                     <Response name="UpdateStatusResponse"/>
                   </Message>
                   <Message name="UpdatePassword">
                     <Fields>
-                      <Field access="READ_ONLY" name="oldPassword" type="String"/>
-                      <Field access="READ_ONLY" name="newPassword" type="String"/>
+                      <Field access="READ_ONLY" name="oldPassword" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="newPassword" type="java/lang/String"/>
                     </Fields>
                     <Response name="UpdatePasswordResponse"/>
                   </Message>
                   <Message name="UpdatePoints">
                     <Fields>
-                      <Field access="READ_ONLY" name="newValue" type="Long"/>
+                      <Field access="READ_ONLY" name="newValue" type="java/lang/Long"/>
                     </Fields>
                     <Response name="UpdatePointsResponse"/>
                   </Message>
                   <Message description="add or remove (using a negative number) points for this user" name="AddPoints">
                     <Fields>
-                      <Field access="READ_ONLY" name="delta" type="Long"/>
+                      <Field access="READ_ONLY" name="delta" type="java/lang/Long"/>
                     </Fields>
                     <Response name="AddPointsResponse"/>
                   </Message>
@@ -940,7 +940,7 @@
                     <Response name="IsBotResponse">
                       <Fields>
                         <Field access="READ_ONLY" name="playerId" optional="true" type="PlayerId"/>
-                        <Field access="READ_ONLY" name="bot" optional="true" type="Boolean"/>
+                        <Field access="READ_ONLY" name="bot" optional="true" type="java/lang/Boolean"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -986,11 +986,11 @@
           </Tree>
           <Tree name="lobby">
             <Children>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="CANNOT_PAGE_UP,CANNOT_PAGE_DOWN,VIEW_DOES_NOT_EXIST,VIEW_NOT_ACTIVE," hideEntityKey="true" name="LobbySessionManager" packageName="net.sf.xapp.net.server.lobby.session" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeytype="java/lang/String" errors="CANNOT_PAGE_UP,CANNOT_PAGE_DOWN,VIEW_DOES_NOT_EXIST,VIEW_NOT_ACTIVE," hideEntityKey="true" name="LobbySessionManager" packageName="net.sf.xapp.net.server.lobby.session" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message description="shifts the client&apos;s view up one page. Assumes client will have retained the static state from the shifted page" name="PageUp">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="PageUpResponse">
                       <Fields>
@@ -1000,7 +1000,7 @@
                   </Message>
                   <Message name="PageDown">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="PageDownResponse">
                       <Fields>
@@ -1013,8 +1013,8 @@
                   </Message>
                   <Message description="uses specified view id to subscribe to the query. Will cancel a subscription previously assigned to the view id" name="Subscribe">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
-                      <Field access="READ_ONLY" name="pageSize" type="Integer"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="pageSize" type="java/lang/Integer"/>
                       <Field access="READ_ONLY" name="query" type="QueryData"/>
                     </Fields>
                     <Response name="SubscribeResponse">
@@ -1025,7 +1025,7 @@
                   </Message>
                   <Message description="resumes the updates sent to the client. The client provides a view id of the view they want to rejoin. If another view is active then it will be deactivated" name="SwitchView">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="SwitchViewResponse">
                       <Fields>
@@ -1035,73 +1035,73 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ClientLobbySession" packageName="net.sf.xapp.net.server.lobby.clientlobbysession" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="ClientLobbySession" packageName="net.sf.xapp.net.server.lobby.clientlobbysession" principalType="PlayerId">
                 <Messages>
                   <Message name="EntityAdded">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
                       <Field access="READ_ONLY" name="entity" type="LobbyEntity"/>
                     </Fields>
                     <Response name="EntityAddedResponse"/>
                   </Message>
                   <Message name="EntityRemoved">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
                     </Fields>
                     <Response name="EntityRemovedResponse"/>
                   </Message>
                   <Message name="PropertyChanged">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
-                      <Field access="READ_ONLY" name="propName" type="String"/>
-                      <Field access="READ_ONLY" name="value" type="String"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="propName" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="value" type="java/lang/String"/>
                     </Fields>
                     <Response name="PropertyChangedResponse"/>
                   </Message>
                   <Message name="ListPropertyChanged">
                     <Fields>
-                      <Field access="READ_ONLY" name="viewId" type="Integer"/>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
-                      <Field access="READ_ONLY" name="propName" type="String"/>
-                      <Field access="READ_ONLY" name="value" type="String"/>
-                      <Field access="READ_ONLY" name="index" type="Integer"/>
+                      <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="propName" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="value" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="index" type="java/lang/Integer"/>
                       <Field access="READ_ONLY" name="listOp" type="ListOp"/>
                     </Fields>
                     <Response name="ListPropertyChangedResponse"/>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="LobbyInternal" packageName="net.sf.xapp.net.server.lobby.internal">
+              <Api apiType="ASYNC" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="LobbyInternal" packageName="net.sf.xapp.net.server.lobby.internal">
                 <Messages>
                   <Message name="EntityAdded">
                     <Fields>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="entity" type="LobbyEntity"/>
                     </Fields>
                     <Response name="EntityAddedResponse"/>
                   </Message>
                   <Message name="EntityRemoved">
                     <Fields>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
                     </Fields>
                     <Response name="EntityRemovedResponse"/>
                   </Message>
                   <Message name="PropertyChanged">
                     <Fields>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="property" type="LobbyPropertyEnum"/>
-                      <Field access="READ_ONLY" name="value" type="String"/>
+                      <Field access="READ_ONLY" name="value" type="java/lang/String"/>
                     </Fields>
                     <Response name="PropertyChangedResponse"/>
                   </Message>
                   <Message name="ListPropertyChanged">
                     <Fields>
-                      <Field access="READ_ONLY" name="entityKey" type="String"/>
+                      <Field access="READ_ONLY" name="entityKey" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="property" type="LobbyPropertyEnum"/>
-                      <Field access="READ_ONLY" name="index" type="Integer"/>
-                      <Field access="READ_ONLY" name="value" type="String"/>
+                      <Field access="READ_ONLY" name="index" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="value" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="listOp" type="ListOp"/>
                     </Fields>
                     <Response name="ListPropertyChangedResponse"/>
@@ -1112,25 +1112,25 @@
           </Tree>
           <Tree name="chat">
             <Children>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="ChatClient" packageName="net.sf.xapp.net.server.chat.client">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="ChatClient" packageName="net.sf.xapp.net.server.chat.client">
                 <Messages>
                   <Message name="ChatBroadcast">
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="message" type="String"/>
-                      <Field access="READ_ONLY" name="senderNickname" type="String"/>
+                      <Field access="READ_ONLY" name="message" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="senderNickname" type="java/lang/String"/>
                     </Fields>
                     <Response name="ChatBroadcastResponse"/>
                   </Message>
                   <Message name="PlayerJoined">
                     <Fields>
-                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                      <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
                     </Fields>
                     <Response name="PlayerJoinedResponse"/>
                   </Message>
                   <Message name="PlayerLeft">
                     <Fields>
-                      <Field access="READ_ONLY" name="nickname" type="String"/>
+                      <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
                     </Fields>
                     <Response name="PlayerLeftResponse"/>
                   </Message>
@@ -1140,17 +1140,17 @@
                 <Messages>
                   <Message name="ChatChannelState">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="members" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="members" type="java/lang/String"/>
                     </Fields>
                     <Response name="ChatChannelStateResponse"/>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="" hideEntityKey="true" name="ChatApp" packageName="net.sf.xapp.net.server.chat.chatapp" principalType="PlayerId">
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="ChatApp" packageName="net.sf.xapp.net.server.chat.chatapp" principalType="PlayerId">
                 <Messages>
                   <Message name="NewChatMessage">
                     <Fields>
-                      <Field access="READ_ONLY" name="message" type="String"/>
+                      <Field access="READ_ONLY" name="message" type="java/lang/String"/>
                     </Fields>
                     <Response name="NewChatMessageResponse"/>
                   </Message>
@@ -1160,10 +1160,10 @@
                 <Messages>
                   <Message name="Create">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="language" type="Language"/>
-                      <Field access="READ_ONLY" name="maxOccupants" type="Integer"/>
-                      <Field access="READ_ONLY" name="name" type="String"/>
+                      <Field access="READ_ONLY" name="maxOccupants" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="name" type="java/lang/String"/>
                     </Fields>
                     <Response name="CreateResponse"/>
                   </Message>
@@ -1182,7 +1182,7 @@
                     </Fields>
                     <Response name="GetAccountBalanceResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="balance" type="Long"/>
+                        <Field access="READ_ONLY" name="balance" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -1190,7 +1190,7 @@
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                     </Fields>
                     <Response name="DebitPlayerResponse"/>
                   </Message>
@@ -1198,7 +1198,7 @@
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                     </Fields>
                     <Response name="CreditPlayerResponse"/>
                   </Message>
@@ -1206,7 +1206,7 @@
                     <Fields>
                       <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                     </Fields>
                     <Response name="CreditOperatorResponse"/>
                   </Message>
@@ -1214,7 +1214,7 @@
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                     </Fields>
                     <Response name="SetAccountBalanceResponse"/>
                   </Message>
@@ -1224,7 +1224,7 @@
           </Tree>
           <Tree name="cashgame">
             <Children>
-              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="NOT_ENOUGH_MONEY,PLAYER_DOES_NOT_EXIST,INVALID_MONEY_TYPE_FOR_PLAYER,TIMEOUT," name="CashGameServices" packageName="ngpoker.cashgame.services" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeytype="java/lang/String" errors="NOT_ENOUGH_MONEY,PLAYER_DOES_NOT_EXIST,INVALID_MONEY_TYPE_FOR_PLAYER,TIMEOUT," name="CashGameServices" packageName="ngpoker.cashgame.services" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message name="FindPlayer">
                     <Fields>
@@ -1233,27 +1233,27 @@
                     <Response name="FindPlayerResponse">
                       <Fields>
                         <Field access="READ_ONLY" name="player" optional="true" type="Player"/>
-                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
                   <Message name="ReserveMoney">
                     <Fields>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="reason" type="ReserveMoneyReason"/>
                     </Fields>
                     <Response name="ReserveMoneyResponse">
                       <Fields>
                         <Field access="READ_ONLY" name="reason" optional="true" type="ReserveMoneyReason"/>
-                        <Field access="READ_ONLY" name="amount" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="amount" optional="true" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
                   <Message name="WithdrawMoney">
                     <Fields>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                     </Fields>
                     <Response name="WithdrawMoneyResponse"/>
                   </Message>
@@ -1263,7 +1263,7 @@
                     </Fields>
                     <Response name="GetAccountBalanceResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="balance" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="balance" optional="true" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -1276,21 +1276,21 @@
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
                       <Field access="READ_ONLY" name="gameType" type="GameType"/>
                       <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
-                      <Field access="READ_ONLY" name="smallBet" type="Long"/>
-                      <Field access="READ_ONLY" name="noOfSeats" type="Integer"/>
-                      <Field access="READ_ONLY" name="numberToCreate" type="Integer"/>
+                      <Field access="READ_ONLY" name="smallBet" type="java/lang/Long"/>
+                      <Field access="READ_ONLY" name="noOfSeats" type="java/lang/Integer"/>
+                      <Field access="READ_ONLY" name="numberToCreate" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="CreateResponse"/>
                   </Message>
                   <Message description="remove one or more cashgame tables" name="Remove">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="keys" type="java/lang/String"/>
                     </Fields>
                     <Response name="RemoveResponse"/>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="CashGameInternal" packageName="ngpoker.cashgame.internal">
+              <Api apiType="ASYNC" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="CashGameInternal" packageName="ngpoker.cashgame.internal">
                 <Messages>
                   <Message description="a player has been inactive too long" name="IdleTimeout">
                     <Fields>
@@ -1306,26 +1306,26 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="SEAT_NOT_EMPTY,INVALID_SEAT_ID,NOT_ENOUGH_MONEY,ACCOUNT_BALANCE_NOT_RETRIEVED,PLAYER_NOT_SEATED,PLAYER_ALREADY_SEATED,PLAYER_CANNOT_LEAVE,PLAYER_ALREADY_LEAVING,INVALID_AMOUNT,PLAYER_NOT_RESERVING,INVALID_PLAYER_STATE," hideEntityKey="true" name="CashGamePlay" packageName="ngpoker.cashgame.play" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeytype="java/lang/String" errors="SEAT_NOT_EMPTY,INVALID_SEAT_ID,NOT_ENOUGH_MONEY,ACCOUNT_BALANCE_NOT_RETRIEVED,PLAYER_NOT_SEATED,PLAYER_ALREADY_SEATED,PLAYER_CANNOT_LEAVE,PLAYER_ALREADY_LEAVING,INVALID_AMOUNT,PLAYER_NOT_RESERVING,INVALID_PLAYER_STATE," hideEntityKey="true" name="CashGamePlay" packageName="ngpoker.cashgame.play" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message name="DoTakeSeat">
                     <Fields>
-                      <Field access="READ_ONLY" name="seat" type="Integer"/>
+                      <Field access="READ_ONLY" name="seat" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="DoTakeSeatResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
                   <Message name="DoReserveAmount">
                     <Fields>
-                      <Field access="READ_ONLY" name="amount" type="Long"/>
+                      <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="reason" type="ReserveMoneyReason"/>
                     </Fields>
                     <Response name="DoReserveAmountResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="amountReserved" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="amountReserved" optional="true" type="java/lang/Long"/>
                         <Field access="READ_ONLY" name="reason" optional="true" type="ReserveMoneyReason"/>
                       </Fields>
                     </Response>
@@ -1336,7 +1336,7 @@
                   <Message name="DoGetAccountBalance">
                     <Response name="DoGetAccountBalanceResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" name="accountBalance" optional="true" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -1358,7 +1358,7 @@
           </Tree>
           <Tree name="pokergame">
             <Children>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="PokerGameInternal" packageName="ngpoker.pokertimeouts">
+              <Api apiType="ASYNC" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="PokerGameInternal" packageName="ngpoker.pokertimeouts">
                 <Messages>
                   <Message name="CardsDealt">
                     <Response name="CardsDealtResponse"/>
@@ -1410,19 +1410,19 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="INVALID_PLAYER,INVALID_GAME_STATE,INVALID_ACTION,BET_RAISE_TOO_BIG,BET_RAISE_TOO_SMALL,CANNOT_CALL,NOT_CHECKABLE,PLAYER_NOT_AWAY," hideEntityKey="true" name="PokerGamePlay" packageName="ngpoker.pokergameplay" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="INVALID_PLAYER,INVALID_GAME_STATE,INVALID_ACTION,BET_RAISE_TOO_BIG,BET_RAISE_TOO_SMALL,CANNOT_CALL,NOT_CHECKABLE,PLAYER_NOT_AWAY," hideEntityKey="true" name="PokerGamePlay" packageName="ngpoker.pokergameplay" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message description="general poker play action, such as bet, raise, fold etc" name="DoPlayAction">
                     <Fields>
                       <Field access="READ_ONLY" name="action" type="PokerAction"/>
-                      <Field access="READ_ONLY" name="betAmount" optional="true" type="Long"/>
+                      <Field access="READ_ONLY" name="betAmount" optional="true" type="java/lang/Long"/>
                     </Fields>
                     <Response name="DoPlayActionResponse"/>
                   </Message>
                   <Message description="allows players to show one or both of their cards" name="ShowCardsDecision">
                     <Fields>
-                      <Field access="READ_ONLY" name="showCard1" type="Boolean"/>
-                      <Field access="READ_ONLY" name="showCard2" type="Boolean"/>
+                      <Field access="READ_ONLY" name="showCard1" type="java/lang/Boolean"/>
+                      <Field access="READ_ONLY" name="showCard2" type="java/lang/Boolean"/>
                     </Fields>
                     <Response name="ShowCardsDecisionResponse"/>
                   </Message>
@@ -1434,7 +1434,7 @@
                   </Message>
                   <Message name="NewChatMessage">
                     <Fields>
-                      <Field access="READ_ONLY" name="message" type="String"/>
+                      <Field access="READ_ONLY" name="message" type="java/lang/String"/>
                     </Fields>
                     <Response name="NewChatMessageResponse"/>
                   </Message>
@@ -1449,7 +1449,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="PokerGameClient" packageName="ngpoker.pokergameplayer" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="PokerGameClient" packageName="ngpoker.pokergameplayer" principalType="PlayerId">
                 <Messages>
                   <Message name="SetGameState">
                     <Fields>
@@ -1460,12 +1460,12 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="NOT_ENOUGH_POINTS,INVALID_CHARACTER,RESOURCE_ALREADY_USED,PLAYER_HAS_FOLDED," hideEntityKey="true" name="LimitedDeckService" packageName="ngpoker.limiteddeckservice" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeytype="java/lang/String" errors="NOT_ENOUGH_POINTS,INVALID_CHARACTER,RESOURCE_ALREADY_USED,PLAYER_HAS_FOLDED," hideEntityKey="true" name="LimitedDeckService" packageName="ngpoker.limiteddeckservice" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message name="PeekHoleCards">
                     <Fields>
                       <Field access="READ_ONLY" name="player" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="publicPeek" type="Boolean"/>
+                      <Field access="READ_ONLY" name="publicPeek" type="java/lang/Boolean"/>
                     </Fields>
                     <Response name="PeekHoleCardsResponse"/>
                   </Message>
@@ -1483,7 +1483,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="PEEK_PENDING," hideEntityKey="true" name="LimitedDeckServiceClient" packageName="ngpoker.limiteddeckservice" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="PEEK_PENDING," hideEntityKey="true" name="LimitedDeckServiceClient" packageName="ngpoker.limiteddeckservice" principalType="PlayerId">
                 <Messages>
                   <Message name="SetExtensionState">
                     <Fields>
@@ -1498,12 +1498,12 @@
           </Tree>
           <Tree name="tournament">
             <Children>
-              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="NOT_ENOUGH_MONEY,PLAYER_DOES_NOT_EXIST,INVALID_MONEY_TYPE_FOR_PLAYER," name="TournamentServices" packageName="ngpoker.tournament.services" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeytype="java/lang/String" errors="NOT_ENOUGH_MONEY,PLAYER_DOES_NOT_EXIST,INVALID_MONEY_TYPE_FOR_PLAYER," name="TournamentServices" packageName="ngpoker.tournament.services" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message name="RegisterPlayer">
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="amountToPay" type="Long"/>
+                      <Field access="READ_ONLY" name="amountToPay" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
                       <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
                     </Fields>
@@ -1518,7 +1518,7 @@
                   <Message name="UnregisterPlayer">
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="amountToRefund" type="Long"/>
+                      <Field access="READ_ONLY" name="amountToRefund" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
                     </Fields>
                     <Response name="UnregisterPlayerResponse">
@@ -1530,7 +1530,7 @@
                   <Message name="UnregisterAll">
                     <Fields>
                       <Field access="READ_ONLY" list="true" name="playerIds" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="amountToRefund" type="Long"/>
+                      <Field access="READ_ONLY" name="amountToRefund" type="java/lang/Long"/>
                       <Field access="READ_ONLY" name="accountType" type="AccountType"/>
                     </Fields>
                     <Response name="UnregisterAllResponse">
@@ -1549,11 +1549,11 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="TourLifecycle" packageName="ngpoker.tournament.tourlifecycle">
+              <Api apiType="ASYNC" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="TourLifecycle" packageName="ngpoker.tournament.tourlifecycle">
                 <Messages>
                   <Message name="Init">
                     <Fields>
-                      <Field access="READ_ONLY" name="scheduleStart" type="Boolean"/>
+                      <Field access="READ_ONLY" name="scheduleStart" type="java/lang/Boolean"/>
                     </Fields>
                     <Response name="InitResponse"/>
                   </Message>
@@ -1580,7 +1580,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="TourTable" packageName="ngpoker.tournament.tourtable">
+              <Api apiType="ASYNC" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="TourTable" packageName="ngpoker.tournament.tourtable">
                 <Messages>
                   <Message name="SeatPlayers">
                     <Fields>
@@ -1599,7 +1599,7 @@
                   </Message>
                   <Message name="RemovePlayer">
                     <Fields>
-                      <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                      <Field access="READ_ONLY" name="seatIndex" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="RemovePlayerResponse"/>
                   </Message>
@@ -1617,30 +1617,30 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" entityKeyType="String" errors="" hideEntityKey="true" name="TourHost" packageName="ngpoker.tournament.tourhost">
+              <Api apiType="ASYNC" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="TourHost" packageName="ngpoker.tournament.tourhost">
                 <Messages>
                   <Message description="eliminated players will have a stack of zero" name="HandComplete">
                     <Fields>
-                      <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                      <Field access="READ_ONLY" name="tableIndex" type="java/lang/Integer"/>
                       <Field access="READ_ONLY" list="true" name="players" type="PlayerSeatTuple"/>
                     </Fields>
                     <Response name="HandCompleteResponse"/>
                   </Message>
                   <Message description="notify the tour host that a showdown is happening" name="AllInSituation">
                     <Fields>
-                      <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                      <Field access="READ_ONLY" name="tableIndex" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="AllInSituationResponse"/>
                   </Message>
                   <Message description="applicable for tournaments where the table controls when the level up occurs" name="LevelUp">
                     <Fields>
-                      <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
+                      <Field access="READ_ONLY" name="tableIndex" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="LevelUpResponse"/>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="String" errors="" name="SngServices" packageName="ngpoker.tournament.sngservices" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" entityKeytype="java/lang/String" errors="" name="SngServices" packageName="ngpoker.tournament.sngservices" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message name="CreateSngTour">
                     <Fields>
@@ -1649,7 +1649,7 @@
                     </Fields>
                     <Response name="CreateSngTourResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="sngTourKey" optional="true" type="String"/>
+                        <Field access="READ_ONLY" name="sngTourKey" optional="true" type="java/lang/String"/>
                         <Field access="READ_ONLY" entityDeclaration="true" list="true" name="entrants" optional="true" type="Entrant"/>
                         <Field access="READ_ONLY" name="settings" optional="true" type="TourSettings"/>
                       </Fields>
@@ -1667,7 +1667,7 @@
                   </Message>
                   <Message description="Remove one or more sng waiting lists" name="Remove">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="keys" type="java/lang/String"/>
                     </Fields>
                     <Response name="RemoveResponse"/>
                   </Message>
@@ -1678,13 +1678,13 @@
                   <Message name="CreateOneOff">
                     <Fields>
                       <Field access="READ_ONLY" name="settings" type="TourSettings"/>
-                      <Field access="READ_ONLY" name="startTime" type="Long"/>
-                      <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="Float"/>
-                      <Field access="READ_ONLY" defaultValue="1" name="multiple" type="Integer"/>
+                      <Field access="READ_ONLY" name="startTime" type="java/lang/Long"/>
+                      <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="java/lang/Float"/>
+                      <Field access="READ_ONLY" defaultValue="1" name="multiple" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="CreateOneOffResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="tourKey" optional="true" type="String"/>
+                        <Field access="READ_ONLY" name="tourKey" optional="true" type="java/lang/String"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -1695,37 +1695,37 @@ precreate span is in days]]></Description>
                     <Fields>
                       <Field access="READ_ONLY" name="settings" type="TourSettings"/>
                       <Field access="READ_ONLY" list="true" name="rules" type="RecurRule"/>
-                      <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="Float"/>
-                      <Field access="READ_ONLY" name="precreateSpan" type="Integer"/>
+                      <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="java/lang/Float"/>
+                      <Field access="READ_ONLY" name="precreateSpan" type="java/lang/Integer"/>
                       <Field access="READ_ONLY" name="frequency" optional="true" type="Frequency"/>
                     </Fields>
                     <Response name="CreateRecurringResponse"/>
                   </Message>
                   <Message description="remove one or more tournament" name="RemoveTour">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="keys" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="keys" type="java/lang/String"/>
                     </Fields>
                     <Response name="RemoveTourResponse"/>
                   </Message>
                   <Message name="RemoveRecurring">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                     </Fields>
                     <Response name="RemoveRecurringResponse"/>
                   </Message>
                   <Message description="forcibly register players to a tournament" name="RegisterPlayers">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
-                      <Field access="READ_ONLY" list="true" name="playerIds" type="String"/>
-                      <Field access="READ_ONLY" list="true" name="nicknames" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
+                      <Field access="READ_ONLY" list="true" name="playerIds" type="java/lang/String"/>
+                      <Field access="READ_ONLY" list="true" name="nicknames" type="java/lang/String"/>
                     </Fields>
                     <Response name="RegisterPlayersResponse"/>
                   </Message>
                   <Message description="forcibly unregister players to a tournament" name="UnregisterPlayers">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
-                      <Field access="READ_ONLY" list="true" name="playerIds" type="String"/>
-                      <Field access="READ_ONLY" list="true" name="nicknames" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
+                      <Field access="READ_ONLY" list="true" name="playerIds" type="java/lang/String"/>
+                      <Field access="READ_ONLY" list="true" name="nicknames" type="java/lang/String"/>
                     </Fields>
                     <Response name="UnregisterPlayersResponse"/>
                   </Message>
@@ -1738,13 +1738,13 @@ precreate span is in days]]></Description>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="INVALID_PASSWORD,PLAYER_NOT_REGISTERED,PLAYER_ALREADY_REGISTERED,HARDWARE_ADDRESS_NOT_UNIQUE,IP_ADDRESS_NOT_UNIQUE,TOUR_FULL,TOUR_NOT_OPEN," hideEntityKey="true" name="RegisterService" packageName="ngpoker.tournament.registration" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeytype="java/lang/String" errors="INVALID_PASSWORD,PLAYER_NOT_REGISTERED,PLAYER_ALREADY_REGISTERED,HARDWARE_ADDRESS_NOT_UNIQUE,IP_ADDRESS_NOT_UNIQUE,TOUR_FULL,TOUR_NOT_OPEN," hideEntityKey="true" name="RegisterService" packageName="ngpoker.tournament.registration" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message name="Register">
                     <Fields>
-                      <Field access="READ_ONLY" name="ipAddress" type="String"/>
-                      <Field access="READ_ONLY" list="true" name="hardwareAddresses" type="String"/>
-                      <Field access="READ_ONLY" name="password" optional="true" type="String"/>
+                      <Field access="READ_ONLY" name="ipAddress" type="java/lang/String"/>
+                      <Field access="READ_ONLY" list="true" name="hardwareAddresses" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="password" optional="true" type="java/lang/String"/>
                       <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
                     </Fields>
                     <Response name="RegisterResponse"/>
@@ -1757,7 +1757,7 @@ precreate span is in days]]></Description>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="TourClient" packageName="ngpoker.tournament.tourclient" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="TourClient" packageName="ngpoker.tournament.tourclient" principalType="PlayerId">
                 <Messages>
                   <Message name="SetGameState">
                     <Fields>
@@ -1768,23 +1768,23 @@ precreate span is in days]]></Description>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="TourStatsService" packageName="ngpoker.tournament.tourstats" principalType="PlayerId" responseEntityKeyType="String">
+              <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="TourStatsService" packageName="ngpoker.tournament.tourstats" principalType="PlayerId" responseEntityKeytype="java/lang/String">
                 <Messages>
                   <Message description="get player stats for this tournament" name="GetStats">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="playerIndexes" type="Integer"/>
+                      <Field access="READ_ONLY" list="true" name="playerIndexes" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="GetStatsResponse">
                       <Fields>
                         <Field access="READ_ONLY" list="true" name="stats" optional="true" type="TourPlayerStats"/>
-                        <Field access="READ_ONLY" list="true" name="playerIndexes" optional="true" type="Integer"/>
-                        <Field access="READ_ONLY" name="timeSinceStart" optional="true" type="Long"/>
+                        <Field access="READ_ONLY" list="true" name="playerIndexes" optional="true" type="java/lang/Integer"/>
+                        <Field access="READ_ONLY" name="timeSinceStart" optional="true" type="java/lang/Long"/>
                       </Fields>
                     </Response>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="MultiTourClient" packageName="ngpoker.tournament.multitour" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="MultiTourClient" packageName="ngpoker.tournament.multitour" principalType="PlayerId">
                 <Messages>
                   <Message name="SetGameState">
                     <Fields>
@@ -1794,7 +1794,7 @@ precreate span is in days]]></Description>
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="MeleeTourClient" packageName="ngpoker.tournament.meleetour" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="MeleeTourClient" packageName="ngpoker.tournament.meleetour" principalType="PlayerId">
                 <Messages>
                   <Message name="SetGameState">
                     <Fields>
@@ -1826,19 +1826,19 @@ precreate span is in days]]></Description>
 if null then the latest will be the first in the returned list. The "limit" indicates the max number of results to return]]></Description>
                     <Fields>
                       <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                      <Field access="READ_ONLY" name="startRoundId" optional="true" type="String"/>
-                      <Field access="READ_ONLY" name="limit" type="Integer"/>
+                      <Field access="READ_ONLY" name="startRoundId" optional="true" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="limit" type="java/lang/Integer"/>
                     </Fields>
                     <Response name="GetRoundIdsResponse">
                       <Fields>
-                        <Field access="READ_ONLY" list="true" name="roundIds" optional="true" type="String"/>
-                        <Field access="READ_ONLY" name="total" optional="true" type="Integer"/>
+                        <Field access="READ_ONLY" list="true" name="roundIds" optional="true" type="java/lang/String"/>
+                        <Field access="READ_ONLY" name="total" optional="true" type="java/lang/Integer"/>
                       </Fields>
                     </Response>
                   </Message>
                   <Message description="loads a list of rounds" name="GetRounds">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="roundIds" type="String"/>
+                      <Field access="READ_ONLY" list="true" name="roundIds" type="java/lang/String"/>
                     </Fields>
                     <Response name="GetRoundsResponse">
                       <Fields>
@@ -1852,7 +1852,7 @@ if null then the latest will be the first in the returned list. The "limit" indi
           </Tree>
           <Tree name="newsfeed">
             <Children>
-              <Api apiType="ASYNC" clientVisible="true" entityKeyType="String" errors="" hideEntityKey="true" name="NewsFeedClient" packageName="ngpoker.newsfeed" principalType="PlayerId">
+              <Api apiType="ASYNC" clientVisible="true" entityKeytype="java/lang/String" errors="" hideEntityKey="true" name="NewsFeedClient" packageName="ngpoker.newsfeed" principalType="PlayerId">
                 <Messages>
                   <Message name="SetNewsFeedState">
                     <Fields>
@@ -1870,14 +1870,14 @@ if null then the latest will be the first in the returned list. The "limit" indi
                 <Messages>
                   <Message name="CreateThread">
                     <Fields>
-                      <Field access="READ_ONLY" name="title" type="String"/>
-                      <Field access="READ_ONLY" name="summary" type="String"/>
+                      <Field access="READ_ONLY" name="title" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="summary" type="java/lang/String"/>
                     </Fields>
                     <Response name="CreateThreadResponse"/>
                   </Message>
                   <Message name="GetThread">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                     </Fields>
                     <Response name="GetThreadResponse">
                       <Fields>
@@ -1887,36 +1887,36 @@ if null then the latest will be the first in the returned list. The "limit" indi
                   </Message>
                   <Message name="MakePost">
                     <Fields>
-                      <Field access="READ_ONLY" name="threadKey" type="String"/>
-                      <Field access="READ_ONLY" name="parentPost" optional="true" type="String"/>
-                      <Field access="READ_ONLY" name="content" type="String"/>
+                      <Field access="READ_ONLY" name="threadKey" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="parentPost" optional="true" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="content" type="java/lang/String"/>
                     </Fields>
                     <Response name="MakePostResponse"/>
                   </Message>
                   <Message name="LikePost">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
-                      <Field access="READ_ONLY" name="like" type="Boolean"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="like" type="java/lang/Boolean"/>
                     </Fields>
                     <Response name="LikePostResponse"/>
                   </Message>
                   <Message name="DeletePost">
                     <Fields>
-                      <Field access="READ_ONLY" name="threadKey" type="String"/>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="threadKey" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                     </Fields>
                     <Response name="DeletePostResponse"/>
                   </Message>
                   <Message name="ReportAbuse">
                     <Fields>
-                      <Field access="READ_ONLY" name="postKey" type="String"/>
+                      <Field access="READ_ONLY" name="postKey" type="java/lang/String"/>
                     </Fields>
                     <Response name="ReportAbuseResponse"/>
                   </Message>
                   <Message name="GetPost">
                     <Fields>
-                      <Field access="READ_ONLY" name="threadKey" type="String"/>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="threadKey" type="java/lang/String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                     </Fields>
                     <Response name="GetPostResponse">
                       <Fields>
@@ -1926,7 +1926,7 @@ if null then the latest will be the first in the returned list. The "limit" indi
                   </Message>
                   <Message name="RemoveThread">
                     <Fields>
-                      <Field access="READ_ONLY" name="key" type="String"/>
+                      <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                     </Fields>
                     <Response name="RemoveThreadResponse"/>
                   </Message>
@@ -1941,7 +1941,7 @@ if null then the latest will be the first in the returned list. The "limit" indi
           <Types>
             <ValueObject name="NodeId">
               <Fields>
-                <Field access="READ_ONLY" name="value" type="String"/>
+                <Field access="READ_ONLY" name="value" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <EnumType name="CommType" values="SYNC_REQUEST,ASYNC_MESSAGE,SYNC_RESPONSE,"/>
@@ -1950,14 +1950,14 @@ if null then the latest will be the first in the returned list. The "limit" indi
               <Fields>
                 <Field access="READ_ONLY" name="nodeId" type="NodeId"/>
                 <Field access="READ_ONLY" name="nodeState" type="PublicNodeState"/>
-                <Field access="READ_ONLY" name="version" type="String"/>
+                <Field access="READ_ONLY" name="version" type="java/lang/String"/>
               </Fields>
             </Entity>
             <EnumType description="the kinds of entities that get persisted in the system" name="EntityType" values="sng,cashgame,player,tournament,recurring_tournament,multi_tournament,forum_thread,forum_post,"/>
             <Entity name="IdSequence">
               <Fields>
                 <Field access="READ_ONLY" name="entityType" type="EntityType"/>
-                <Field access="READ_WRITE" name="seq" type="Long"/>
+                <Field access="READ_WRITE" name="seq" type="java/lang/Long"/>
               </Fields>
             </Entity>
             <Entity name="IdSequenceStore">
@@ -1983,38 +1983,38 @@ if null then the latest will be the first in the returned list. The "limit" indi
           <Types>
             <ValueObject name="PlayerId">
               <Fields>
-                <Field access="READ_ONLY" name="value" type="String"/>
+                <Field access="READ_ONLY" name="value" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <EnumType description="list operations, add is a &quot;set at last index&quot;" name="ListOp" values="ADD,REMOVE,UPDATE,"/>
             <ValueObject name="PlayerLocation">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="appType" type="AppType"/>
               </Fields>
             </ValueObject>
             <EnumType name="AppType" values="SNG,TOUR,CASH_GAME,TOUR_TABLE,LOBBY,CHAT,MULTI_TOUR,FORUM_THREAD,SINGLE_TABLE_TOUR,NEWSFEED,"/>
             <ValueObject name="Coord">
               <Fields>
-                <Field access="READ_ONLY" name="x" type="Integer"/>
-                <Field access="READ_ONLY" name="y" type="Integer"/>
+                <Field access="READ_ONLY" name="x" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="y" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <ValueObject name="AccountType">
               <Fields>
                 <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
-                <Field access="READ_ONLY" name="currency" type="String"/>
+                <Field access="READ_ONLY" name="currency" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <EnumType name="MoneyType" values="REAL_MONEY,PLAY_MONEY,"/>
             <ValueObject name="OperatorId">
               <Fields>
-                <Field access="READ_ONLY" name="value" type="Integer"/>
+                <Field access="READ_ONLY" name="value" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <ValueObject description="contains the binary data of a jpg image" name="ImageData">
               <Fields>
-                <Field access="READ_ONLY" list="true" name="data" type="Byte"/>
+                <Field access="READ_ONLY" list="true" name="data" type="java/lang/Byte"/>
               </Fields>
             </ValueObject>
             <EnumType name="Language" values="ENGLISH,FRENCH,GERMAN,CHINESE,"/>
@@ -2029,12 +2029,12 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <ValueObject name="Player">
               <Fields>
                 <Field access="READ_ONLY" name="id" type="PlayerId"/>
-                <Field access="READ_ONLY" name="username" type="String"/>
+                <Field access="READ_ONLY" name="username" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
                 <Field access="READ_ONLY" name="country" type="Country"/>
-                <Field access="READ_ONLY" name="guest" type="Boolean"/>
-                <Field access="READ_ONLY" name="admin" type="Boolean"/>
-                <Field access="READ_ONLY" name="email" type="String"/>
+                <Field access="READ_ONLY" name="guest" type="java/lang/Boolean"/>
+                <Field access="READ_ONLY" name="admin" type="java/lang/Boolean"/>
+                <Field access="READ_ONLY" name="email" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <Entity abstract="true" name="PrivateAppState"/>
@@ -2042,23 +2042,23 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <ValueObject name="CashGameKey" superType="GlobalKey"/>
             <ValueObject name="TransactionId">
               <Fields>
-                <Field access="READ_ONLY" name="value" type="Integer"/>
+                <Field access="READ_ONLY" name="value" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <ValueObject name="PotResult">
               <Fields>
-                <Field access="READ_ONLY" name="potIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="potIndex" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <ValueObject name="RoundResult">
               <Fields>
-                <Field access="READ_ONLY" name="rake" type="Long"/>
+                <Field access="READ_ONLY" name="rake" type="java/lang/Long"/>
                 <Field access="READ_ONLY" list="true" name="potResults" type="PotResult"/>
                 <Field access="READ_ONLY" list="true" name="communityCards" type="Card"/>
-                <Field access="READ_ONLY" name="buttonIndex" type="Integer"/>
-                <Field access="READ_ONLY" name="seqNo" type="Integer"/>
+                <Field access="READ_ONLY" name="buttonIndex" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="seqNo" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" list="true" name="handResults" type="HandResult"/>
                 <Field access="READ_ONLY" entityDeclaration="true" list="true" name="players" type="PublicPlayer"/>
               </Fields>
@@ -2066,15 +2066,15 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <EnumType name="Card" skipGeneration="true" values=""/>
             <ValueObject name="HandResult">
               <Fields>
-                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_ONLY" name="seatIndex" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
                 <Field access="READ_ONLY" list="true" name="cards" type="Card"/>
-                <Field access="READ_ONLY" name="totalBet" type="Long"/>
+                <Field access="READ_ONLY" name="totalBet" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <ValueObject abstract="true" name="GlobalKey">
               <Fields>
-                <Field access="READ_ONLY" name="value" type="String"/>
+                <Field access="READ_ONLY" name="value" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <ValueObject name="TournamentKey" superType="GlobalKey"/>
@@ -2082,10 +2082,10 @@ if null then the latest will be the first in the returned list. The "limit" indi
               <Fields>
                 <Field access="READ_ONLY" name="gameType" type="GameType"/>
                 <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
-                <Field access="READ_ONLY" name="tableName" type="String"/>
-                <Field access="READ_ONLY" name="smallBet" type="Long"/>
-                <Field access="READ_ONLY" name="ante" type="Long"/>
-                <Field access="READ_ONLY" name="noOfSeats" type="Integer"/>
+                <Field access="READ_ONLY" name="tableName" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="smallBet" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="ante" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="noOfSeats" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <EnumType name="PokerAction" values="BET,RAISE,CALL,CHECK,FOLD,"/>
@@ -2102,8 +2102,8 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <EnumType name="MessageTypeEnum" skipGeneration="true" values=""/>
             <ValueObject name="Property">
               <Fields>
-                <Field access="READ_ONLY" name="name" type="String"/>
-                <Field access="READ_ONLY" name="value" type="String"/>
+                <Field access="READ_ONLY" name="name" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="value" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <EnumType name="LobbyPropertyEnum" skipGeneration="true" values=""/>
@@ -2112,27 +2112,27 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <ValueObject name="ChatMessage">
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_ONLY" name="sender" type="String"/>
-                <Field access="READ_ONLY" name="message" type="String"/>
+                <Field access="READ_ONLY" name="sender" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="message" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <ValueObject name="Event">
               <Fields>
-                <Field access="READ_ONLY" name="timestamp" type="Long"/>
+                <Field access="READ_ONLY" name="timestamp" type="java/lang/Long"/>
                 <Field access="READ_ONLY" name="content" type="InMessage"/>
               </Fields>
             </ValueObject>
             <EnumType name="Country" skipGeneration="true" values=""/>
             <ValueObject name="NewsItem">
               <Fields>
-                <Field access="READ_ONLY" name="timestamp" type="Long"/>
-                <Field access="READ_ONLY" name="title" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="content" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="type" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="imgName" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="sender" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="externalLink" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="internalLink" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="timestamp" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="title" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="content" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="type" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="imgName" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="sender" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="externalLink" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="internalLink" optional="true" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <Entity name="NewsFeed">
@@ -2151,23 +2151,23 @@ if null then the latest will be the first in the returned list. The "limit" indi
                 <Field access="READ_ONLY" name="userInfo" type="UserInfo"/>
                 <Field access="READ_ONLY" entityDeclaration="true" list="true" name="accounts" type="Account"/>
                 <Field access="READ_ONLY" name="userspaceLocation" type="Coord"/>
-                <Field access="READ_WRITE" name="lastImageUploadTime" type="Long"/>
-                <Field access="READ_WRITE" name="lastLoginTime" type="Long"/>
-                <Field access="READ_WRITE" name="status" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="lastImageUploadTime" type="java/lang/Long"/>
+                <Field access="READ_WRITE" name="lastLoginTime" type="java/lang/Long"/>
+                <Field access="READ_WRITE" name="status" optional="true" type="java/lang/String"/>
                 <Field access="READ_WRITE" list="true" name="followedUsers" type="PlayerId"/>
-                <Field access="READ_WRITE" name="playerPoints" type="Long"/>
+                <Field access="READ_WRITE" name="playerPoints" type="java/lang/Long"/>
                 <Field access="READ_WRITE" list="true" name="enabledCharacters" type="PokerCharacter"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
             <ValueObject name="UserInfo">
               <Fields>
-                <Field access="READ_ONLY" name="firstName" type="String"/>
-                <Field access="READ_ONLY" name="lastName" type="String"/>
-                <Field access="READ_WRITE" name="password" type="String"/>
-                <Field access="READ_ONLY" name="nickname" type="String"/>
+                <Field access="READ_ONLY" name="firstName" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="lastName" type="java/lang/String"/>
+                <Field access="READ_WRITE" name="password" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="country" type="Country"/>
-                <Field access="READ_ONLY" name="email" type="String"/>
+                <Field access="READ_ONLY" name="email" type="java/lang/String"/>
               </Fields>
             </ValueObject>
           </Types>
@@ -2177,12 +2177,12 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <Entity name="Account">
               <Fields>
                 <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                <Field access="READ_WRITE" name="balance" type="Long"/>
+                <Field access="READ_WRITE" name="balance" type="java/lang/Long"/>
               </Fields>
             </Entity>
             <Entity name="MoneySession">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="accountType" type="AccountType"/>
                 <Field access="READ_WRITE" entityDeclaration="true" list="true" name="playerCredits" type="PlayerCredit"/>
                 <Field access="READ_WRITE" entityDeclaration="true" list="true" name="operatorCredits" type="OperatorCredit"/>
@@ -2192,13 +2192,13 @@ if null then the latest will be the first in the returned list. The "limit" indi
             <Entity name="PlayerCredit">
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_WRITE" name="amount" type="Long"/>
+                <Field access="READ_WRITE" name="amount" type="java/lang/Long"/>
               </Fields>
             </Entity>
             <Entity name="OperatorCredit">
               <Fields>
                 <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
-                <Field access="READ_WRITE" name="amount" type="Long"/>
+                <Field access="READ_WRITE" name="amount" type="java/lang/Long"/>
               </Fields>
             </Entity>
           </Types>
@@ -2212,9 +2212,9 @@ if null then the latest will be the first in the returned list. The "limit" indi
           <Types>
             <ValueObject name="Query">
               <Fields>
-                <Field access="READ_ONLY" name="query" type="String"/>
-                <Field access="READ_ONLY" name="limit" type="Integer"/>
-                <Field access="READ_ONLY" list="true" name="orderBy" type="String"/>
+                <Field access="READ_ONLY" name="query" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="limit" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" list="true" name="orderBy" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <ValueObject name="QueryData">
@@ -2222,8 +2222,8 @@ if null then the latest will be the first in the returned list. The "limit" indi
 OR, a list of keys to match. If the retrieveall flag is set then all will be returned and the other fields will be ignored]]></Description>
               <Fields>
                 <Field access="READ_ONLY" list="true" name="clauses" type="Clause"/>
-                <Field access="READ_ONLY" list="true" name="keys" type="String"/>
-                <Field access="READ_ONLY" name="retrieveAll" type="Boolean"/>
+                <Field access="READ_ONLY" list="true" name="keys" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="retrieveAll" type="java/lang/Boolean"/>
               </Fields>
             </ValueObject>
             <ValueObject name="Clause">
@@ -2241,14 +2241,14 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             <ValueObject name="Page">
               <Fields>
                 <Field access="READ_ONLY" list="true" name="lobbyEntities" type="LobbyEntity"/>
-                <Field access="READ_ONLY" name="firstIndex" type="Integer"/>
-                <Field access="READ_ONLY" name="total" type="Integer"/>
-                <Field access="READ_ONLY" name="viewId" type="Integer"/>
+                <Field access="READ_ONLY" name="firstIndex" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="total" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="viewId" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <LobbyType name="ChatroomInLobby" superType="LobbyEntity">
               <Fields>
-                <Field access="READ_ONLY" name="maxEntrants" type="Integer"/>
+                <Field access="READ_ONLY" name="maxEntrants" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="language" type="Language"/>
               </Fields>
             </LobbyType>
@@ -2257,10 +2257,10 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="gameType" type="GameType"/>
                 <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
                 <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
-                <Field access="READ_ONLY" name="tableSize" type="Integer"/>
-                <Field access="READ_WRITE" name="occupiedSeats" type="Integer"/>
-                <Field access="READ_ONLY" name="smallBet" type="Integer"/>
-                <Field access="READ_WRITE" list="true" name="seats" type="String"/>
+                <Field access="READ_ONLY" name="tableSize" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" name="occupiedSeats" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="smallBet" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" list="true" name="seats" type="java/lang/String"/>
               </Fields>
             </LobbyType>
             <LobbyType name="TourInLobby" superType="LobbyEntity">
@@ -2268,15 +2268,15 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="gameType" type="GameType"/>
                 <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
                 <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
-                <Field access="READ_WRITE" name="noRegistered" type="Integer"/>
+                <Field access="READ_WRITE" name="noRegistered" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="state" type="TourState"/>
-                <Field access="READ_ONLY" name="startTime" type="Long"/>
-                <Field access="READ_ONLY" name="type" type="String"/>
-                <Field access="READ_ONLY" name="buyin" type="Long"/>
-                <Field access="READ_ONLY" name="fee" type="Long"/>
-                <Field access="READ_ONLY" name="sng" type="Boolean"/>
+                <Field access="READ_ONLY" name="startTime" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="type" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="buyin" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="fee" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="sng" type="java/lang/Boolean"/>
                 <Field access="READ_ONLY" list="true" name="rules" optional="true" type="RecurRule"/>
-                <Field access="READ_ONLY" name="parentRecurringTour" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="parentRecurringTour" optional="true" type="java/lang/String"/>
               </Fields>
             </LobbyType>
             <LobbyType name="SngInLobby" superType="LobbyEntity">
@@ -2284,39 +2284,39 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="gameType" type="GameType"/>
                 <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
                 <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
-                <Field access="READ_WRITE" name="noRegistered" type="Integer"/>
-                <Field access="READ_ONLY" name="buyin" type="Long"/>
-                <Field access="READ_ONLY" name="fee" type="Long"/>
-                <Field access="READ_ONLY" name="noSeats" type="Integer"/>
-                <Field access="READ_WRITE" name="lastRegisteredTime" type="Long"/>
-                <Field access="READ_WRITE" list="true" name="entrants" type="String"/>
-                <Field access="READ_ONLY" name="privateTour" type="Boolean"/>
+                <Field access="READ_WRITE" name="noRegistered" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="buyin" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="fee" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="noSeats" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" name="lastRegisteredTime" type="java/lang/Long"/>
+                <Field access="READ_WRITE" list="true" name="entrants" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="privateTour" type="java/lang/Boolean"/>
               </Fields>
             </LobbyType>
             <LobbyType name="PlayerInLobby" superType="LobbyEntity">
               <Fields>
-                <Field access="READ_WRITE" name="lastLoginTime" type="Long"/>
-                <Field access="READ_WRITE" name="lastImageUploadTime" type="Long"/>
-                <Field access="READ_ONLY" name="x" type="Integer"/>
-                <Field access="READ_ONLY" name="y" type="Integer"/>
-                <Field access="READ_WRITE" name="online" type="Boolean"/>
-                <Field access="READ_WRITE" name="status" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="lastLoginTime" type="java/lang/Long"/>
+                <Field access="READ_WRITE" name="lastImageUploadTime" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="x" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="y" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" name="online" type="java/lang/Boolean"/>
+                <Field access="READ_WRITE" name="status" optional="true" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="country" type="Country"/>
-                <Field access="READ_WRITE" name="points" type="Long"/>
-                <Field access="READ_WRITE" name="enabledCharacters" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="points" type="java/lang/Long"/>
+                <Field access="READ_WRITE" name="enabledCharacters" optional="true" type="java/lang/String"/>
               </Fields>
             </LobbyType>
             <LobbyType name="ThreadInLobby" superType="LobbyEntity">
               <Fields>
-                <Field access="READ_WRITE" name="lastAddedPostKey" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="summary" optional="true" type="String"/>
-                <Field access="READ_WRITE" name="noOfPosts" type="Integer"/>
-                <Field access="READ_WRITE" name="lastRemovedPostKey" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="lastAddedPostKey" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="summary" optional="true" type="java/lang/String"/>
+                <Field access="READ_WRITE" name="noOfPosts" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" name="lastRemovedPostKey" optional="true" type="java/lang/String"/>
               </Fields>
             </LobbyType>
             <Entity name="Table">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="moneyType" type="MoneyType"/>
                 <Field access="READ_ONLY" name="gameType" type="GameType"/>
                 <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
@@ -2337,8 +2337,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             <EnumType name="Day" values="Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,"/>
             <ValueObject name="StartTime">
               <Fields>
-                <Field access="READ_ONLY" name="hour" type="Integer"/>
-                <Field access="READ_ONLY" name="minute" type="Integer"/>
+                <Field access="READ_ONLY" name="hour" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="minute" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <EnumType name="FeeType" values="FREE,TEN_PERCENT,FIVE_PERCENT,"/>
@@ -2350,33 +2350,33 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </Entity>
             <Entity name="TourPlayer">
               <Fields>
-                <Field access="READ_ONLY" name="tourPlayerId" type="Integer"/>
+                <Field access="READ_ONLY" name="tourPlayerId" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_ONLY" name="nickname" type="String"/>
-                <Field access="READ_WRITE" name="stack" type="Long"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="finalRank" type="Integer"/>
+                <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
+                <Field access="READ_WRITE" name="stack" type="java/lang/Long"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="finalRank" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="prize" optional="true" type="Prize"/>
-                <Field access="READ_WRITE" name="eliminated" type="Boolean"/>
-                <Field access="READ_WRITE" name="moveCount" type="Integer"/>
-                <Field access="READ_WRITE" name="markedForMove" type="Boolean"/>
-                <Field access="READ_WRITE" name="rank" type="Integer"/>
+                <Field access="READ_WRITE" name="eliminated" type="java/lang/Boolean"/>
+                <Field access="READ_WRITE" name="moveCount" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" name="markedForMove" type="java/lang/Boolean"/>
+                <Field access="READ_WRITE" name="rank" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
               </Fields>
             </Entity>
             <ValueObject name="Fingerprint">
               <Fields>
-                <Field access="READ_ONLY" name="ip" type="String"/>
-                <Field access="READ_ONLY" list="true" name="hwAddresses" type="String"/>
+                <Field access="READ_ONLY" name="ip" type="java/lang/String"/>
+                <Field access="READ_ONLY" list="true" name="hwAddresses" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <Entity name="PublicTour">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_WRITE" entityDeclaration="true" name="registeringState" optional="true" type="RegisteringState"/>
                 <Field access="READ_WRITE" entityDeclaration="true" name="runningState" optional="true" type="RunningState"/>
                 <Field access="READ_ONLY" name="tourSettings" type="ScheduledTourSettings"/>
                 <Field access="READ_WRITE" defaultValue="TourState.ANNOUNCED" name="state" type="TourState"/>
-                <Field access="READ_ONLY" name="parentKey" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="parentKey" optional="true" type="java/lang/String"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
@@ -2391,101 +2391,101 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_WRITE" name="state" type="RunningTourState"/>
                 <Field access="READ_ONLY" entityDeclaration="true" list="true" name="tables" type="TTable"/>
                 <Field access="READ_WRITE" name="currentLevel" optional="true" type="LevelInfo"/>
-                <Field access="READ_WRITE" name="pauseTimestamp" type="Long"/>
+                <Field access="READ_WRITE" name="pauseTimestamp" type="java/lang/Long"/>
               </Fields>
             </Entity>
             <Entity name="Entrant">
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_ONLY" name="nickname" type="String"/>
-                <Field access="READ_WRITE" name="unregisterPending" type="Boolean"/>
+                <Field access="READ_ONLY" name="nickname" type="java/lang/String"/>
+                <Field access="READ_WRITE" name="unregisterPending" type="java/lang/Boolean"/>
                 <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
               </Fields>
             </Entity>
             <ValueObject name="PlayerSeatTuple">
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
-                <Field access="READ_ONLY" name="stack" type="Long"/>
-                <Field access="READ_ONLY" name="nickname" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="seatIndex" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="stack" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="nickname" optional="true" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
               </Fields>
             </ValueObject>
             <EnumType defaultValue="PREPARE" name="RunningTourState" values="PAUSED,RUNNING,HAND_BY_HAND,BREAK,PREPARE,"/>
             <Entity description="player indexes refer to the index of players in the player list" name="TTable">
               <Fields>
-                <Field access="READ_ONLY" name="tableIndex" type="Integer"/>
-                <Field access="READ_ONLY" name="ref" type="String"/>
+                <Field access="READ_ONLY" name="tableIndex" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="ref" type="java/lang/String"/>
                 <Field access="READ_WRITE" entityDeclaration="true" list="true" name="seats" type="TSeat"/>
-                <Field access="READ_WRITE" name="idle" type="Boolean"/>
-                <Field access="READ_WRITE" name="removed" type="Boolean"/>
+                <Field access="READ_WRITE" name="idle" type="java/lang/Boolean"/>
+                <Field access="READ_WRITE" name="removed" type="java/lang/Boolean"/>
               </Fields>
             </Entity>
             <ValueObject name="TourSettings">
               <Fields>
                 <Field access="READ_ONLY" name="gameType" type="GameType"/>
                 <Field access="READ_ONLY" name="bettingType" type="BettingType"/>
-                <Field access="READ_ONLY" name="seatsPerTable" type="Integer"/>
-                <Field access="READ_ONLY" name="initialStackSize" type="Long"/>
-                <Field access="READ_ONLY" name="buyIn" type="Long"/>
-                <Field access="READ_ONLY" name="fee" type="Long"/>
+                <Field access="READ_ONLY" name="seatsPerTable" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="initialStackSize" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="buyIn" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="fee" type="java/lang/Long"/>
                 <Field access="READ_ONLY" name="accountType" type="AccountType"/>
-                <Field access="READ_ONLY" name="name" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="password" optional="true" type="String"/>
-                <Field access="READ_ONLY" name="minPlayers" type="Integer"/>
-                <Field access="READ_ONLY" name="maxPlayers" type="Integer"/>
-                <Field access="READ_ONLY" name="type" type="String"/>
-                <Field access="READ_ONLY" name="levelLength" type="Float"/>
+                <Field access="READ_ONLY" name="name" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="password" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="minPlayers" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="maxPlayers" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="type" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="levelLength" type="java/lang/Float"/>
                 <Field access="READ_ONLY" name="levelStrategy" type="LevelStrategyEnum"/>
               </Fields>
             </ValueObject>
             <ValueObject abstract="true" name="Prize"/>
             <ValueObject name="CashPrize" superType="Prize">
               <Fields>
-                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <ValueObject name="TicketPrize" superType="Prize">
               <Fields>
-                <Field access="READ_ONLY" name="tourRef" optional="true" type="String"/>
-                <Field access="READ_ONLY" list="true" name="tourAnnotations" type="String"/>
+                <Field access="READ_ONLY" name="tourRef" optional="true" type="java/lang/String"/>
+                <Field access="READ_ONLY" list="true" name="tourAnnotations" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <Entity name="TSeat">
               <Fields>
-                <Field access="READ_ONLY" name="index" type="Integer"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="tourPlayerId" optional="true" type="Integer"/>
+                <Field access="READ_ONLY" name="index" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="tourPlayerId" optional="true" type="java/lang/Integer"/>
               </Fields>
             </Entity>
             <ValueObject name="Level">
               <Fields>
-                <Field access="READ_ONLY" name="levelIndex" type="Integer"/>
-                <Field access="READ_ONLY" name="smallBet" type="Long"/>
-                <Field access="READ_ONLY" name="ante" type="Long"/>
+                <Field access="READ_ONLY" name="levelIndex" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="smallBet" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="ante" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <EnumType defaultValue="REGULAR" name="LevelStrategyEnum" values="REGULAR,CONTROLLED_BY_GAME,"/>
             <ValueObject name="ScheduledTourSettings">
               <Fields>
                 <Field access="READ_ONLY" name="settings" type="TourSettings"/>
-                <Field access="READ_ONLY" name="openTime" type="Long"/>
-                <Field access="READ_ONLY" name="startTime" type="Long"/>
+                <Field access="READ_ONLY" name="openTime" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="startTime" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <Entity name="PrivateTourState">
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
                 <Field access="READ_WRITE" entityDeclaration="true" name="privateRunningState" optional="true" type="PrivateRunningState"/>
-                <Field access="READ_WRITE" name="registered" type="Boolean"/>
+                <Field access="READ_WRITE" name="registered" type="java/lang/Boolean"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
             <Entity name="PrivateRunningState">
               <Fields>
-                <Field access="READ_WRITE" name="myTableKey" optional="true" type="String"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="myRank" type="Integer"/>
-                <Field access="READ_WRITE" defaultValue="-1L" name="myStack" type="Long"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="myTourPlayerId" type="Integer"/>
+                <Field access="READ_WRITE" name="myTableKey" optional="true" type="java/lang/String"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="myRank" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1L" name="myStack" type="java/lang/Long"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="myTourPlayerId" type="java/lang/Integer"/>
               </Fields>
             </Entity>
             <ValueObject name="PlayerPrize">
@@ -2496,28 +2496,28 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <Entity name="RecurringTour">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="settings" type="TourSettings"/>
                 <Field access="READ_ONLY" list="true" name="rules" type="RecurRule"/>
-                <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="Float"/>
-                <Field access="READ_WRITE" name="lastSpawnedTime" type="Long"/>
-                <Field access="READ_ONLY" name="precreateSpan" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="1.0f" name="registrationPeriodHours" type="java/lang/Float"/>
+                <Field access="READ_WRITE" name="lastSpawnedTime" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="precreateSpan" type="java/lang/Integer"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
             <ValueObject description="wraps a level plus its start time" name="LevelInfo">
               <Fields>
                 <Field access="READ_ONLY" name="level" type="Level"/>
-                <Field access="READ_ONLY" name="startTime" type="Long"/>
-                <Field access="READ_ONLY" name="levelLeft" type="Long"/>
+                <Field access="READ_ONLY" name="startTime" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="levelLeft" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <ValueObject description="a player stack at a certain point of time in the tournament" name="PlayerStackStat">
               <Fields>
-                <Field access="READ_ONLY" name="stack" type="Long"/>
-                <Field access="READ_ONLY" name="time" type="Long"/>
-                <Field access="READ_ONLY" name="roundId" type="String"/>
-                <Field access="READ_ONLY" name="rank" type="Integer"/>
+                <Field access="READ_ONLY" name="stack" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="time" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="roundId" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="rank" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <ValueObject description="stats collected for a player during the tournament" name="TourPlayerStats">
@@ -2527,9 +2527,9 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <Entity description="a collection of tournaments" name="MultiTour" superType="Sng">
               <Fields>
-                <Field access="READ_ONLY" name="noOfTours" type="Integer"/>
-                <Field access="READ_ONLY" name="startTime" type="Long"/>
-                <Field access="READ_WRITE" list="true" name="tourKeys" type="String"/>
+                <Field access="READ_ONLY" name="noOfTours" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="startTime" type="java/lang/Long"/>
+                <Field access="READ_WRITE" list="true" name="tourKeys" type="java/lang/String"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
@@ -2540,8 +2540,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <Entity description="a special tournament challenge" name="MeleeTour" superType="Sng">
               <Fields>
-                <Field access="READ_WRITE" name="startTime" type="Long"/>
-                <Field access="READ_ONLY" name="noOfLevels" type="Integer"/>
+                <Field access="READ_WRITE" name="startTime" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="noOfLevels" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" list="true" name="levels" type="MeleeLevel"/>
                 <Field access="READ_WRITE" entityDeclaration="true" name="runningMelee" optional="true" type="RunningMelee"/>
               </Fields>
@@ -2549,14 +2549,14 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </Entity>
             <ValueObject name="MeleeSng">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" list="true" name="players" type="PlayerId"/>
               </Fields>
             </ValueObject>
             <Entity description="a tuple representing a player and points in a multitour" name="MultiPlayer">
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_WRITE" name="points" type="Integer"/>
+                <Field access="READ_WRITE" name="points" type="java/lang/Integer"/>
               </Fields>
             </Entity>
             <Entity description="melee data when a melee is running" name="RunningMelee">
@@ -2566,8 +2566,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </Entity>
             <ValueObject description="encapsulates a rule for a fixed rate recurrence. Times in minutes" name="Frequency">
               <Fields>
-                <Field access="READ_ONLY" name="offset" type="Integer"/>
-                <Field access="READ_ONLY" name="gap" type="Integer"/>
+                <Field access="READ_ONLY" name="offset" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="gap" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
           </Types>
@@ -2579,7 +2579,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" entityDeclaration="true" name="publicState" type="PublicPokerGame"/>
                 <Field access="READ_ONLY" entityDeclaration="true" list="true" name="privatePlayers" type="PrivatePlayer"/>
                 <Field access="READ_ONLY" list="true" name="drawnCards" type="Card"/>
-                <Field access="READ_WRITE" name="biggestBet" type="Long"/>
+                <Field access="READ_WRITE" name="biggestBet" type="java/lang/Long"/>
               </Fields>
             </Entity>
             <Entity name="CashGame">
@@ -2597,7 +2597,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             <ValueObject name="Pot">
               <Fields>
                 <Field access="READ_WRITE" list="true" name="potAmounts" type="PotAmount"/>
-                <Field access="READ_ONLY" name="deadBetAmount" type="Long"/>
+                <Field access="READ_ONLY" name="deadBetAmount" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <ValueObject name="PotAllocation">
@@ -2607,63 +2607,63 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <ValueObject description="tuple of player to amount bet" name="PotAmount">
               <Fields>
-                <Field access="READ_ONLY" name="seat" type="Integer"/>
-                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="seat" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <EnumType defaultValue="WAITING" description="post round: after the showdown is complete, allows any extensions a window to perform any adjustments to the model before the tour or cash game contexts get hold of it" name="GameState" values="WAITING,EXPECTING_MUCK_DECISION,EXPECTING_BET_DECISION,EXPECTING_CARD_SELECTION,DEALING_CARDS,EXPECTING_BLINDS_DECISION,PAYING_BLINDS,HIGH_CARD_FOR_BUTTON,DEALING_FLOP,DEALING_TURN,DEALING_RIVER,ENDING_HAND,ALL_IN_SEQUENCE,SHOWDOWN,POST_BET_DECISION,POST_BETTING_ROUND,SHUFFLING_CARDS,PAYING_ANTES,POST_ROUND,"/>
             <Entity name="PublicPlayer">
               <Fields>
                 <Field access="READ_ONLY" name="id" type="PlayerId"/>
-                <Field access="READ_WRITE" name="username" optional="true" type="String"/>
+                <Field access="READ_WRITE" name="username" optional="true" type="java/lang/String"/>
                 <Field access="READ_WRITE" defaultValue="new Stack()" name="stack" type="Stack"/>
                 <Field access="READ_WRITE" list="true" name="visibleCards" type="Card"/>
-                <Field access="READ_WRITE" name="accountBalance" type="Long"/>
+                <Field access="READ_WRITE" name="accountBalance" type="java/lang/Long"/>
                 <Field access="READ_WRITE" defaultValue="new Bet()" name="currentBet" optional="true" type="Bet"/>
-                <Field access="READ_WRITE" name="noHiddenCards" optional="true" type="Integer"/>
-                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_WRITE" name="noHiddenCards" optional="true" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="seatIndex" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="latestPokerAction" optional="true" type="PokerAction"/>
                 <Field access="READ_WRITE" name="bettingState" optional="true" type="BettingState"/>
                 <Field access="READ_WRITE" name="highCard" optional="true" type="Card"/>
                 <Field access="READ_WRITE" name="state" type="PublicPlayerState"/>
-                <Field access="READ_WRITE" name="disconnected" type="Boolean"/>
-                <Field access="READ_WRITE" name="markedForRemoval" type="Boolean"/>
-                <Field access="READ_WRITE" name="away" type="Boolean"/>
+                <Field access="READ_WRITE" name="disconnected" type="java/lang/Boolean"/>
+                <Field access="READ_WRITE" name="markedForRemoval" type="java/lang/Boolean"/>
+                <Field access="READ_WRITE" name="away" type="java/lang/Boolean"/>
                 <Field access="READ_ONLY" name="character" type="PokerCharacter"/>
                 <Field access="READ_WRITE" name="winChances" optional="true" type="WinChances"/>
               </Fields>
             </Entity>
             <Entity name="PrivatePlayer" superType="PrivateAppState">
               <Fields>
-                <Field access="READ_WRITE" name="accountBalance" type="Long"/>
+                <Field access="READ_WRITE" name="accountBalance" type="java/lang/Long"/>
                 <Field access="READ_WRITE" list="true" name="pocketCards" type="Card"/>
                 <Field access="READ_WRITE" list="true" name="allowedActions" type="PokerAction"/>
                 <Field access="READ_WRITE" name="uiState" type="PrivatePlayerState"/>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="mySeat" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="mySeat" optional="true" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="preTurnAction" optional="true" type="PreTurnAction"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
             <Entity name="PublicPokerGame" superType="PublicAppState">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="settings" type="GameSettings"/>
                 <Field access="READ_ONLY" entityDeclaration="true" list="true" name="seats" type="Seat"/>
                 <Field access="READ_WRITE" list="true" name="communityCards" type="Card"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="dealerButton" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="dealerButton" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="state" type="GameState"/>
                 <Field access="READ_WRITE" list="true" name="pots" type="Pot"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="currentBetDecision" optional="true" type="Integer"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="currentMuckDecision" optional="true" type="Integer"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="bigBlindSeat" optional="true" type="Integer"/>
-                <Field access="READ_WRITE" name="bettingRound" optional="true" type="Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="currentBetDecision" optional="true" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="currentMuckDecision" optional="true" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="bigBlindSeat" optional="true" type="java/lang/Integer"/>
+                <Field access="READ_WRITE" name="bettingRound" optional="true" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="result" optional="true" type="Result"/>
                 <Field access="READ_ONLY" name="gameContext" type="GameContext"/>
                 <Field access="READ_WRITE" list="true" name="chatMessages" type="ChatMessage"/>
-                <Field access="READ_WRITE" name="currentMinimumBet" type="Long"/>
-                <Field access="READ_WRITE" name="roundCounter" type="Long"/>
-                <Field access="READ_WRITE" name="markedForRemoval" type="Boolean"/>
+                <Field access="READ_WRITE" name="currentMinimumBet" type="java/lang/Long"/>
+                <Field access="READ_WRITE" name="roundCounter" type="java/lang/Long"/>
+                <Field access="READ_WRITE" name="markedForRemoval" type="java/lang/Boolean"/>
                 <Field access="READ_WRITE" name="fixedBetSettings" type="FixedBetSettings"/>
               </Fields>
               <ObservableMeta/>
@@ -2741,7 +2741,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </ValueObject>
             <ValueObject name="ShownHand">
               <Fields>
-                <Field access="READ_ONLY" name="seat" type="Integer"/>
+                <Field access="READ_ONLY" name="seat" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="hand" optional="true" type="HandToken"/>
                 <Field access="READ_ONLY" list="true" name="pocketCards" type="Card"/>
               </Fields>
@@ -2749,46 +2749,46 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             <EnumType name="GameContext" values="CASHGAME,TOURNAMENT,"/>
             <ValueObject name="Round">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" entityDeclaration="true" name="startSnapshot" type="PokerGame"/>
                 <Field access="READ_ONLY" list="true" name="events" type="Event"/>
               </Fields>
             </ValueObject>
             <Entity description="the persisted settings and round counter for a cashgame" name="CashGameTable">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="settings" type="GameSettings"/>
-                <Field access="READ_WRITE" name="roundSeq" type="Long"/>
+                <Field access="READ_WRITE" name="roundSeq" type="java/lang/Long"/>
                 <Field access="READ_ONLY" name="accountType" type="AccountType"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
             <ValueObject name="Stack">
               <Fields>
-                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                 <Field access="READ_ONLY" name="latestUpdate" type="StackUpdateType"/>
               </Fields>
             </ValueObject>
             <EnumType defaultValue="NONE" name="StackUpdateType" values="REBUY,BUY_IN,STACK_DOWN,BET,BLIND,ANTE,RETURNED_BET,POT_WIN,NONE,"/>
             <ValueObject name="Bet">
               <Fields>
-                <Field access="READ_ONLY" name="amount" type="Long"/>
+                <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
                 <Field access="READ_ONLY" name="betType" type="BetType"/>
               </Fields>
             </ValueObject>
             <EnumType defaultValue="NONE" name="BetType" values="BET,BIG_BLIND,SMALL_BLIND,ANTE,NONE,"/>
             <ValueObject name="FixedBetSettings">
               <Fields>
-                <Field access="READ_ONLY" name="smallBlind" type="Long"/>
-                <Field access="READ_ONLY" name="bigBlind" type="Long"/>
-                <Field access="READ_ONLY" name="ante" type="Long"/>
-                <Field access="READ_ONLY" name="communalAnte" type="Long"/>
-                <Field access="READ_ONLY" name="communalAntePerPlayer" type="Long"/>
+                <Field access="READ_ONLY" name="smallBlind" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="bigBlind" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="ante" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="communalAnte" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="communalAntePerPlayer" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
             <ValueObject description="array of win chances, if all in preflop then the array will contain a value for preflop,flop,turn and river chances" name="WinChances">
               <Fields>
-                <Field access="READ_ONLY" mapKeyType="Integer" name="chances" type="Integer"/>
+                <Field access="READ_ONLY" mapKeytype="java/lang/Integer" name="chances" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
           </Types>
@@ -2797,7 +2797,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
           <Types>
             <Entity description="manages a waiting list to play on demand tournaments" name="Sng">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="settings" type="TourSettings"/>
                 <Field access="READ_WRITE" entityDeclaration="true" list="true" name="entrants" type="Entrant"/>
               </Fields>
@@ -2809,43 +2809,43 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
           <Types>
             <ValueObject name="BotConfig">
               <Fields>
-                <Field access="READ_ONLY" name="noOfBots" type="Integer"/>
+                <Field access="READ_ONLY" name="noOfBots" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" name="sngQuery" optional="true" type="QueryData"/>
                 <Field access="READ_ONLY" name="cashgameQuery" optional="true" type="QueryData"/>
                 <Field access="READ_ONLY" name="tourQuery" optional="true" type="QueryData"/>
-                <Field access="READ_ONLY" name="staySeated" type="Boolean"/>
-                <Field access="READ_ONLY" defaultValue="2000" name="decisionTime" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="1" name="noSimultaneousTours" type="Integer"/>
+                <Field access="READ_ONLY" name="staySeated" type="java/lang/Boolean"/>
+                <Field access="READ_ONLY" defaultValue="2000" name="decisionTime" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="1" name="noSimultaneousTours" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" defaultValue="new DecisionWeightings()" name="decisionWeightings" type="DecisionWeightings"/>
                 <Field access="READ_ONLY" name="connectTimeSettings" optional="true" type="TimeSettings"/>
                 <Field access="READ_ONLY" name="disconnectTimeSettings" optional="true" type="TimeSettings"/>
                 <Field access="READ_ONLY" name="accountSettings" optional="true" type="AccountSettings"/>
-                <Field access="READ_ONLY" name="password" optional="true" type="String"/>
+                <Field access="READ_ONLY" name="password" optional="true" type="java/lang/String"/>
               </Fields>
             </ValueObject>
             <ValueObject name="DecisionWeightings">
               <Fields>
-                <Field access="READ_ONLY" defaultValue="5" name="betOrRaiseAllin" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="5" name="betOrRaiseFullPot" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="10" name="betOrRaiseHalfPot" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="20" name="betOrRaiseMinBet" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="80" name="call" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="80" name="check" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="40" name="fold" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="betOrRaiseAllin" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="betOrRaiseFullPot" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="10" name="betOrRaiseHalfPot" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="20" name="betOrRaiseMinBet" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="80" name="call" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="80" name="check" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="40" name="fold" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <ValueObject name="TimeSettings">
               <Fields>
-                <Field access="READ_ONLY" name="min" type="Integer"/>
-                <Field access="READ_ONLY" name="max" type="Integer"/>
-                <Field access="READ_ONLY" name="random" type="Boolean"/>
+                <Field access="READ_ONLY" name="min" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="max" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="random" type="java/lang/Boolean"/>
               </Fields>
             </ValueObject>
             <ValueObject description="stores settings for bot&apos;s auto payment settings" name="AccountSettings">
               <Fields>
-                <Field access="READ_ONLY" name="minPlayBalance" type="Long"/>
-                <Field access="READ_ONLY" name="minRealBalance" type="Long"/>
-                <Field access="READ_ONLY" defaultValue="50000L" name="creditAmount" type="Long"/>
+                <Field access="READ_ONLY" name="minPlayBalance" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="minRealBalance" type="java/lang/Long"/>
+                <Field access="READ_ONLY" defaultValue="50000L" name="creditAmount" type="java/lang/Long"/>
               </Fields>
             </ValueObject>
           </Types>
@@ -2854,23 +2854,23 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
           <Types>
             <Entity name="Post">
               <Fields>
-                <Field access="READ_ONLY" name="key" type="String"/>
-                <Field access="READ_ONLY" name="parentThread" type="String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="parentThread" type="java/lang/String"/>
                 <Field access="READ_ONLY" name="author" type="PlayerId"/>
-                <Field access="READ_WRITE" name="content" type="String"/>
-                <Field access="READ_ONLY" name="parentPost" optional="true" type="String"/>
-                <Field access="READ_WRITE" name="lastEdited" type="Long"/>
-                <Field access="READ_ONLY" name="created" type="Long"/>
+                <Field access="READ_WRITE" name="content" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="parentPost" optional="true" type="java/lang/String"/>
+                <Field access="READ_WRITE" name="lastEdited" type="java/lang/Long"/>
+                <Field access="READ_ONLY" name="created" type="java/lang/Long"/>
                 <Field access="READ_WRITE" list="true" name="likes" type="PlayerId"/>
-                <Field access="READ_ONLY" name="authorNick" type="String"/>
+                <Field access="READ_ONLY" name="authorNick" type="java/lang/String"/>
               </Fields>
             </Entity>
             <Entity name="ForumThread">
               <Fields>
                 <Field access="READ_WRITE" entityDeclaration="true" list="true" name="posts" type="Post"/>
-                <Field access="READ_ONLY" name="title" type="String"/>
-                <Field access="READ_ONLY" name="key" type="String"/>
-                <Field access="READ_ONLY" name="summary" type="String"/>
+                <Field access="READ_ONLY" name="title" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="key" type="java/lang/String"/>
+                <Field access="READ_ONLY" name="summary" type="java/lang/String"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
@@ -2884,7 +2884,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_WRITE" list="true" name="pointEvents" type="PointEvent"/>
                 <Field access="READ_ONLY" defaultValue="new LimitedDeckConfig()" name="config" type="LimitedDeckConfig"/>
                 <Field access="READ_WRITE" name="latestCheckpoint" type="Checkpoint"/>
-                <Field access="READ_WRITE" name="roundCount" type="Integer"/>
+                <Field access="READ_WRITE" name="roundCount" type="java/lang/Integer"/>
               </Fields>
               <ObservableMeta/>
             </Entity>
@@ -2893,24 +2893,24 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <Fields>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
                 <Field access="READ_WRITE" name="peek" optional="true" type="Peek"/>
-                <Field access="READ_WRITE" name="points" type="Float"/>
+                <Field access="READ_WRITE" name="points" type="java/lang/Float"/>
                 <Field access="READ_WRITE" list="true" name="shownCards" preventDuplicates="true" type="Card"/>
                 <Field access="READ_WRITE" list="true" name="peekedCards" type="Card"/>
-                <Field access="READ_WRITE" name="handsWon" type="Integer"/>
-                <Field access="READ_ONLY" name="username" optional="true" type="String"/>
-                <Field access="READ_WRITE" defaultValue="-1" name="finalRank" type="Integer"/>
-                <Field access="READ_ONLY" name="seatIndex" type="Integer"/>
+                <Field access="READ_WRITE" name="handsWon" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="username" optional="true" type="java/lang/String"/>
+                <Field access="READ_WRITE" defaultValue="-1" name="finalRank" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="seatIndex" type="java/lang/Integer"/>
                 <Field access="READ_WRITE" name="shuffler" optional="true" type="PlayerId"/>
                 <Field access="READ_ONLY" name="pokerCharacter" type="PokerCharacter"/>
                 <Field access="READ_WRITE" name="showOne" optional="true" type="PlayerId"/>
                 <Field access="READ_WRITE" list="true" name="resources" type="Resource"/>
-                <Field access="READ_WRITE" name="uncontestedHandsWon" type="Integer"/>
+                <Field access="READ_WRITE" name="uncontestedHandsWon" type="java/lang/Integer"/>
               </Fields>
             </Entity>
             <ValueObject description="encapsulates a peek at a players hole cards" name="Peek">
               <Fields>
                 <Field access="READ_ONLY" name="peeker" type="PlayerId"/>
-                <Field access="READ_ONLY" name="publicPeek" type="Boolean"/>
+                <Field access="READ_ONLY" name="publicPeek" type="java/lang/Boolean"/>
               </Fields>
             </ValueObject>
             <Entity name="PrivateLimitedDeckState">
@@ -2929,43 +2929,43 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             </Entity>
             <ValueObject name="LimitedDeckConfig">
               <Fields>
-                <Field access="READ_ONLY" defaultValue="5" name="stackedPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="200" name="stackedBlindsToReach" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="5" name="firstBloodPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="3" name="stayingAlivePoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="15" name="stayingAliveHandToSurvive" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="7" name="doubleTroublePoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="-10" name="bustoPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="2" name="bustoBottomPositionCount" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="10" name="perfectPerfectPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="5" name="perfectPerfectMinPlayers" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="2f" name="winPointsMultiplier" type="Float"/>
-                <Field access="READ_ONLY" defaultValue="5" name="epicWinPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="3" name="acesDownPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="1f" name="runnerUpPointsMultiplier" type="Float"/>
-                <Field access="READ_ONLY" defaultValue="4" name="runnerUpMinPlayers" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="-5" name="epicLossPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="1" name="offToTheRacesPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="3" name="notAFlukePoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="5" name="notAFlukeHandWonCount" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="8" name="crushingPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="1" name="coinFlipPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="2" name="dominatedPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="3" name="gotchaPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="3" name="smoothSailingHandWonCount" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="5" name="smoothSailingPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="6" name="inControlHandWonCount" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="10" name="inControlPoints" type="Integer"/>
-                <Field access="READ_ONLY" defaultValue="3" name="doubleUpPoints" type="Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="stackedPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="200" name="stackedBlindsToReach" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="firstBloodPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="stayingAlivePoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="15" name="stayingAliveHandToSurvive" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="7" name="doubleTroublePoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="-10" name="bustoPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="2" name="bustoBottomPositionCount" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="10" name="perfectPerfectPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="perfectPerfectMinPlayers" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="2f" name="winPointsMultiplier" type="java/lang/Float"/>
+                <Field access="READ_ONLY" defaultValue="5" name="epicWinPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="acesDownPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="1f" name="runnerUpPointsMultiplier" type="java/lang/Float"/>
+                <Field access="READ_ONLY" defaultValue="4" name="runnerUpMinPlayers" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="-5" name="epicLossPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="1" name="offToTheRacesPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="notAFlukePoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="notAFlukeHandWonCount" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="8" name="crushingPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="1" name="coinFlipPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="2" name="dominatedPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="gotchaPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="smoothSailingHandWonCount" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="5" name="smoothSailingPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="6" name="inControlHandWonCount" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="10" name="inControlPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="3" name="doubleUpPoints" type="java/lang/Integer"/>
               </Fields>
             </ValueObject>
             <EnumType name="PointEventType" values="STACKED,FIRST_BLOOD,STAYING_ALIVE,DOUBLE_TROUBLE,CRUSHING,BUSTO,PERFECT_PERFECT,WIN,EPIC_WIN,ACES_DOWN,RUNNER_UP,EPIC_LOSS,OFF_TO_THE_RACES,NOT_A_FLUKE,COIN_FLIP,DOMINATED,GOTCHA,SMOOTH_SAILING,IN_CONTROL,DOUBLE_UP,"/>
             <ValueObject description="describes a point award or penalty. Negative points means penalty" name="PointEvent">
               <Fields>
                 <Field access="READ_ONLY" name="type" type="PointEventType"/>
-                <Field access="READ_ONLY" name="timestamp" type="Long"/>
+                <Field access="READ_ONLY" name="timestamp" type="java/lang/Long"/>
                 <Field access="READ_ONLY" name="playerId" type="PlayerId"/>
-                <Field access="READ_ONLY" name="points" type="Float"/>
+                <Field access="READ_ONLY" name="points" type="java/lang/Float"/>
               </Fields>
             </ValueObject>
             <EnumType defaultValue="NONE" name="Checkpoint" values="NONE,_6_HANDS_PLAYED,_18_HANDS_PLAYED,SUDDEN_DEATH,SUDDEN_DEATH_OVERTIME,ELIMINATION_ROUND,"/>
@@ -2973,19 +2973,19 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             <EnumType name="Resource" values="EXTRA_LIFE,SHUFFLE,SHOW_ONE,PEEK,"/>
             <ValueObject name="SngResult">
               <Fields>
-                <Field access="READ_ONLY" name="elimitedPlayerCount" type="Integer"/>
+                <Field access="READ_ONLY" name="elimitedPlayerCount" type="java/lang/Integer"/>
                 <Field access="READ_ONLY" list="true" name="donkEvents" type="PointEvent"/>
                 <Field access="READ_ONLY" list="true" name="winLossEvents" type="PointEvent"/>
-                <Field access="READ_ONLY" name="finalRank" type="Integer"/>
-                <Field access="READ_ONLY" name="finalRankPoints" type="Integer"/>
-                <Field access="READ_ONLY" name="donkPoints" type="Integer"/>
-                <Field access="READ_ONLY" name="winLossPoints" type="Integer"/>
-                <Field access="READ_ONLY" name="handsWon" type="Integer"/>
-                <Field access="READ_ONLY" name="handsWonPoints" type="Integer"/>
-                <Field access="READ_ONLY" name="eliminatedPlayerPoints" type="Integer"/>
-                <Field access="READ_ONLY" name="characterMultiplier" type="Float"/>
-                <Field access="READ_ONLY" name="netTotalPoints" type="Float"/>
-                <Field access="READ_ONLY" name="grossTotalPoints" type="Float"/>
+                <Field access="READ_ONLY" name="finalRank" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="finalRankPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="donkPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="winLossPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="handsWon" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="handsWonPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="eliminatedPlayerPoints" type="java/lang/Integer"/>
+                <Field access="READ_ONLY" name="characterMultiplier" type="java/lang/Float"/>
+                <Field access="READ_ONLY" name="netTotalPoints" type="java/lang/Float"/>
+                <Field access="READ_ONLY" name="grossTotalPoints" type="java/lang/Float"/>
               </Fields>
             </ValueObject>
           </Types>

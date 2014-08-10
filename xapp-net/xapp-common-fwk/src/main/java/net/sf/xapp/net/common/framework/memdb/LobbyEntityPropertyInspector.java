@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.common.framework.memdb;
 
-import net.sf.xapp.net.server.lobby.types.LobbyEntity;
+import net.sf.xapp.net.common.types.LobbyEntity;
 
 public class LobbyEntityPropertyInspector implements PropertyInspector<LobbyEntity>
 {

@@ -1,8 +1,7 @@
 package net.sf.xapp.net.common.framework;
 
 import junit.framework.TestCase;
-import net.sf.xapp.net.common.framework.Carousel;
-import net.sf.xapp.net.common.framework.Matcher;
+import net.sf.xapp.utils.Filter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +32,7 @@ public class CarouselTest extends TestCase
         assertEquals("spike", carousel.previous());
 
 
-        Matcher<String> startsWithS = new Matcher<String>()
+        Filter<String> startsWithS = new Filter<String>()
         {
             @Override
             public boolean matches(String obj)
