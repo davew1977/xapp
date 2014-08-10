@@ -16,12 +16,15 @@ import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.marshalling.Unmarshaller;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class PasteXMLCommand extends NodeCommand
@@ -34,35 +37,25 @@ public class PasteXMLCommand extends NodeCommand
     public void execute(Node node)
     {
         ApplicationContainer applicationContainer = node.getAppContainer();
-        ClassModel containedTypeClassModel = node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
-
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        ObjectMeta clipboardObject = null;
 
-        try
-        {
-            String text = (String) t.getTransferData(DataFlavor.stringFlavor);
-            //read opening tag
-            String className = text.substring(1, text.indexOf(' '));
-            Unmarshaller unmarshaller = applicationContainer.getGuiContext().getClassDatabase().createUnmarshaller(className);
-            clipboardObject = unmarshaller.unmarshalString(text, Charset.forName("UTF-8"));
+        String text = getTextFromClipboard(t);
+        //read opening tag
+        String className = text.substring(1, text.indexOf(' '));
+        ClassDatabase cdb = applicationContainer.getGuiContext().getClassDatabase();
+        ClassModel classModel = cdb.getClassModelBySimpleName(className);
+        applicationContainer.getNodeUpdateApi().deserializeAndInsert(node, classModel, text);
+    }
+
+    private String getTextFromClipboard(Transferable t) {
+        try {
+            return (String) t.getTransferData(DataFlavor.stringFlavor);
         }
-        catch (Exception e)
-        {
-            System.out.println("WARNING: could not paste XML from system clipboard: "+e.getMessage());
-            e.printStackTrace();
-            return;
+        catch (UnsupportedFlavorException e) {
+            throw new RuntimeException(e);
         }
-
-
-        if (!containedTypeClassModel.isInstance(clipboardObject.getInstance()))
-        {
-            System.out.println("WARNING: cannot paste a " + clipboardObject.getClass().getSimpleName() + " here!");
-            return;
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
-                 //todo rewire to node update api
-        //add object to data model
-        applicationContainer.getNodeUpdateApi().insertObject(node, clipboardObject.getInstance());
-
     }
 }

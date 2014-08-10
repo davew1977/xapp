@@ -1,7 +1,9 @@
 package net.sf.xapp.application.api;
 
+import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.core.*;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -74,6 +76,10 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void insertObject(Node parentNode, Object obj) {
         ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true, -1);
         //create the node
+        insertNode(parentNode, objectMeta);
+    }
+
+    private void insertNode(Node parentNode, ObjectMeta objectMeta) {
         Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
         appContainer.getApplication().nodeAdded(newNode);
         appContainer.getMainPanel().repaint();
@@ -140,6 +146,13 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         //refresh so a new Node will be created, then we must select that node
         //so that the whole operation is more transparent to the user
         return appContainer.getNodeBuilder().createNode(parent, newInstance, oldIndex);
+    }
+
+    @Override
+    public void deserializeAndInsert(Node node, ClassModel classModel, String text) {
+        Unmarshaller un = new Unmarshaller(classModel);
+        ObjectMeta objectMeta = un.unmarshalString(text, Charset.defaultCharset(), node.toObjLocation());
+        insertNode(node, objectMeta);
     }
 
     @Override

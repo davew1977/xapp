@@ -30,6 +30,11 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
+    public void deserializeAndInsert(Node node, ClassModel classModel, String text) {
+
+    }
+
+    @Override
     public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
         return null;
     }

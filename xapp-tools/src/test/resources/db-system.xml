@@ -2,20 +2,26 @@
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
       <ClassRooms>
+        <ClassRoom name="Emerald" teacher="etrevis">
+          <HomeDir name="docs">
+            <DirMeta name="class_pics">
+              <ImageFile name="jamie.jpg"/>
+            </DirMeta>
+          </HomeDir>
+          <Pupils>
+            <Pupil ref="jamiec"/>
+          </Pupils>
+        </ClassRoom>
         <ClassRoom name="Ruby" teacher="etrevis">
           <HomeDir name="docs">
-            <Files>
-              <DirMeta name="bestwork">
-                <Files>
-                  <TextFile name="class rules">
-                    <Text><![CDATA[no smoking
+            <DirMeta name="bestwork">
+              <TextFile name="class rules">
+                <Text><![CDATA[no smoking
 no chewing
 no swearing
 no spitting]]></Text>
-                  </TextFile>
-                </Files>
-              </DirMeta>
-            </Files>
+              </TextFile>
+            </DirMeta>
           </HomeDir>
           <Pets>
             <Pet animal="dog" name="Bouncer"/>
@@ -28,69 +34,61 @@ no spitting]]></Text>
             <Pupil ref="alicew"/>
           </Pupils>
         </ClassRoom>
-        <ClassRoom name="Emerald" teacher="etrevis">
-          <HomeDir name="docs">
-            <Files>
-              <DirMeta name="class_pics">
-                <Files>
-                  <ImageFile name="jamie.jpg"/>
-                </Files>
-              </DirMeta>
-            </Files>
-          </HomeDir>
-          <Pupils>
-            <Pupil ref="jamiec"/>
-          </Pupils>
-        </ClassRoom>
       </ClassRooms>
       <People>
+        <Pupil anotherFileSystem="Berwick School/jamesh" firstName="Alice" secondName="Webber" username="alicew">
+          <HomeDir name="docs"/>
+        </Pupil>
+        <Pupil firstName="jamie" secondName="callum" username="jamiec">
+          <HomeDir name="docs"/>
+        </Pupil>
+        <Pupil aboutMe="docs/diary/About Me" firstName="James" secondName="Hadwin" username="jamesh">
+          <HomeDir name="docs">
+            <DirMeta name="diary">
+              <TextFile name="About Me">
+                <Text><![CDATA[I once got a bloody forehead after being pushed over in the playground]]></Text>
+              </TextFile>
+            </DirMeta>
+          </HomeDir>
+          <PersonSettings favouriteWords="cloud,">
+            <FavouriteHat colour="green" type="Straw"/>
+          </PersonSettings>
+        </Pupil>
         <Teacher aboutMe="docs/documents/The Flea" firstName="Elizabeth" secondName="Trevis" username="etrevis">
           <HomeDir name="docs">
-            <Files>
-              <DirMeta name="documents">
-                <Files>
-                  <TextFile name="The Parrot">
-                    <Text><![CDATA[It squawks and talks
+            <DirMeta name="documents">
+              <TextFile name="The Parrot">
+                <Text><![CDATA[It squawks and talks
 and walks and flaps
 and pecks little chaps]]></Text>
-                  </TextFile>
-                  <TextFile name="Ode to joy">
-                    <Text><![CDATA[Oh to be a cloud
+              </TextFile>
+              <TextFile name="Ode to joy">
+                <Text><![CDATA[Oh to be a cloud
 In a mostly blue sky
 Floating above
 A mostly green land scape
 with a physique garden
 With someone looking skyward]]></Text>
-                  </TextFile>
-                  <TextFile name="The Flea">
-                    <Text><![CDATA[I had a little flea,
+              </TextFile>
+              <TextFile name="The Flea">
+                <Text><![CDATA[I had a little flea,
 It didn't like me,
 It jumped in my tea,
 And lived inside me]]></Text>
-                  </TextFile>
-                </Files>
-              </DirMeta>
-              <DirMeta name="pix">
-                <Files>
-                  <ImageFile name="me.jpg"/>
-                </Files>
-              </DirMeta>
-            </Files>
+              </TextFile>
+            </DirMeta>
+            <DirMeta name="pix">
+              <ImageFile name="me.jpg"/>
+            </DirMeta>
           </HomeDir>
           <PersonSettings favouriteWords="pop,">
             <FavouriteHat colour="green" type="Straw"/>
           </PersonSettings>
         </Teacher>
-        <Pupil firstName="Elias" secondName="Webber" username="eliasw">
-          <HomeDir name="docs"/>
-        </Pupil>
-        <Pupil firstName="Alice" secondName="Webber" username="alicew">
-          <HomeDir name="docs"/>
-        </Pupil>
         <Teacher firstName="alison" secondName="carver" username="acarver">
           <HomeDir name="docs"/>
         </Teacher>
-        <Pupil firstName="jamie" secondName="callum" username="jamiec">
+        <Pupil firstName="Elias" secondName="Webber" username="eliasw">
           <HomeDir name="docs"/>
         </Pupil>
       </People>
@@ -101,13 +99,6 @@ And lived inside me]]></Text>
     </School>
     <School headTeacher="breid" name="Berwick School" schoolDescription="eliasw/docs/About Berwick School">
       <ClassRooms>
-        <ClassRoom name="Exceat Class" teacher="breid">
-          <HomeDir name="docs"/>
-          <Pupils>
-            <Pupil ref="jkeeley"/>
-            <Pupil ref="eliasw"/>
-          </Pupils>
-        </ClassRoom>
         <ClassRoom name="Station Class" teacher="breid">
           <HomeDir name="docs"/>
           <Pets>
@@ -118,77 +109,72 @@ And lived inside me]]></Text>
             <Pupil ref="jwebber"/>
           </Pupils>
         </ClassRoom>
+        <ClassRoom name="Exceat Class" teacher="breid">
+          <HomeDir name="docs"/>
+          <Pupils>
+            <Pupil ref="jkeeley"/>
+            <Pupil ref="eliasw"/>
+          </Pupils>
+        </ClassRoom>
       </ClassRooms>
       <People>
+        <Pupil firstName="jerome" secondName="keeley" username="jkeeley">
+          <HomeDir name="docs"/>
+        </Pupil>
+        <Pupil aboutMe="docs/diary/About Me" firstName="James" secondName="Hadwin" username="jamesh">
+          <HomeDir name="docs">
+            <DirMeta name="diary">
+              <TextFile name="About Me">
+                <Text><![CDATA[I once got a bloody forehead after being pushed over in the playground]]></Text>
+              </TextFile>
+            </DirMeta>
+          </HomeDir>
+          <PersonSettings favouriteWords="cloud,">
+            <FavouriteHat colour="green" type="Straw"/>
+          </PersonSettings>
+        </Pupil>
         <Teacher aboutMe="docs/profile" firstName="beryl" secondName="reid" username="breid">
           <HomeDir name="docs">
-            <Files>
-              <DirMeta name="pictures">
-                <Files>
-                  <DirMeta name="private">
-                    <Files>
-                      <ImageFile name="mr blobby.gif"/>
-                    </Files>
-                  </DirMeta>
-                </Files>
+            <DirMeta name="pictures">
+              <DirMeta name="private">
+                <ImageFile name="mr blobby.gif"/>
               </DirMeta>
-              <DirMeta name="text files">
-                <Files>
-                  <TextFile name="chocolate cake recipe">
-                    <Text><![CDATA[chocolate, flour, sugar, eggs
+            </DirMeta>
+            <DirMeta name="text files">
+              <TextFile name="chocolate cake recipe">
+                <Text><![CDATA[chocolate, flour, sugar, eggs
 pinch of salt]]></Text>
-                  </TextFile>
-                </Files>
-              </DirMeta>
-              <TextFile name="profile">
-                <Text><![CDATA[i am 26 years old
+              </TextFile>
+            </DirMeta>
+            <TextFile name="profile">
+              <Text><![CDATA[i am 26 years old
 i always wanted to be a teacher
 
 my hobbies are knitting and tennis]]></Text>
-              </TextFile>
-            </Files>
+            </TextFile>
           </HomeDir>
         </Teacher>
         <Pupil anotherFileSystem="Alfriston School/jamiec" firstName="elias" secondName="woojah" username="eliasw">
           <HomeDir name="docs">
-            <Files>
-              <TextFile name="About Berwick School">
-                <Text><![CDATA[this is a great little school!]]></Text>
-              </TextFile>
-              <DirMeta name="pictures">
-                <Files>
-                  <DirMeta name="home">
-                    <Files>
-                      <ImageFile name="alice.jpg"/>
-                      <DirMeta name="2013">
-                        <Files>
-                          <ImageFile name="mum.jpg"/>
-                        </Files>
-                      </DirMeta>
-                    </Files>
-                  </DirMeta>
-                  <DirMeta name="school">
-                    <Files>
-                      <ImageFile name="playground.jpg"/>
-                      <ImageFile name="Ms Reid.jpg"/>
-                    </Files>
-                  </DirMeta>
-                </Files>
+            <TextFile name="About Berwick School">
+              <Text><![CDATA[this is a great little school!]]></Text>
+            </TextFile>
+            <DirMeta name="pictures">
+              <DirMeta name="home">
+                <ImageFile name="alice.jpg"/>
+                <DirMeta name="2013">
+                  <ImageFile name="mum.jpg"/>
+                </DirMeta>
               </DirMeta>
-            </Files>
+              <DirMeta name="school">
+                <ImageFile name="playground.jpg"/>
+                <ImageFile name="Ms Reid.jpg"/>
+              </DirMeta>
+            </DirMeta>
           </HomeDir>
-        </Pupil>
-        <Pupil firstName="jerome" secondName="keeley" username="jkeeley">
-          <HomeDir name="docs"/>
         </Pupil>
         <Pupil firstName="John" secondName="Webber" username="jwebber">
           <HomeDir name="docs"/>
-        </Pupil>
-        <Pupil firstName="James" secondName="Hadwin" username="jamesh">
-          <HomeDir name="docs"/>
-          <PersonSettings favouriteWords="cloud,">
-            <FavouriteHat colour="green" type="Straw"/>
-          </PersonSettings>
         </Pupil>
       </People>
       <PicturesOfTheWeek>

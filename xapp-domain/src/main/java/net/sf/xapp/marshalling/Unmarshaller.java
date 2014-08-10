@@ -23,7 +23,6 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -78,12 +77,11 @@ public class Unmarshaller<T>
         }
     }
 
-    public ObjectMeta<T> unmarshal(InputStream is)
-    {
+    public ObjectMeta<T> unmarshal(InputStream is) {
         return unmarshal(is, null);
     }
 
-    public ObjectMeta<T> unmarshal(InputStream is, String path) {
+    public ObjectMeta<T> unmarshal(InputStream is, ObjectLocation parent) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             try {
@@ -96,10 +94,18 @@ public class Unmarshaller<T>
 
             Document doc = db.parse(is);
             if (m_verbose) System.out.println("trying to unmarshal: " + doc.getFirstChild());
-            ObjectMeta<T> obj = unmarshal(doc.getDocumentElement(), null);
+            ObjectMeta<T> obj = unmarshal(doc.getDocumentElement(), parent);
+            //if parent is not null, we may have pending references to set some higher up the hierarchy
+            if (parent != null) {
+                parent.flushPendingRefs();
+            }
             //tryAndInvoke
-            if (m_validate) ClassModel.tryAndInvoke(obj, "validate");
-            if (m_verbose) System.out.println("unmarshalled " + obj);
+            if (m_validate) {
+                ClassModel.tryAndInvoke(obj, "validate");
+            }
+            if (m_verbose) {
+                System.out.println("unmarshalled " + obj);
+            }
             if (m_root) {
                 classModel.getClassDatabase().getMarshallerContext().setInitialized(obj);
             }
@@ -117,7 +123,7 @@ public class Unmarshaller<T>
             {
                 throw new XappException("file: " + file + " does not exist");
             }
-            return unmarshal(new FileInputStream(file), file.getParentFile() != null ? file.getParentFile().getAbsolutePath() : null);
+            return unmarshal(new FileInputStream(file));
         }
         catch (Exception e)
         {
@@ -130,12 +136,16 @@ public class Unmarshaller<T>
         return unmarshalString(xml, Charset.defaultCharset());
     }
 
-    public ObjectMeta<T> unmarshalString(String xml, Charset charset)
+    public ObjectMeta<T> unmarshalString(String xml, Charset charset) {
+        return unmarshalString(xml, charset, null);
+    }
+
+    public ObjectMeta<T> unmarshalString(String xml, Charset charset, ObjectLocation parent)
     {
         try
         {
             //using getBytes(String charsetName) instead of getBytes(Charset charset) to be 1.5 compliant
-            return unmarshal(new ByteArrayInputStream(xml.getBytes(charset.name())));
+            return unmarshal(new ByteArrayInputStream(xml.getBytes(charset.name())), parent);
         }
         catch (UnsupportedEncodingException e)
         {

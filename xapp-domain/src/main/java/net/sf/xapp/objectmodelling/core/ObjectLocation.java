@@ -148,4 +148,12 @@ public class ObjectLocation {
     public void addPendingRef(String key) {
         getNamespace().addPendingRef(this, key);
     }
+
+    public void flushPendingRefs() {
+        ObjectMeta objMeta = obj;
+        while(objMeta != null) {
+            objMeta.flushPendingRefs();
+            objMeta = objMeta.getParent();
+        }
+    }
 }

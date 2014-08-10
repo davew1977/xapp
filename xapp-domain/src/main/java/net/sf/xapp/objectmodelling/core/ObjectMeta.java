@@ -596,7 +596,7 @@ public class ObjectMeta<T> implements Namespace{
         classModel.tryAndCallPostInit(this);
     }
 
-    private void flushPendingRefs() {
+    public void flushPendingRefs() {
         for (PendingObjectReference pendingObjectReference : pendingRefsToSet) {
             ObjectLocation targetLocation = pendingObjectReference.getTargetLocation();
             String key = pendingObjectReference.getKey();

@@ -55,4 +55,6 @@ public interface NodeUpdateApi {
     void updateReferences(Node node, List<Object> objects);
 
     Node changeType(ObjectMeta obj, ClassModel targetClassModel);
+
+    void deserializeAndInsert(Node node, ClassModel classModel, String text);
 }
