@@ -7,7 +7,7 @@
 package net.sf.xapp.net.server.playerrepository;
 
 import ngpoker.common.types.ImageData;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.user.UserInfo;
 
 /**
@@ -15,13 +15,13 @@ import ngpoker.user.UserInfo;
  */
 public interface UserStore
 {
-    PlayerId addUser(UserInfo userInfo, ImageData profileImage);
-    PlayerId authenticateUser(String nickname, String password);
-    PlayerId authenticateUser(PlayerId playerId, String keyToken, boolean bot);
-    PlayerId obtainGuestId(String nickname);
+    UserId addUser(UserInfo userInfo, ImageData profileImage);
+    UserId authenticateUser(String nickname, String password);
+    UserId authenticateUser(UserId userId, String keyToken, boolean bot);
+    UserId obtainGuestId(String nickname);
 
     void resetPassword(String nickname, String email);
 
-    User getUser(PlayerId playerId);
-    PlayerId getPlayerId(String nickname);
+    User getUser(UserId userId);
+    UserId getUserId(String nickname);
 }

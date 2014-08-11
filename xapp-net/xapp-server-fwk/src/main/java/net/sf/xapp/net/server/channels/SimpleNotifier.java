@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.channels;
 
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
 
 /**
@@ -17,7 +17,7 @@ import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
  */
 public class SimpleNotifier<A> implements MessageHandler<A>
 {
-    private final PlayerId principal;
+    private final UserId principal;
     private final MessageSender messageSender;
 
     public SimpleNotifier(MessageSender messageSender)
@@ -25,7 +25,7 @@ public class SimpleNotifier<A> implements MessageHandler<A>
         this(messageSender, null);
     }
     
-    public SimpleNotifier(MessageSender messageSender, PlayerId principal)
+    public SimpleNotifier(MessageSender messageSender, UserId principal)
     {
         this.messageSender = messageSender;
         this.principal = principal;
@@ -34,7 +34,7 @@ public class SimpleNotifier<A> implements MessageHandler<A>
     @Override
     public <T> T handleMessage(InMessage<A, T> atInMessage)
     {
-        PlayerId pid = principal!=null ? principal : (PlayerId) atInMessage.principal();
+        UserId pid = principal!=null ? principal : (UserId) atInMessage.principal();
         messageSender.post(pid, atInMessage);
         return null;
     }

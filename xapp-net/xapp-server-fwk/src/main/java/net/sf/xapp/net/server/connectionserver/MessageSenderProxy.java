@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.connectionserver;
 
 import net.sf.xapp.net.server.clustering.ClusterFacade;
 import ngpoker.common.framework.Message;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
 import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
 import net.sf.xapp.net.server.connectionserver.messagesender.to.Broadcast;
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageSenderProxy implements MessageSender, ConnectionListener
 {
     private final Logger log = Logger.getLogger(getClass());
-    private final Map<PlayerId, NodeId> connectionLocations;
+    private final Map<UserId, NodeId> connectionLocations;
     private final NodeExitPoint nodeExitPoint;
     private final ClusterFacade clusterFacade;
 
@@ -37,25 +37,25 @@ public class MessageSenderProxy implements MessageSender, ConnectionListener
     {
         this.nodeExitPoint = nodeExitPoint;
         this.clusterFacade = clusterFacade;
-        connectionLocations = new ConcurrentHashMap<PlayerId, NodeId>();
+        connectionLocations = new ConcurrentHashMap<UserId, NodeId>();
     }
 
     @Override
     /**
      * Sorts the broadcast recipients according to where they are connected, and dispatches to those nodes
      */
-    public void broadcast(List<PlayerId> receivers, Message message)
+    public void broadcast(List<UserId> receivers, Message message)
     {
-        Map<NodeId, List<PlayerId>> recipientMap = new HashMap<NodeId, List<PlayerId>>();
-        for (PlayerId receiver : receivers)
+        Map<NodeId, List<UserId>> recipientMap = new HashMap<NodeId, List<UserId>>();
+        for (UserId receiver : receivers)
         {
             NodeId nodeId = nodeId(receiver);
             if (nodeId!=null)
             {
-                List<PlayerId> recipients = recipientMap.get(nodeId);
+                List<UserId> recipients = recipientMap.get(nodeId);
                 if (recipients == null)
                 {
-                    recipients = new ArrayList<PlayerId>();
+                    recipients = new ArrayList<UserId>();
                     recipientMap.put(nodeId, recipients);
                 }
                 recipients.add(receiver);
@@ -65,51 +65,51 @@ public class MessageSenderProxy implements MessageSender, ConnectionListener
                 log.debug("skipping broadcast to " + receiver + " who is not connected");
             }
         }
-        for (Map.Entry<NodeId, List<PlayerId>> e : recipientMap.entrySet())
+        for (Map.Entry<NodeId, List<UserId>> e : recipientMap.entrySet())
         {
             nodeExitPoint.sendAsyncMessage(e.getKey(), new Broadcast(e.getValue(), message));
         }
     }
 
     @Override
-    public void post(PlayerId playerId, Message message)
+    public void post(UserId userId, Message message)
     {
-        NodeId nodeId = nodeId(playerId);
+        NodeId nodeId = nodeId(userId);
         if (nodeId!=null)
         {
-            nodeExitPoint.sendAsyncMessage(nodeId, new Post(playerId, message));
+            nodeExitPoint.sendAsyncMessage(nodeId, new Post(userId, message));
         }
         else
         {
-            log.debug("skipping post message to " + playerId + " who is not connected");
+            log.debug("skipping post message to " + userId + " who is not connected");
             log.debug(message);
         }
     }
 
-    private NodeId nodeId(PlayerId playerId)
+    private NodeId nodeId(UserId userId)
     {
-        NodeId nodeId = connectionLocations.get(playerId);
+        NodeId nodeId = connectionLocations.get(userId);
         if(nodeId==null)
         {
             //lookup in cluster
-            nodeId = clusterFacade.getNodeId(playerId);
+            nodeId = clusterFacade.getNodeId(userId);
             if(nodeId!=null)
             {
-                connectionLocations.put(playerId, nodeId);
+                connectionLocations.put(userId, nodeId);
             }
         }
         return nodeId;
     }
 
     @Override
-    public void playerConnected(PlayerId playerId, NodeId nodeId)
+    public void playerConnected(UserId userId, NodeId nodeId)
     {
-        connectionLocations.put(playerId, nodeId);
+        connectionLocations.put(userId, nodeId);
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
+    public void playerDisconnected(UserId userId)
     {
-        connectionLocations.remove(playerId);
+        connectionLocations.remove(userId);
     }
 }

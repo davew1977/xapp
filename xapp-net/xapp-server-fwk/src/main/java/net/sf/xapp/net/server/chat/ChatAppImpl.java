@@ -16,7 +16,7 @@ import net.sf.xapp.net.server.chat.client.ChatClientAdaptor;
 import net.sf.xapp.net.server.chat.player.ChatPlayer;
 import net.sf.xapp.net.server.chat.player.ChatPlayerAdaptor;
 import ngpoker.common.types.AppType;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.playerlookup.PlayerLookup;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class ChatAppImpl implements ChatApp, App
 {
     private final String key;
     private ChatClient chatClient;
-    private Map<PlayerId, ChatUser> nicknameMap;
+    private Map<UserId, ChatUser> nicknameMap;
     private PlayerLookup playerLookup;
     private CommChannel commChannel;
 
@@ -36,7 +36,7 @@ public class ChatAppImpl implements ChatApp, App
     {
         this.playerLookup = playerLookup;
         this.key = key;
-        nicknameMap = new HashMap<PlayerId, ChatUser>();
+        nicknameMap = new HashMap<UserId, ChatUser>();
     }
 
     public void setCommChannel(CommChannel commChannel)
@@ -52,29 +52,29 @@ public class ChatAppImpl implements ChatApp, App
     }
 
     @Override
-    public void newChatMessage(PlayerId sender, String message)
+    public void newChatMessage(UserId sender, String message)
     {
         chatClient.chatBroadcast(sender, message, nicknameMap.get(sender).nickname);
     }
 
     @Override
-    public void playerConnected(PlayerId playerId)
+    public void playerConnected(UserId userId)
     {
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
+    public void playerDisconnected(UserId userId)
     {
-        playerLeft(playerId);
-        commChannel.removePlayer(playerId);
+        playerLeft(userId);
+        commChannel.removePlayer(userId);
     }
 
     @Override
-    public void playerJoined(PlayerId playerId)
+    public void playerJoined(UserId userId)
     {
-        String nickname = playerLookup.findPlayer(playerId).getPlayer().getUsername();
+        String nickname = playerLookup.findPlayer(userId).getPlayer().getUsername();
         ChatPlayer chatPlayer = new ChatPlayerAdaptor(new NotifyProxy<ChatPlayer>(commChannel));
-        nicknameMap.put(playerId, new ChatUser(nickname, chatPlayer));
+        nicknameMap.put(userId, new ChatUser(nickname, chatPlayer));
         chatClient.playerJoined(nickname);
         Collection<ChatUser> chatUsers = nicknameMap.values();
         ArrayList<String> usernames = new ArrayList<String>();
@@ -82,13 +82,13 @@ public class ChatAppImpl implements ChatApp, App
         {
             usernames.add(chatUser.nickname);
         }
-        chatPlayer.chatChannelState(playerId, usernames);
+        chatPlayer.chatChannelState(userId, usernames);
     }
 
     @Override
-    public void playerLeft(PlayerId playerId)
+    public void playerLeft(UserId userId)
     {
-        chatClient.playerLeft(nicknameMap.remove(playerId).nickname);
+        chatClient.playerLeft(nicknameMap.remove(userId).nickname);
     }
 
     private static class ChatUser

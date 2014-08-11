@@ -12,7 +12,7 @@ import net.sf.xapp.net.server.clustering.PublicEntryPoint;
 import net.sf.xapp.net.server.channels.PlayerLocator;
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.framework.Message;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.common.types.PlayerLocation;
 import net.sf.xapp.net.server.connectionserver.clientcontrol.to.SetInitialInfo;
 import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PublicMessageLayer<T> implements MessageLayer<T, PlayerId>, MessageSender
+public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSender
 {
     private Logger log = Logger.getLogger(getClass());
-    private IOLayer<T, PlayerId> ioLayer;
-    private Map<PlayerId, T> sessions;
+    private IOLayer<T, UserId> ioLayer;
+    private Map<UserId, T> sessions;
     private final PublicEntryPoint publicEntryPoint;
     private final ConnectionListener connectionListener;
     private final NodeInfo nodeInfo;
@@ -49,11 +49,11 @@ public class PublicMessageLayer<T> implements MessageLayer<T, PlayerId>, Message
         this.clusterFacade = clusterFacade;
         this.playerLocator = playerLocator;
         this.playerLookup = playerLookup;
-        sessions = new HashMap<PlayerId,T>();
+        sessions = new HashMap<UserId,T>();
     }
 
     @Override
-    public void setIOLayer(IOLayer<T, PlayerId> ioLayer)
+    public void setIOLayer(IOLayer<T, UserId> ioLayer)
     {
         this.ioLayer = ioLayer;
     }
@@ -61,24 +61,24 @@ public class PublicMessageLayer<T> implements MessageLayer<T, PlayerId>, Message
     @Override
     public void sessionOpened(T session)
     {
-        PlayerId playerId = ioLayer.getSessionKey(session);
-        sessions.put(playerId, session);
-        clusterFacade.addPlayerLocationMapping(playerId, nodeInfo.getMyNodeId());
-        connectionListener.playerConnected(playerId, nodeInfo.getMyNodeId());
-        boolean guest = playerLookup.findPlayer(playerId).getPlayer().isGuest();
+        UserId userId = ioLayer.getSessionKey(session);
+        sessions.put(userId, session);
+        clusterFacade.addPlayerLocationMapping(userId, nodeInfo.getMyNodeId());
+        connectionListener.playerConnected(userId, nodeInfo.getMyNodeId());
+        boolean guest = playerLookup.findPlayer(userId).getPlayer().isGuest();
 
         //check for channels to join
-        List<PlayerLocation> channels = playerLocator.getLocations(playerId);
-        post(playerId, new SetInitialInfo(playerId, channels, System.currentTimeMillis(), guest));
+        List<PlayerLocation> channels = playerLocator.getLocations(userId);
+        post(userId, new SetInitialInfo(userId, channels, System.currentTimeMillis(), guest));
     }
 
     @Override
     public void sessionClosed(T session)
     {
-        PlayerId playerId = ioLayer.getSessionKey(session);
-        sessions.remove(playerId);
-        clusterFacade.removePlayerLocationMapping(playerId);
-        connectionListener.playerDisconnected(playerId);
+        UserId userId = ioLayer.getSessionKey(session);
+        sessions.remove(userId);
+        clusterFacade.removePlayerLocationMapping(userId);
+        connectionListener.playerDisconnected(userId);
     }
 
     @Override
@@ -89,25 +89,25 @@ public class PublicMessageLayer<T> implements MessageLayer<T, PlayerId>, Message
     }
 
     @Override
-    public void broadcast(List<PlayerId> players, Message message)
+    public void broadcast(List<UserId> players, Message message)
     {
-        for (PlayerId playerId : players)
+        for (UserId userId : players)
         {
-            post(playerId, message);
+            post(userId, message);
         }
     }
 
     @Override
-    public void post(PlayerId playerId, Message message)
+    public void post(UserId userId, Message message)
     {
-        T session = sessions.get(playerId);
+        T session = sessions.get(userId);
         if (session!=null)
         {
             ioLayer.sendMessage(session, message);
         }
         else
         {
-            log.debug(String.format("trying to post message to player with no session: %s %s", playerId, message));
+            log.debug(String.format("trying to post message to player with no session: %s %s", userId, message));
         }
     }
 }

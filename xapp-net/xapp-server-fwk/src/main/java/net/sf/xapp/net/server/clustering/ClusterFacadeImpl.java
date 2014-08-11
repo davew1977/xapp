@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.clustering;
 
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.infrastructure.types.NodeData;
 import ngpoker.infrastructure.types.NodeId;
 import ngpoker.infrastructure.types.PublicNodeState;
@@ -76,21 +76,21 @@ public class ClusterFacadeImpl implements ClusterFacade
     }
 
     @Override
-    public NodeId getNodeId(PlayerId playerId)
+    public NodeId getNodeId(UserId userId)
     {
-        return clusterSharedState.getNodeId(playerId);
+        return clusterSharedState.getNodeId(userId);
     }
 
     @Override
-    public void addPlayerLocationMapping(PlayerId playerId, NodeId nodeId)
+    public void addPlayerLocationMapping(UserId userId, NodeId nodeId)
     {
-        clusterSharedState.addPlayerLocationMapping(playerId, nodeId);
+        clusterSharedState.addPlayerLocationMapping(userId, nodeId);
     }
 
     @Override
-    public void removePlayerLocationMapping(PlayerId playerId)
+    public void removePlayerLocationMapping(UserId userId)
     {
-        clusterSharedState.removePlayerLocationMapping(playerId);
+        clusterSharedState.removePlayerLocationMapping(userId);
     }
 
     @Override

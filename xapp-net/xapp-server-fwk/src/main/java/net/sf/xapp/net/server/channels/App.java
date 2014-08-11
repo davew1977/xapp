@@ -1,7 +1,8 @@
 package net.sf.xapp.net.server.channels;
 
-import ngpoker.common.types.*;
 
+import net.sf.xapp.net.common.types.AppType;
+import net.sf.xapp.net.common.types.UserId;
 
 /**
  * Generated 2011-sep-27 08:27:04
@@ -10,10 +11,10 @@ import ngpoker.common.types.*;
 public interface App
 {
 
-     void playerConnected(PlayerId playerId);
-     void playerDisconnected(PlayerId playerId);
-     void playerJoined(PlayerId playerId);
-     void playerLeft(PlayerId playerId);
+     void userConnected(UserId userId);
+     void userDisconnected(UserId userId);
+     void userJoined(UserId userId);
+     void userLeft(UserId userId);
 
     String getKey();
 

@@ -6,13 +6,14 @@
  */
 package net.sf.xapp.net.server.channels;
 
+import net.sf.xapp.net.common.framework.Message;
 import ngpoker.common.framework.Message;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 
 public interface CommChannel
 {
     void broadcast(Message message);
-    void send(PlayerId playerId, Message message);
-    void removePlayer(PlayerId playerId);
-    void addPlayer(PlayerId playerId);
+    void send(UserId userId, Message message);
+    void removePlayer(UserId userId);
+    void addPlayer(UserId userId);
 }

@@ -6,9 +6,10 @@
  */
 package net.sf.xapp.net.server.channels;
 
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import ngpoker.client.channel.Channel;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
 import ngpoker.infrastructure.types.NodeId;
 
@@ -32,28 +33,28 @@ public class ChannelConnectionListener implements ConnectionListener
     }
 
     @Override
-    public void playerConnected(PlayerId playerId, NodeId nodeId)
+    public void playerConnected(UserId userId, NodeId nodeId)
     {
-        Collection<Channel> channels = channels(playerId);
+        Collection<Channel> channels = channels(userId);
         for (Channel channel : channels)
         {
-            channel.playerConnected(playerId);
+            channel.playerConnected(userId);
         }
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
+    public void playerDisconnected(UserId userId)
     {
-        Collection<Channel> channels = channels(playerId);
+        Collection<Channel> channels = channels(userId);
         for (Channel channel : channels)
         {
-            channel.playerDisconnected(playerId);
+            channel.playerDisconnected(userId);
         }
     }
 
-    private Collection<Channel> channels(PlayerId playerId)
+    private Collection<Channel> channels(UserId userId)
     {
-        Set<String> channelKeys = playerLocator.getAppKeys(playerId);
+        Set<String> channelKeys = playerLocator.getAppKeys(userId);
         ArrayList<Channel> result = new ArrayList<Channel>(channelKeys.size());
         for (String channelKey : channelKeys)
         {

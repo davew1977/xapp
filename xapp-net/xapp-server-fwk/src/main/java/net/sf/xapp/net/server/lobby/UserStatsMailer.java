@@ -5,7 +5,7 @@ import ngpoker.common.types.Country;
 import ngpoker.common.types.ListOp;
 import ngpoker.common.types.LobbyPropertyEnum;
 import ngpoker.common.types.Player;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.lobby.internal.LobbyInternal;
 import net.sf.xapp.net.server.lobby.types.LobbyEntity;
 import ngpoker.playerlookup.PlayerLookup;
@@ -87,7 +87,7 @@ public class UserStatsMailer implements LobbyInternal
     private void recordLogin(String entityKey)
     {
         String timestamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
-        Player player = playerLookup.findPlayer(new PlayerId(entityKey)).getPlayer();
+        Player player = playerLookup.findPlayer(new UserId(entityKey)).getPlayer();
         String nickname = player.getUsername();
         Country country = player.getCountry();
         String stat = String.format("%s - %s (%s from %s) logged in", timestamp, entityKey, nickname, country);

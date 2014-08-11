@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.clustering;
 
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.infrastructure.types.NodeData;
 import ngpoker.infrastructure.types.NodeId;
 import ngpoker.infrastructure.types.PublicNodeState;
@@ -24,7 +24,7 @@ public class TestClusterSharedState implements ClusterSharedState
 {
     private Map<NodeId,BlockingQueue<InMessage>> nodeQMap = new HashMap<NodeId, BlockingQueue<InMessage>>();
     private Map<String, List<MessageHandler>> topicListeners;
-    private Map<PlayerId, NodeId> playerLocations;
+    private Map<UserId, NodeId> playerLocations;
     private Map<String, NodeId> entityMappings;
 
     public TestClusterSharedState(int nodecount)
@@ -35,7 +35,7 @@ public class TestClusterSharedState implements ClusterSharedState
             nodeQMap.put(new NodeId(String.valueOf(i)), new LinkedBlockingQueue<InMessage>());
         }
         topicListeners = new HashMap<String, List<MessageHandler>>();
-        playerLocations = new HashMap<PlayerId, NodeId>();
+        playerLocations = new HashMap<UserId, NodeId>();
         entityMappings = new HashMap<String, NodeId>();
     }
 
@@ -85,21 +85,21 @@ public class TestClusterSharedState implements ClusterSharedState
     }
 
     @Override
-    public NodeId getNodeId(PlayerId playerId)
+    public NodeId getNodeId(UserId userId)
     {
-        return playerLocations.get(playerId);
+        return playerLocations.get(userId);
     }
 
     @Override
-    public void addPlayerLocationMapping(PlayerId playerId, NodeId nodeId)
+    public void addPlayerLocationMapping(UserId userId, NodeId nodeId)
     {
-        playerLocations.put(playerId, nodeId);
+        playerLocations.put(userId, nodeId);
     }
 
     @Override
-    public void removePlayerLocationMapping(PlayerId playerId)
+    public void removePlayerLocationMapping(UserId userId)
     {
-        playerLocations.remove(playerId);
+        playerLocations.remove(userId);
     }
 
     @Override

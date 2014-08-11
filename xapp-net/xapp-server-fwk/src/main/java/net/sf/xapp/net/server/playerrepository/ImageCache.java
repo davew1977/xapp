@@ -1,10 +1,10 @@
 package net.sf.xapp.net.server.playerrepository;
 
 import ngpoker.common.types.ImageData;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 
 public interface ImageCache
 {
-    ImageData load(PlayerId playerId);
-    void save(PlayerId playerId, ImageData imageData);
+    ImageData load(UserId userId);
+    void save(UserId userId, ImageData imageData);
 }

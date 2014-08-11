@@ -10,22 +10,22 @@ import ngpoker.backend.userapi.UserApi;
 import ngpoker.backend.userapi.to.*;
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.types.GenericException;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import org.apache.log4j.Logger;
 
-public class LoginMessageLayer<T> implements MessageLayer<T, PlayerId> {
+public class LoginMessageLayer<T> implements MessageLayer<T, UserId> {
     private final UserApi userApi;
-    private final MessageLayer<T, PlayerId> delegate;
-    private IOLayer<T, PlayerId> ioLayer;
+    private final MessageLayer<T, UserId> delegate;
+    private IOLayer<T, UserId> ioLayer;
     private Logger log = Logger.getLogger(getClass());
 
-    public LoginMessageLayer(MessageLayer<T, PlayerId> delegate, UserApi userApi) {
+    public LoginMessageLayer(MessageLayer<T, UserId> delegate, UserApi userApi) {
         this.userApi = userApi;
         this.delegate = delegate;
     }
 
     @Override
-    public void setIOLayer(IOLayer<T, PlayerId> ioLayer) {
+    public void setIOLayer(IOLayer<T, UserId> ioLayer) {
         this.ioLayer = ioLayer;
         delegate.setIOLayer(ioLayer);
     }
@@ -43,15 +43,15 @@ public class LoginMessageLayer<T> implements MessageLayer<T, PlayerId> {
 
     @Override
     public void handleMessage(T session, InMessage message) {
-        PlayerId storedPlayerId = ioLayer.getSessionKey(session);
-        PlayerId principal = (PlayerId) message.principal();
-        if (storedPlayerId == null) {
+        UserId storedUserId = ioLayer.getSessionKey(session);
+        UserId principal = (UserId) message.principal();
+        if (storedUserId == null) {
             if (message instanceof LoginWithToken) {
                 LoginWithToken login = (LoginWithToken) message;
-                ioLayer.setSessionKey(session, login.getPlayerId());
+                ioLayer.setSessionKey(session, login.getUserId());
                 login.visit(userApi);
                 //TODO trap error and force disconnect
-                log.info(login.getPlayerId() + " successfully logged in");
+                log.info(login.getUserId() + " successfully logged in");
                 delegate.sessionOpened(session);
             } else if (message instanceof ResetPassword) {
                 ResetPassword resetPassword = (ResetPassword) message;
@@ -91,7 +91,7 @@ public class LoginMessageLayer<T> implements MessageLayer<T, PlayerId> {
                 ioLayer.closeSession(session);
             }
         } else {
-            if (storedPlayerId.equals(principal)) //generify "principal field"
+            if (storedUserId.equals(principal)) //generify "principal field"
             {
                 delegate.handleMessage(session, message);
             } else {

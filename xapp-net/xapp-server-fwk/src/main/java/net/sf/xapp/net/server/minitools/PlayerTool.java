@@ -5,7 +5,7 @@ import net.sf.xapp.net.server.clustering.NodeInfoImpl;
 import ngpoker.common.types.AccountType;
 import ngpoker.common.types.Country;
 import ngpoker.common.types.MoneyType;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.moneysystem.types.Account;
 import net.sf.xapp.net.server.playerrepository.SimpleUserStore;
 import net.sf.xapp.net.server.playerrepository.User;
@@ -28,7 +28,7 @@ public class PlayerTool
 {
     public static void main(String[] args)
     {
-        Map<PlayerId, User> userMap = loadUsers();
+        Map<UserId, User> userMap = loadUsers();
         for (User user : userMap.values())
         {
             Account account = user.getAccount(new AccountType(MoneyType.REAL_MONEY, "USD"));
@@ -38,7 +38,7 @@ public class PlayerTool
 
     public static void updateAccountBalance(int accountIndex, long amount)
     {
-        Map<PlayerId, User> userMap = loadUsers();
+        Map<UserId, User> userMap = loadUsers();
         //update account balances
         for (User user : userMap.values())
         {
@@ -55,25 +55,25 @@ public class PlayerTool
         for(int i=0;i<50;i++)
         {
             String id = "bot_" + i;
-            PlayerId playerId = new PlayerId(id);
+            UserId userId = new UserId(id);
             Country country = Country.values()[i % Country.values().length];
             String email = id + "@botty.com";
             UserInfo userInfo = new UserInfo("botty_" + i,"botman", password, id, country, email);
-            User user = SimpleUserStore.createUser(playerId, userInfo, 0, 100000L, deck.draw(), false);
+            User user = SimpleUserStore.createUser(userId, userInfo, 0, 100000L, deck.draw(), false);
             db.add(id, user);
         }
     }
 
-    private static Map<PlayerId, User> loadUsers()
+    private static Map<UserId, User> loadUsers()
     {
         FileDB<User, UserEntityListener> userDB = createUserDB();
 
         List<User> users = userDB.readAll();
-        Map<PlayerId, User> userMap = new HashMap<PlayerId, User>();
+        Map<UserId, User> userMap = new HashMap<UserId, User>();
         for (User user : users)
         {
-            user.addListener(new UserEntityListenerAdaptor(user.getPlayerId().getValue(), userDB));
-            userMap.put(user.getPlayerId(), user);
+            user.addListener(new UserEntityListenerAdaptor(user.getUserId().getValue(), userDB));
+            userMap.put(user.getUserId(), user);
         }
         return userMap;
     }

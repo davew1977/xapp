@@ -46,7 +46,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
 {
     private final Logger log = Logger.getLogger(getClass());
     private final MessageSender messageSender;
-    private final AtomicInteger guestPlayerIdSeq = new AtomicInteger(0);
+    private final AtomicInteger guestUserIdSeq = new AtomicInteger(0);
     private final UserCache userCache;
     private final ClientControl clientControl;
     private final FileDB<User, UserEntityListener> userDB;
@@ -90,7 +90,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
         for (User user : users)
         {
             userCache.addUser(user);
-            String pid = user.getPlayerId().getValue();
+            String pid = user.getUserId().getValue();
             user.addListener(new UserEntityListenerAdaptor(pid, userDB));
             user.addListener(new UserLobbyListener(user));
             userspaceCoordDeck.use(user.getUserspaceLocation());
@@ -102,7 +102,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public synchronized PlayerId addUser(UserInfo userInfo, ImageData profileImage)
+    public synchronized UserId addUser(UserInfo userInfo, ImageData profileImage)
     {
         //check nickname unique
         String nickname = userInfo.getNickname();
@@ -112,30 +112,30 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
         //TODO check email unique? - difficult without some index on email - what if the user info are sharded on multi nodes?
         //TODO validate other
 
-        PlayerId playerId = new PlayerId(idSeqGenerator.nextId(EntityType.player));
+        UserId userId = new UserId(idSeqGenerator.nextId(EntityType.player));
 
         //encrypt password
         userInfo.setPassword(passwordEncryptor.encryptPassword(userInfo.getPassword()));
 
         Coord userspaceLocation = userspaceCoordDeck.draw();
-        final User user = createUser(playerId, userInfo, 100000,100000, userspaceLocation, false);
-        String pid = playerId.getValue();
+        final User user = createUser(userId, userInfo, 100000,100000, userspaceLocation, false);
+        String pid = userId.getValue();
         user.addListener(new UserEntityListenerAdaptor(pid, userDB));
         user.addListener(new UserLobbyListener(user));
         userDB.add(pid, user);
         userCache.addUser(user);
         if(profileImage!=null)
         {
-            imageCache.save(playerId, profileImage);
+            imageCache.save(userId, profileImage);
         }
 
         addUserToLobby(user);
-        return playerId;
+        return userId;
     }
 
     private void addUserToLobby(User user)
     {
-        String pid = user.getPlayerId().getValue();
+        String pid = user.getUserId().getValue();
         int x = user.getUserspaceLocation().getX();
         int y = user.getUserspaceLocation().getY();
         String nickname = user.getUserInfo().getNickname();
@@ -147,10 +147,10 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
         lobbyInternal.entityAdded(pid, playerInLobby);
     }
 
-    public static User createUser(PlayerId playerId, UserInfo userInfo, long realBalance, long playBalance,
+    public static User createUser(UserId userId, UserInfo userInfo, long realBalance, long playBalance,
                                   Coord userspaceLocation, boolean guest)
     {
-        User user = new User(playerId, userInfo, userspaceLocation, guest);
+        User user = new User(userId, userInfo, userspaceLocation, guest);
         Account playAccount = new Account(new AccountType(MoneyType.PLAY_MONEY, "USD"));
         Account realAccount = new Account(new AccountType(MoneyType.REAL_MONEY, "USD"));
         playAccount.setBalance(playBalance);
@@ -169,36 +169,36 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public synchronized void isBot(PlayerId principal, PlayerId playerId)
+    public synchronized void isBot(UserId principal, UserId userId)
     {
-        User user = getUser(playerId);
-        userAdminReply.isBotResponse(principal, playerId, user.isBot(), null);
+        User user = getUser(userId);
+        userAdminReply.isBotResponse(principal, userId, user.isBot(), null);
     }
 
     @Override
-    public synchronized PlayerId authenticateUser(String nickname, String password)
+    public synchronized UserId authenticateUser(String nickname, String password)
     {
         UserEntity user = userCache.getByNickname(nickname);
         authenticateInternal(password, user);
-        return user.getPlayerId();
+        return user.getUserId();
     }
 
     /**
      * this is the method that will definitely be called regardless of the login mechanism (logging in as guest,
      * token login, sign up, or username/password login)
-     * @param playerId
+     * @param userId
      * @param keyToken
      * @param bot
      * @return
      */
     @Override
-    public synchronized PlayerId authenticateUser(PlayerId playerId, String keyToken, boolean bot)
+    public synchronized UserId authenticateUser(UserId userId, String keyToken, boolean bot)
     {
-        User user = getUser(playerId);
+        User user = getUser(userId);
         //TODO check token
         user.setLastLoginTime(System.currentTimeMillis());
         user.setBot(bot);
-        return user.getPlayerId();
+        return user.getUserId();
     }
 
     private void authenticateInternal(String password, UserEntity user)
@@ -210,39 +210,39 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public synchronized PlayerId obtainGuestId(String nickname)
+    public synchronized UserId obtainGuestId(String nickname)
     {
         checkNicknameUnique(nickname);
-        PlayerId playerId = new PlayerId(String.valueOf(guestPlayerIdSeq.decrementAndGet()));
+        UserId userId = new UserId(String.valueOf(guestUserIdSeq.decrementAndGet()));
         Coord coord = guestCoordDeck.draw();
-        User guest = createUser(playerId,
+        User guest = createUser(userId,
                 new UserInfo("","","",nickname, Country.Zimbabwe, ""), 0,1000, coord, true);
         userCache.addUser(guest);
         guest.addListener(new UserLobbyListener(guest));
 
         addUserToLobby(guest);
-        return playerId;
+        return userId;
     }
 
     @Override
-    public PlayerId getPlayerId(String nickname)
+    public UserId getUserId(String nickname)
     {
-        return userCache.getByNickname(nickname).getPlayerId();
+        return userCache.getByNickname(nickname).getUserId();
 
     }
 
     @Override
-    public synchronized GetAccountBalanceResponse getAccountBalance(PlayerId playerId, AccountType accountType) throws GenericException
+    public synchronized GetAccountBalanceResponse getAccountBalance(UserId userId, AccountType accountType) throws GenericException
     {
-        User user = getUser(playerId);
+        User user = getUser(userId);
         Account account = getAccount(accountType, user);
         return new GetAccountBalanceResponse(account.getBalance());
     }
 
     @Override
-    public synchronized void debitPlayer(PlayerId playerId, AccountType accountType, Long amount) throws GenericException
+    public synchronized void debitPlayer(UserId userId, AccountType accountType, Long amount) throws GenericException
     {
-        User user = getUser(playerId);
+        User user = getUser(userId);
         Account account = getAccount(accountType, user);
         if(account.getBalance()<amount)
         {
@@ -252,33 +252,33 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public synchronized void setAccountBalance(PlayerId playerId, AccountType accountType, Long amount) throws GenericException
+    public synchronized void setAccountBalance(UserId userId, AccountType accountType, Long amount) throws GenericException
     {
         if(amount<0)
         {
             throw new IllegalArgumentException("amount must be positive");
         }
-        User user = getUser(playerId);
+        User user = getUser(userId);
         Account account = getAccount(accountType, user);
         user.setAccountBalance(account, amount);
     }
 
     @Override
-    public synchronized void updatePoints(PlayerId principal, Long newValue)
+    public synchronized void updatePoints(UserId principal, Long newValue)
     {
         User user = getUser(principal);
         user.setPlayerPoints(newValue);
     }
 
     @Override
-    public synchronized void addPoints(PlayerId principal, Long delta)
+    public synchronized void addPoints(UserId principal, Long delta)
     {
         User user = getUser(principal);
         user.setPlayerPoints(user.getPlayerPoints() + delta);
     }
 
     @Override
-    public synchronized void updateCharacters(PlayerId principal, List<PokerCharacter> newValue)
+    public synchronized void updateCharacters(UserId principal, List<PokerCharacter> newValue)
     {
         User user = getUser(principal);
         user.clearEnabledCharacters();
@@ -286,9 +286,9 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public synchronized void creditPlayer(PlayerId playerId, AccountType accountType, Long amount) throws GenericException
+    public synchronized void creditPlayer(UserId userId, AccountType accountType, Long amount) throws GenericException
     {
-        User user = getUser(playerId);
+        User user = getUser(userId);
         Account account = getAccount(accountType, user);
         user.setAccountBalance(account, account.getBalance() + amount);
     }
@@ -300,33 +300,33 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public void playerConnected(PlayerId playerId, NodeId nodeId)
+    public void playerConnected(UserId userId, NodeId nodeId)
     {
-        User user = getUser(playerId);
+        User user = getUser(userId);
 
-        UserEntityListenerAdaptor listener = new UserEntityListenerAdaptor(playerId.getValue(),
-                new SimpleNotifier<UserEntityListener>(messageSender, playerId));
+        UserEntityListenerAdaptor listener = new UserEntityListenerAdaptor(userId.getValue(),
+                new SimpleNotifier<UserEntityListener>(messageSender, userId));
         user.setNotifier(listener);
         user.setOnline(true);
 
-        clientControl.setUser(playerId, user);
-        lobbyInternal.propertyChanged(playerId.getValue(), LobbyPropertyEnum.online, "true");
+        clientControl.setUser(userId, user);
+        lobbyInternal.propertyChanged(userId.getValue(), LobbyPropertyEnum.online, "true");
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
+    public void playerDisconnected(UserId userId)
     {
-        User user = getUser(playerId);
+        User user = getUser(userId);
         user.setNotifier(null);
         if (user.isGuest())
         {
             userCache.removeUser(user);
-            lobbyInternal.entityRemoved(playerId.getValue());
+            lobbyInternal.entityRemoved(userId.getValue());
 
         }
         else
         {
-            lobbyInternal.propertyChanged(playerId.getValue(), LobbyPropertyEnum.online, "false");
+            lobbyInternal.propertyChanged(userId.getValue(), LobbyPropertyEnum.online, "false");
         }
         user.setOnline(false);
 
@@ -343,9 +343,9 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public User getUser(PlayerId playerId)
+    public User getUser(UserId userId)
     {
-        User user = userCache.getById(playerId);
+        User user = userCache.getById(userId);
         if(user==null)
         {
             throw new GenericException(ErrorCode.USER_NOT_FOUND);
@@ -354,7 +354,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public void updateImage(PlayerId principal, ImageData profileImage)
+    public void updateImage(UserId principal, ImageData profileImage)
     {
         User user = getUser(principal);
         user.setLastImageUploadTime(System.currentTimeMillis());
@@ -362,13 +362,13 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public void updateStatus(PlayerId principal, String status)
+    public void updateStatus(UserId principal, String status)
     {
         getUser(principal).setStatus(status);
     }
 
     @Override
-    public void updatePassword(PlayerId principal, String oldPass, String newPass)
+    public void updatePassword(UserId principal, String oldPass, String newPass)
     {
         User user = getUser(principal);
         authenticateInternal(oldPass, user);
@@ -397,40 +397,40 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     }
 
     @Override
-    public void getImage(PlayerId principal, PlayerId playerId)
+    public void getImage(UserId principal, UserId userId)
     {
-        ImageData image = imageCache.load(playerId);
-        userAdminReply.getImageResponse(principal, playerId, image, null);
+        ImageData image = imageCache.load(userId);
+        userAdminReply.getImageResponse(principal, userId, image, null);
     }
 
     @Override
-    public void getPlayerDetails(PlayerId principal, PlayerId playerId)
+    public void getPlayerDetails(UserId principal, UserId userId)
     {
-        User user = getUser(playerId);
-        List<PlayerLocation> locations = playerLocator.getLocations(playerId, AppType.TOUR, AppType.CASH_GAME);
-        userAdminReply.getPlayerDetailsResponse(principal, playerId, locations, user.getFollowedUsers(), null);
+        User user = getUser(userId);
+        List<PlayerLocation> locations = playerLocator.getLocations(userId, AppType.TOUR, AppType.CASH_GAME);
+        userAdminReply.getPlayerDetailsResponse(principal, userId, locations, user.getFollowedUsers(), null);
     }
 
     @Override
-    public void addUserToFollow(PlayerId principal, PlayerId playerId)
+    public void addUserToFollow(UserId principal, UserId userId)
     {
-        if(principal.equals(playerId))
+        if(principal.equals(userId))
         {
             throw new GenericException(ErrorCode.CANNOT_FOLLOW_SELF);
         }
-        if(getUser(playerId).isGuest())
+        if(getUser(userId).isGuest())
         {
             throw new GenericException(ErrorCode.CANNOT_FOLLOW_GUEST);
         }
         User user = getUser(principal);
-        user.addFollowedUser(playerId);
+        user.addFollowedUser(userId);
     }
 
     @Override
-    public void removeUserToFollow(PlayerId principal, PlayerId playerId)
+    public void removeUserToFollow(UserId principal, UserId userId)
     {
         User user = getUser(principal);
-        user.removeFollowedUser(playerId);
+        user.removeFollowedUser(userId);
     }
 
     private class UserLobbyListener extends UserEntityListenerAdaptor
@@ -439,7 +439,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
 
         public UserLobbyListener(User user)
         {
-            super(user.getPlayerId().getValue());
+            super(user.getUserId().getValue());
             this.user = user;
         }
 

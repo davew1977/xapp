@@ -8,19 +8,19 @@ package net.sf.xapp.net.server.playerrepository;
 
 import ngpoker.common.types.GenericException;
 import ngpoker.common.types.ErrorCode;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserCache
 {
-    private Map<PlayerId, User> mapById;
+    private Map<UserId, User> mapById;
     private Map<String, User> mapByNickname;
 
     public UserCache()
     {
-        mapById = new ConcurrentHashMap<PlayerId, User>();
+        mapById = new ConcurrentHashMap<UserId, User>();
         mapByNickname = new ConcurrentHashMap<String, User>();
     }
 
@@ -34,14 +34,14 @@ public class UserCache
         return user;
     }
 
-    public User getById(PlayerId playerId)
+    public User getById(UserId userId)
     {
-        return mapById.get(playerId);
+        return mapById.get(userId);
     }
 
     public void addUser(User user)
     {
-        mapById.put(user.getPlayerId(), user);
+        mapById.put(user.getUserId(), user);
         mapByNickname.put(user.getUserInfo().getNickname(), user);
     }
 
@@ -52,7 +52,7 @@ public class UserCache
 
     public void removeUser(User user)
     {
-        mapById.remove(user.getPlayerId());
+        mapById.remove(user.getUserId());
         mapByNickname.remove(user.getUserInfo().getNickname());
     }
 }

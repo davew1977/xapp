@@ -1,36 +1,43 @@
 package net.sf.xapp.net.server.channels;
 
-import ngpoker.common.types.PlayerId;
+
+import net.sf.xapp.net.common.types.AppType;
+import net.sf.xapp.net.common.types.UserId;
 
 public abstract class AppAdaptor implements App
 {
     @Override
-    public void playerConnected(PlayerId playerId)
-    {
+    public void userConnected(UserId userId) {
 
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
-    {
+    public void userDisconnected(UserId userId) {
 
     }
 
     @Override
-    public void playerJoined(PlayerId playerId)
-    {
+    public void userJoined(UserId userId) {
 
     }
 
     @Override
-    public void playerLeft(PlayerId playerId)
-    {
+    public void userLeft(UserId userId) {
 
     }
 
     @Override
-    public void setCommChannel(CommChannel channel)
-    {
+    public String getKey() {
+        return null;
+    }
 
+    @Override
+    public void setCommChannel(CommChannel channel) {
+
+    }
+
+    @Override
+    public AppType getAppType() {
+        return null;
     }
 }

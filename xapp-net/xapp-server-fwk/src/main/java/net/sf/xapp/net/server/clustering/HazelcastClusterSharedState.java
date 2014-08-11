@@ -14,7 +14,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.MessageListener;
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.infrastructure.types.NodeData;
 import ngpoker.infrastructure.types.NodeId;
 import ngpoker.infrastructure.types.PublicNodeState;
@@ -110,20 +110,20 @@ public class HazelcastClusterSharedState implements ClusterSharedState
     }
 
     @Override
-    public NodeId getNodeId(PlayerId playerId)
+    public NodeId getNodeId(UserId userId)
     {
-        return (NodeId) hazelcastInstance.getMap("playerLocations").get(playerId);
+        return (NodeId) hazelcastInstance.getMap("playerLocations").get(userId);
     }
 
     @Override
-    public void addPlayerLocationMapping(PlayerId playerId, NodeId nodeId)
+    public void addPlayerLocationMapping(UserId userId, NodeId nodeId)
     {
-        hazelcastInstance.getMap("playerLocations").put(playerId, nodeId);
+        hazelcastInstance.getMap("playerLocations").put(userId, nodeId);
     }
 
     @Override
-    public void removePlayerLocationMapping(PlayerId playerId)
+    public void removePlayerLocationMapping(UserId userId)
     {
-        hazelcastInstance.getMap("playerLocations").remove(playerId);
+        hazelcastInstance.getMap("playerLocations").remove(userId);
     }
 }

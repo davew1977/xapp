@@ -35,13 +35,13 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
     private final String lobbyKey;
     private CommChannel commChannel;
     private LobbySessionManagerReply lobbySessionManagerReply;
-    private Map<PlayerId, Map<Integer, PageHandler>> pageHandlers;
+    private Map<UserId, Map<Integer, PageHandler>> pageHandlers;
 
     public LobbySessionManagerImpl(String lobbyKey, StorableType storableType)
     {
         this.subscriptionService = new SubscriptionServiceImpl(storableType, lobbyKey);
         this.lobbyKey = lobbyKey;
-        pageHandlers = new HashMap<PlayerId, Map<Integer, PageHandler>>();
+        pageHandlers = new HashMap<UserId, Map<Integer, PageHandler>>();
     }
 
     public void setCommChannel(CommChannel commChannel)
@@ -52,7 +52,7 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
     }
 
     @Override
-    public void subscribe(final PlayerId principal, final Integer viewId, Integer pageSize, QueryData query)
+    public void subscribe(final UserId principal, final Integer viewId, Integer pageSize, QueryData query)
     {
         final ClientLobbySession clientLobbySession = new ClientLobbySessionAdaptor(lobbyKey,
                 new NotifyProxy<ClientLobbySession>(commChannel));
@@ -75,27 +75,27 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
     }
 
     @Override
-    public void pageUp(PlayerId principal, Integer viewId)
+    public void pageUp(UserId principal, Integer viewId)
     {
         PageHandler pageHandler = activePageHandler(principal, viewId);
         lobbySessionManagerReply.pageUpResponse(principal, pageHandler.pageUp(), null);
     }
 
     @Override
-    public void pageDown(PlayerId principal, Integer viewId)
+    public void pageDown(UserId principal, Integer viewId)
     {
         PageHandler pageHandler = activePageHandler(principal, viewId);
         lobbySessionManagerReply.pageDownResponse(principal, pageHandler.pageDown(), null);
     }
 
     @Override
-    public void pause(PlayerId principal)
+    public void pause(UserId principal)
     {
         deactivatePageHandlers(principal);
     }
 
     @Override
-    public void switchView(PlayerId principal, Integer viewId)
+    public void switchView(UserId principal, Integer viewId)
     {
         for (Map.Entry<Integer, PageHandler> e : pageHandlers(principal).entrySet())
         {
@@ -106,17 +106,17 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
+    public void playerDisconnected(UserId userId)
     {
-        log.debug("player disconnected from lobby session: " + playerId);
-        playerLeft(playerId);
-        commChannel.removePlayer(playerId);
+        log.debug("player disconnected from lobby session: " + userId);
+        playerLeft(userId);
+        commChannel.removePlayer(userId);
     }
 
     @Override
-    public void playerLeft(PlayerId playerId)
+    public void playerLeft(UserId userId)
     {
-        Map<Integer, PageHandler> phmap = pageHandlers.remove(playerId);
+        Map<Integer, PageHandler> phmap = pageHandlers.remove(userId);
         if(phmap!=null)
         {
             for (PageHandler pageHandler : phmap.values())
@@ -126,15 +126,15 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
         }
     }
 
-    private void deactivatePageHandlers(PlayerId playerId)
+    private void deactivatePageHandlers(UserId userId)
     {
-        for (PageHandler handler : pageHandlers(playerId).values())
+        for (PageHandler handler : pageHandlers(userId).values())
         {
             handler.setActive(false);
         }
     }
 
-    private PageHandler activePageHandler(PlayerId principal, Integer viewId)
+    private PageHandler activePageHandler(UserId principal, Integer viewId)
     {
         PageHandler pageHandler = pageHandlers(principal).get(viewId);
         if(pageHandler==null)
@@ -148,7 +148,7 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
         return pageHandler;
     }
 
-    private Map<Integer, PageHandler> pageHandlers(PlayerId principal)
+    private Map<Integer, PageHandler> pageHandlers(UserId principal)
     {
         Map<Integer, PageHandler> phmap = pageHandlers.get(principal);
         if (phmap == null)

@@ -12,7 +12,7 @@ import ngpoker.client.channel.ChannelReplyAdaptor;
 import ngpoker.common.framework.Message;
 import ngpoker.common.types.ErrorCode;
 import ngpoker.common.types.GenericException;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.common.types.PlayerLocation;
 import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class ChannelImpl implements Channel, CommChannel
 {
     private final String key;
-    private final List<PlayerId> playerIds;
+    private final List<UserId> userIds;
     private final MessageSender messageSender;
     private final App masterApp;
     private final App[] otherApps;
@@ -33,7 +33,7 @@ public class ChannelImpl implements Channel, CommChannel
     {
         this.playerLocator = playerLocator;
         this.key = masterApp.getKey();
-        this.playerIds = new ArrayList<PlayerId>();
+        this.userIds = new ArrayList<UserId>();
         this.messageSender = messageSender;
         this.masterApp = masterApp;
         playerLocator.registerLocation(new PlayerLocation(key, masterApp.getAppType()));
@@ -48,86 +48,86 @@ public class ChannelImpl implements Channel, CommChannel
     }
 
     @Override
-    public void join(PlayerId playerId)
+    public void join(UserId userId)
     {
-        addPlayer(playerId);
-        masterApp.playerJoined(playerId);
+        addPlayer(userId);
+        masterApp.playerJoined(userId);
         for (App otherApp : otherApps)
         {
-            otherApp.playerJoined(playerId);
+            otherApp.playerJoined(userId);
         }
-        channelReply.joinResponse(playerId, null);
+        channelReply.joinResponse(userId, null);
     }
 
-    public void addPlayer(PlayerId playerId)
+    public void addPlayer(UserId userId)
     {
-        if (!playerIds.contains(playerId))
+        if (!userIds.contains(userId))
         {
             //throw new GenericException(ErrorCode.PLAYER_ALREADY_JOINED);
-            playerIds.add(playerId);
+            userIds.add(userId);
         }
-        playerLocator.addMapping(playerId, key);
+        playerLocator.addMapping(userId, key);
     }
 
     @Override
-    public void leave(PlayerId playerId)
+    public void leave(UserId userId)
     {
-        masterApp.playerLeft(playerId);
+        masterApp.playerLeft(userId);
 
         for (App otherApp : otherApps)
         {
-            otherApp.playerLeft(playerId);
+            otherApp.playerLeft(userId);
         }
-        removePlayer(playerId);
-        channelReply.leaveResponse(playerId, null);
+        removePlayer(userId);
+        channelReply.leaveResponse(userId, null);
     }
 
     @Override
-    public void removePlayer(PlayerId playerId)
+    public void removePlayer(UserId userId)
     {
-        boolean removed = playerIds.remove(playerId);
+        boolean removed = userIds.remove(userId);
         if (!removed)
         {
             throw new GenericException(ErrorCode.PLAYER_NOT_JOINED);
         }
-        playerLocator.removeMapping(playerId, key);
+        playerLocator.removeMapping(userId, key);
     }
 
     @Override
-    public void playerConnected(PlayerId playerId)
+    public void playerConnected(UserId userId)
     {
-        masterApp.playerConnected(playerId);
+        masterApp.playerConnected(userId);
         for (App otherApp : otherApps)
         {
-            otherApp.playerConnected(playerId);
+            otherApp.playerConnected(userId);
         }
     }
 
     @Override
-    public void playerDisconnected(PlayerId playerId)
+    public void playerDisconnected(UserId userId)
     {
-        masterApp.playerDisconnected(playerId);
+        masterApp.playerDisconnected(userId);
 
         for (App otherApp : otherApps)
         {
-            otherApp.playerDisconnected(playerId);
+            otherApp.playerDisconnected(userId);
         }
     }
 
     @Override
     public void broadcast(Message message)
     {
-        messageSender.broadcast(playerIds, message);
+        messageSender.broadcast(userIds, message);
     }
 
     @Override
-    public void send(PlayerId playerId, Message message)
+    public void send(UserId userId, Message message)
     {
-        messageSender.post(playerId, message);
+        messageSender.post(userId, message);
     }
 
-    public boolean isPlayerJoined(PlayerId playerId)
+    public boolean isPlayerJoined(UserId userId)
     {
-        return playerIds.contains(playerId);
+        return userIds.contains(userId);
     }
 }

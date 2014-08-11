@@ -11,16 +11,16 @@ import ngpoker.common.framework.MessageHandler;
 import ngpoker.common.types.MessageTypeEnum;
 import ngpoker.common.types.ErrorCode;
 import ngpoker.common.types.GenericException;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 
 import java.util.Map;
 
 public class RequestTracker<A> implements MessageHandler<A>
 {
-    private Map<PlayerId, MessageTypeEnum> pendingRequests;
+    private Map<UserId, MessageTypeEnum> pendingRequests;
     private A requestApi;
 
-    public RequestTracker(Map<PlayerId, MessageTypeEnum> pendingRequests)
+    public RequestTracker(Map<UserId, MessageTypeEnum> pendingRequests)
     {
         this.pendingRequests = pendingRequests;
     }
@@ -33,11 +33,11 @@ public class RequestTracker<A> implements MessageHandler<A>
     @Override
     public <T> T handleMessage(InMessage<A, T> inMessage)
     {
-        if(pendingRequests.containsKey((PlayerId) inMessage.principal()))
+        if(pendingRequests.containsKey((UserId) inMessage.principal()))
         {
             throw new GenericException(ErrorCode.PRINCIPAL_ALREADY_HAS_PENDING_REQUEST);
         }
-        pendingRequests.put((PlayerId) inMessage.principal(), (MessageTypeEnum) inMessage.type());
+        pendingRequests.put((UserId) inMessage.principal(), (MessageTypeEnum) inMessage.type());
         return inMessage.visit(requestApi);
     }
 }

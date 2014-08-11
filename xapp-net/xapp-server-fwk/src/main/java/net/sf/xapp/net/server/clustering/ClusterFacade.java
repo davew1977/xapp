@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.clustering;
 
 import ngpoker.common.framework.InMessage;
 import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.infrastructure.types.NodeId;
 import ngpoker.infrastructure.types.PublicNodeState;
 
@@ -32,11 +32,11 @@ public interface ClusterFacade
 
     void addTopicListener(String topicName, MessageHandler messageHandler);
 
-    NodeId getNodeId(PlayerId playerId);
+    NodeId getNodeId(UserId userId);
 
-    void addPlayerLocationMapping(PlayerId playerId, NodeId nodeId);
+    void addPlayerLocationMapping(UserId userId, NodeId nodeId);
 
-    void removePlayerLocationMapping(PlayerId playerId);
+    void removePlayerLocationMapping(UserId userId);
 
     PublicNodeState getNodeState(NodeId nodeId);
 }

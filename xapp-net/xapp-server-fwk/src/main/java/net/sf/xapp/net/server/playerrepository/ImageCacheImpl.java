@@ -1,7 +1,7 @@
 package net.sf.xapp.net.server.playerrepository;
 
 import ngpoker.common.types.ImageData;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.util.FileUtils;
 import net.sf.xapp.net.server.util.SimpleCache;
 
@@ -9,7 +9,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class ImageCacheImpl extends SimpleCache<PlayerId, ImageData> implements ImageCache
+public class ImageCacheImpl extends SimpleCache<UserId, ImageData> implements ImageCache
 {
     private final ImageData defaultImage;
     private final File imageDir;
@@ -27,12 +27,12 @@ public class ImageCacheImpl extends SimpleCache<PlayerId, ImageData> implements 
 
 
     @Override
-    public ImageData load(PlayerId playerId)
+    public ImageData load(UserId userId)
     {
-        ImageData image = get(playerId);
+        ImageData image = get(userId);
         if (image == null)
         {
-            File file = imageFileName(playerId);
+            File file = imageFileName(userId);
             if(file.exists())
             {
                 List<Byte> data = FileUtils.readFile(file);
@@ -42,23 +42,23 @@ public class ImageCacheImpl extends SimpleCache<PlayerId, ImageData> implements 
             {
                 image = defaultImage;
             }
-            put(playerId, image);
+            put(userId, image);
         }
         return image;
     }
 
     @Override
-    public void save(PlayerId playerId, ImageData imageData)
+    public void save(UserId userId, ImageData imageData)
     {
-        FileUtils.writeFile(imageFileName(playerId), imageData.getData());
-        if(containsKey(playerId))
+        FileUtils.writeFile(imageFileName(userId), imageData.getData());
+        if(containsKey(userId))
         {
-            put(playerId, imageData);
+            put(userId, imageData);
         }
     }
 
-    private File imageFileName(PlayerId playerId)
+    private File imageFileName(UserId userId)
     {
-        return new File(imageDir, playerId.getValue() + ".jpg");
+        return new File(imageDir, userId.getValue() + ".jpg");
     }
 }

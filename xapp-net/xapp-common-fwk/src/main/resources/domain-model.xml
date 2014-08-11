@@ -3,6 +3,8 @@
     <ObjectId id="0" name="MessageSender_Post"/>
     <ObjectId id="1" name="MessageSender_Broadcast"/>
     <ObjectId id="2" name="ExampleApi_DoSomething"/>
+    <ObjectId id="3" name="ConnectionListener_PlayerConnected"/>
+    <ObjectId id="4" name="ConnectionListener_PlayerDisconnected"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -46,6 +48,10 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <ValueObject abstract="true" name="Message" skipGeneration="true"/>
                 <ValueObject abstract="true" name="InMessage" skipGeneration="true"/>
                 <ValueObject abstract="true" name="Response" skipGeneration="true"/>
+                <EnumType name="AppType" values="OBJ_SERVER,CHAT_ROOM,"/>
+                <ValueObject name="NodeId">
+                  <Field access="READ_ONLY" name="value" type="java/lang/String"/>
+                </ValueObject>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">
@@ -81,9 +87,34 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
       </DirMeta>
     </DirMeta>
   </Module>
+  <Module name="xapp-server-fwk" outDir="xapp-net/xapp-server-fwk/target/generated-sources/xapp-codegen-plugin">
+    <DirMeta name="net">
+      <DirMeta name="sf">
+        <DirMeta name="xapp">
+          <DirMeta name="net">
+            <DirMeta name="server"/>
+            <DirMeta name="api">
+              <DirMeta name="connectionlistener">
+                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener">
+                  <Message name="PlayerConnected">
+                    <Field access="READ_ONLY" name="userId" type="net/sf/xapp/net/common/types/UserId"/>
+                    <Response name="PlayerConnectedResponse"/>
+                  </Message>
+                  <Message name="PlayerDisconnected">
+                    <Response name="PlayerDisconnectedResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+            </DirMeta>
+          </DirMeta>
+        </DirMeta>
+      </DirMeta>
+    </DirMeta>
+  </Module>
   <ObjectIds>
     <ObjectId id="2000" name="net_sf_xapp_net_common_types_Clause"/>
     <ObjectId id="2001" name="net_sf_xapp_net_common_types_QueryData"/>
     <ObjectId id="2002" name="net_sf_xapp_net_common_types_UserId"/>
+    <ObjectId id="2003" name="net_sf_xapp_net_common_types_NodeId"/>
   </ObjectIds>
 </Model>

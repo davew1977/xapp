@@ -9,7 +9,7 @@ package net.sf.xapp.net.server.lobby;
 import ngpoker.common.types.GenericException;
 import ngpoker.common.types.ListOp;
 import ngpoker.common.types.ErrorCode;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.lobby.clientlobbysession.ClientLobbySession;
 import net.sf.xapp.net.server.lobby.types.LobbyEntity;
 import net.sf.xapp.net.server.lobby.types.Page;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PageHandler implements LiveQueryListener<LobbyEntity>
 {
     private final Logger log = Logger.getLogger(getClass());
-    private final PlayerId playerId;
+    private final UserId userId;
     private final int viewId;
     private final int pageSize;
     private final ClientLobbySession clientLobbySession;
@@ -30,10 +30,10 @@ public class PageHandler implements LiveQueryListener<LobbyEntity>
     private int currentPageIndex;
     private List<LobbyEntity> matches;
 
-    public PageHandler(int pageSize, ClientLobbySession clientLobbySession, PlayerId playerId, int viewId)
+    public PageHandler(int pageSize, ClientLobbySession clientLobbySession, UserId userId, int viewId)
     {
         this.pageSize = pageSize;
-        this.playerId = playerId;
+        this.userId = userId;
         this.viewId = viewId;
         this.currentPageIndex = 0;
         this.clientLobbySession = clientLobbySession;
@@ -56,7 +56,7 @@ public class PageHandler implements LiveQueryListener<LobbyEntity>
         matches.add(item);
         if(active && inCurrentPage(item))
         {
-            clientLobbySession.entityAdded(playerId, viewId, item);
+            clientLobbySession.entityAdded(userId, viewId, item);
         }
     }
 
@@ -65,7 +65,7 @@ public class PageHandler implements LiveQueryListener<LobbyEntity>
     {
         if(active && inCurrentPage(item))
         {
-            clientLobbySession.entityRemoved(playerId, viewId, item.getKey());
+            clientLobbySession.entityRemoved(userId, viewId, item.getKey());
         }
         matches.remove(item);
     }
@@ -76,7 +76,7 @@ public class PageHandler implements LiveQueryListener<LobbyEntity>
         log.debug(String.format("%s %s %s", viewId, propName, value));
         if(active && inCurrentPage(item))
         {
-            clientLobbySession.propertyChanged(playerId, viewId, item.getKey(), propName, value);
+            clientLobbySession.propertyChanged(userId, viewId, item.getKey(), propName, value);
         }
     }
 
@@ -89,7 +89,7 @@ public class PageHandler implements LiveQueryListener<LobbyEntity>
         }
         if(active && inCurrentPage(item))
         {
-            clientLobbySession.listPropertyChanged(playerId, viewId, item.getKey(), propName, value, index, listOp);
+            clientLobbySession.listPropertyChanged(userId, viewId, item.getKey(), propName, value, index, listOp);
         }
     }
 
@@ -150,7 +150,7 @@ public class PageHandler implements LiveQueryListener<LobbyEntity>
     public String toString()
     {
         return "PageHandler{" +
-                "playerId=" + playerId +
+                "userId=" + userId +
                 ", viewId=" + viewId +
                 ", pageSize=" + pageSize +
                 ", clientLobbySession=" + clientLobbySession +

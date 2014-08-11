@@ -9,7 +9,7 @@ package net.sf.xapp.net.server.playerrepository;
 import ngpoker.common.types.GenericException;
 import ngpoker.common.types.OperatorId;
 import ngpoker.common.types.Player;
-import ngpoker.common.types.PlayerId;
+import net.sf.xapp.net.common.types.UserId;
 import ngpoker.playerlookup.PlayerLookup;
 import ngpoker.playerlookup.to.FindPlayerResponse;
 import ngpoker.user.UserInfo;
@@ -24,7 +24,7 @@ public class PlayerRepos implements PlayerLookup
     }
 
     @Override
-    public FindPlayerResponse findPlayer(PlayerId id) throws GenericException
+    public FindPlayerResponse findPlayer(UserId id) throws GenericException
     {
         User user = userStore.getUser(id);
         UserInfo userInfo = user.getUserInfo();

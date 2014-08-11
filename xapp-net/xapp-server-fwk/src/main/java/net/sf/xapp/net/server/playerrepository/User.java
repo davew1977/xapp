@@ -26,9 +26,9 @@ public class User extends UserEntity
         guest = false;
     }
 
-    public User(PlayerId playerId, UserInfo userInfo, Coord userspaceLocation, boolean guest)
+    public User(UserId userId, UserInfo userInfo, Coord userspaceLocation, boolean guest)
     {
-        super(playerId, userInfo, userspaceLocation);
+        super(userId, userInfo, userspaceLocation);
         this.guest = guest;
     }
 
@@ -50,18 +50,18 @@ public class User extends UserEntity
     }
 
     @Override
-    public void addFollowedUser(PlayerId playerId)
+    public void addFollowedUser(UserId userId)
     {
-        if(getFollowedUsers().contains(playerId))
+        if(getFollowedUsers().contains(userId))
         {
             throw new GenericException(ErrorCode.USER_ALREADY_FOLLOWED);
         }
-        super.addFollowedUser(playerId);
+        super.addFollowedUser(userId);
     }
 
-    public PlayerId removeFollowedUser(PlayerId playerId)
+    public UserId removeFollowedUser(UserId userId)
     {
-        int index = getFollowedUsers().indexOf(playerId);
+        int index = getFollowedUsers().indexOf(userId);
         if(index==-1)
         {
             throw new GenericException(ErrorCode.NOT_FOLLOWING_USER);
@@ -99,7 +99,7 @@ public class User extends UserEntity
 
     public boolean isAdmin()
     {
-        return getPlayerId().getValue().equals("0_p_0");
+        return getUserId().getValue().equals("0_p_0");
     }
 
     public void setOnline(boolean online)
