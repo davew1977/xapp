@@ -9,6 +9,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
+@NamespaceFor(FileMeta.class)
 public abstract class AbstractPerson implements Person {
     private String username;
     private String firstName;

@@ -28,29 +28,29 @@
               <DirMeta name="types">
                 <EnumType description="list operations, add is a &quot;set at last index&quot;" name="ListOp" values="ADD,REMOVE,UPDATE,"/>
                 <ValueObject name="Clause">
-                  <Field access="READ_ONLY" name="property" type="java/lang/String"/>
-                  <Field access="READ_ONLY" list="true" name="values" type="java/lang/String"/>
+                  <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" list="true" name="values" type="provided/java/lang/String"/>
                 </ValueObject>
                 <ValueObject name="QueryData">
                   <Description><![CDATA[contains a list of clauses to match (ANDed together)
 OR, a list of keys to match. If the retrieveall flag is set then all will be returned and the other fields will be ignored]]></Description>
-                  <Field access="READ_ONLY" list="true" name="clauses" type="net/sf/xapp/net/common/types/Clause"/>
-                  <Field access="READ_ONLY" list="true" name="keys" type="java/lang/String"/>
-                  <Field access="READ_ONLY" name="retrieveAll" type="java/lang/Boolean"/>
+                  <Field access="READ_ONLY" list="true" name="clauses" type="xapp-common-fwk/net/sf/xapp/net/common/types/Clause"/>
+                  <Field access="READ_ONLY" list="true" name="keys" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="retrieveAll" type="provided/java/lang/Boolean"/>
                 </ValueObject>
                 <LobbyType abstract="true" name="LobbyEntity">
-                  <Field access="READ_ONLY" name="key" type="java/lang/String" unique="true"/>
-                  <Field access="READ_ONLY" name="name" type="java/lang/String" unique="true"/>
+                  <Field access="READ_ONLY" name="key" type="provided/java/lang/String" unique="true"/>
+                  <Field access="READ_ONLY" name="name" type="provided/java/lang/String" unique="true"/>
                 </LobbyType>
                 <ValueObject name="UserId">
-                  <Field access="READ_ONLY" name="value" type="java/lang/String"/>
+                  <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
                 </ValueObject>
                 <ValueObject abstract="true" name="Message" skipGeneration="true"/>
                 <ValueObject abstract="true" name="InMessage" skipGeneration="true"/>
                 <ValueObject abstract="true" name="Response" skipGeneration="true"/>
                 <EnumType name="AppType" values="OBJ_SERVER,CHAT_ROOM,"/>
                 <ValueObject name="NodeId">
-                  <Field access="READ_ONLY" name="value" type="java/lang/String"/>
+                  <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
                 </ValueObject>
               </DirMeta>
             </DirMeta>
@@ -58,15 +58,15 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <DirMeta name="messagesender">
                 <Api apiType="ASYNC" errors="" hideEntityKey="true" name="MessageSender">
                   <Message name="Post">
-                    <Field access="READ_ONLY" name="player" type="net/sf/xapp/net/common/types/UserId"/>
-                    <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
+                    <Field access="READ_ONLY" name="player" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="message" type="xapp-common-fwk/net/sf/xapp/net/common/types/Message"/>
                     <Response name="PostResponse"/>
                   </Message>
                   <Message name="Broadcast">
-                    <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
-                    <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
+                    <Field access="READ_ONLY" list="true" name="players" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="message" type="xapp-common-fwk/net/sf/xapp/net/common/types/Message"/>
                     <Response name="BroadcastResponse">
-                      <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
+                      <Field access="READ_ONLY" list="true" name="players" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     </Response>
                   </Message>
                 </Api>
@@ -74,10 +74,21 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <DirMeta name="exampleapi">
                 <Api apiType="ASYNC" errors="" name="ExampleApi">
                   <Message name="DoSomething">
-                    <Field access="READ_ONLY" name="name" type="java/lang/String"/>
-                    <Field access="READ_ONLY" name="amount" type="java/lang/Long"/>
-                    <Field access="READ_ONLY" list="true" name="anIntList" type="java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="name" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="amount" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" list="true" name="anIntList" type="provided/java/lang/Integer"/>
                     <Response name="DoSomethingResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="connectionlistener">
+                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener">
+                  <Message name="PlayerConnected">
+                    <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Response name="PlayerConnected (copy)Response"/>
+                  </Message>
+                  <Message name="PlayerDisconnected">
+                    <Response name="PlayerDisconnected (copy)Response"/>
                   </Message>
                 </Api>
               </DirMeta>
@@ -93,19 +104,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
         <DirMeta name="xapp">
           <DirMeta name="net">
             <DirMeta name="server"/>
-            <DirMeta name="api">
-              <DirMeta name="connectionlistener">
-                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener">
-                  <Message name="PlayerConnected">
-                    <Field access="READ_ONLY" name="userId" type="net/sf/xapp/net/common/types/UserId"/>
-                    <Response name="PlayerConnectedResponse"/>
-                  </Message>
-                  <Message name="PlayerDisconnected">
-                    <Response name="PlayerDisconnectedResponse"/>
-                  </Message>
-                </Api>
-              </DirMeta>
-            </DirMeta>
+            <DirMeta name="api"/>
           </DirMeta>
         </DirMeta>
       </DirMeta>

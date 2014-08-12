@@ -36,6 +36,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
     public final String NULL = "null";
     private ObjectMeta m_parentObject;
     private Map<String, ObjectMeta<T>> valueMap;
+    private Map<String, ObjectMeta<T>> byName;
 
     private final boolean containedByListReferenceGUI;
 
@@ -89,6 +90,9 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
 
     private T getObj(String key) {
         ObjectMeta<T> objectMeta = valueMap.get(key);
+        if(objectMeta == null) {
+            objectMeta = byName.get(key);
+        }
         return objectMeta != null ? objectMeta.getInstance() : null;
     }
 
@@ -102,6 +106,10 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
 
 
         valueMap = m_parentObject.getAll(getClassModel().getContainedClass());
+        byName = new HashMap<String, ObjectMeta<T>>();
+        for (ObjectMeta<T> objectMeta : valueMap.values()) {
+            byName.put(objectMeta.getKey(), objectMeta);
+        }
         setComboValues(new ArrayList(valueMap.keySet()));
         m_comboBox.setRenderer(new DefaultListCellRenderer() {
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
