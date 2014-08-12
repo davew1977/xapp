@@ -123,7 +123,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
             }
         });
 
-        if (getClassModel().isTreeType()) {
+        /*if (getClassModel().isTreeType()) {
             m_root = new Tree();
             Tree root = getClassModel().getTreeRoot();
             m_root.setPathSeparator(root.pathSeparator());
@@ -132,7 +132,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
         }
         else {
             m_comboBox.setEditable(false);
-        }
+        }*/
 
         m_comboBox.setSelectedItem(getKeyByValue(value));
     }

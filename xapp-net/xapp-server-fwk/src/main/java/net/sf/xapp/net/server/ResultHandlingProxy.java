@@ -7,8 +7,8 @@
 package net.sf.xapp.net.server;
 
 import ngpoker.appserver.Out;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import ngpoker.common.types.GenericException;
 import ngpoker.common.types.MessageTypeEnum;
 import org.apache.log4j.Logger;

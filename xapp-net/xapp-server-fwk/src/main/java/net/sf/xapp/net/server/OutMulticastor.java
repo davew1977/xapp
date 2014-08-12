@@ -8,7 +8,7 @@ package net.sf.xapp.net.server;
 
 import ngpoker.appserver.Out;
 import ngpoker.appserver.OutAdaptor;
-import ngpoker.common.framework.Multicaster;
+import net.sf.xapp.net.common.framework.Multicaster;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

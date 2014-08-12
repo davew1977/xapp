@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.framework.persistendb;
 
-import ngpoker.common.framework.Entity;
+import net.sf.xapp.net.common.framework.Entity;
 
 /**
  * Created with IntelliJ IDEA.

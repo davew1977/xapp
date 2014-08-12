@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.connectionserver.mina;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.Message;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.server.connectionserver.IOLayer;
 import net.sf.xapp.net.server.connectionserver.MessageLayer;
 import org.apache.log4j.Logger;

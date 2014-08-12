@@ -52,6 +52,21 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <ValueObject name="NodeId">
                   <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
                 </ValueObject>
+                <EnumType name="CommType" values="SYNC_REQUEST,ASYNC_MESSAGE,SYNC_RESPONSE,"/>
+                <EnumType name="PublicNodeState" values="RUNNING,SHUTDOWN,"/>
+                <Entity name="NodeData">
+                  <Field access="READ_ONLY" name="nodeId" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                  <Field access="READ_ONLY" name="nodeState" type="xapp-common-fwk/net/sf/xapp/net/common/types/PublicNodeState"/>
+                  <Field access="READ_ONLY" name="version" type="provided/java/lang/String"/>
+                </Entity>
+                <EnumType description="the kinds of entities that get persisted in the system" name="EntityType" values="sng,cashgame,player,tournament,recurring_tournament,multi_tournament,forum_thread,forum_post,"/>
+                <Entity name="IdSequence">
+                  <Field access="READ_ONLY" name="entityType" type="xapp-common-fwk/net/sf/xapp/net/common/types/EntityType"/>
+                  <Field access="READ_WRITE" name="seq" type="provided/java/lang/Long"/>
+                </Entity>
+                <Entity name="IdSequenceStore">
+                  <Field access="READ_ONLY" entityDeclaration="true" list="true" name="sequences" type="xapp-common-fwk/net/sf/xapp/net/common/types/IdSequence"/>
+                </Entity>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">
@@ -85,26 +100,14 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener">
                   <Message name="PlayerConnected">
                     <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
-                    <Response name="PlayerConnected (copy)Response"/>
+                    <Response name="PlayerConnectedResponse"/>
                   </Message>
                   <Message name="PlayerDisconnected">
-                    <Response name="PlayerDisconnected (copy)Response"/>
+                    <Response name="PlayerDisconnectedResponse"/>
                   </Message>
                 </Api>
               </DirMeta>
             </DirMeta>
-          </DirMeta>
-        </DirMeta>
-      </DirMeta>
-    </DirMeta>
-  </Module>
-  <Module name="xapp-server-fwk" outDir="xapp-net/xapp-server-fwk/target/generated-sources/xapp-codegen-plugin">
-    <DirMeta name="net">
-      <DirMeta name="sf">
-        <DirMeta name="xapp">
-          <DirMeta name="net">
-            <DirMeta name="server"/>
-            <DirMeta name="api"/>
           </DirMeta>
         </DirMeta>
       </DirMeta>
@@ -115,5 +118,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2001" name="net_sf_xapp_net_common_types_QueryData"/>
     <ObjectId id="2002" name="net_sf_xapp_net_common_types_UserId"/>
     <ObjectId id="2003" name="net_sf_xapp_net_common_types_NodeId"/>
+    <ObjectId id="2004" name="net_sf_xapp_net_common_types_NodeData"/>
+    <ObjectId id="2005" name="net_sf_xapp_net_common_types_IdSequence"/>
+    <ObjectId id="2006" name="net_sf_xapp_net_common_types_IdSequenceStore"/>
   </ObjectIds>
 </Model>

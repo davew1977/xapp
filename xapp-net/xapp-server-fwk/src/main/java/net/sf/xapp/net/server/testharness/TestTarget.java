@@ -6,9 +6,9 @@
  */
 package net.sf.xapp.net.server.testharness;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.framework.TransportObject;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.TransportObject;
 
 public interface TestTarget extends MessageHandler
 {

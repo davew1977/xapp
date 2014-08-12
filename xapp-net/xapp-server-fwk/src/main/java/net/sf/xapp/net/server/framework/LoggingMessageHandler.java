@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.framework;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import org.apache.log4j.Logger;
 
 public class LoggingMessageHandler<A> implements MessageHandler<A>

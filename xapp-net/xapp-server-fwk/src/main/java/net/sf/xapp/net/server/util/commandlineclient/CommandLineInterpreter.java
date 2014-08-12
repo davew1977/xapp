@@ -7,8 +7,8 @@
 package net.sf.xapp.net.server.util.commandlineclient;
 
 import net.sf.xapp.net.server.clustering.PublicEntryPoint;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.TransportHelper;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.TransportHelper;
 import org.apache.log4j.Logger;
 
 import javax.annotation.PostConstruct;

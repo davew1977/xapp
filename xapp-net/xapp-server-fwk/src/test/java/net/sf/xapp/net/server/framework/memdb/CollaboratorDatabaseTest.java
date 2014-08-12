@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.framework.memdb;
 
-import ngpoker.common.framework.LispObj;
+import net.sf.xapp.net.common.framework.LispObj;
 import net.sf.xapp.net.server.lobby.types.Clause;
 import net.sf.xapp.net.server.lobby.types.QueryData;
 import org.junit.Test;

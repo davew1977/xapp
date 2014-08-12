@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.channels;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
 

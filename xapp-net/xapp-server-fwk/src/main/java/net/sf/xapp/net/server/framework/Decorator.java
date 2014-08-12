@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.framework;
 
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.MessageHandler;
 
 public interface Decorator<A> extends MessageHandler<A>
 {

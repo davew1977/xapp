@@ -7,7 +7,7 @@
 package net.sf.xapp.net.server.connectionserver;
 
 import net.sf.xapp.net.server.clustering.ClusterFacade;
-import ngpoker.common.framework.Message;
+import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
 import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;

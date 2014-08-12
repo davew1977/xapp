@@ -8,12 +8,12 @@ package net.sf.xapp.net.server.clustering;
 
 import ngpoker.common.types.ErrorCode;
 import net.sf.xapp.net.server.clustering.syncreq.SyncStubProxy;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.Response;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.Response;
 import ngpoker.common.types.GenericException;
 import ngpoker.infrastructure.types.NodeId;
 import ngpoker.nodeentrypoint.NodeEntryPoint;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import ngpoker.nodeexitpoint.NodeExitPoint;
 
 import java.util.concurrent.ExecutorService;

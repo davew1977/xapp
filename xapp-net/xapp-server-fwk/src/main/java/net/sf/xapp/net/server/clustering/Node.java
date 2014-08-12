@@ -7,8 +7,8 @@
 package net.sf.xapp.net.server.clustering;
 
 import net.sf.xapp.utils.ReflectionUtils;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.TransportHelper;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.TransportHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;

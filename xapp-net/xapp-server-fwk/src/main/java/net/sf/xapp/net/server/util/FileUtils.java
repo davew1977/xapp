@@ -7,7 +7,7 @@
 package net.sf.xapp.net.server.util;
 
 import ngpoker.Version;
-import ngpoker.common.framework.StringSerializable;
+import net.sf.xapp.net.common.framework.StringSerializable;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;
 import net.sf.xapp.net.server.util.filesystemstore.RealFileSystem;
 

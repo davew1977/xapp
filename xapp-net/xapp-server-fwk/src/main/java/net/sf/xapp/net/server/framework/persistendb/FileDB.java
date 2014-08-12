@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.framework.persistendb;
 
-import ngpoker.common.framework.Entity;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.Entity;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import ngpoker.common.types.MessageTypeEnum;
 
 import java.util.List;

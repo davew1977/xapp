@@ -98,13 +98,24 @@ public class ObjectMeta<T> implements Namespace{
         String[] p = path.split(NamespacePath.PATH_SEPARATOR, 2);
         if(p.length==1) {
             ObjectMeta<E> obj;
+            Map<String, ObjectMeta> lookup;
             if(aClass.isInterface()) {
-                obj = allDirectDescendants(aClass).get(p[0]); //todo optimize
+                lookup = allDirectDescendants(aClass); //todo optimize
             } else {
                 assert isNamespaceFor(aClass);
-                obj = matchingMap(aClass).get(p[0]);
+                lookup = matchingMap(aClass);
             }
+            obj = lookup.get(p[0]);
             if (obj == null) {
+                //todo find the best match
+                ClassModel cm = classModel.getClassDatabase().getClassModel(aClass);
+                Vector<ObjectMeta> objMetas = cm.getAllInstancesInHierarchy();
+                System.out.println(String.format("%s %s not found, namespace is %s\nperforming slow search instead", aClass.getSimpleName(), path, instance));
+                for (ObjectMeta objMeta : objMetas) {
+                    if(objMeta.getKey().equals(p[0])) {
+                        return objMeta;
+                    }
+                }
                 throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
             }
             return obj;
@@ -280,8 +291,8 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     @Override
-    public <E> Map<String, ObjectMeta<E>> all(Class<E> aClass) {
-        Map<String, ObjectMeta<E>> result = new LinkedHashMap<String, ObjectMeta<E>>();
+    public  Map<String, ObjectMeta> all(Class aClass) {
+        Map<String, ObjectMeta> result = new LinkedHashMap<String, ObjectMeta>();
         if(aClass.isInterface()) { //search entire namespace, anything could implement it
             result.putAll(allDirectDescendants(aClass));
             for (Map.Entry<Class<?>, Set<ObjectMeta>> e : lookupSets.entrySet()) {
@@ -313,8 +324,8 @@ public class ObjectMeta<T> implements Namespace{
         pendingRefsToSet.add(new PendingObjectReference(targetLocation, key));
     }
 
-    private <E> Map<String, ObjectMeta<E>> allDirectDescendants(Class<E> aClass) {
-        Map<String, ObjectMeta<E>> result = new LinkedHashMap<String, ObjectMeta<E>>();
+    private Map<String, ObjectMeta> allDirectDescendants(Class aClass) {
+        Map<String, ObjectMeta> result = new LinkedHashMap<String, ObjectMeta>();
         for (Map.Entry<Class<?>, Map<String, ObjectMeta>> e : lookupMap.entrySet()) {
             Map<String, ObjectMeta> map = e.getValue();
             for (ObjectMeta objectMeta : map.values()) {

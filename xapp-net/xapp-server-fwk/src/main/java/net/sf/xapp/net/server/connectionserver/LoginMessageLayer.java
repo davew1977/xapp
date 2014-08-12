@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.connectionserver;
 
 import ngpoker.backend.userapi.UserApi;
 import ngpoker.backend.userapi.to.*;
-import ngpoker.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.InMessage;
 import ngpoker.common.types.GenericException;
 import net.sf.xapp.net.common.types.UserId;
 import org.apache.log4j.Logger;

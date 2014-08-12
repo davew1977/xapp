@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.clustering;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import ngpoker.common.types.ErrorCode;
 import ngpoker.infrastructure.types.NodeId;
 import ngpoker.infrastructure.types.PublicNodeState;

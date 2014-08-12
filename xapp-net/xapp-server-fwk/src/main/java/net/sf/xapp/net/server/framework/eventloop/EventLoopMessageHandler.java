@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.framework.eventloop;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.server.framework.Decorator;
 import org.apache.log4j.Logger;
 

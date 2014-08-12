@@ -9,7 +9,7 @@ package net.sf.xapp.net.server.clustering;
 import net.sf.xapp.utils.StringUtils;
 import ngpoker.appserver.Out;
 import net.sf.xapp.net.server.ResultHandlingProxy;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

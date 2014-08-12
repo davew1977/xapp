@@ -7,9 +7,9 @@
 package net.sf.xapp.net.server.clustering.syncreq;
 
 import net.sf.xapp.net.server.clustering.ServiceLookup;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.Message;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.Message;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import ngpoker.common.types.GenericException;
 import ngpoker.common.types.ErrorCode;
 import ngpoker.nodeexitpoint.NodeExitPoint;

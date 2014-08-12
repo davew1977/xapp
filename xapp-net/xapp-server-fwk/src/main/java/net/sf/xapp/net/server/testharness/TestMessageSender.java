@@ -1,7 +1,7 @@
 package net.sf.xapp.net.server.testharness;
 
 import net.sf.xapp.utils.ReflectionUtils;
-import ngpoker.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.InMessage;
 import ngpoker.common.types.MessageTypeEnum;
 import ngpoker.common.util.GeneralUtils;
 import ngpoker.common.util.StringUtils;

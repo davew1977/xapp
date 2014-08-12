@@ -7,8 +7,8 @@
 package net.sf.xapp.net.server.clustering;
 
 import net.sf.xapp.net.server.repos.EntityRepository;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import org.apache.log4j.Logger;
 
 /**

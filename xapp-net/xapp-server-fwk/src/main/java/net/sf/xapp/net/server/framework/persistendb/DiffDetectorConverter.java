@@ -1,7 +1,7 @@
 package net.sf.xapp.net.server.framework.persistendb;
 
 import ngpoker.codegen.model.ComplexType;
-import ngpoker.common.framework.LispObj;
+import net.sf.xapp.net.common.framework.LispObj;
 import ngpoker.common.types.Country;
 import net.sf.xapp.net.server.framework.smartconverter.AbstractConverter;
 import net.sf.xapp.net.server.framework.smartconverter.ConversionHelper;

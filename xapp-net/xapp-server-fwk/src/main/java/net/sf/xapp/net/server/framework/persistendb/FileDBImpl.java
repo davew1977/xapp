@@ -8,12 +8,12 @@ package net.sf.xapp.net.server.framework.persistendb;
 
 import net.sf.xapp.utils.StringUtils;
 import ngpoker.Version;
-import ngpoker.common.framework.Entity;
+import net.sf.xapp.net.common.framework.Entity;
 import ngpoker.common.types.MessageTypeEnum;
 import net.sf.xapp.net.server.clustering.NodeInfo;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.StringSerializable;
-import ngpoker.common.framework.TransportHelper;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.StringSerializable;
+import net.sf.xapp.net.common.framework.TransportHelper;
 import ngpoker.common.util.ReflectionUtils;
 import net.sf.xapp.net.server.framework.smartconverter.ConvertResult;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;

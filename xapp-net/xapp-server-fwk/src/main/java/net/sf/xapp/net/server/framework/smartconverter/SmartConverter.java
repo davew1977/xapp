@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.framework.smartconverter;
 
 import ng.Global;
 import ngpoker.codegen.model.*;
-import ngpoker.common.framework.LispObj;
+import net.sf.xapp.net.common.framework.LispObj;
 import ngpoker.common.types.Event;
 import ngpoker.game.types.PokerGame;
 import org.apache.log4j.Logger;

@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.framework.persistendb;
 
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.MessageHandler;
 
 public interface AppendStrategy<U> extends MessageHandler<U>
 {

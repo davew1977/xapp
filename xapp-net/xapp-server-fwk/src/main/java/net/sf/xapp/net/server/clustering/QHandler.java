@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.server.clustering;
 
-import ngpoker.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.InMessage;
 
 /**
  *

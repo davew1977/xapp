@@ -326,33 +326,33 @@ public class ClassModel<T> {
         return property != null ? property : m_propertyMapByXMLMapping.get(name);
     }
 
-    public Vector<T> getAllInstancesInHierarchy(String query) {
-        Vector<T> all = getAllInstancesInHierarchy();
+    public Vector<ObjectMeta> getAllInstancesInHierarchy(String query) {
+        Vector<ObjectMeta> all = getAllInstancesInHierarchy();
         if (query == null) {
-            return new Vector<T>();
+            return new Vector<ObjectMeta>();
         }
         if (query.equals("")) {
             return all;
         }
-        Vector<T> filtered = new Vector<T>();
+        Vector<ObjectMeta> filtered = new Vector<ObjectMeta>();
         if (!query.contains("=")) {
-            for (T o : all) {
-                if (getKey(o).startsWith(query)) {
+            for (ObjectMeta o : all) {
+                if (o.getKey().startsWith(query)) {
                     filtered.add(o);
                 }
             }
         }
         String[] s = query.split("=");
-        for (T o : all) {
+        for (ObjectMeta o : all) {
             Property prop = getProperty(s[0]);
             if (prop == null) continue;
-            if (String.valueOf(prop.get(o)).equals(s[1])) filtered.add(o);
+            if (String.valueOf(o.get(prop)).equals(s[1])) filtered.add(o);
         }
         return filtered;
     }
 
-    public Vector<T> getAllInstancesInHierarchy() {
-        Vector<T> result = new Vector<T>();
+    public Vector<ObjectMeta> getAllInstancesInHierarchy() {
+        Vector<ObjectMeta> result = new Vector<ObjectMeta>();
         for (ClassModel validImpl : m_validImplementations) {
             if (!validImpl.equals(this)) {
                 result.addAll(validImpl.getAllInstancesInHierarchy());
@@ -362,10 +362,10 @@ public class ClassModel<T> {
         return result;
     }
 
-    private Collection<T> allInstances() {
-        Collection<T> result = new ArrayList<T>(instances.size());
-        for (ObjectMeta<T> instance : instances) {
-            result.add(instance.getInstance());
+    private Collection<ObjectMeta> allInstances() {
+        Collection<ObjectMeta> result = new ArrayList<ObjectMeta>(instances.size());
+        for (ObjectMeta instance : instances) {
+            result.add(instance);
         }
         return result;
     }
@@ -594,12 +594,6 @@ public class ClassModel<T> {
         return Tree.class.isAssignableFrom(getContainedClass());
     }
 
-    /**
-     * @return the root for this tree type, will blow up if {@link #isTreeType()} returns false
-     */
-    public Tree getTreeRoot() {
-        return ((Tree) getAllInstancesInHierarchy().get(0)).root();
-    }
 
     public TrackKeyChanges getTrackKeyChanges() {
         return m_trackKeyChanges;

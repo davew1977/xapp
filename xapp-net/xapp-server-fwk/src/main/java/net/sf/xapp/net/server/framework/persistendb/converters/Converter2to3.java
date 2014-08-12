@@ -2,7 +2,7 @@ package net.sf.xapp.net.server.framework.persistendb.converters;
 
 import net.sf.xapp.net.server.clustering.NodeInfoImpl;
 import ngpoker.codegen.model.ComplexType;
-import ngpoker.common.framework.LispObj;
+import net.sf.xapp.net.common.framework.LispObj;
 import net.sf.xapp.net.server.framework.smartconverter.AbstractConverter;
 import net.sf.xapp.net.server.framework.smartconverter.ConvertResult;
 import net.sf.xapp.net.server.util.filesystemstore.*;

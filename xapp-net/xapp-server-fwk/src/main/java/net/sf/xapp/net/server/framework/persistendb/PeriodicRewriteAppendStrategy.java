@@ -1,9 +1,9 @@
 package net.sf.xapp.net.server.framework.persistendb;
 
-import ngpoker.common.framework.Entity;
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.StringSerializable;
-import ngpoker.common.framework.TransportHelper;
+import net.sf.xapp.net.common.framework.Entity;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.StringSerializable;
+import net.sf.xapp.net.common.framework.TransportHelper;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -9,7 +9,7 @@ package net.sf.xapp.net.server.channels;
 import ngpoker.client.channel.Channel;
 import ngpoker.client.channel.ChannelReply;
 import ngpoker.client.channel.ChannelReplyAdaptor;
-import ngpoker.common.framework.Message;
+import net.sf.xapp.net.common.framework.Message;
 import ngpoker.common.types.ErrorCode;
 import ngpoker.common.types.GenericException;
 import net.sf.xapp.net.common.types.UserId;

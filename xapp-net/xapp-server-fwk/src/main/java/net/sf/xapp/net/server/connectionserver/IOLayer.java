@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.server.connectionserver;
 
-import ngpoker.common.framework.Message;
+import net.sf.xapp.net.common.framework.Message;
 
 public interface IOLayer<T,E>
 {

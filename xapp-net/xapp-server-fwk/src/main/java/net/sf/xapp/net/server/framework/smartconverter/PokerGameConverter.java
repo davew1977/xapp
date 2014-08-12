@@ -8,7 +8,7 @@ package net.sf.xapp.net.server.framework.smartconverter;
 
 import ngpoker.Version;
 import ngpoker.codegen.model.ComplexType;
-import ngpoker.common.framework.LispObj;
+import net.sf.xapp.net.common.framework.LispObj;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;
 import net.sf.xapp.net.server.util.filesystemstore.FileSystem;
 import net.sf.xapp.net.server.util.filesystemstore.RealFileSystem;

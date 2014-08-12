@@ -10,7 +10,7 @@ import ngpoker.codegen.model.ComplexType;
 import ngpoker.codegen.model.EnumType;
 import ngpoker.codegen.model.Field;
 import ngpoker.codegen.model.PrimitiveType;
-import ngpoker.common.framework.LispObj;
+import net.sf.xapp.net.common.framework.LispObj;
 
 import java.util.List;
 
