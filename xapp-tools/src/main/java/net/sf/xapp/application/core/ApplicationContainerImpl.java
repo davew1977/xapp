@@ -88,16 +88,16 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
      * specific application wants to be executed before running the actual
      * action.
      */
-    private Map<DefaultAction, Hook> beforeHooks =
-            new HashMap<DefaultAction, Hook>();
+    private Map<DefaultAction, List<Hook>> beforeHooks =
+            new HashMap<DefaultAction, List<Hook>>();
 
     /**
      * Possible after hooks for the default actions, i.e., code that the
      * specific application wants to be executed after running the actual
      * action.
      */
-    private Map<DefaultAction, Hook> afterHooks =
-            new HashMap<DefaultAction, Hook>();
+    private Map<DefaultAction, List<Hook>> afterHooks =
+            new HashMap<DefaultAction, List<Hook>>();
     private JScrollPane m_mainTreeScrollPane;
     private Point m_latestPopUpPoint = new Point(0, 0);
     private TreeNodeFilter m_treeNodeFilter = new DefaultTreeNodeFilter();
@@ -696,16 +696,16 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
      * Run a hook associated with a specific action.
      *
      * @param action the action we are executing
-     * @param hooks  the collection of hooks.  This will be either
+     * @param hookMap  the collection of hooks.  This will be either
      *               {@link #beforeHooks} or {@link #afterHooks}.
      */
-    private void runHook(DefaultAction action, Map<DefaultAction, Hook> hooks)
+    private void runHook(DefaultAction action, Map<DefaultAction, List<Hook>> hookMap)
     {
-        Hook hook = hooks.get(action);
-
-        if (hook != null)
-        {
-            hook.execute();
+        List<Hook> hooks = hookMap.get(action);
+        if(hooks != null) {
+            for (Hook hook : hooks) {
+                hook.execute();
+            }
         }
     }
 
@@ -723,14 +723,19 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     /**
      * Add a before or after hook to a specific action.
      *
-     * @param hooks  the collection of hooks.  This will be either {@link #beforeHooks}
+     * @param hookMap  the collection of hooks.  This will be either {@link #beforeHooks}
      *               or {@link #afterHooks}.
      * @param action the action we want to add a hook to.
      * @param hook   the actual hook.
      */
-    private void addHook(Map<DefaultAction, Hook> hooks, DefaultAction action, Hook hook)
+    private void addHook(Map<DefaultAction, List<Hook>> hookMap, DefaultAction action, Hook hook)
     {
-        hooks.put(action, hook);
+        List<Hook> hooks = hookMap.get(action);
+        if(hooks == null) {
+            hooks = new ArrayList<Hook>();
+            hookMap.put(action, hooks);
+        }
+        hooks.add(hook);
     }
 
     public void addAfterHook(DefaultAction action, Hook hook)

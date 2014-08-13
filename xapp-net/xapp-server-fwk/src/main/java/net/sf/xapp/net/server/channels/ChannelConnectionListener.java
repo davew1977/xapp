@@ -7,6 +7,7 @@
 package net.sf.xapp.net.server.channels;
 
 import net.sf.xapp.net.api.connectionlistener.ConnectionListener;
+import net.sf.xapp.net.common.types.NodeId;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import ngpoker.client.channel.Channel;

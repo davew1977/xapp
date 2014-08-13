@@ -312,7 +312,9 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     public void setInitialized(ObjectMeta<T> obj)
     {
         m_initializing = false;
-        rootObjMeta = obj;
+        if (rootObjMeta == null) { //maybe we're unmarshalling another object with this class database
+            rootObjMeta = obj;
+        }
     }
 
     /**

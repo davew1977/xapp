@@ -136,6 +136,7 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
             }
         }, model());
         getAppContainer().getToolBar().add(searchPane);
+        initAppData();
     }
 
     public SpecialTreeGraphics createSpecialTreeGraphics() {
@@ -188,6 +189,7 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
     }
 
     public boolean nodeSelected(Node node) {
+        super.nodeSelected(node);
         List<CodeFile> files = m_generatorPlugin.generate(model(), node);
         if (files != null) {
             m_codeTabbedPane.init(files);
