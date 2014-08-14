@@ -32,7 +32,7 @@ public class ChannelConnectionListener implements ConnectionListener
     }
 
     @Override
-    public void playerConnected(UserId userId, NodeId nodeId)
+    public void userConnected(UserId userId, NodeId nodeId)
     {
         Collection<Channel> channels = channels(userId);
         for (Channel channel : channels)
@@ -42,7 +42,7 @@ public class ChannelConnectionListener implements ConnectionListener
     }
 
     @Override
-    public void playerDisconnected(UserId userId)
+    public void userDisconnected(UserId userId)
     {
         Collection<Channel> channels = channels(userId);
         for (Channel channel : channels)

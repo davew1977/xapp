@@ -6,10 +6,10 @@
  */
 package net.sf.xapp.net.server.connectionserver;
 
-import ngpoker.backend.userapi.UserApi;
-import ngpoker.backend.userapi.to.*;
+import net.sf.xapp.net.api.userapi.UserApi;
+import net.sf.xapp.net.api.userapi.to.*;
 import net.sf.xapp.net.common.framework.InMessage;
-import ngpoker.common.types.GenericException;
+import net.sf.xapp.net.common.types.GenericException;
 import net.sf.xapp.net.common.types.UserId;
 import org.apache.log4j.Logger;
 

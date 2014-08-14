@@ -34,9 +34,9 @@ public interface ClusterFacade
 
     NodeId getNodeId(UserId userId);
 
-    void addPlayerLocationMapping(UserId userId, NodeId nodeId);
+    void addUserLocationMapping(UserId userId, NodeId nodeId);
 
-    void removePlayerLocationMapping(UserId userId);
+    void removeUserLocationMapping(UserId userId);
 
     PublicNodeState getNodeState(NodeId nodeId);
 }

@@ -6,6 +6,10 @@
  */
 package net.sf.xapp.net.server.connectionserver;
 
+import net.sf.xapp.net.api.connectionlistener.ConnectionListener;
+import net.sf.xapp.net.api.messagesender.MessageSender;
+import net.sf.xapp.net.api.userlookup.UserLookup;
+import net.sf.xapp.net.common.types.UserLocation;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.clustering.PublicEntryPoint;
@@ -34,21 +38,21 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
     private final NodeInfo nodeInfo;
     private final ClusterFacade clusterFacade;
     private final UserLocator userLocator;
-    private final PlayerLookup playerLookup;
+    private final UserLookup userLookup;
 
     public PublicMessageLayer(PublicEntryPoint publicEntryPoint,
                               ConnectionListener connectionListener,
                               NodeInfo nodeInfo,
                               ClusterFacade clusterFacade,
                               UserLocator userLocator,
-                              PlayerLookup playerLookup)
+                              UserLookup userLookup)
     {
         this.publicEntryPoint = publicEntryPoint;
         this.connectionListener = connectionListener;
         this.nodeInfo = nodeInfo;
         this.clusterFacade = clusterFacade;
         this.userLocator = userLocator;
-        this.playerLookup = playerLookup;
+        this.userLookup = userLookup;
         sessions = new HashMap<UserId,T>();
     }
 
@@ -63,12 +67,12 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
     {
         UserId userId = ioLayer.getSessionKey(session);
         sessions.put(userId, session);
-        clusterFacade.addPlayerLocationMapping(userId, nodeInfo.getMyNodeId());
-        connectionListener.playerConnected(userId, nodeInfo.getMyNodeId());
-        boolean guest = playerLookup.findPlayer(userId).getPlayer().isGuest();
+        clusterFacade.addUserLocationMapping(userId, nodeInfo.getMyNodeId());
+        connectionListener.userConnected(userId, nodeInfo.getMyNodeId());
+        boolean guest = userLookup.findUser(userId).getUser().isGuest();
 
         //check for channels to join
-        List<PlayerLocation> channels = userLocator.getLocations(userId);
+        List<UserLocation> channels = userLocator.getLocations(userId);
         post(userId, new SetInitialInfo(userId, channels, System.currentTimeMillis(), guest));
     }
 
@@ -77,8 +81,8 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
     {
         UserId userId = ioLayer.getSessionKey(session);
         sessions.remove(userId);
-        clusterFacade.removePlayerLocationMapping(userId);
-        connectionListener.playerDisconnected(userId);
+        clusterFacade.removeUserLocationMapping(userId);
+        connectionListener.userDisconnected(userId);
     }
 
     @Override
@@ -89,9 +93,9 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
     }
 
     @Override
-    public void broadcast(List<UserId> players, Message message)
+    public void broadcast(List<UserId> users, Message message)
     {
-        for (UserId userId : players)
+        for (UserId userId : users)
         {
             post(userId, message);
         }
@@ -107,7 +111,7 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
         }
         else
         {
-            log.debug(String.format("trying to post message to player with no session: %s %s", userId, message));
+            log.debug(String.format("trying to post message to user with no session: %s %s", userId, message));
         }
     }
 }

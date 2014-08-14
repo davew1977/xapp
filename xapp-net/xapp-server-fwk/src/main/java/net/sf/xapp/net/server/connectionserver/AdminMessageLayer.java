@@ -6,10 +6,10 @@
  */
 package net.sf.xapp.net.server.connectionserver;
 
-import ngpoker.appserver.Out;
-import ngpoker.appserver.OutAdaptor;
-import net.sf.xapp.net.server.clustering.PublicEntryPoint;
+import net.sf.xapp.net.api.out.Out;
+import net.sf.xapp.net.api.out.OutAdaptor;
 import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.server.clustering.PublicEntryPoint;
 
 import java.util.HashMap;
 import java.util.Map;

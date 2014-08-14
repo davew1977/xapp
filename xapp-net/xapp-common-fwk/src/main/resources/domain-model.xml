@@ -3,8 +3,6 @@
     <ObjectId id="0" name="UserLookup_FindUserResponse"/>
     <ObjectId id="1" name="UserLookup_FindUser"/>
     <ObjectId id="2" name="ExampleApi_DoSomething"/>
-    <ObjectId id="3" name="ConnectionListener_PlayerConnected"/>
-    <ObjectId id="4" name="ConnectionListener_PlayerDisconnected"/>
     <ObjectId id="5" name="Channel_Join"/>
     <ObjectId id="6" name="Channel_Leave"/>
     <ObjectId id="7" name="MessageSender_Post"/>
@@ -35,6 +33,21 @@
     <ObjectId id="32" name="NodeEntryPoint_ReceiveSyncRequest"/>
     <ObjectId id="33" name="Out_Failure"/>
     <ObjectId id="34" name="Out_Success"/>
+    <ObjectId id="35" name="UserApi_SignUpResponse"/>
+    <ObjectId id="36" name="UserApi_LoginResponse"/>
+    <ObjectId id="37" name="UserApi_LoginAsGuestResponse"/>
+    <ObjectId id="38" name="UserApi_SignUp"/>
+    <ObjectId id="39" name="UserApi_Login"/>
+    <ObjectId id="40" name="UserApi_LoginAsGuest"/>
+    <ObjectId id="41" name="UserApi_ResetPassword"/>
+    <ObjectId id="42" name="UserApi_LoginWithToken"/>
+    <ObjectId id="43" name="UserApiReply_SignUpResponse"/>
+    <ObjectId id="44" name="UserApiReply_LoginResponse"/>
+    <ObjectId id="45" name="UserApiReply_LoginAsGuestResponse"/>
+    <ObjectId id="46" name="UserApiReply_ResetPasswordResponse"/>
+    <ObjectId id="47" name="UserApiReply_LoginWithTokenResponse"/>
+    <ObjectId id="48" name="ConnectionListener_UserConnected"/>
+    <ObjectId id="49" name="ConnectionListener_UserDisconnected"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -112,6 +125,22 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 </ValueObject>
                 <EnumType name="LobbyPropertyEnum" skipGeneration="true" values=""/>
                 <EnumType name="ObjectType" skipGeneration="true" values=""/>
+                <EnumType name="Country" skipGeneration="true" values=""/>
+                <ValueObject name="UserInfo">
+                  <Field access="READ_ONLY" name="firstName" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="lastName" type="provided/java/lang/String"/>
+                  <Field access="READ_WRITE" name="password" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="country" type="xapp-common-fwk/net/sf/xapp/net/common/types/Country"/>
+                  <Field access="READ_ONLY" name="email" type="provided/java/lang/String"/>
+                </ValueObject>
+                <ValueObject description="contains the binary data of a jpg image" name="ImageData">
+                  <Field access="READ_ONLY" list="true" name="data" type="provided/java/lang/Byte"/>
+                </ValueObject>
+                <ValueObject name="Coord">
+                  <Field access="READ_ONLY" name="x" type="provided/java/lang/Integer"/>
+                  <Field access="READ_ONLY" name="y" type="provided/java/lang/Integer"/>
+                </ValueObject>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">
@@ -143,14 +172,14 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               </DirMeta>
               <DirMeta name="connectionlistener">
                 <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ConnectionListener">
-                  <Message name="PlayerConnected">
+                  <Message name="UserConnected">
                     <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="nodeId" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
-                    <Response name="PlayerConnectedResponse"/>
+                    <Response name="UserConnectedResponse"/>
                   </Message>
-                  <Message name="PlayerDisconnected">
+                  <Message name="UserDisconnected">
                     <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
-                    <Response name="PlayerDisconnectedResponse"/>
+                    <Response name="UserDisconnectedResponse"/>
                   </Message>
                 </Api>
               </DirMeta>
@@ -315,6 +344,42 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   </Message>
                 </Api>
               </DirMeta>
+              <DirMeta name="userapi">
+                <Api apiType="SYNC_WITH_REPLY_API" clientVisible="true" errors="INVALID_PASSWORD,NICKNAME_NOT_UNIQUE,INVALID_EMAIL,USER_NOT_FOUND," name="UserApi">
+                  <Message name="SignUp">
+                    <Field access="READ_ONLY" name="userInfo" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserInfo"/>
+                    <Field access="READ_ONLY" name="profileImage" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/ImageData"/>
+                    <Response name="SignUpResponse">
+                      <Field access="READ_ONLY" name="userId" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    </Response>
+                  </Message>
+                  <Message name="Login">
+                    <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="password" type="provided/java/lang/String"/>
+                    <Response name="LoginResponse">
+                      <Field access="READ_ONLY" name="userId" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    </Response>
+                  </Message>
+                  <Message name="LoginAsGuest">
+                    <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
+                    <Response name="LoginAsGuestResponse">
+                      <Field access="READ_ONLY" name="tempUserId" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    </Response>
+                  </Message>
+                  <Message description="user enters email address to help prevent other users maliciously reseting passwords" name="ResetPassword">
+                    <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="emailAddress" type="provided/java/lang/String"/>
+                    <Response name="ResetPasswordResponse"/>
+                  </Message>
+                  <Message name="LoginWithToken">
+                    <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="token" optional="true" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="bot" type="provided/java/lang/Boolean"/>
+                    <Response name="LoginWithTokenResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="userentity"/>
             </DirMeta>
           </DirMeta>
         </DirMeta>
@@ -331,5 +396,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2006" name="net_sf_xapp_net_common_types_IdSequenceStore"/>
     <ObjectId id="2007" name="net_sf_xapp_net_common_types_User"/>
     <ObjectId id="2008" name="net_sf_xapp_net_common_types_UserLocation"/>
+    <ObjectId id="2009" name="net_sf_xapp_net_common_types_UserInfo"/>
+    <ObjectId id="2010" name="net_sf_xapp_net_common_types_ImageData"/>
+    <ObjectId id="2011" name="net_sf_xapp_net_common_types_Coord"/>
   </ObjectIds>
 </Model>

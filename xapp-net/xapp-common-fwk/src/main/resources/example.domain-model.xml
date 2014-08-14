@@ -622,7 +622,7 @@
                 <Messages>
                   <Message description="called when a user logs in to tell client the apps that the player is associated with. i.e. what tables they are sitting at and what tournaments they are registered to" name="SetInitialInfo">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="locations" type="PlayerLocation"/>
+                      <Field access="READ_ONLY" list="true" name="locations" type="UserLocation"/>
                       <Field access="READ_ONLY" name="serverTime" type="Long"/>
                       <Field access="READ_ONLY" name="guest" type="Boolean"/>
                     </Fields>
@@ -2147,14 +2147,12 @@ if null then the latest will be the first in the returned list. The "limit" indi
               <Fields>
                 <Field access="READ_ONLY" name="userId" type="UserId"/>
                 <Field access="READ_ONLY" name="userInfo" type="UserInfo"/>
-                <Field access="READ_ONLY" entityDeclaration="true" list="true" name="accounts" type="Account"/>
                 <Field access="READ_ONLY" name="userspaceLocation" type="Coord"/>
                 <Field access="READ_WRITE" name="lastImageUploadTime" type="Long"/>
                 <Field access="READ_WRITE" name="lastLoginTime" type="Long"/>
                 <Field access="READ_WRITE" name="status" optional="true" type="String"/>
                 <Field access="READ_WRITE" list="true" name="followedUsers" type="UserId"/>
                 <Field access="READ_WRITE" name="playerPoints" type="Long"/>
-                <Field access="READ_WRITE" list="true" name="enabledCharacters" type="PokerCharacter"/>
               </Fields>
               <ObservableMeta/>
             </Entity>

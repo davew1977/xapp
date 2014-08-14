@@ -6,15 +6,15 @@
  */
 package net.sf.xapp.net.server.connectionserver;
 
-import net.sf.xapp.net.server.clustering.ClusterFacade;
+import net.sf.xapp.net.api.connectionlistener.ConnectionListener;
+import net.sf.xapp.net.api.messagesender.MessageSender;
+import net.sf.xapp.net.api.messagesender.to.Broadcast;
+import net.sf.xapp.net.api.messagesender.to.Post;
+import net.sf.xapp.net.api.nodeexitpoint.NodeExitPoint;
 import net.sf.xapp.net.common.framework.Message;
+import net.sf.xapp.net.common.types.NodeId;
 import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
-import net.sf.xapp.net.server.connectionserver.messagesender.to.Broadcast;
-import net.sf.xapp.net.server.connectionserver.messagesender.to.Post;
-import ngpoker.infrastructure.types.NodeId;
-import ngpoker.nodeexitpoint.NodeExitPoint;
+import net.sf.xapp.net.server.clustering.ClusterFacade;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -102,13 +102,13 @@ public class MessageSenderProxy implements MessageSender, ConnectionListener
     }
 
     @Override
-    public void playerConnected(UserId userId, NodeId nodeId)
+    public void userConnected(UserId userId, NodeId nodeId)
     {
         connectionLocations.put(userId, nodeId);
     }
 
     @Override
-    public void playerDisconnected(UserId userId)
+    public void userDisconnected(UserId userId)
     {
         connectionLocations.remove(userId);
     }

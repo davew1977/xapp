@@ -6,6 +6,7 @@
  */
 package net.sf.xapp.net.server.connectionserver.mina;
 
+import net.sf.xapp.net.connectionserver.mina.BytePacketCodecFactory;
 import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.clustering.NodeInfoImpl;
 import org.apache.log4j.Logger;

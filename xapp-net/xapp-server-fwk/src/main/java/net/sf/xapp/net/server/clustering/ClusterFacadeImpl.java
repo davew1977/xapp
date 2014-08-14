@@ -82,13 +82,13 @@ public class ClusterFacadeImpl implements ClusterFacade
     }
 
     @Override
-    public void addPlayerLocationMapping(UserId userId, NodeId nodeId)
+    public void addUserLocationMapping(UserId userId, NodeId nodeId)
     {
         clusterSharedState.addPlayerLocationMapping(userId, nodeId);
     }
 
     @Override
-    public void removePlayerLocationMapping(UserId userId)
+    public void removeUserLocationMapping(UserId userId)
     {
         clusterSharedState.removePlayerLocationMapping(userId);
     }
