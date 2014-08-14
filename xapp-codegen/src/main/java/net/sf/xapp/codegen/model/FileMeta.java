@@ -56,6 +56,6 @@ public class FileMeta implements Cloneable {
     }
 
     protected String packageName() {
-        return objMeta.getPath().getPathFrom(module().objMeta, ".");
+        return objMeta != null ? objMeta.getPath().getPathFrom(module().objMeta, ".") : null;
     }
 }

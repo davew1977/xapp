@@ -7,12 +7,12 @@
     <ObjectId id="4" name="ConnectionListener_PlayerDisconnected"/>
     <ObjectId id="5" name="Channel_Join"/>
     <ObjectId id="6" name="Channel_Leave"/>
-    <ObjectId id="7" name="Channel_PlayerConnected"/>
-    <ObjectId id="8" name="Channel_PlayerDisconnected"/>
     <ObjectId id="9" name="ChannelReply_JoinResponse"/>
     <ObjectId id="10" name="ChannelReply_LeaveResponse"/>
-    <ObjectId id="11" name="ChannelReply_PlayerConnectedResponse"/>
-    <ObjectId id="12" name="ChannelReply_PlayerDisconnectedResponse"/>
+    <ObjectId id="13" name="Channel_UserConnected"/>
+    <ObjectId id="14" name="Channel_UserDisconnected"/>
+    <ObjectId id="15" name="ChannelReply_UserConnectedResponse"/>
+    <ObjectId id="16" name="ChannelReply_UserDisconnectedResponse"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -126,11 +126,11 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Message description="A player wants to leave a channel" name="Leave">
                     <Response name="LeaveResponse"/>
                   </Message>
-                  <Message name="PlayerConnected">
-                    <Response name="PlayerConnectedResponse"/>
+                  <Message name="UserConnected">
+                    <Response name="UserConnectedResponse"/>
                   </Message>
-                  <Message name="PlayerDisconnected">
-                    <Response name="PlayerDisconnectedResponse"/>
+                  <Message name="UserDisconnected">
+                    <Response name="UserDisconnectedResponse"/>
                   </Message>
                 </Api>
               </DirMeta>
