@@ -6,43 +6,43 @@
  */
 package net.sf.xapp.net.server.chat;
 
-import net.sf.xapp.net.server.clustering.ClusterFacade;
-import net.sf.xapp.net.server.repos.EntityRepository;
+import net.sf.xapp.net.api.channel.Channel;
+import net.sf.xapp.net.api.channel.ChannelAdaptor;
+import net.sf.xapp.net.api.chatapp.ChatApp;
+import net.sf.xapp.net.api.chatapp.ChatAppAdaptor;
+import net.sf.xapp.net.api.chatappadmin.ChatAppAdmin;
+import net.sf.xapp.net.api.lobbyinternal.LobbyInternal;
+import net.sf.xapp.net.api.messagesender.MessageSender;
+import net.sf.xapp.net.api.userlookup.UserLookup;
+import net.sf.xapp.net.common.types.Language;
 import net.sf.xapp.net.server.channels.ChannelImpl;
-import net.sf.xapp.net.server.channels.PlayerLocator;
-import ngpoker.client.channel.Channel;
-import ngpoker.client.channel.ChannelAdaptor;
-import net.sf.xapp.net.server.chat.admin.ChatAppAdmin;
-import net.sf.xapp.net.server.chat.chatapp.ChatApp;
-import net.sf.xapp.net.server.chat.chatapp.ChatAppAdaptor;
+import net.sf.xapp.net.server.channels.UserLocator;
+import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
-import ngpoker.common.types.Language;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
-import net.sf.xapp.net.server.lobby.internal.LobbyInternal;
-import ngpoker.playerlookup.PlayerLookup;
+import net.sf.xapp.net.server.repos.EntityRepository;
 
 public class ChatAppAdminImpl implements ChatAppAdmin
 {
     private final EntityRepository entityRepository;
     private final ClusterFacade clusterFacade;
-    private final PlayerLookup playerLookup;
+    private final UserLookup userLookup;
     private final MessageSender messageSender;
     private final EventLoopManager eventLoopManager;
-    private final PlayerLocator playerLocator;
+    private final UserLocator userLocator;
     private final LobbyInternal lobbyInternal;
 
     public ChatAppAdminImpl(EntityRepository entityRepository,
                             ClusterFacade clusterFacade,
-                            PlayerLookup playerLookup,
+                            UserLookup userLookup,
                             EventLoopManager eventLoopManager,
-                            PlayerLocator playerLocator, MessageSender messageSender, LobbyInternal lobbyInternal)
+                            UserLocator userLocator, MessageSender messageSender, LobbyInternal lobbyInternal)
     {
         this.entityRepository = entityRepository;
         this.clusterFacade = clusterFacade;
-        this.playerLookup = playerLookup;
+        this.userLookup = userLookup;
         this.eventLoopManager = eventLoopManager;
-        this.playerLocator = playerLocator;
+        this.userLocator = userLocator;
         this.messageSender = messageSender;
         this.lobbyInternal = lobbyInternal;
     }
@@ -50,8 +50,8 @@ public class ChatAppAdminImpl implements ChatAppAdmin
     @Override
     public void create(String key, Language language, Integer maxOccupants, String name)
     {
-        ChatAppImpl chatApp = new ChatAppImpl(playerLookup, key);
-        ChannelImpl channel = new ChannelImpl(messageSender, playerLocator, chatApp);
+        ChatAppImpl chatApp = new ChatAppImpl(userLookup, key);
+        ChannelImpl channel = new ChannelImpl(messageSender, userLocator, chatApp);
 
         //event loop wrapper
         ChatApp chatAppEntity = new ChatAppAdaptor(key,

@@ -110,7 +110,7 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
     {
         log.debug("player disconnected from lobby session: " + userId);
         playerLeft(userId);
-        commChannel.removePlayer(userId);
+        commChannel.removeUser(userId);
     }
 
     @Override

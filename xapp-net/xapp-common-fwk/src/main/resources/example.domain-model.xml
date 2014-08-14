@@ -647,19 +647,19 @@
                 <Messages>
                   <Message name="Post">
                     <Fields>
-                      <Field access="READ_ONLY" name="player" type="net/sf/xapp/net/common/types/UserId"/>
-                      <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
+                      <Field access="READ_ONLY" name="player" type="UserId"/>
+                      <Field access="READ_ONLY" name="message" type="Message"/>
                     </Fields>
                     <Response name="PostResponse"/>
                   </Message>
                   <Message name="Broadcast">
                     <Fields>
-                      <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
-                      <Field access="READ_ONLY" name="message" type="net/sf/xapp/net/common/types/Message"/>
+                      <Field access="READ_ONLY" list="true" name="players" type="UserId"/>
+                      <Field access="READ_ONLY" name="message" type="Message"/>
                     </Fields>
                     <Response name="BroadcastResponse">
                       <Fields>
-                        <Field access="READ_ONLY" list="true" name="players" type="net/sf/xapp/net/common/types/UserId"/>
+                        <Field access="READ_ONLY" list="true" name="players" type="UserId"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -946,15 +946,15 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="SYNCHRONOUS" errors="PLAYER_NOT_FOUND," hideEntityKey="true" name="PlayerLookup" packageName="ngpoker.playerlookup">
+              <Api apiType="SYNCHRONOUS" errors="USER_NOT_FOUND," hideEntityKey="true" name="UserLookup" packageName="ngpoker.playerlookup">
                 <Messages>
-                  <Message name="FindPlayer">
+                  <Message name="FindUser">
                     <Fields>
                       <Field access="READ_ONLY" name="id" type="UserId"/>
                     </Fields>
-                    <Response name="FindPlayerResponse">
+                    <Response name="FindUserResponse">
                       <Fields>
-                        <Field access="READ_ONLY" name="player" type="Player"/>
+                        <Field access="READ_ONLY" name="user" type="User"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -1122,17 +1122,17 @@
                     </Fields>
                     <Response name="ChatBroadcastResponse"/>
                   </Message>
-                  <Message name="PlayerJoined">
+                  <Message name="UserJoined">
                     <Fields>
                       <Field access="READ_ONLY" name="nickname" type="String"/>
                     </Fields>
-                    <Response name="PlayerJoinedResponse"/>
+                    <Response name="UserJoinedResponse"/>
                   </Message>
-                  <Message name="PlayerLeft">
+                  <Message name="UserLeft">
                     <Fields>
                       <Field access="READ_ONLY" name="nickname" type="String"/>
                     </Fields>
-                    <Response name="PlayerLeftResponse"/>
+                    <Response name="UserLeftResponse"/>
                   </Message>
                 </Messages>
               </Api>
@@ -2026,12 +2026,10 @@ if null then the latest will be the first in the returned list. The "limit" indi
                 <Field access="READ_ONLY" list="true" name="drawnCards" type="Card"/>
               </Fields>
             </ValueObject>
-            <ValueObject name="Player">
+            <ValueObject name="User">
               <Fields>
                 <Field access="READ_ONLY" name="id" type="UserId"/>
                 <Field access="READ_ONLY" name="username" type="String"/>
-                <Field access="READ_ONLY" name="operatorId" type="OperatorId"/>
-                <Field access="READ_ONLY" name="country" type="Country"/>
                 <Field access="READ_ONLY" name="guest" type="Boolean"/>
                 <Field access="READ_ONLY" name="admin" type="Boolean"/>
                 <Field access="READ_ONLY" name="email" type="String"/>

@@ -10,7 +10,7 @@ import net.sf.xapp.net.server.idgen.IdSeqGenerator;
 import ngpoker.backend.useradmin.UserAdmin;
 import ngpoker.backend.useradmin.UserAdminReply;
 import ngpoker.backend.useradmin.UserAdminReplyAdaptor;
-import net.sf.xapp.net.server.channels.PlayerLocator;
+import net.sf.xapp.net.server.channels.UserLocator;
 import net.sf.xapp.net.server.channels.SimpleNotifier;
 import ngpoker.common.types.*;
 import net.sf.xapp.net.server.connectionserver.clientcontrol.ClientControl;
@@ -53,7 +53,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     private final LobbyInternal lobbyInternal;
     private final UserAdminReply userAdminReply;
     private final ImageCache imageCache;
-    private final PlayerLocator playerLocator;
+    private final UserLocator userLocator;
     private final BasicPasswordEncryptor passwordEncryptor;
 
     private final IdSeqGenerator idSeqGenerator;
@@ -66,13 +66,13 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
                            IdSeqGenerator idSeqGenerator,
                            String imageDir,
                            LobbyInternal lobbyInternal,
-                           PlayerLocator playerLocator, MailProxy mailProxy) throws URISyntaxException
+                           UserLocator userLocator, MailProxy mailProxy) throws URISyntaxException
     {
         this.userDB = userDB;
         this.messageSender = messageSender;
         this.idSeqGenerator = idSeqGenerator;
         this.lobbyInternal = lobbyInternal;
-        this.playerLocator = playerLocator;
+        this.userLocator = userLocator;
         this.mailProxy = mailProxy;
         this.passwordEncryptor = new BasicPasswordEncryptor();
         userCache = new UserCache();
@@ -407,7 +407,7 @@ public class SimpleUserStore implements UserStore, BackendMoney, ConnectionListe
     public void getPlayerDetails(UserId principal, UserId userId)
     {
         User user = getUser(userId);
-        List<PlayerLocation> locations = playerLocator.getLocations(userId, AppType.TOUR, AppType.CASH_GAME);
+        List<PlayerLocation> locations = userLocator.getLocations(userId, AppType.TOUR, AppType.CASH_GAME);
         userAdminReply.getPlayerDetailsResponse(principal, userId, locations, user.getFollowedUsers(), null);
     }
 

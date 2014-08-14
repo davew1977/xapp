@@ -7,13 +7,12 @@
 package net.sf.xapp.net.server.channels;
 
 import net.sf.xapp.net.common.framework.Message;
-import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.types.UserId;
 
 public interface CommChannel
 {
     void broadcast(Message message);
     void send(UserId userId, Message message);
-    void removePlayer(UserId userId);
-    void addPlayer(UserId userId);
+    void removeUser(UserId userId);
+    void addUser(UserId userId);
 }

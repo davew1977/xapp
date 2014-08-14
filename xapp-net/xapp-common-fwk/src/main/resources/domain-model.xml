@@ -1,18 +1,83 @@
 <Model baseModule="xapp-common-fwk" corePackageName="net.sf.xapp.net.common.types" messageIdStart="0" objectIdStart="2000" version="4">
   <MessageIds>
     <ObjectId id="0" name="MessageSender_Post"/>
+    <ObjectId id="0" name="MessageSender_Post"/>
+    <ObjectId id="0" name="UserLookup_FindUserResponse"/>
     <ObjectId id="1" name="MessageSender_Broadcast"/>
+    <ObjectId id="1" name="MessageSender_Broadcast"/>
+    <ObjectId id="1" name="UserLookup_FindUser"/>
     <ObjectId id="2" name="ExampleApi_DoSomething"/>
     <ObjectId id="3" name="ConnectionListener_PlayerConnected"/>
     <ObjectId id="4" name="ConnectionListener_PlayerDisconnected"/>
     <ObjectId id="5" name="Channel_Join"/>
     <ObjectId id="6" name="Channel_Leave"/>
+    <ObjectId id="7" name="MessageSender_Post"/>
+    <ObjectId id="8" name="MessageSender_Broadcast"/>
     <ObjectId id="9" name="ChannelReply_JoinResponse"/>
     <ObjectId id="10" name="ChannelReply_LeaveResponse"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
     <ObjectId id="13" name="Channel_UserConnected"/>
     <ObjectId id="14" name="Channel_UserDisconnected"/>
     <ObjectId id="15" name="ChannelReply_UserConnectedResponse"/>
     <ObjectId id="16" name="ChannelReply_UserDisconnectedResponse"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="19" name="LobbyInternal_EntityAdded"/>
+    <ObjectId id="20" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="21" name="LobbyInternal_PropertyChanged"/>
+    <ObjectId id="22" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="23" name="ChatApp_NewChatMessage"/>
+    <ObjectId id="24" name="ChatAppReply_NewChatMessageResponse"/>
+    <ObjectId id="25" name="ChatClient_ChatBroadcast"/>
+    <ObjectId id="26" name="ChatClient_UserJoined"/>
+    <ObjectId id="27" name="ChatClient_UserLeft"/>
+    <ObjectId id="28" name="ChatAppAdmin_Create"/>
+    <ObjectId id="30" name="ChatUser_ChatChannelState"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -76,6 +141,19 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Field access="READ_ONLY" entityDeclaration="true" list="true" name="sequences" type="xapp-common-fwk/net/sf/xapp/net/common/types/IdSequence"/>
                 </Entity>
                 <EnumType name="ErrorCode" skipGeneration="true" values=""/>
+                <ValueObject name="UserLocation">
+                  <Field access="READ_ONLY" name="key" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="appType" type="xapp-common-fwk/net/sf/xapp/net/common/types/AppType"/>
+                </ValueObject>
+                <EnumType name="Language" values="ENGLISH,FRENCH,GERMAN,CHINESE,"/>
+                <ValueObject name="User">
+                  <Field access="READ_ONLY" name="id" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                  <Field access="READ_ONLY" name="username" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="guest" type="provided/java/lang/Boolean"/>
+                  <Field access="READ_ONLY" name="admin" type="provided/java/lang/Boolean"/>
+                  <Field access="READ_ONLY" name="email" type="provided/java/lang/String"/>
+                </ValueObject>
+                <EnumType name="LobbyPropertyEnum" skipGeneration="true" values=""/>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">
@@ -134,6 +212,113 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   </Message>
                 </Api>
               </DirMeta>
+              <DirMeta name="userlookup">
+                <Api apiType="SYNCHRONOUS" errors="USER_NOT_FOUND," hideEntityKey="true" name="UserLookup">
+                  <Message name="FindUser">
+                    <Field access="READ_ONLY" name="id" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Response name="FindUserResponse">
+                      <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/User"/>
+                    </Response>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="lobbyinternal">
+                <Api apiType="ASYNC" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="LobbyInternal">
+                  <Message name="EntityAdded">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="entity" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyEntity"/>
+                    <Response name="EntityAddedResponse"/>
+                  </Message>
+                  <Message name="EntityRemoved">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Response name="EntityRemovedResponse"/>
+                  </Message>
+                  <Message name="PropertyChanged">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="property" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyPropertyEnum"/>
+                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
+                    <Response name="PropertyChangedResponse"/>
+                  </Message>
+                  <Message name="ListPropertyChanged">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="property" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyPropertyEnum"/>
+                    <Field access="READ_ONLY" name="index" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="listOp" type="xapp-common-fwk/net/sf/xapp/net/common/types/ListOp"/>
+                    <Response name="ListPropertyChangedResponse"/>
+                  </Message>
+                </Api>
+                <Api apiType="ASYNC" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="LobbyInternal">
+                  <Message name="EntityAdded">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="entity" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyEntity"/>
+                    <Response name="EntityAddedResponse"/>
+                  </Message>
+                  <Message name="EntityRemoved">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Response name="EntityRemovedResponse"/>
+                  </Message>
+                  <Message name="PropertyChanged">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="property" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyPropertyEnum"/>
+                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
+                    <Response name="PropertyChangedResponse"/>
+                  </Message>
+                  <Message name="ListPropertyChanged">
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="property" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyPropertyEnum"/>
+                    <Field access="READ_ONLY" name="index" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="listOp" type="xapp-common-fwk/net/sf/xapp/net/common/types/ListOp"/>
+                    <Response name="ListPropertyChangedResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="chatapp">
+                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ChatApp" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                  <Message name="NewChatMessage">
+                    <Field access="READ_ONLY" name="message" type="provided/java/lang/String"/>
+                    <Response name="NewChatMessageResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="chatclient">
+                <Api apiType="ASYNC" clientVisible="true" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ChatClient">
+                  <Message name="ChatBroadcast">
+                    <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="message" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="senderNickname" type="provided/java/lang/String"/>
+                    <Response name="ChatBroadcastResponse"/>
+                  </Message>
+                  <Message name="UserJoined">
+                    <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
+                    <Response name="UserJoinedResponse"/>
+                  </Message>
+                  <Message name="UserLeft">
+                    <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
+                    <Response name="UserLeftResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="chatappadmin">
+                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="ChatAppAdmin">
+                  <Message name="Create">
+                    <Field access="READ_ONLY" name="key" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="language" type="xapp-common-fwk/net/sf/xapp/net/common/types/Language"/>
+                    <Field access="READ_ONLY" name="maxOccupants" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="name" type="provided/java/lang/String"/>
+                    <Response name="Create (copy)Response"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="chatuser">
+                <Api apiType="ASYNC" clientVisible="true" errors="" hideEntityKey="true" name="ChatUser" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                  <Message name="ChatChannelState">
+                    <Field access="READ_ONLY" list="true" name="members" type="provided/java/lang/String"/>
+                    <Response name="ChatChannelStateResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
             </DirMeta>
           </DirMeta>
         </DirMeta>
@@ -148,5 +333,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2004" name="net_sf_xapp_net_common_types_NodeData"/>
     <ObjectId id="2005" name="net_sf_xapp_net_common_types_IdSequence"/>
     <ObjectId id="2006" name="net_sf_xapp_net_common_types_IdSequenceStore"/>
+    <ObjectId id="2007" name="net_sf_xapp_net_common_types_User"/>
+    <ObjectId id="2008" name="net_sf_xapp_net_common_types_UserLocation"/>
   </ObjectIds>
 </Model>

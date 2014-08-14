@@ -6,10 +6,10 @@
  */
 package net.sf.xapp.net.server.channels;
 
+import net.sf.xapp.net.api.messagesender.MessageSender;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
 
 /**
  * A simple notifier, to allow beans send messages to players without bothering with a channel

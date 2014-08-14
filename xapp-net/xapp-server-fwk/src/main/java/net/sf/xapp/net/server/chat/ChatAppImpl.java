@@ -6,18 +6,18 @@
  */
 package net.sf.xapp.net.server.chat;
 
+import net.sf.xapp.net.api.chatapp.ChatApp;
+import net.sf.xapp.net.api.chatclient.ChatClient;
+import net.sf.xapp.net.api.chatclient.ChatClientAdaptor;
+import net.sf.xapp.net.api.chatuser.ChatUser;
+import net.sf.xapp.net.api.chatuser.ChatUserAdaptor;
+import net.sf.xapp.net.api.userlookup.UserLookup;
+import net.sf.xapp.net.common.types.AppType;
+import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.net.server.channels.App;
 import net.sf.xapp.net.server.channels.BroadcastProxy;
 import net.sf.xapp.net.server.channels.CommChannel;
 import net.sf.xapp.net.server.channels.NotifyProxy;
-import net.sf.xapp.net.server.channels.App;
-import net.sf.xapp.net.server.chat.chatapp.ChatApp;
-import net.sf.xapp.net.server.chat.client.ChatClient;
-import net.sf.xapp.net.server.chat.client.ChatClientAdaptor;
-import net.sf.xapp.net.server.chat.player.ChatPlayer;
-import net.sf.xapp.net.server.chat.player.ChatPlayerAdaptor;
-import ngpoker.common.types.AppType;
-import net.sf.xapp.net.common.types.UserId;
-import ngpoker.playerlookup.PlayerLookup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,15 +28,15 @@ public class ChatAppImpl implements ChatApp, App
 {
     private final String key;
     private ChatClient chatClient;
-    private Map<UserId, ChatUser> nicknameMap;
-    private PlayerLookup playerLookup;
+    private Map<UserId, UserEndpoint> nicknameMap;
+    private UserLookup userLookup;
     private CommChannel commChannel;
 
-    public ChatAppImpl(PlayerLookup playerLookup, String key)
+    public ChatAppImpl(UserLookup userLookup, String key)
     {
-        this.playerLookup = playerLookup;
+        this.userLookup = userLookup;
         this.key = key;
-        nicknameMap = new HashMap<UserId, ChatUser>();
+        nicknameMap = new HashMap<UserId, UserEndpoint>();
     }
 
     public void setCommChannel(CommChannel commChannel)
@@ -48,7 +48,7 @@ public class ChatAppImpl implements ChatApp, App
     @Override
     public AppType getAppType()
     {
-        return AppType.CHAT;
+        return AppType.CHAT_ROOM;
     }
 
     @Override
@@ -58,48 +58,48 @@ public class ChatAppImpl implements ChatApp, App
     }
 
     @Override
-    public void playerConnected(UserId userId)
+    public void userConnected(UserId userId)
     {
     }
 
     @Override
-    public void playerDisconnected(UserId userId)
+    public void userDisconnected(UserId userId)
     {
-        playerLeft(userId);
-        commChannel.removePlayer(userId);
+        userLeft(userId);
+        commChannel.removeUser(userId);
     }
 
     @Override
-    public void playerJoined(UserId userId)
+    public void userJoined(UserId userId)
     {
-        String nickname = playerLookup.findPlayer(userId).getPlayer().getUsername();
-        ChatPlayer chatPlayer = new ChatPlayerAdaptor(new NotifyProxy<ChatPlayer>(commChannel));
-        nicknameMap.put(userId, new ChatUser(nickname, chatPlayer));
-        chatClient.playerJoined(nickname);
-        Collection<ChatUser> chatUsers = nicknameMap.values();
+        String nickname = userLookup.findUser(userId).getUser().getUsername();
+        ChatUser chatPlayer = new ChatUserAdaptor(new NotifyProxy<ChatUser>(commChannel));
+        nicknameMap.put(userId, new UserEndpoint(nickname, chatPlayer));
+        chatClient.userJoined(nickname);
+        Collection<UserEndpoint> chatUsers = nicknameMap.values();
         ArrayList<String> usernames = new ArrayList<String>();
-        for (ChatUser chatUser : chatUsers)
+        for (UserEndpoint user : chatUsers)
         {
-            usernames.add(chatUser.nickname);
+            usernames.add(user.nickname);
         }
         chatPlayer.chatChannelState(userId, usernames);
     }
 
     @Override
-    public void playerLeft(UserId userId)
+    public void userLeft(UserId userId)
     {
-        chatClient.playerLeft(nicknameMap.remove(userId).nickname);
+        chatClient.userLeft(nicknameMap.remove(userId).nickname);
     }
 
-    private static class ChatUser
+    private static class UserEndpoint
     {
         private final String nickname;
-        private final ChatPlayer chatPlayer;
+        private final ChatUser chatUser;
 
-        private ChatUser(String nickname, ChatPlayer chatPlayer)
+        private UserEndpoint(String nickname, ChatUser chatUser)
         {
             this.nickname = nickname;
-            this.chatPlayer = chatPlayer;
+            this.chatUser = chatUser;
         }
     }
 

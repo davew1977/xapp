@@ -6,9 +6,9 @@
  */
 package net.sf.xapp.net.server.channels;
 
+import net.sf.xapp.net.api.connectionlistener.ConnectionListener;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.framework.ThreadPoolInvoker;
-import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
 
 import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;

@@ -6,14 +6,11 @@
  */
 package net.sf.xapp.net.server.channels;
 
+import net.sf.xapp.net.api.channel.Channel;
 import net.sf.xapp.net.api.connectionlistener.ConnectionListener;
 import net.sf.xapp.net.common.types.NodeId;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.repos.EntityRepository;
-import ngpoker.client.channel.Channel;
-import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
-import ngpoker.infrastructure.types.NodeId;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,12 +23,12 @@ import java.util.Set;
 public class ChannelConnectionListener implements ConnectionListener
 {
     private final EntityRepository entityRepository;
-    private final PlayerLocator playerLocator;
+    private final UserLocator userLocator;
 
-    public ChannelConnectionListener(EntityRepository entityRepository, PlayerLocator playerLocator)
+    public ChannelConnectionListener(EntityRepository entityRepository, UserLocator userLocator)
     {
         this.entityRepository = entityRepository;
-        this.playerLocator = playerLocator;
+        this.userLocator = userLocator;
     }
 
     @Override
@@ -40,7 +37,7 @@ public class ChannelConnectionListener implements ConnectionListener
         Collection<Channel> channels = channels(userId);
         for (Channel channel : channels)
         {
-            channel.playerConnected(userId);
+            channel.userConnected(userId);
         }
     }
 
@@ -50,13 +47,13 @@ public class ChannelConnectionListener implements ConnectionListener
         Collection<Channel> channels = channels(userId);
         for (Channel channel : channels)
         {
-            channel.playerDisconnected(userId);
+            channel.userDisconnected(userId);
         }
     }
 
     private Collection<Channel> channels(UserId userId)
     {
-        Set<String> channelKeys = playerLocator.getAppKeys(userId);
+        Set<String> channelKeys = userLocator.getAppKeys(userId);
         ArrayList<Channel> result = new ArrayList<Channel>(channelKeys.size());
         for (String channelKey : channelKeys)
         {

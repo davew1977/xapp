@@ -9,7 +9,7 @@ package net.sf.xapp.net.server.connectionserver;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.clustering.PublicEntryPoint;
-import net.sf.xapp.net.server.channels.PlayerLocator;
+import net.sf.xapp.net.server.channels.UserLocator;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.types.UserId;
@@ -33,21 +33,21 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
     private final ConnectionListener connectionListener;
     private final NodeInfo nodeInfo;
     private final ClusterFacade clusterFacade;
-    private final PlayerLocator playerLocator;
+    private final UserLocator userLocator;
     private final PlayerLookup playerLookup;
 
     public PublicMessageLayer(PublicEntryPoint publicEntryPoint,
                               ConnectionListener connectionListener,
                               NodeInfo nodeInfo,
                               ClusterFacade clusterFacade,
-                              PlayerLocator playerLocator,
+                              UserLocator userLocator,
                               PlayerLookup playerLookup)
     {
         this.publicEntryPoint = publicEntryPoint;
         this.connectionListener = connectionListener;
         this.nodeInfo = nodeInfo;
         this.clusterFacade = clusterFacade;
-        this.playerLocator = playerLocator;
+        this.userLocator = userLocator;
         this.playerLookup = playerLookup;
         sessions = new HashMap<UserId,T>();
     }
@@ -68,7 +68,7 @@ public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSe
         boolean guest = playerLookup.findPlayer(userId).getPlayer().isGuest();
 
         //check for channels to join
-        List<PlayerLocation> channels = playerLocator.getLocations(userId);
+        List<PlayerLocation> channels = userLocator.getLocations(userId);
         post(userId, new SetInitialInfo(userId, channels, System.currentTimeMillis(), guest));
     }
 

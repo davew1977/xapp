@@ -10,7 +10,7 @@ import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.net.server.channels.ChannelImpl;
-import net.sf.xapp.net.server.channels.PlayerLocator;
+import net.sf.xapp.net.server.channels.UserLocator;
 import ngpoker.client.channel.Channel;
 import ngpoker.client.channel.ChannelAdaptor;
 import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
@@ -31,7 +31,7 @@ public class LobbyFactory
     private final ClusterFacade clusterFacade;
     private final MessageSender messageSender;
     private final EventLoopManager eventLoopManager;
-    private final PlayerLocator playerLocator;
+    private final UserLocator userLocator;
     private final StorableType storableType;
     private final String key;
     private final String lobbyName;
@@ -41,14 +41,14 @@ public class LobbyFactory
                         ClusterFacade clusterFacade,
                         MessageSender messageSender,
                         EventLoopManager eventLoopManager,
-                        PlayerLocator playerLocator,
+                        UserLocator userLocator,
                         StorableType storableType, NodeInfo nodeInfo)
     {
         this.entityRepository = entityRepository;
         this.clusterFacade = clusterFacade;
         this.messageSender = messageSender;
         this.eventLoopManager = eventLoopManager;
-        this.playerLocator = playerLocator;
+        this.userLocator = userLocator;
         this.storableType = storableType;
         this.key = lobbyName + "_" + nodeInfo.getMyNodeId().getValue();
         this.lobbyName = lobbyName;
@@ -59,7 +59,7 @@ public class LobbyFactory
     {
         log.info("creating " + lobbyName);
         LobbySessionManagerImpl lobby = new LobbySessionManagerImpl(key, storableType);
-        ChannelImpl channel = new ChannelImpl(messageSender, playerLocator, lobby);
+        ChannelImpl channel = new ChannelImpl(messageSender, userLocator, lobby);
 
         //event loop wrapper
         LobbySessionManager lobbySessionManagerEntity = new LobbySessionManagerAdaptor( key,

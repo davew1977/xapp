@@ -6,28 +6,28 @@
  */
 package net.sf.xapp.net.server.channels;
 
-import ngpoker.common.types.AppType;
-import ngpoker.common.types.PlayerLocation;
+import net.sf.xapp.net.common.types.AppType;
 import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.net.common.types.UserLocation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class PlayerLocator
+public class UserLocator
 {
     private Map<UserId, Set<String>> playersToLocations;
-    private Map<String, PlayerLocation> locations;
+    private Map<String, UserLocation> locations;
 
-    public PlayerLocator()
+    public UserLocator()
     {
         playersToLocations = new ConcurrentHashMap<UserId, Set<String>>();
-        locations = new ConcurrentHashMap<String, PlayerLocation>();
+        locations = new ConcurrentHashMap<String, UserLocation>();
     }
 
-    public void registerLocation(PlayerLocation playerlocation)
+    public void registerLocation(UserLocation userLocation)
     {
-        locations.put(playerlocation.getKey(), playerlocation);
+        locations.put(userLocation.getKey(), userLocation);
     }
 
     public void unregisterLocation(String channelKey)
@@ -50,14 +50,14 @@ public class PlayerLocator
         getAppKeys(userId).remove(appKey);
     }
 
-    public List<PlayerLocation> getLocations(UserId userId, AppType... include)
+    public List<UserLocation> getLocations(UserId userId, AppType... include)
     {
         Set<String> appKeys = getAppKeys(userId);
-        ArrayList<PlayerLocation> channels = new ArrayList<PlayerLocation>();
+        ArrayList<UserLocation> channels = new ArrayList<UserLocation>();
         List<AppType> includeTypes = Arrays.asList(include);
         for (String channelKey : appKeys)
         {
-            PlayerLocation location = locations.get(channelKey);
+            UserLocation location = locations.get(channelKey);
             if (includeTypes.isEmpty() || includeTypes.contains(location.getAppType()))
             {
                 channels.add(location);
