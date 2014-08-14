@@ -6,14 +6,14 @@
  */
 package net.sf.xapp.net.server.clustering;
 
+import net.sf.xapp.net.api.nodeentrypoint.to.ReceiveAsyncMessage;
+import net.sf.xapp.net.api.nodeentrypoint.to.ReceiveSyncRequest;
+import net.sf.xapp.net.api.nodeentrypoint.to.ReceiveSyncResponse;
+import net.sf.xapp.net.api.nodeexitpoint.NodeExitPoint;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.Response;
-import ngpoker.common.types.ErrorCode;
-import ngpoker.infrastructure.types.NodeId;
-import ngpoker.nodeentrypoint.to.ReceiveAsyncMessage;
-import ngpoker.nodeentrypoint.to.ReceiveSyncRequest;
-import ngpoker.nodeentrypoint.to.ReceiveSyncResponse;
-import ngpoker.nodeexitpoint.NodeExitPoint;
+import net.sf.xapp.net.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.NodeId;
 
 public class NodeExitPointImpl implements NodeExitPoint
 {

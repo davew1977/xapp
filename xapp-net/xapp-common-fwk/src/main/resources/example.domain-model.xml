@@ -786,7 +786,7 @@
                   </Message>
                 </Messages>
               </Api>
-              <Api apiType="ASYNC" errors="ENTITY_ALREADY_EXISTS,ENTITY_DOES_NOT_EXIST_IN_CLUSTER,FORWARDING_TO_APPROPRIATE_NODE,NODE_IS_SHUTTING_DOWN," hideEntityKey="true" name="Out" packageName="ngpoker.appserver">
+              <Api apiType="ASYNC" hideEntityKey="true" name="Out" packageName="ngpoker.appserver">
                 <Messages>
                   <Message name="Failure">
                     <Fields>

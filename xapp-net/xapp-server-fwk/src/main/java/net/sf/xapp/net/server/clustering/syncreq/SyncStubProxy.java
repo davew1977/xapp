@@ -6,13 +6,13 @@
  */
 package net.sf.xapp.net.server.clustering.syncreq;
 
-import net.sf.xapp.net.server.clustering.ServiceLookup;
+import net.sf.xapp.net.api.nodeexitpoint.NodeExitPoint;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.framework.MessageHandler;
-import ngpoker.common.types.GenericException;
-import ngpoker.common.types.ErrorCode;
-import ngpoker.nodeexitpoint.NodeExitPoint;
+import net.sf.xapp.net.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.GenericException;
+import net.sf.xapp.net.server.clustering.ServiceLookup;
 
 import java.util.Map;
 import java.util.concurrent.*;

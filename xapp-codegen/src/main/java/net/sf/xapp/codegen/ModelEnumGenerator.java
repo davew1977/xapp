@@ -35,7 +35,7 @@ public class ModelEnumGenerator
             errors.addAll(api.getErrors());
         }
         allErrorsEnum.addAll(errors);
-        allErrorsEnum.add("ENTITY_ALREADY_EXISTS");
+        allErrorsEnum.addAll(model.getGeneralErrors());
         allErrorsEnum.setPackageName(model.getCorePackageName());
         allErrorsEnum.setModule(model.getBaseModule());
         CodeFile codeFile = enumGenerator.genEnum(allErrorsEnum);

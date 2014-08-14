@@ -6,17 +6,15 @@
  */
 package net.sf.xapp.net.server;
 
-import ngpoker.appserver.Out;
+import net.sf.xapp.net.api.out.Out;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
-import ngpoker.common.types.GenericException;
-import ngpoker.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.types.GenericException;
 import org.apache.log4j.Logger;
 
 /**
  * Enables sync and async api implentations to handle errors in a consistent manner
  * @param <A>
- * @param <B>
  */
 public class ResultHandlingProxy<A> implements MessageHandler<A>
 {

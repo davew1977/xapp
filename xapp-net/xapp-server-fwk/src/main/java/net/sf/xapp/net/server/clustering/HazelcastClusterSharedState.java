@@ -14,10 +14,10 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.MessageListener;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
+import net.sf.xapp.net.common.types.NodeData;
+import net.sf.xapp.net.common.types.NodeId;
+import net.sf.xapp.net.common.types.PublicNodeState;
 import net.sf.xapp.net.common.types.UserId;
-import ngpoker.infrastructure.types.NodeData;
-import ngpoker.infrastructure.types.NodeId;
-import ngpoker.infrastructure.types.PublicNodeState;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;

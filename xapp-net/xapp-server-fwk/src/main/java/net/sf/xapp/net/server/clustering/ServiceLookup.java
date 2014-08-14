@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.server.clustering;
 
-import ngpoker.infrastructure.types.NodeId;
+import net.sf.xapp.net.common.types.NodeId;
 
 public interface ServiceLookup
 {

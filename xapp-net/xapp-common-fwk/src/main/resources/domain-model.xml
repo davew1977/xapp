@@ -1,10 +1,6 @@
-<Model baseModule="xapp-common-fwk" corePackageName="net.sf.xapp.net.common.types" messageIdStart="0" objectIdStart="2000" version="4">
+<Model baseModule="xapp-common-fwk" corePackageName="net.sf.xapp.net.common.types" generalErrors="ENTITY_ALREADY_EXISTS,NODE_IS_SHUTTING_DOWN,ENTITY_DOES_NOT_EXIST_IN_CLUSTER," messageIdStart="0" objectIdStart="2000" version="4">
   <MessageIds>
-    <ObjectId id="0" name="MessageSender_Post"/>
-    <ObjectId id="0" name="MessageSender_Post"/>
     <ObjectId id="0" name="UserLookup_FindUserResponse"/>
-    <ObjectId id="1" name="MessageSender_Broadcast"/>
-    <ObjectId id="1" name="MessageSender_Broadcast"/>
     <ObjectId id="1" name="UserLookup_FindUser"/>
     <ObjectId id="2" name="ExampleApi_DoSomething"/>
     <ObjectId id="3" name="ConnectionListener_PlayerConnected"/>
@@ -15,58 +11,14 @@
     <ObjectId id="8" name="MessageSender_Broadcast"/>
     <ObjectId id="9" name="ChannelReply_JoinResponse"/>
     <ObjectId id="10" name="ChannelReply_LeaveResponse"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="11" name="LobbyInternal_EntityAdded"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
-    <ObjectId id="12" name="LobbyInternal_EntityRemoved"/>
+    <ObjectId id="11" name="NodeExitPoint_SendAsyncMessage"/>
+    <ObjectId id="12" name="NodeExitPoint_SendSyncResponse"/>
     <ObjectId id="13" name="Channel_UserConnected"/>
     <ObjectId id="14" name="Channel_UserDisconnected"/>
     <ObjectId id="15" name="ChannelReply_UserConnectedResponse"/>
     <ObjectId id="16" name="ChannelReply_UserDisconnectedResponse"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="17" name="LobbyInternal_PropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
-    <ObjectId id="18" name="LobbyInternal_ListPropertyChanged"/>
+    <ObjectId id="17" name="NodeExitPoint_SendSyncRequest"/>
+    <ObjectId id="18" name="NodeExitPoint_SendToTopic"/>
     <ObjectId id="19" name="LobbyInternal_EntityAdded"/>
     <ObjectId id="20" name="LobbyInternal_EntityRemoved"/>
     <ObjectId id="21" name="LobbyInternal_PropertyChanged"/>
@@ -77,7 +29,12 @@
     <ObjectId id="26" name="ChatClient_UserJoined"/>
     <ObjectId id="27" name="ChatClient_UserLeft"/>
     <ObjectId id="28" name="ChatAppAdmin_Create"/>
+    <ObjectId id="29" name="NodeEntryPoint_ReceiveAsyncMessage"/>
     <ObjectId id="30" name="ChatUser_ChatChannelState"/>
+    <ObjectId id="31" name="NodeEntryPoint_ReceiveSyncResponse"/>
+    <ObjectId id="32" name="NodeEntryPoint_ReceiveSyncRequest"/>
+    <ObjectId id="33" name="Out_Failure"/>
+    <ObjectId id="34" name="Out_Success"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -154,6 +111,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Field access="READ_ONLY" name="email" type="provided/java/lang/String"/>
                 </ValueObject>
                 <EnumType name="LobbyPropertyEnum" skipGeneration="true" values=""/>
+                <EnumType name="ObjectType" skipGeneration="true" values=""/>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">
@@ -248,31 +206,6 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Response name="ListPropertyChangedResponse"/>
                   </Message>
                 </Api>
-                <Api apiType="ASYNC" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="LobbyInternal">
-                  <Message name="EntityAdded">
-                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
-                    <Field access="READ_ONLY" name="entity" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyEntity"/>
-                    <Response name="EntityAddedResponse"/>
-                  </Message>
-                  <Message name="EntityRemoved">
-                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
-                    <Response name="EntityRemovedResponse"/>
-                  </Message>
-                  <Message name="PropertyChanged">
-                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
-                    <Field access="READ_ONLY" name="property" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyPropertyEnum"/>
-                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
-                    <Response name="PropertyChangedResponse"/>
-                  </Message>
-                  <Message name="ListPropertyChanged">
-                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
-                    <Field access="READ_ONLY" name="property" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyPropertyEnum"/>
-                    <Field access="READ_ONLY" name="index" type="provided/java/lang/Integer"/>
-                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
-                    <Field access="READ_ONLY" name="listOp" type="xapp-common-fwk/net/sf/xapp/net/common/types/ListOp"/>
-                    <Response name="ListPropertyChangedResponse"/>
-                  </Message>
-                </Api>
               </DirMeta>
               <DirMeta name="chatapp">
                 <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ChatApp" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
@@ -307,7 +240,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" name="language" type="xapp-common-fwk/net/sf/xapp/net/common/types/Language"/>
                     <Field access="READ_ONLY" name="maxOccupants" type="provided/java/lang/Integer"/>
                     <Field access="READ_ONLY" name="name" type="provided/java/lang/String"/>
-                    <Response name="Create (copy)Response"/>
+                    <Response name="CreateResponse"/>
                   </Message>
                 </Api>
               </DirMeta>
@@ -316,6 +249,69 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Message name="ChatChannelState">
                     <Field access="READ_ONLY" list="true" name="members" type="provided/java/lang/String"/>
                     <Response name="ChatChannelStateResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="nodeexitpoint">
+                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="NodeExitPoint">
+                  <Message name="SendAsyncMessage">
+                    <Field access="READ_ONLY" name="receiver" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                    <Field access="READ_ONLY" name="message" type="xapp-common-fwk/net/sf/xapp/net/common/types/InMessage"/>
+                    <Response name="SendAsyncMessageResponse"/>
+                  </Message>
+                  <Message name="SendSyncResponse">
+                    <Field access="READ_ONLY" name="receiver" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                    <Field access="READ_ONLY" name="response" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/Response"/>
+                    <Field access="READ_ONLY" name="correlationId" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="errorCode" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/ErrorCode"/>
+                    <Response name="SendSyncResponseResponse"/>
+                  </Message>
+                  <Message name="SendSyncRequest">
+                    <Field access="READ_ONLY" name="receiver" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                    <Field access="READ_ONLY" name="request" type="xapp-common-fwk/net/sf/xapp/net/common/types/InMessage"/>
+                    <Field access="READ_ONLY" name="correlationId" type="provided/java/lang/Long"/>
+                    <Response name="SendSyncRequestResponse"/>
+                  </Message>
+                  <Message name="SendToTopic">
+                    <Field access="READ_ONLY" name="topicName" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="message" type="xapp-common-fwk/net/sf/xapp/net/common/types/InMessage"/>
+                    <Response name="SendToTopicResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="nodeentrypoint">
+                <Api apiType="ASYNC" errors="TIMEOUT," hideEntityKey="true" name="NodeEntryPoint">
+                  <Message description="correlation id has a value if comm type is SYNC_RESPONSE or SYNC_REQUEST" name="ReceiveAsyncMessage">
+                    <Field access="READ_ONLY" name="sender" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                    <Field access="READ_ONLY" name="message" type="xapp-common-fwk/net/sf/xapp/net/common/types/InMessage"/>
+                    <Response name="ReceiveAsyncMessageResponse"/>
+                  </Message>
+                  <Message name="ReceiveSyncResponse">
+                    <Field access="READ_ONLY" name="sender" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                    <Field access="READ_ONLY" name="correlationId" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="response" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/Response"/>
+                    <Field access="READ_ONLY" name="errorCode" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/ErrorCode"/>
+                    <Response name="ReceiveSyncResponseResponse"/>
+                  </Message>
+                  <Message name="ReceiveSyncRequest">
+                    <Field access="READ_ONLY" name="sender" type="xapp-common-fwk/net/sf/xapp/net/common/types/NodeId"/>
+                    <Field access="READ_ONLY" name="correlationId" optional="true" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="request" type="xapp-common-fwk/net/sf/xapp/net/common/types/InMessage"/>
+                    <Response name="ReceiveSyncRequestResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="out">
+                <Api apiType="ASYNC" errors="" hideEntityKey="true" name="Out">
+                  <Message name="Failure">
+                    <Field access="READ_ONLY" name="messageType" type="xapp-common-fwk/net/sf/xapp/net/common/types/ObjectType"/>
+                    <Field access="READ_ONLY" name="resultCode" type="xapp-common-fwk/net/sf/xapp/net/common/types/ErrorCode"/>
+                    <Field access="READ_ONLY" name="detail" optional="true" type="provided/java/lang/String"/>
+                    <Response name="FailureResponse"/>
+                  </Message>
+                  <Message name="Success">
+                    <Field access="READ_ONLY" name="messageType" type="xapp-common-fwk/net/sf/xapp/net/common/types/ObjectType"/>
+                    <Response name="SuccessResponse"/>
                   </Message>
                 </Api>
               </DirMeta>

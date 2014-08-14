@@ -6,12 +6,12 @@
  */
 package net.sf.xapp.net.server.clustering;
 
+import net.sf.xapp.net.api.nodeexitpoint.NodeExitPoint;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
-import ngpoker.common.types.ErrorCode;
-import ngpoker.infrastructure.types.NodeId;
-import ngpoker.infrastructure.types.PublicNodeState;
-import ngpoker.nodeexitpoint.NodeExitPoint;
+import net.sf.xapp.net.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.NodeId;
+import net.sf.xapp.net.common.types.PublicNodeState;
 import org.apache.log4j.Logger;
 
 public class PublicEntryPoint implements MessageHandler

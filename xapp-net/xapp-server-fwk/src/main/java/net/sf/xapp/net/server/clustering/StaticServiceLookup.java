@@ -6,16 +6,8 @@
  */
 package net.sf.xapp.net.server.clustering;
 
-import ngpoker.backend.useradmin.UserAdmin;
-import ngpoker.backend.userapi.UserApi;
-import ngpoker.cashgameadmin.CashGameAdmin;
-import ngpoker.forum.admin.ForumAdmin;
-import ngpoker.handhistory.HandHistoryClient;
-import ngpoker.infrastructure.types.NodeId;
-import ngpoker.moneysystem.backend.BackendMoney;
-import ngpoker.playerlookup.PlayerLookup;
-import ngpoker.sng.sngadmin.SngAdmin;
-import ngpoker.tournament.touradmin.TourAdmin;
+import net.sf.xapp.net.api.userlookup.UserLookup;
+import net.sf.xapp.net.common.types.NodeId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +24,15 @@ public class StaticServiceLookup implements ServiceLookup {
 
     public StaticServiceLookup() {
         serviceMap = new HashMap<Class, NodeId>();
-        serviceMap.put(PlayerLookup.class, new NodeId("1"));
-        serviceMap.put(CashGameAdmin.class, new NodeId("0"));
+        serviceMap.put(UserLookup.class, new NodeId("1"));
+        /*serviceMap.put(CashGameAdmin.class, new NodeId("0"));
         serviceMap.put(TourAdmin.class, new NodeId("0"));
         serviceMap.put(SngAdmin.class, new NodeId("0"));
         serviceMap.put(UserApi.class, new NodeId("0"));
         serviceMap.put(UserAdmin.class, new NodeId("0"));
         serviceMap.put(BackendMoney.class, new NodeId("0"));
         serviceMap.put(HandHistoryClient.class, new NodeId("0"));
-        serviceMap.put(ForumAdmin.class, new NodeId("0"));
+        serviceMap.put(ForumAdmin.class, new NodeId("0"));*/
     }
 
     @Override

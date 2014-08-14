@@ -402,7 +402,12 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     public <E> E getInstanceNoCheck(Class<E> aClass, String key)
     {
-        return rootObjMeta.get(aClass, key);
+        try {
+            return rootObjMeta.get(aClass, key);
+        } catch (XappException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public <E> E getInstance(Class<E> aClass, String key)

@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.clustering;
 
+import net.sf.xapp.net.api.nodeentrypoint.NodeEntryPoint;
 import net.sf.xapp.net.common.framework.InMessage;
-import ngpoker.nodeentrypoint.NodeEntryPoint;
 
 import java.util.concurrent.BlockingQueue;
 

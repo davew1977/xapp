@@ -35,6 +35,7 @@ public class Model {
     private boolean xappPluginEnabled;
     private boolean generateSetters;
     private Module baseModule;
+    private List<String> generalErrors = new ArrayList<String>();
 
     public String getName() {
         return m_name;
@@ -201,27 +202,7 @@ public class Model {
 
     public Map<String, ObjectId> updateMessageIds() {
 
-        //ensure all messages have a unique id
-        List<Message> messages = deriveAllMessages();
-        Map<String, ObjectId> messageIdMap = createMessageIdMap();
-        IntIdManager ids = new IntIdManager(getMessageIdStart());
-        for (ObjectId messageId : messageIdMap.values()) {
-            ids.replace(messageId.getId());
-        }
-        for (Message message : messages) {
-            String key = message.uniqueObjectKey();
-            ObjectId messageId = messageIdMap.remove(key);
-            if (messageId == null) {
-                messageId = new ObjectId(key, ids.next());
-                messageIds.add(messageId);
-            }
-        }
-        //ones left should be removed
-        for (ObjectId messageId : messageIdMap.values()) {
-            messageIds.remove(messageId);
-        }
-        Collections.sort(messageIds);
-        return createMessageIdMap();
+        return updateIds(messageIds, getMessageIdStart(), deriveAllMessages());
     }
 
     public List<Message> deriveAllMessages() {
@@ -234,17 +215,23 @@ public class Model {
     }
 
     public Map<String, ObjectId> updateObjectIds() {
-        IntIdManager ids = new IntIdManager(getObjectIdStart());
-        Map<String, ObjectId> objectIdMap = createObjectIdMap();
+        return updateIds(objectIds, getObjectIdStart(), concreteTypes());
+    }
+
+    private static Map<String, ObjectId> updateIds(List<ObjectId> objectIds, int objIdStart, List<? extends ComplexType> types) {
+        IntIdManager ids = new IntIdManager(objIdStart);
+        Map<String, ObjectId> objectIdMap = createObjectIdMap(objectIds);
         for (ObjectId objectId : objectIdMap.values()) {
             ids.replace(objectId.getId());
         }
-        List<ComplexType> complexTypes = concreteTypes();
-        for (ComplexType complexType : complexTypes) {
+        objectIds.clear();
+        for (ComplexType complexType : types) {
             String key = complexType.uniqueObjectKey();
             ObjectId objectId = objectIdMap.remove(key);
             if (objectId == null) {
                 objectId = new ObjectId(key, ids.next());
+                objectIds.add(objectId);
+            } else {
                 objectIds.add(objectId);
             }
         }
@@ -252,8 +239,7 @@ public class Model {
             objectIds.remove(objectId);
         }
         Collections.sort(objectIds);
-        return createObjectIdMap();
-
+        return createObjectIdMap(objectIds);
     }
 
     public List<Module> getModules() {
@@ -264,15 +250,7 @@ public class Model {
         this.modules = modules;
     }
 
-    private Map<String, ObjectId> createMessageIdMap() {
-        Map<String, ObjectId> messageIdMap = new HashMap<String, ObjectId>();
-        for (ObjectId messageId : messageIds) {
-            messageIdMap.put(messageId.getName(), messageId);
-        }
-        return messageIdMap;
-    }
-
-    private Map<String, ObjectId> createObjectIdMap() {
+    private static Map<String, ObjectId> createObjectIdMap(List<ObjectId> objectIds) {
         Map<String, ObjectId> objectIdMap = new HashMap<String, ObjectId>();
         for (ObjectId objectId : objectIds) {
             objectIdMap.put(objectId.getName(), objectId);
@@ -346,5 +324,13 @@ public class Model {
 
     public void setXappPluginEnabled(boolean xappPluginEnabled) {
         this.xappPluginEnabled = xappPluginEnabled;
+    }
+
+    public List<String> getGeneralErrors() {
+        return generalErrors;
+    }
+
+    public void setGeneralErrors(List<String> generalErrors) {
+        this.generalErrors = generalErrors;
     }
 }
