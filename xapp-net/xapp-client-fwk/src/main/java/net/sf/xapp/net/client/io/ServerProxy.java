@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.client.io;
 
-import ngpoker.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.MessageHandler;
 
 public interface ServerProxy extends MessageHandler, Connectable
 {

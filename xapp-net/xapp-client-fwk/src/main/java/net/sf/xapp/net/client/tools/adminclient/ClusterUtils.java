@@ -8,7 +8,7 @@ package net.sf.xapp.net.client.tools.adminclient;
 
 
 import net.sf.xapp.net.client.io.HostInfo;
-import ngpoker.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.InMessage;
 
 import java.util.ArrayList;
 import java.util.List;

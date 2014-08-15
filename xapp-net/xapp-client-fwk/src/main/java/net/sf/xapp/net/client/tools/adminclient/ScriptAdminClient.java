@@ -6,10 +6,11 @@
  */
 package net.sf.xapp.net.client.tools.adminclient;
 
-import ngpoker.common.framework.InMessage;
-import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.framework.TransportHelper;
-import ngpoker.common.util.StringUtils;
+import net.sf.xapp.net.client.io.*;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.TransportHelper;
+import net.sf.xapp.net.common.util.StringUtils;
 
 /**
  * Wraps a server proxy and a {@link ScriptPreprocessor}

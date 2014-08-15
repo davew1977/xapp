@@ -6,11 +6,11 @@
  */
 package net.sf.xapp.net.client.tools.adminclient;
 
-import ng.Global;
-import ngpoker.codegen.model.ComplexType;
-import ngpoker.codegen.model.EnumType;
-import ngpoker.codegen.model.Field;
-import ngpoker.codegen.model.Message;
+import net.sf.xapp.Global;
+import net.sf.xapp.codegen.model.ComplexType;
+import net.sf.xapp.codegen.model.EnumType;
+import net.sf.xapp.codegen.model.Field;
+import net.sf.xapp.codegen.model.Message;
 
 import java.util.ArrayList;
 import java.util.List;

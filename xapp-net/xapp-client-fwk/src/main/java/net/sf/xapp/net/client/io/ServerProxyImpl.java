@@ -7,13 +7,11 @@
 package net.sf.xapp.net.client.io;
 
 
-import net.sf.xapp.utils.StringUtils;
-import ng.Global;
+import net.sf.xapp.Global;
 import net.sf.xapp.net.common.framework.InMessage;
-import ngpoker.common.framework.Message;
-import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.framework.TransportObject;
-import ngpoker.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.framework.MessageHandler;
+import net.sf.xapp.net.common.framework.TransportObject;
+import net.sf.xapp.utils.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

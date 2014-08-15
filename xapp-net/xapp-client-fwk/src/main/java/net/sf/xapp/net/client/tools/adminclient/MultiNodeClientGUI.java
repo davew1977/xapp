@@ -6,6 +6,8 @@
  */
 package net.sf.xapp.net.client.tools.adminclient;
 
+import net.sf.xapp.application.utils.SwingUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

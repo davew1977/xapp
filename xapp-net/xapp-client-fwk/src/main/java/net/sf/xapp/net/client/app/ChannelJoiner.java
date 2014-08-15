@@ -1,6 +1,6 @@
 package net.sf.xapp.net.client.app;
 
-import ngpoker.common.types.AppType;
+import net.sf.xapp.net.common.types.AppType;
 
 public interface ChannelJoiner
 {

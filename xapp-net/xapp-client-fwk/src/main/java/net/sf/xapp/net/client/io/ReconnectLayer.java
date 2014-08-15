@@ -6,7 +6,8 @@
  */
 package net.sf.xapp.net.client.io;
 
-import ngpoker.common.util.ThreadUtils;
+import net.sf.xapp.net.client.framework.Logger;
+import net.sf.xapp.net.common.util.ThreadUtils;
 
 /**
  */

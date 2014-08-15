@@ -10,7 +10,7 @@ import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.SimpleApplication;
 import net.sf.xapp.application.editor.text.TextEditor;
-import ngpoker.common.framework.PrettyPrinter;
+import net.sf.xapp.net.common.framework.PrettyPrinter;
 
 import java.util.List;
 
