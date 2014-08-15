@@ -1,13 +1,12 @@
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.common.types.Coord;
-import ngpoker.common.util.deck.DeterministicEntropySource;
-import ngpoker.common.util.deck.SquareCoordDeck;
+import net.sf.xapp.net.common.types.Coord;
+import net.sf.xapp.net.common.util.random.DeterministicEntropySource;
+import net.sf.xapp.net.common.util.random.SquareCoordDeck;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import static net.sf.xapp.net.server.playerrepository.UserspaceCoordDeck.convert;
+import static org.junit.Assert.*;
 
 /**
  * Created with IntelliJ IDEA.

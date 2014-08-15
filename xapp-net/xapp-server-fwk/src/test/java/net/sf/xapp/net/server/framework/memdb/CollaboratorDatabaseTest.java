@@ -1,15 +1,16 @@
 package net.sf.xapp.net.server.framework.memdb;
 
 import net.sf.xapp.net.common.framework.LispObj;
-import net.sf.xapp.net.server.lobby.types.Clause;
-import net.sf.xapp.net.server.lobby.types.QueryData;
+import net.sf.xapp.net.common.types.Clause;
+import net.sf.xapp.net.common.types.QueryData;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created with IntelliJ IDEA.
