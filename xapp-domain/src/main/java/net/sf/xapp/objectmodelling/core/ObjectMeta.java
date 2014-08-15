@@ -615,4 +615,8 @@ public class ObjectMeta<T> implements Namespace{
         }
         pendingRefsToSet.clear();
     }
+
+    public String toXml() {
+        return classModel.getClassDatabase().createMarshaller(classModel.getContainedClass()).toXMLString(instance);
+    }
 }

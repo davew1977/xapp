@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+
+
+    <bean name="nodeQThread" class="net.sf.xapp.net.server.clustering.NodeQThread">
+        <constructor-arg index="0" ref="clusterFacade"/>
+        <constructor-arg index="1" value="true"/>
+        <constructor-arg index="2" ref="nodeEntryPoint"/>
+    </bean>
+
+    <bean name="outMulticastor" class="net.sf.xapp.net.server.OutMulticastor"/>
+
+    <bean name="beanManager" class="net.sf.xapp.net.server.clustering.SimpleBeanManager">
+        <property name="out" ref="outMulticastor"/>
+    </bean>
+
+    <bean name="nodeEntryPoint" class="net.sf.xapp.net.server.clustering.NodeEntryPointImpl">
+        <constructor-arg index="0" ref="syncStubProxy"/>
+        <constructor-arg index="1" ref="applicationThreadPool"/>
+        <constructor-arg index="2" ref="nodeExitPoint"/>
+        <constructor-arg index="3" ref="beanManager"/>
+        <constructor-arg index="4" ref="nodeAsyncMessageHandler"/>
+    </bean>
+
+    <bean name="syncStubProxy" class="net.sf.xapp.net.server.clustering.syncreq.SyncStubProxy">
+        <constructor-arg index="0" ref="nodeExitPoint"/>
+        <constructor-arg index="1" ref="serviceLookup"/>
+        <constructor-arg index="2" ref="scheduledExecutor"/>
+    </bean>
+
+    <bean id="nodeAsyncMessageHandler" class="net.sf.xapp.net.server.clustering.NodeAsyncMessageHandler">
+        <constructor-arg index="0" ref="beanManager"/>
+        <constructor-arg index="1" ref="entityRepository"/>
+    </bean>
+
+
+    <bean name="scheduledExecutor" class="java.util.concurrent.Executors" factory-method="newScheduledThreadPool">
+        <constructor-arg index="0" value="1"/>
+    </bean>
+
+    <bean name="applicationThreadPool" class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+        <constructor-arg index="0" value="5"/>
+    </bean>
+
+    <bean name="systemThreadPool" class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+        <constructor-arg index="0" value="5"/>
+    </bean>
+
+    <bean name="nodeInfo" class="net.sf.xapp.net.server.clustering.NodeInfoImpl">
+        <constructor-arg index="0" value="0"/>
+        <constructor-arg index="1" value="${backup.dir}"/>
+    </bean>
+
+
+    <bean name="serviceLookup" class="net.sf.xapp.net.server.clustering.StaticServiceLookup">
+        <constructor-arg index="0">
+            <map>
+                <entry key="objserver.server.ObjFactory" value="0"/>
+            </map>
+        </constructor-arg>
+    </bean>
+    <bean name="entityRepository" class="net.sf.xapp.net.server.repos.EntityRepositoryImpl"/>
+
+    <bean name="eventLoopManager" class="net.sf.xapp.net.server.framework.eventloop.EventLoopManager">
+        <constructor-arg ref="applicationThreadPool"/>
+    </bean>
+
+    <bean name="clusterSharedState" class="net.sf.xapp.net.server.clustering.TestClusterSharedStateFactoryBean"/>
+
+    <bean name="clusterFacade" class="net.sf.xapp.net.server.clustering.ClusterFacadeImpl">
+        <constructor-arg index="0" ref="clusterSharedState"/>
+        <constructor-arg index="1" ref="nodeInfo"/>
+    </bean>
+
+    <bean name="publicEntryPoint" class="net.sf.xapp.net.server.clustering.PublicEntryPoint">
+        <constructor-arg index="0" ref="clusterFacade"/>
+        <constructor-arg index="1" ref="nodeExitPoint"/>
+        <constructor-arg index="2" ref="nodeAsyncMessageHandler"/>
+        <constructor-arg index="3" ref="serviceLookup"/>
+    </bean>
+
+    <bean name="nodeExitPoint" class="net.sf.xapp.net.server.clustering.NodeExitPointImpl">
+        <constructor-arg index="0" ref="clusterFacade"/>
+        <constructor-arg index="1" ref="nodeInfo"/>
+    </bean>
+
+    <bean name="commandLineClient" class="net.sf.xapp.net.server.util.commandlineclient.CommandLineInterpreter">
+        <constructor-arg value="false"/>
+        <constructor-arg ref="publicEntryPoint"/>
+    </bean>
+
+    <bean id="converter" class="net.sf.xapp.net.server.framework.persistendb.DiffDetectorConverter">
+        <constructor-arg value="${suppress.file.conversion}"/>
+    </bean>
+
+    <bean name="messageSenderProxy" class="net.sf.xapp.net.server.connectionserver.MessageSenderProxy">
+        <constructor-arg index="0" ref="nodeExitPoint"/>
+        <constructor-arg index="1" ref="clusterFacade"/>
+    </bean>
+
+    <bean name="userApi" class="objserver.core.SimpleUserApi"/>
+</beans>

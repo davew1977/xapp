@@ -91,14 +91,22 @@
     <ObjectId id="88" name="UserAdmin_UpdatePoints"/>
     <ObjectId id="89" name="UserAdmin_AddPoints"/>
     <ObjectId id="90" name="UserAdmin_GetImage"/>
+    <ObjectId id="91" name="ObjManager_GetObject"/>
     <ObjectId id="92" name="UserAdminReply_UpdateImageResponse"/>
     <ObjectId id="93" name="UserAdminReply_UpdateStatusResponse"/>
     <ObjectId id="94" name="UserAdminReply_UpdatePasswordResponse"/>
     <ObjectId id="95" name="UserAdminReply_UpdatePointsResponse"/>
     <ObjectId id="96" name="UserAdminReply_AddPointsResponse"/>
     <ObjectId id="97" name="UserAdminReply_GetImageResponse"/>
+    <ObjectId id="98" name="ObjManager_GetDeltas"/>
     <ObjectId id="99" name="UserAdmin_GetUserDetails"/>
     <ObjectId id="100" name="UserAdminReply_GetUserDetailsResponse"/>
+    <ObjectId id="101" name="ObjManagerReply_GetObjectResponse"/>
+    <ObjectId id="102" name="ObjManagerReply_GetDeltasResponse"/>
+    <ObjectId id="103" name="ObjListener_PropertyChanged"/>
+    <ObjectId id="104" name="ObjListener_ObjAdded"/>
+    <ObjectId id="105" name="ObjListener_ObjMoved"/>
+    <ObjectId id="106" name="ObjListener_ObjDeleted"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -586,6 +594,63 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               </DirMeta>
             </DirMeta>
           </DirMeta>
+          <DirMeta name="objserver">
+            <DirMeta name="types">
+              <ValueObject name="Delta"/>
+              <ValueObject name="XmlObj">
+                <Field access="READ_ONLY" name="data" type="provided/java/lang/String"/>
+                <Field access="READ_ONLY" name="lastChangeRev" type="provided/java/lang/Long"/>
+                <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
+              </ValueObject>
+              <ValueObject name="ObjLoc">
+                <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
+                <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
+                <Field access="READ_ONLY" name="index" optional="true" type="provided/java/lang/Integer"/>
+              </ValueObject>
+            </DirMeta>
+            <DirMeta name="apis">
+              <DirMeta name="objmanager">
+                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ObjManager" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId" responseEntityKeyType="provided/java/lang/String">
+                  <Message name="GetObject">
+                    <Response name="GetObjectResponse">
+                      <Field access="READ_ONLY" name="obj" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj"/>
+                    </Response>
+                  </Message>
+                  <Message name="GetDeltas">
+                    <Field access="READ_ONLY" name="revFrom" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="revTo" optional="true" type="provided/java/lang/Long"/>
+                    <Response name="GetDeltasResponse">
+                      <Field access="READ_ONLY" list="true" name="deltas" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
+                    </Response>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="objlistener">
+                <Api apiType="ASYNC" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ObjListener">
+                  <Message name="PropertyChanged">
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" name="oldValue" optional="true" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="newValue" optional="true" type="provided/java/lang/String"/>
+                    <Response name="PropertyChangedResponse"/>
+                  </Message>
+                  <Message name="ObjAdded">
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" name="obj" type="xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj"/>
+                    <Response name="ObjAddedResponse"/>
+                  </Message>
+                  <Message name="ObjMoved">
+                    <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="newObjLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Response name="ObjMovedResponse"/>
+                  </Message>
+                  <Message name="ObjDeleted">
+                    <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
+                    <Response name="ObjDeletedResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+            </DirMeta>
+          </DirMeta>
         </DirMeta>
       </DirMeta>
     </DirMeta>
@@ -596,6 +661,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2002" name="net_sf_xapp_net_common_types_UserId"/>
     <ObjectId id="2003" name="net_sf_xapp_net_common_types_NodeId"/>
     <ObjectId id="2004" name="net_sf_xapp_net_common_types_NodeData"/>
+    <ObjectId id="2005" name="net_sf_xapp_objserver_types_Delta"/>
+    <ObjectId id="2006" name="net_sf_xapp_objserver_types_XmlObj"/>
     <ObjectId id="2007" name="net_sf_xapp_net_common_types_User"/>
     <ObjectId id="2008" name="net_sf_xapp_net_common_types_UserLocation"/>
     <ObjectId id="2009" name="net_sf_xapp_net_common_types_UserInfo"/>
@@ -606,5 +673,6 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2014" name="net_sf_xapp_net_common_types_IdSequenceStore"/>
     <ObjectId id="2015" name="net_sf_xapp_net_common_types_Page"/>
     <ObjectId id="2016" name="net_sf_xapp_net_common_types_UserInLobby"/>
+    <ObjectId id="2017" name="net_sf_xapp_objserver_types_ObjLoc"/>
   </ObjectIds>
 </Model>

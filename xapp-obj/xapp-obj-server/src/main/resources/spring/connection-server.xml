@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+
+    <bean name="connectionListenerProxy" class="net.sf.xapp.net.api.connectionlistener.ConnectionListenerAdaptor">
+        <constructor-arg>
+            <bean class="net.sf.xapp.net.server.clustering.TopicPublisherMessageHandler">
+                <constructor-arg index="0" ref="clusterFacade"/>
+                <constructor-arg index="1"
+                                 type="java.lang.Class"
+                                 value="net.sf.xapp.net.api.connectionlistener.ConnectionListener"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean name="externalConnectionServer" class="net.sf.xapp.net.server.connectionserver.mina.MinaConnectionServer">
+        <constructor-arg index="0" ref="externalIOLayer"/>
+        <constructor-arg index="1" value="11375"/>
+        <constructor-arg index="2" ref="nodeInfo"/>
+    </bean>
+    <bean name="externalIOLayer" class="net.sf.xapp.net.server.connectionserver.mina.MinaIOHandler">
+        <constructor-arg ref="loginMessageLayer"/>
+    </bean>
+
+    <bean name="loginMessageLayer" class="net.sf.xapp.net.server.connectionserver.LoginMessageLayer">
+        <constructor-arg index="0" ref="publicMessageLayer"/>
+        <constructor-arg index="1" ref="userApi"/>
+    </bean>
+
+    <bean name="publicMessageLayer" class="net.sf.xapp.net.server.connectionserver.PublicMessageLayer">
+        <constructor-arg index="0" ref="publicEntryPoint"/>
+        <constructor-arg index="1" ref="connectionListenerProxy"/>
+        <constructor-arg index="2" ref="nodeInfo"/>
+        <constructor-arg index="3" ref="clusterFacade"/>
+        <constructor-arg index="4" ref="playerLocator"/>
+        <constructor-arg index="5" ref="userApi"/>
+    </bean>
+    
+    <alias name="publicMessageLayer" alias="messageSender"/>
+</beans>
