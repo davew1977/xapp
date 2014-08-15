@@ -6,20 +6,20 @@
  */
 package net.sf.xapp.net.server.lobby;
 
-import net.sf.xapp.net.server.clustering.ClusterFacade;
-import net.sf.xapp.net.server.clustering.NodeInfo;
-import net.sf.xapp.net.server.repos.EntityRepository;
+import net.sf.xapp.net.api.channel.Channel;
+import net.sf.xapp.net.api.channel.ChannelAdaptor;
+import net.sf.xapp.net.api.lobbyinternal.LobbyInternal;
+import net.sf.xapp.net.api.lobbysessionmanager.LobbySessionManager;
+import net.sf.xapp.net.api.lobbysessionmanager.LobbySessionManagerAdaptor;
+import net.sf.xapp.net.api.messagesender.MessageSender;
 import net.sf.xapp.net.server.channels.ChannelImpl;
 import net.sf.xapp.net.server.channels.UserLocator;
-import ngpoker.client.channel.Channel;
-import ngpoker.client.channel.ChannelAdaptor;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
-import net.sf.xapp.net.server.lobby.internal.LobbyInternal;
-import net.sf.xapp.net.server.lobby.session.LobbySessionManager;
-import net.sf.xapp.net.server.lobby.session.LobbySessionManagerAdaptor;
+import net.sf.xapp.net.server.clustering.ClusterFacade;
+import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
 import net.sf.xapp.net.server.framework.memdb.StorableType;
+import net.sf.xapp.net.server.repos.EntityRepository;
 import org.apache.log4j.Logger;
 
 import javax.annotation.PostConstruct;

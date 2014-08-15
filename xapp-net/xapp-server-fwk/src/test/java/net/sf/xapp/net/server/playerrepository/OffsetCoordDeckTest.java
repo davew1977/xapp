@@ -11,7 +11,7 @@ import static net.sf.xapp.net.server.playerrepository.UserspaceCoordDeck.convert
 
 /**
  * Created with IntelliJ IDEA.
- * User: davidw
+ * UserEntityWrapper: davidw
  * Date: 2/19/14
  * Time: 5:01 PM
  * To change this template use File | Settings | File Templates.

@@ -6,9 +6,9 @@
  */
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.common.types.ImageData;
+import net.sf.xapp.net.common.types.ImageData;
 import net.sf.xapp.net.common.types.UserId;
-import ngpoker.user.UserInfo;
+import net.sf.xapp.net.common.types.UserInfo;
 
 /**
  *
@@ -22,6 +22,6 @@ public interface UserStore
 
     void resetPassword(String nickname, String email);
 
-    User getUser(UserId userId);
+    UserEntityWrapper getUser(UserId userId);
     UserId getUserId(String nickname);
 }

@@ -6,18 +6,16 @@
  */
 package net.sf.xapp.net.server.lobby;
 
+import net.sf.xapp.net.api.clientlobbysession.ClientLobbySession;
+import net.sf.xapp.net.api.clientlobbysession.ClientLobbySessionAdaptor;
+import net.sf.xapp.net.api.lobbyinternal.LobbyInternal;
+import net.sf.xapp.net.api.lobbysessionmanager.LobbySessionManager;
+import net.sf.xapp.net.api.lobbysessionmanager.LobbySessionManagerReply;
+import net.sf.xapp.net.api.lobbysessionmanager.LobbySessionManagerReplyAdaptor;
+import net.sf.xapp.net.common.types.*;
 import net.sf.xapp.net.server.channels.AppAdaptor;
 import net.sf.xapp.net.server.channels.CommChannel;
 import net.sf.xapp.net.server.channels.NotifyProxy;
-import ngpoker.common.types.*;
-import net.sf.xapp.net.server.lobby.clientlobbysession.ClientLobbySession;
-import net.sf.xapp.net.server.lobby.clientlobbysession.ClientLobbySessionAdaptor;
-import net.sf.xapp.net.server.lobby.internal.LobbyInternal;
-import net.sf.xapp.net.server.lobby.session.LobbySessionManager;
-import net.sf.xapp.net.server.lobby.session.LobbySessionManagerReply;
-import net.sf.xapp.net.server.lobby.session.LobbySessionManagerReplyAdaptor;
-import net.sf.xapp.net.server.lobby.types.LobbyEntity;
-import net.sf.xapp.net.server.lobby.types.QueryData;
 import net.sf.xapp.net.server.framework.memdb.StorableType;
 import net.sf.xapp.net.server.framework.memdb.SubscriptionService;
 import net.sf.xapp.net.server.framework.memdb.SubscriptionServiceImpl;
@@ -106,15 +104,15 @@ public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionM
     }
 
     @Override
-    public void playerDisconnected(UserId userId)
+    public void userDisconnected(UserId userId)
     {
         log.debug("player disconnected from lobby session: " + userId);
-        playerLeft(userId);
+        userLeft(userId);
         commChannel.removeUser(userId);
     }
 
     @Override
-    public void playerLeft(UserId userId)
+    public void userLeft(UserId userId)
     {
         Map<Integer, PageHandler> phmap = pageHandlers.remove(userId);
         if(phmap!=null)

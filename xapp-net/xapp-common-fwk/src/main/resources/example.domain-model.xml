@@ -892,12 +892,6 @@
                     </Fields>
                     <Response name="AddPointsResponse"/>
                   </Message>
-                  <Message name="UpdateCharacters">
-                    <Fields>
-                      <Field access="READ_ONLY" list="true" name="newValue" type="PokerCharacter"/>
-                    </Fields>
-                    <Response name="UpdateCharactersResponse"/>
-                  </Message>
                   <Message name="GetImage">
                     <Fields>
                       <Field access="READ_ONLY" name="userId" type="UserId"/>
@@ -916,31 +910,8 @@
                     <Response name="GetPlayerDetailsResponse">
                       <Fields>
                         <Field access="READ_ONLY" name="userId" optional="true" type="UserId"/>
-                        <Field access="READ_ONLY" list="true" name="locations" optional="true" type="PlayerLocation"/>
+                        <Field access="READ_ONLY" list="true" name="locations" optional="true" type="UserLocation"/>
                         <Field access="READ_ONLY" list="true" name="usersFollowed" optional="true" type="UserId"/>
-                      </Fields>
-                    </Response>
-                  </Message>
-                  <Message name="AddUserToFollow">
-                    <Fields>
-                      <Field access="READ_ONLY" name="userId" optional="true" type="UserId"/>
-                    </Fields>
-                    <Response name="AddUserToFollowResponse"/>
-                  </Message>
-                  <Message name="RemoveUserToFollow">
-                    <Fields>
-                      <Field access="READ_ONLY" name="userId" optional="true" type="UserId"/>
-                    </Fields>
-                    <Response name="RemoveUserToFollowResponse"/>
-                  </Message>
-                  <Message description="the this user currently being possessed by a bot" name="IsBot">
-                    <Fields>
-                      <Field access="READ_ONLY" name="userId" type="UserId"/>
-                    </Fields>
-                    <Response name="IsBotResponse">
-                      <Fields>
-                        <Field access="READ_ONLY" name="userId" optional="true" type="UserId"/>
-                        <Field access="READ_ONLY" name="bot" optional="true" type="Boolean"/>
                       </Fields>
                     </Response>
                   </Message>
@@ -1987,7 +1958,7 @@ if null then the latest will be the first in the returned list. The "limit" indi
               </Fields>
             </ValueObject>
             <EnumType description="list operations, add is a &quot;set at last index&quot;" name="ListOp" values="ADD,REMOVE,UPDATE,"/>
-            <ValueObject name="PlayerLocation">
+            <ValueObject name="UserLocation">
               <Fields>
                 <Field access="READ_ONLY" name="key" type="String"/>
                 <Field access="READ_ONLY" name="appType" type="AppType"/>
@@ -2289,7 +2260,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="privateTour" type="Boolean"/>
               </Fields>
             </LobbyType>
-            <LobbyType name="PlayerInLobby" superType="LobbyEntity">
+            <LobbyType name="UserInLobby" superType="LobbyEntity">
               <Fields>
                 <Field access="READ_WRITE" name="lastLoginTime" type="Long"/>
                 <Field access="READ_WRITE" name="lastImageUploadTime" type="Long"/>
@@ -2992,7 +2963,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
   <ObjectIds>
     <ObjectId id="2000" name="ngpoker_infrastructure_types_NodeId"/>
     <ObjectId id="2001" name="ngpoker_infrastructure_types_NodeData"/>
-    <ObjectId id="2002" name="ngpoker_infrastructure_types_IdSequence"/>
+    <ObjectId id="2002" name="ngpoker_infrastructure_types_LobbySessionManageruence"/>
     <ObjectId id="2003" name="ngpoker_infrastructure_types_IdSequenceStore"/>
     <ObjectId id="2004" name="ngpoker_common_types_UserId"/>
     <ObjectId id="2005" name="ngpoker_common_types_PlayerLocation"/>

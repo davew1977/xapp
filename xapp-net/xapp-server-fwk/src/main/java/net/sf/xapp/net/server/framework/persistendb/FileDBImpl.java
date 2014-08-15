@@ -6,20 +6,19 @@
  */
 package net.sf.xapp.net.server.framework.persistendb;
 
-import net.sf.xapp.utils.StringUtils;
-import ngpoker.Version;
 import net.sf.xapp.net.common.framework.Entity;
-import ngpoker.common.types.MessageTypeEnum;
-import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.common.framework.InMessage;
-import net.sf.xapp.net.common.framework.StringSerializable;
 import net.sf.xapp.net.common.framework.TransportHelper;
-import ngpoker.common.util.ReflectionUtils;
+import net.sf.xapp.net.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.util.ReflectionUtils;
+import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.framework.smartconverter.ConvertResult;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;
 import net.sf.xapp.net.server.util.filesystemstore.FileSystem;
 import net.sf.xapp.net.server.util.filesystemstore.RealFileSystemFactory;
+import net.sf.xapp.utils.StringUtils;
 import org.apache.log4j.Logger;
+import xapp.Version;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;

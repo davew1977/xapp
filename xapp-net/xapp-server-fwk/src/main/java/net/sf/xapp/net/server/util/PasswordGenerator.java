@@ -1,7 +1,7 @@
 package net.sf.xapp.net.server.util;
 
-import ngpoker.common.util.deck.EntropySource;
-import ngpoker.common.util.deck.RandomEntropySource;
+import net.sf.xapp.net.common.util.random.EntropySource;
+import net.sf.xapp.net.common.util.random.RandomEntropySource;
 
 public class PasswordGenerator
 {

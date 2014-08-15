@@ -6,14 +6,12 @@
  */
 package net.sf.xapp.net.server.framework.smartconverter;
 
+import net.sf.xapp.Global;
+import net.sf.xapp.codegen.model.ComplexType;
+import net.sf.xapp.codegen.model.Model;
 import net.sf.xapp.marshalling.Unmarshaller;
-import ng.Global;
-import ngpoker.codegen.model.ComplexType;
-import ngpoker.codegen.model.Model;
 import net.sf.xapp.net.common.framework.LispObj;
-import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.framework.TransportObject;
-import ngpoker.common.types.MessageTypeEnum;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;
 import org.apache.log4j.Logger;
 

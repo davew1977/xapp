@@ -1,11 +1,11 @@
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.common.types.Coord;
-import ngpoker.common.util.MathUtils;
-import ngpoker.common.util.deck.CoordDeck;
-import ngpoker.common.util.deck.EntropySource;
+import net.sf.xapp.net.common.types.Coord;
+import net.sf.xapp.net.common.util.MathUtils;
+import net.sf.xapp.net.common.util.random.CoordDeck;
+import net.sf.xapp.net.common.util.random.EntropySource;
 
-import static ngpoker.common.util.MathUtils.*;
+import static net.sf.xapp.net.common.util.MathUtils.*;
 
 public class UserspaceCoordDeck implements CoordDeck
 {
@@ -85,8 +85,8 @@ public class UserspaceCoordDeck implements CoordDeck
             int x = ((int) v - 1) / 2;
             return new Coord(x,x);
         }
-        int nextOdd = MathUtils.nextOdd(v);
-        int previousOdd = MathUtils.previousOdd(v);
+        int nextOdd = nextOdd(v);
+        int previousOdd = previousOdd(v);
         int startX = (nextOdd-1)/2;
         int startY = (nextOdd-1)/2;
         int nextSq = (int) Math.pow(nextOdd, 2);

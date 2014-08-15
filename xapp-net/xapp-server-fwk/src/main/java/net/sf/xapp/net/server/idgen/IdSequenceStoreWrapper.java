@@ -1,8 +1,8 @@
 package net.sf.xapp.net.server.idgen;
 
-import ngpoker.infrastructure.types.EntityType;
-import ngpoker.infrastructure.types.IdSequence;
-import ngpoker.infrastructure.types.IdSequenceStore;
+import net.sf.xapp.net.common.types.EntityType;
+import net.sf.xapp.net.common.types.IdSequence;
+import net.sf.xapp.net.common.types.IdSequenceStore;
 
 public class IdSequenceStoreWrapper extends IdSequenceStore
 {

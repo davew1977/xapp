@@ -6,10 +6,10 @@
  */
 package net.sf.xapp.net.server.framework.smartconverter;
 
-import ngpoker.codegen.model.ComplexType;
-import ngpoker.codegen.model.EnumType;
-import ngpoker.codegen.model.Field;
-import ngpoker.codegen.model.PrimitiveType;
+import net.sf.xapp.codegen.model.ComplexType;
+import net.sf.xapp.codegen.model.EnumType;
+import net.sf.xapp.codegen.model.Field;
+import net.sf.xapp.codegen.model.PrimitiveType;
 import net.sf.xapp.net.common.framework.LispObj;
 
 import java.util.List;

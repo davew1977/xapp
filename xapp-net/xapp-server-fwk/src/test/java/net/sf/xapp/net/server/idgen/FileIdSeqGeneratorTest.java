@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.idgen;
 
-import ngpoker.infrastructure.types.EntityType;
+import net.sf.xapp.net.common.types.EntityType;
 import net.sf.xapp.net.server.clustering.NodeInfoImpl;
 import org.junit.Test;
 

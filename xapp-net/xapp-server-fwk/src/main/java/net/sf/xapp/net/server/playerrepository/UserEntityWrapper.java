@@ -6,47 +6,28 @@
  */
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.common.types.*;
-import ngpoker.moneysystem.types.Account;
-import ngpoker.user.UserEntity;
-import ngpoker.user.UserEntityListener;
-import ngpoker.user.UserEntityListenerAdaptor;
-import ngpoker.user.UserInfo;
+import net.sf.xapp.net.api.userentity.UserEntity;
+import net.sf.xapp.net.api.userentity.UserEntityListener;
+import net.sf.xapp.net.api.userentity.UserEntityListenerAdaptor;
+import net.sf.xapp.net.common.types.*;
 
-public class User extends UserEntity
+public class UserEntityWrapper extends UserEntity
 {
     private final boolean guest;
     private UserEntityListener notifier;
     private boolean bot;
     private boolean online;
 
-    public User()
+    public UserEntityWrapper()
     {
         super();
         guest = false;
     }
 
-    public User(UserId userId, UserInfo userInfo, Coord userspaceLocation, boolean guest)
+    public UserEntityWrapper(UserId userId, UserInfo userInfo, Coord userspaceLocation, boolean guest)
     {
         super(userId, userInfo, userspaceLocation);
         this.guest = guest;
-    }
-
-    public Account getAccount(AccountType accountType)
-    {
-        for (Account account : getAccounts())
-        {
-            if(account.getAccountType().equals(accountType))
-            {
-                return account;
-            }
-        }
-        return null;
-    }
-
-    public void setAccountBalance(Account account, long balance)
-    {
-        setAccountBalance(getAccounts().indexOf(account), balance);
     }
 
     @Override

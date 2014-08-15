@@ -6,8 +6,8 @@
  */
 package net.sf.xapp.net.server.repos;
 
-import ngpoker.common.types.GenericException;
-import ngpoker.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.GenericException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

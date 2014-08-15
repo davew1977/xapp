@@ -1,8 +1,10 @@
-<Model baseModule="xapp-common-fwk" corePackageName="net.sf.xapp.net.common.types" generalErrors="ENTITY_ALREADY_EXISTS,NODE_IS_SHUTTING_DOWN,ENTITY_DOES_NOT_EXIST_IN_CLUSTER," messageIdStart="0" objectIdStart="2000" version="4">
+<Model baseModule="xapp-common-fwk" corePackageName="net.sf.xapp.net.common.types" generalErrors="ENTITY_ALREADY_EXISTS,NODE_IS_SHUTTING_DOWN,ENTITY_DOES_NOT_EXIST_IN_CLUSTER,PRINCIPAL_ALREADY_HAS_PENDING_REQUEST," messageIdStart="0" objectIdStart="2000" version="4">
   <MessageIds>
     <ObjectId id="0" name="UserLookup_FindUserResponse"/>
     <ObjectId id="1" name="UserLookup_FindUser"/>
     <ObjectId id="2" name="ExampleApi_DoSomething"/>
+    <ObjectId id="3" name="UserEntityUpdate_SetUserInfoPassword"/>
+    <ObjectId id="4" name="UserEntityUpdate_SetLastImageUploadTime"/>
     <ObjectId id="5" name="Channel_Join"/>
     <ObjectId id="6" name="Channel_Leave"/>
     <ObjectId id="7" name="MessageSender_Post"/>
@@ -48,6 +50,55 @@
     <ObjectId id="47" name="UserApiReply_LoginWithTokenResponse"/>
     <ObjectId id="48" name="ConnectionListener_UserConnected"/>
     <ObjectId id="49" name="ConnectionListener_UserDisconnected"/>
+    <ObjectId id="50" name="UserEntityUpdate_SetLastLoginTime"/>
+    <ObjectId id="51" name="UserEntityUpdate_SetStatus"/>
+    <ObjectId id="52" name="UserEntityUpdate_AddFollowedUser"/>
+    <ObjectId id="53" name="UserEntityUpdate_AddFollowedUsers"/>
+    <ObjectId id="54" name="UserEntityUpdate_RemoveFollowedUser"/>
+    <ObjectId id="55" name="UserEntityUpdate_ClearFollowedUsers"/>
+    <ObjectId id="56" name="UserEntityUpdate_SetPlayerPoints"/>
+    <ObjectId id="57" name="UserEntityListener_UserInfoPasswordChanged"/>
+    <ObjectId id="58" name="UserEntityListener_LastImageUploadTimeChanged"/>
+    <ObjectId id="59" name="UserEntityListener_LastLoginTimeChanged"/>
+    <ObjectId id="60" name="UserEntityListener_StatusChanged"/>
+    <ObjectId id="61" name="UserEntityListener_FollowedUserAdded"/>
+    <ObjectId id="62" name="UserEntityListener_FollowedUsersAdded"/>
+    <ObjectId id="63" name="UserEntityListener_FollowedUserRemoved"/>
+    <ObjectId id="64" name="UserEntityListener_FollowedUsersCleared"/>
+    <ObjectId id="65" name="UserEntityListener_PlayerPointsChanged"/>
+    <ObjectId id="66" name="ClientControl_SetInitialInfo"/>
+    <ObjectId id="67" name="ClientControl_ForceJoinChannel"/>
+    <ObjectId id="68" name="ClientControl_SetUser"/>
+    <ObjectId id="69" name="IdSequenceStoreUpdate_SetSequenceSeq"/>
+    <ObjectId id="70" name="IdSequenceStoreListener_SequenceSeqChanged"/>
+    <ObjectId id="71" name="LobbySessionManager_PageUp"/>
+    <ObjectId id="72" name="LobbySessionManager_PageDown"/>
+    <ObjectId id="73" name="LobbySessionManager_Pause"/>
+    <ObjectId id="74" name="LobbySessionManager_Subscribe"/>
+    <ObjectId id="75" name="LobbySessionManager_SwitchView"/>
+    <ObjectId id="76" name="LobbySessionManagerReply_PageUpResponse"/>
+    <ObjectId id="77" name="LobbySessionManagerReply_PageDownResponse"/>
+    <ObjectId id="78" name="LobbySessionManagerReply_PauseResponse"/>
+    <ObjectId id="79" name="LobbySessionManagerReply_SubscribeResponse"/>
+    <ObjectId id="80" name="LobbySessionManagerReply_SwitchViewResponse"/>
+    <ObjectId id="81" name="ClientLobbySession_EntityAdded"/>
+    <ObjectId id="82" name="ClientLobbySession_EntityRemoved"/>
+    <ObjectId id="83" name="ClientLobbySession_PropertyChanged"/>
+    <ObjectId id="84" name="ClientLobbySession_ListPropertyChanged"/>
+    <ObjectId id="85" name="UserAdmin_UpdateImage"/>
+    <ObjectId id="86" name="UserAdmin_UpdateStatus"/>
+    <ObjectId id="87" name="UserAdmin_UpdatePassword"/>
+    <ObjectId id="88" name="UserAdmin_UpdatePoints"/>
+    <ObjectId id="89" name="UserAdmin_AddPoints"/>
+    <ObjectId id="90" name="UserAdmin_GetImage"/>
+    <ObjectId id="92" name="UserAdminReply_UpdateImageResponse"/>
+    <ObjectId id="93" name="UserAdminReply_UpdateStatusResponse"/>
+    <ObjectId id="94" name="UserAdminReply_UpdatePasswordResponse"/>
+    <ObjectId id="95" name="UserAdminReply_UpdatePointsResponse"/>
+    <ObjectId id="96" name="UserAdminReply_AddPointsResponse"/>
+    <ObjectId id="97" name="UserAdminReply_GetImageResponse"/>
+    <ObjectId id="99" name="UserAdmin_GetUserDetails"/>
+    <ObjectId id="100" name="UserAdminReply_GetUserDetailsResponse"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -91,7 +142,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <ValueObject abstract="true" name="Message" skipGeneration="true"/>
                 <ValueObject abstract="true" name="InMessage" skipGeneration="true"/>
                 <ValueObject abstract="true" name="Response" skipGeneration="true"/>
-                <EnumType name="AppType" values="OBJ_SERVER,CHAT_ROOM,"/>
+                <EnumType name="AppType" values="OBJ_SERVER,CHAT_ROOM,LOBBY,"/>
                 <ValueObject name="NodeId">
                   <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
                 </ValueObject>
@@ -109,6 +160,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 </Entity>
                 <Entity name="IdSequenceStore">
                   <Field access="READ_ONLY" entityDeclaration="true" list="true" name="sequences" type="xapp-common-fwk/net/sf/xapp/net/common/types/IdSequence"/>
+                  <ObservableMeta/>
                 </Entity>
                 <EnumType name="ErrorCode" skipGeneration="true" values=""/>
                 <ValueObject name="UserLocation">
@@ -122,6 +174,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Field access="READ_ONLY" name="guest" type="provided/java/lang/Boolean"/>
                   <Field access="READ_ONLY" name="admin" type="provided/java/lang/Boolean"/>
                   <Field access="READ_ONLY" name="email" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="country" type="xapp-common-fwk/net/sf/xapp/net/common/types/Country"/>
                 </ValueObject>
                 <EnumType name="LobbyPropertyEnum" skipGeneration="true" values=""/>
                 <EnumType name="ObjectType" skipGeneration="true" values=""/>
@@ -141,6 +194,23 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Field access="READ_ONLY" name="x" type="provided/java/lang/Integer"/>
                   <Field access="READ_ONLY" name="y" type="provided/java/lang/Integer"/>
                 </ValueObject>
+                <ValueObject name="Page">
+                  <Field access="READ_ONLY" list="true" name="lobbyEntities" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyEntity"/>
+                  <Field access="READ_ONLY" name="firstIndex" type="provided/java/lang/Integer"/>
+                  <Field access="READ_ONLY" name="total" type="provided/java/lang/Integer"/>
+                  <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                </ValueObject>
+                <LobbyType name="UserInLobby" superType="LobbyEntity">
+                  <Field access="READ_WRITE" name="lastLoginTime" type="provided/java/lang/Long"/>
+                  <Field access="READ_WRITE" name="lastImageUploadTime" type="provided/java/lang/Long"/>
+                  <Field access="READ_ONLY" name="x" type="provided/java/lang/Integer"/>
+                  <Field access="READ_ONLY" name="y" type="provided/java/lang/Integer"/>
+                  <Field access="READ_WRITE" name="online" type="provided/java/lang/Boolean"/>
+                  <Field access="READ_WRITE" name="status" optional="true" type="provided/java/lang/String"/>
+                  <Field access="READ_ONLY" name="country" type="xapp-common-fwk/net/sf/xapp/net/common/types/Country"/>
+                  <Field access="READ_WRITE" name="points" type="provided/java/lang/Long"/>
+                  <Field access="READ_WRITE" name="enabledCharacters" optional="true" type="provided/java/lang/String"/>
+                </LobbyType>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">
@@ -379,7 +449,141 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   </Message>
                 </Api>
               </DirMeta>
-              <DirMeta name="userentity"/>
+              <DirMeta name="userentity">
+                <Entity name="UserEntity">
+                  <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                  <Field access="READ_ONLY" name="userInfo" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserInfo"/>
+                  <Field access="READ_ONLY" name="userspaceLocation" type="xapp-common-fwk/net/sf/xapp/net/common/types/Coord"/>
+                  <Field access="READ_WRITE" name="lastImageUploadTime" type="provided/java/lang/Long"/>
+                  <Field access="READ_WRITE" name="lastLoginTime" type="provided/java/lang/Long"/>
+                  <Field access="READ_WRITE" name="status" optional="true" type="provided/java/lang/String"/>
+                  <Field access="READ_WRITE" list="true" name="followedUsers" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                  <Field access="READ_WRITE" name="playerPoints" type="provided/java/lang/Long"/>
+                  <ObservableMeta/>
+                </Entity>
+              </DirMeta>
+              <DirMeta name="clientcontrol">
+                <Api apiType="ASYNC" clientVisible="true" errors="" name="ClientControl" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                  <Message description="called when a user logs in to tell client the apps that the player is associated with. i.e. what tables they are sitting at and what tournaments they are registered to" name="SetInitialInfo">
+                    <Field access="READ_ONLY" list="true" name="locations" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserLocation"/>
+                    <Field access="READ_ONLY" name="serverTime" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="guest" type="provided/java/lang/Boolean"/>
+                    <Response name="SetInitialInfoResponse"/>
+                  </Message>
+                  <Message description="used to direct the client to join a channel, for example when a sng spawns, the client should join the created tournament" name="ForceJoinChannel">
+                    <Field access="READ_ONLY" name="channelId" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="appType" type="xapp-common-fwk/net/sf/xapp/net/common/types/AppType"/>
+                    <Response name="ForceJoinChannelResponse"/>
+                  </Message>
+                  <Message description="sets the high level user state on the client" name="SetUser">
+                    <Field access="READ_ONLY" entityDeclaration="true" name="user" type="xapp-common-fwk/net/sf/xapp/net/api/userentity/UserEntity"/>
+                    <Response name="SetUserResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="lobbysessionmanager">
+                <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" entityKeyType="provided/java/lang/String" errors="CANNOT_PAGE_UP,CANNOT_PAGE_DOWN,VIEW_DOES_NOT_EXIST,VIEW_NOT_ACTIVE," hideEntityKey="true" name="LobbySessionManager" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId" responseEntityKeyType="provided/java/lang/String">
+                  <Message description="shifts the client&apos;s view up one page. Assumes client will have retained the static state from the shifted page" name="PageUp">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Response name="PageUpResponse">
+                      <Field access="READ_ONLY" name="page" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/Page"/>
+                    </Response>
+                  </Message>
+                  <Message name="PageDown">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Response name="PageDownResponse">
+                      <Field access="READ_ONLY" name="page" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/Page"/>
+                    </Response>
+                  </Message>
+                  <Message description="pauses updates sent to the client" name="Pause">
+                    <Response name="PauseResponse"/>
+                  </Message>
+                  <Message description="uses specified view id to subscribe to the query. Will cancel a subscription previously assigned to the view id" name="Subscribe">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="pageSize" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="query" type="xapp-common-fwk/net/sf/xapp/net/common/types/QueryData"/>
+                    <Response name="SubscribeResponse">
+                      <Field access="READ_ONLY" name="page" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/Page"/>
+                    </Response>
+                  </Message>
+                  <Message description="resumes the updates sent to the client. The client provides a view id of the view they want to rejoin. If another view is active then it will be deactivated" name="SwitchView">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Response name="SwitchViewResponse">
+                      <Field access="READ_ONLY" name="page" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/Page"/>
+                    </Response>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="clientlobbysession">
+                <Api apiType="ASYNC" clientVisible="true" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ClientLobbySession" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                  <Message name="EntityAdded">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="entity" type="xapp-common-fwk/net/sf/xapp/net/common/types/LobbyEntity"/>
+                    <Response name="EntityAddedResponse"/>
+                  </Message>
+                  <Message name="EntityRemoved">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Response name="EntityRemovedResponse"/>
+                  </Message>
+                  <Message name="PropertyChanged">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="propName" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
+                    <Response name="PropertyChangedResponse"/>
+                  </Message>
+                  <Message name="ListPropertyChanged">
+                    <Field access="READ_ONLY" name="viewId" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="entityKey" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="propName" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="value" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="index" type="provided/java/lang/Integer"/>
+                    <Field access="READ_ONLY" name="listOp" type="xapp-common-fwk/net/sf/xapp/net/common/types/ListOp"/>
+                    <Response name="ListPropertyChangedResponse"/>
+                  </Message>
+                </Api>
+              </DirMeta>
+              <DirMeta name="useradmin">
+                <Api apiType="ASYNC_WITH_REPLY_API" clientVisible="true" errors="USER_ALREADY_FOLLOWED,NOT_FOLLOWING_USER,CANNOT_FOLLOW_SELF,INCORRECT_EMAIL,CANNOT_FOLLOW_GUEST," name="UserAdmin" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                  <Message name="UpdateImage">
+                    <Field access="READ_ONLY" name="profileImage" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/ImageData"/>
+                    <Response name="UpdateImageResponse"/>
+                  </Message>
+                  <Message name="UpdateStatus">
+                    <Field access="READ_ONLY" name="status" type="provided/java/lang/String"/>
+                    <Response name="UpdateStatusResponse"/>
+                  </Message>
+                  <Message name="UpdatePassword">
+                    <Field access="READ_ONLY" name="oldPassword" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" name="newPassword" type="provided/java/lang/String"/>
+                    <Response name="UpdatePasswordResponse"/>
+                  </Message>
+                  <Message name="UpdatePoints">
+                    <Field access="READ_ONLY" name="newValue" type="provided/java/lang/Long"/>
+                    <Response name="UpdatePointsResponse"/>
+                  </Message>
+                  <Message description="add or remove (using a negative number) points for this user" name="AddPoints">
+                    <Field access="READ_ONLY" name="delta" type="provided/java/lang/Long"/>
+                    <Response name="AddPointsResponse"/>
+                  </Message>
+                  <Message name="GetImage">
+                    <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Response name="GetImageResponse">
+                      <Field access="READ_ONLY" name="userId" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                      <Field access="READ_ONLY" name="image" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/ImageData"/>
+                    </Response>
+                  </Message>
+                  <Message name="GetUserDetails">
+                    <Field access="READ_ONLY" name="userId" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Response name="GetUserDetailsResponse">
+                      <Field access="READ_ONLY" name="userId" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                      <Field access="READ_ONLY" list="true" name="locations" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserLocation"/>
+                      <Field access="READ_ONLY" list="true" name="usersFollowed" optional="true" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    </Response>
+                  </Message>
+                </Api>
+              </DirMeta>
             </DirMeta>
           </DirMeta>
         </DirMeta>
@@ -392,12 +596,15 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2002" name="net_sf_xapp_net_common_types_UserId"/>
     <ObjectId id="2003" name="net_sf_xapp_net_common_types_NodeId"/>
     <ObjectId id="2004" name="net_sf_xapp_net_common_types_NodeData"/>
-    <ObjectId id="2005" name="net_sf_xapp_net_common_types_IdSequence"/>
-    <ObjectId id="2006" name="net_sf_xapp_net_common_types_IdSequenceStore"/>
     <ObjectId id="2007" name="net_sf_xapp_net_common_types_User"/>
     <ObjectId id="2008" name="net_sf_xapp_net_common_types_UserLocation"/>
     <ObjectId id="2009" name="net_sf_xapp_net_common_types_UserInfo"/>
     <ObjectId id="2010" name="net_sf_xapp_net_common_types_ImageData"/>
     <ObjectId id="2011" name="net_sf_xapp_net_common_types_Coord"/>
+    <ObjectId id="2012" name="net_sf_xapp_net_api_userentity_UserEntity"/>
+    <ObjectId id="2013" name="net_sf_xapp_net_common_types_IdSequence"/>
+    <ObjectId id="2014" name="net_sf_xapp_net_common_types_IdSequenceStore"/>
+    <ObjectId id="2015" name="net_sf_xapp_net_common_types_Page"/>
+    <ObjectId id="2016" name="net_sf_xapp_net_common_types_UserInLobby"/>
   </ObjectIds>
 </Model>

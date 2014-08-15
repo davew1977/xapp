@@ -44,9 +44,9 @@ public class TransientApi extends Api
         setModule(module);
         for (Message message : messages)
         {
+            message.setModule(module);
             message.setApi(this);
             message.setPackageName(messagePackageName());
-            message.setModule(module);
         }
     }
 

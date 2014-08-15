@@ -1,25 +1,16 @@
 package net.sf.xapp.net.server.lobby;
 
+import net.sf.xapp.net.api.lobbyinternal.LobbyInternal;
+import net.sf.xapp.net.api.userlookup.UserLookup;
+import net.sf.xapp.net.common.types.*;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
-import ngpoker.common.types.Country;
-import ngpoker.common.types.ListOp;
-import ngpoker.common.types.LobbyPropertyEnum;
-import ngpoker.common.types.Player;
-import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.server.lobby.internal.LobbyInternal;
-import net.sf.xapp.net.server.lobby.types.LobbyEntity;
-import ngpoker.playerlookup.PlayerLookup;
 import net.sf.xapp.net.server.framework.email.MailProxy;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
 import org.apache.log4j.Logger;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +22,7 @@ public class UserStatsMailer implements LobbyInternal
     private final Logger log = Logger.getLogger(getClass());
     private final MailProxy mailProxy;
     private final ScheduledExecutorService scheduledExecutorService;
-    private final PlayerLookup playerLookup;
+    private final UserLookup userLookup;
     private final List<String> stats;
     private final Set<String> excludedPids;
 
@@ -40,10 +31,10 @@ public class UserStatsMailer implements LobbyInternal
                            ClusterFacade clusterFacade,
                            EventLoopManager eventLoopManager,
                            ScheduledExecutorService scheduledExecutorService,
-                           PlayerLookup playerLookup)
+                           UserLookup userLookup)
     {
         this.mailProxy = mailProxy;
-        this.playerLookup = playerLookup;
+        this.userLookup = userLookup;
         this.stats = new ArrayList<String>();
         this.scheduledExecutorService = scheduledExecutorService;
         clusterFacade.addTopicListener(lobbyName,
@@ -87,9 +78,9 @@ public class UserStatsMailer implements LobbyInternal
     private void recordLogin(String entityKey)
     {
         String timestamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
-        Player player = playerLookup.findPlayer(new UserId(entityKey)).getPlayer();
-        String nickname = player.getUsername();
-        Country country = player.getCountry();
+        User user = userLookup.findUser(new UserId(entityKey)).getUser();
+        String nickname = user.getUsername();
+        Country country = user.getCountry();
         String stat = String.format("%s - %s (%s from %s) logged in", timestamp, entityKey, nickname, country);
         log.info(stat);
         stats.add(stat);

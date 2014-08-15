@@ -6,11 +6,12 @@
  */
 package net.sf.xapp.net.server.framework.smartconverter;
 
-import ng.Global;
-import ngpoker.codegen.model.*;
+import net.sf.xapp.Global;
+import net.sf.xapp.codegen.model.ComplexType;
+import net.sf.xapp.codegen.model.Field;
+import net.sf.xapp.codegen.model.Message;
+import net.sf.xapp.codegen.model.Type;
 import net.sf.xapp.net.common.framework.LispObj;
-import ngpoker.common.types.Event;
-import ngpoker.game.types.PokerGame;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -58,11 +59,6 @@ public class SmartConverter
         return convert_internal(new LispObj(lispObj), type, helper);
     }
 
-    /**
-     * @param str             a lispobj string, probably in some old version of the given type
-     * @param rootComplexType
-     * @return
-     */
     private ConvertResult<LispObj> convert_internal(LispObj rootLispObj, ComplexType rootComplexType, Converter helper)
     {
         LispObj originalRootLispObj = rootLispObj;

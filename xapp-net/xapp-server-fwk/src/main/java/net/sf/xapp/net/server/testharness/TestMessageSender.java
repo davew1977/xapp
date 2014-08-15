@@ -1,14 +1,14 @@
 package net.sf.xapp.net.server.testharness;
 
+import net.sf.xapp.net.api.messagesender.MessageSender;
+import net.sf.xapp.net.api.messagesender.MessageSenderAdaptor;
+import net.sf.xapp.net.api.messagesender.to.Broadcast;
+import net.sf.xapp.net.api.messagesender.to.Post;
+import net.sf.xapp.net.common.types.MessageTypeEnum;
+import net.sf.xapp.net.common.util.GeneralUtils;
 import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.net.common.framework.InMessage;
-import ngpoker.common.types.MessageTypeEnum;
-import ngpoker.common.util.GeneralUtils;
-import ngpoker.common.util.StringUtils;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSenderAdaptor;
-import net.sf.xapp.net.server.connectionserver.messagesender.to.Broadcast;
-import net.sf.xapp.net.server.connectionserver.messagesender.to.Post;
+import net.sf.xapp.utils.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

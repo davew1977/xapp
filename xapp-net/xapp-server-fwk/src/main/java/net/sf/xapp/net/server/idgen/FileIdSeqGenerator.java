@@ -1,7 +1,10 @@
 package net.sf.xapp.net.server.idgen;
 
+import net.sf.xapp.net.common.types.EntityType;
+import net.sf.xapp.net.common.types.IdSequence;
+import net.sf.xapp.net.common.types.IdSequenceStoreListener;
+import net.sf.xapp.net.common.types.IdSequenceStoreListenerAdaptor;
 import net.sf.xapp.net.server.clustering.NodeInfo;
-import ngpoker.infrastructure.types.*;
 import net.sf.xapp.net.server.framework.persistendb.FileDB;
 
 import java.util.List;

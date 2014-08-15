@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.idgen;
 
-import ngpoker.infrastructure.types.EntityType;
+import net.sf.xapp.net.common.types.EntityType;
 
 /**
  * Generates ids and persists sequences for unique ids for entities. The entity type is effectively a

@@ -6,7 +6,7 @@
  */
 package net.sf.xapp.net.server.framework.smartconverter;
 
-import ngpoker.codegen.model.ComplexType;
+import net.sf.xapp.codegen.model.ComplexType;
 import net.sf.xapp.net.common.framework.LispObj;
 import net.sf.xapp.net.server.framework.persistendb.FileContentConverter;
 
@@ -23,9 +23,6 @@ public interface Converter extends FileContentConverter
      *      primitive types and enums can return "" if the field is optional, or a suitable
      *                                   default otherwise
      *
-     * @param str
-     * @param type
-     * @return
      */
     ConvertResult<LispObj> convert(LispObj obj, ComplexType type);
 

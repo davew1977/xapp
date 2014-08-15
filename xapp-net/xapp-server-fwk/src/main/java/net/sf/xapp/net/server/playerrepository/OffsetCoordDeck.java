@@ -1,9 +1,9 @@
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.common.types.Coord;
-import ngpoker.common.util.deck.CoordDeck;
-import ngpoker.common.util.deck.SquareCoordDeck;
-import ngpoker.common.util.deck.EntropySource;
+import net.sf.xapp.net.common.types.Coord;
+import net.sf.xapp.net.common.util.random.CoordDeck;
+import net.sf.xapp.net.common.util.random.EntropySource;
+import net.sf.xapp.net.common.util.random.SquareCoordDeck;
 
 public class OffsetCoordDeck implements CoordDeck
 {

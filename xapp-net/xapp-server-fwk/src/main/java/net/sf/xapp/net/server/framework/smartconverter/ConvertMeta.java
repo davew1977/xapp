@@ -6,8 +6,7 @@
  */
 package net.sf.xapp.net.server.framework.smartconverter;
 
-import ngpoker.codegen.model.ComplexType;
-import net.sf.xapp.net.common.framework.LispObj;
+import net.sf.xapp.codegen.model.ComplexType;
 
 import java.util.ArrayList;
 import java.util.List;

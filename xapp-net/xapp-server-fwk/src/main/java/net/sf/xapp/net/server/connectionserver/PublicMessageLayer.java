@@ -6,22 +6,18 @@
  */
 package net.sf.xapp.net.server.connectionserver;
 
+import net.sf.xapp.net.api.clientcontrol.to.SetInitialInfo;
 import net.sf.xapp.net.api.connectionlistener.ConnectionListener;
 import net.sf.xapp.net.api.messagesender.MessageSender;
 import net.sf.xapp.net.api.userlookup.UserLookup;
-import net.sf.xapp.net.common.types.UserLocation;
-import net.sf.xapp.net.server.clustering.ClusterFacade;
-import net.sf.xapp.net.server.clustering.NodeInfo;
-import net.sf.xapp.net.server.clustering.PublicEntryPoint;
-import net.sf.xapp.net.server.channels.UserLocator;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.types.UserId;
-import ngpoker.common.types.PlayerLocation;
-import net.sf.xapp.net.server.connectionserver.clientcontrol.to.SetInitialInfo;
-import net.sf.xapp.net.server.connectionserver.listener.ConnectionListener;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
-import ngpoker.playerlookup.PlayerLookup;
+import net.sf.xapp.net.common.types.UserLocation;
+import net.sf.xapp.net.server.channels.UserLocator;
+import net.sf.xapp.net.server.clustering.ClusterFacade;
+import net.sf.xapp.net.server.clustering.NodeInfo;
+import net.sf.xapp.net.server.clustering.PublicEntryPoint;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

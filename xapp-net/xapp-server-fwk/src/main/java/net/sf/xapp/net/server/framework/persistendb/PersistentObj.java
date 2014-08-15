@@ -4,7 +4,7 @@ import net.sf.xapp.net.common.framework.Entity;
 
 /**
  * Created with IntelliJ IDEA.
- * User: davidw
+ * UserEntityWrapper: davidw
  * Date: 4/16/14
  * Time: 5:04 PM
  * To change this template use File | Settings | File Templates.

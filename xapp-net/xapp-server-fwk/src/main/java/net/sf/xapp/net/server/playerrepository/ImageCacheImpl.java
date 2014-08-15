@@ -1,6 +1,6 @@
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.common.types.ImageData;
+import net.sf.xapp.net.common.types.ImageData;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.util.FileUtils;
 import net.sf.xapp.net.server.util.SimpleCache;

@@ -8,9 +8,9 @@ package net.sf.xapp.net.server.framework;
 
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
-import ngpoker.common.types.MessageTypeEnum;
-import ngpoker.common.types.ErrorCode;
-import ngpoker.common.types.GenericException;
+import net.sf.xapp.net.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.GenericException;
+import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.types.UserId;
 
 import java.util.Map;

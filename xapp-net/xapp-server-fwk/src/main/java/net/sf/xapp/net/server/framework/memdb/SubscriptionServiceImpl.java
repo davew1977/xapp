@@ -6,9 +6,9 @@
  */
 package net.sf.xapp.net.server.framework.memdb;
 
-import ngpoker.common.types.ListOp;
-import net.sf.xapp.net.server.lobby.types.LobbyEntity;
-import net.sf.xapp.net.server.lobby.types.QueryData;
+import net.sf.xapp.net.common.types.ListOp;
+import net.sf.xapp.net.common.types.LobbyEntity;
+import net.sf.xapp.net.common.types.QueryData;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

@@ -1,14 +1,13 @@
 package net.sf.xapp.net.server.playerrepository;
 
-import ngpoker.backend.useradmin.UserAdmin;
-import ngpoker.backend.userapi.UserApi;
-import ngpoker.backend.userapi.to.LoginAsGuestResponse;
-import ngpoker.backend.userapi.to.LoginResponse;
-import ngpoker.backend.userapi.to.SignUpResponse;
-import ngpoker.common.types.GenericException;
-import ngpoker.common.types.ImageData;
+import net.sf.xapp.net.api.userapi.UserApi;
+import net.sf.xapp.net.api.userapi.to.LoginAsGuestResponse;
+import net.sf.xapp.net.api.userapi.to.LoginResponse;
+import net.sf.xapp.net.api.userapi.to.SignUpResponse;
+import net.sf.xapp.net.common.types.GenericException;
+import net.sf.xapp.net.common.types.ImageData;
 import net.sf.xapp.net.common.types.UserId;
-import ngpoker.user.UserInfo;
+import net.sf.xapp.net.common.types.UserInfo;
 
 public class UserApiImpl implements UserApi
 {

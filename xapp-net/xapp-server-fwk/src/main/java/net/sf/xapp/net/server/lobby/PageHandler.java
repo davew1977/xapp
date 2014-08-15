@@ -6,13 +6,8 @@
  */
 package net.sf.xapp.net.server.lobby;
 
-import ngpoker.common.types.GenericException;
-import ngpoker.common.types.ListOp;
-import ngpoker.common.types.ErrorCode;
-import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.server.lobby.clientlobbysession.ClientLobbySession;
-import net.sf.xapp.net.server.lobby.types.LobbyEntity;
-import net.sf.xapp.net.server.lobby.types.Page;
+import net.sf.xapp.net.api.clientlobbysession.ClientLobbySession;
+import net.sf.xapp.net.common.types.*;
 import net.sf.xapp.net.server.framework.memdb.LiveQueryListener;
 import org.apache.log4j.Logger;
 
