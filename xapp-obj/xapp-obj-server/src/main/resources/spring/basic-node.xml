@@ -70,7 +70,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <bean name="serviceLookup" class="net.sf.xapp.net.server.clustering.StaticServiceLookup">
         <constructor-arg index="0">
             <map>
-                <entry key="objserver.server.ObjFactory" value="0"/>
             </map>
         </constructor-arg>
     </bean>
@@ -113,5 +112,20 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg index="1" ref="clusterFacade"/>
     </bean>
 
-    <bean name="userApi" class="objserver.core.SimpleUserApi"/>
+    <bean name="userApi" class="net.sf.xapp.net.server.playerrepository.SimpleUserLookup"/>
+    <bean name="userLocator" class="net.sf.xapp.net.server.channels.UserLocator"/>
+
+    <bean name="xmlDb" class="net.sf.xapp.objserver.SimpleXmlDatabase">
+        <constructor-arg value="/Users/oldDave/dev/xapp/xapp-tools/src/test/resources"/>
+    </bean>
+
+    <bean name="objFactory" class="net.sf.xapp.objserver.ObjFactoryImpl">
+
+        <constructor-arg index="0" ref="clusterFacade"/>
+        <constructor-arg index="1" ref="eventLoopManager"/>
+        <constructor-arg index="2" ref="entityRepository"/>
+        <constructor-arg index="3" ref="messageSenderProxy"/>
+        <constructor-arg index="4" ref="userLocator"/>
+        <constructor-arg index="5" ref="xmlDb"/>
+    </bean>
 </beans>

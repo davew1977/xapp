@@ -1,22 +1,17 @@
 package net.sf.xapp.objserver;
 
+import net.sf.xapp.net.api.channel.Channel;
+import net.sf.xapp.net.api.channel.ChannelAdaptor;
 import net.sf.xapp.net.api.messagesender.MessageSender;
 import net.sf.xapp.net.server.channels.ChannelImpl;
 import net.sf.xapp.net.server.channels.UserLocator;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
-import net.sf.xapp.net.server.connectionserver.messagesender.MessageSender;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
-import net.sf.xapp.net.server.framework.persistendb.FileDB;
-import net.sf.xapp.net.server.framework.persistendb.PersistentObj;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import ngpoker.client.channel.Channel;
-import ngpoker.client.channel.ChannelAdaptor;
-import ngpoker.common.framework.Entity;
-import ngpoker.common.framework.MessageHandler;
-import ngpoker.common.util.ReflectionUtils;
-import objserver.core.ObjControl;
+import net.sf.xapp.objserver.apis.objmanager.ObjManager;
+import net.sf.xapp.objserver.apis.objmanager.ObjManagerAdaptor;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -31,45 +26,38 @@ public class ObjFactoryImpl {
     private final EntityRepository entityRepository;
     private final MessageSender messageSender;
     private final UserLocator userLocator;
+    private final SimpleXmlDatabase xmlDatabase;
 
     public ObjFactoryImpl(ClusterFacade clusterFacade,
                           EventLoopManager eventLoopManager,
                           EntityRepository entityRepository,
                           MessageSender messageSender,
-                          UserLocator userLocator) {
+                          UserLocator userLocator,
+                          SimpleXmlDatabase xmlDatabase) {
         this.clusterFacade = clusterFacade;
         this.eventLoopManager = eventLoopManager;
         this.entityRepository = entityRepository;
         this.messageSender = messageSender;
         this.userLocator = userLocator;
+        this.xmlDatabase = xmlDatabase;
     }
 
     @PostConstruct
-    public void init() {
-        List<PersistentObj<E>> all = objDb.readAllWithMeta();
-        for (PersistentObj<E> obj : all) {
-            create_internal(obj);
-            System.out.println(obj.getEntity().expandToString());
+    public void init() throws ClassNotFoundException {
+        List<ObjInfo> objInfos = xmlDatabase.findAll();
+        for (ObjInfo objInfo : objInfos) {
+            create_internal(objInfo.getKey(), objInfo.getObjectMeta());
         }
     }
 
     public void create_internal(String key, ObjectMeta objectMeta) {
         ObjController objController = new ObjController(key, objectMeta);
-
-
-
-
-
-        E obj = persistentObj.getEntity();
-        String key = obj.getKey();
-        ReflectionUtils.call(obj, "addListener", createListenerAdaptor(key, objDb));
-        ObjControl<E> objControl = new ObjControl<E>(obj, persistentObj.getSeqNo());
-        ChannelImpl channel = new ChannelImpl(messageSender, userLocator, objControl);
+        ChannelImpl channel = new ChannelImpl(messageSender, userLocator, objController);
 
         ChannelAdaptor channelEL = new ChannelAdaptor(key, new EventLoopMessageHandler<Channel>(eventLoopManager, channel));
-        ObjServer objServerEL = new ObjServerAdaptor(key, new EventLoopMessageHandler<ObjServer>(eventLoopManager, objControl));
+        ObjManager objServerEL = new ObjManagerAdaptor(key, new EventLoopMessageHandler<ObjManager>(eventLoopManager, objController));
 
-        entityRepository.add(ObjServer.class, key, objServerEL);
+        entityRepository.add(ObjManager.class, key, objServerEL);
         entityRepository.add(Channel.class, key, channelEL);
 
         clusterFacade.addEntityMapping(key);
