@@ -1,10 +1,8 @@
-package testmodel;
+package net.sf.xapp.examples.school;
 
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Launcher;
-import net.sf.xapp.application.api.SimpleApplication;
-import testapp.SchoolApp;
 
 import java.util.Map;
 

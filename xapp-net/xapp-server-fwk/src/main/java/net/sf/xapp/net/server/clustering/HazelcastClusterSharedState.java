@@ -18,14 +18,15 @@ import net.sf.xapp.net.common.types.NodeData;
 import net.sf.xapp.net.common.types.NodeId;
 import net.sf.xapp.net.common.types.PublicNodeState;
 import net.sf.xapp.net.common.types.UserId;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
 
 public class HazelcastClusterSharedState implements ClusterSharedState
 {
     private HazelcastInstance hazelcastInstance;
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public HazelcastClusterSharedState()
     {
@@ -40,7 +41,7 @@ public class HazelcastClusterSharedState implements ClusterSharedState
         config.setPort(port);
         config.getGroupConfig().setName("ngpoker");
         hazelcastInstance = Hazelcast.newHazelcastInstance(config);
-        log.info(hazelcastInstance);
+        log.info(hazelcastInstance.toString());
     }
 
     @Override

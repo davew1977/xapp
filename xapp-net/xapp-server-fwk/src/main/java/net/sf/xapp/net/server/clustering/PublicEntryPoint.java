@@ -12,11 +12,12 @@ import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.NodeId;
 import net.sf.xapp.net.common.types.PublicNodeState;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PublicEntryPoint implements MessageHandler
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final ClusterFacade cluster;
     private final NodeExitPoint nodeExitPoint;
     private final NodeAsyncMessageHandler nodeAsyncMessageHandler;

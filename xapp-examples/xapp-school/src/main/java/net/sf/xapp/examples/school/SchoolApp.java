@@ -1,4 +1,4 @@
-package testapp;
+package net.sf.xapp.examples.school;
 
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
@@ -6,7 +6,6 @@ import net.sf.xapp.application.api.SimpleApplication;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
-import testmodel.SchoolSystem;
 
 import java.util.Map;
 

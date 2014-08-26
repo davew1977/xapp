@@ -13,7 +13,8 @@ import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.common.framework.LispObj;
 import net.sf.xapp.net.common.framework.TransportObject;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public abstract class AbstractConverter implements Converter
     private final String srcVersion;
     private final String targetVersion;
 
-    private static final Logger log = Logger.getLogger(AbstractConverter.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractConverter.class);
     private SmartConverter smartConverter;
 
     protected AbstractConverter(String srcVersion, String targetVersion)
@@ -40,7 +41,7 @@ public abstract class AbstractConverter implements Converter
         ConvertMeta convertMeta = ConversionHelper.analyze(type, obj);
         if (convertMeta.needsConversion())
         {
-            log.info(convertMeta);
+            log.info(convertMeta.toString());
         }
 
         return new ConvertResult<LispObj>(false, obj);

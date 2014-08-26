@@ -7,7 +7,8 @@ import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.framework.email.MailProxy;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class UserStatsMailer implements LobbyInternal
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final MailProxy mailProxy;
     private final ScheduledExecutorService scheduledExecutorService;
     private final UserLookup userLookup;

@@ -9,11 +9,12 @@ package net.sf.xapp.net.server.framework.eventloop;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.server.framework.Decorator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventLoopMessageHandler<A> implements Decorator<A>
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final EventLoopManager eventLoopManager;
     private final A delegate;
     private final String keyOverride;

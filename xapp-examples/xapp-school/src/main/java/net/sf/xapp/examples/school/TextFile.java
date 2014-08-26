@@ -1,4 +1,4 @@
-package testmodel;
+package net.sf.xapp.examples.school;
 
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.marshalling.FormattedText;

@@ -7,11 +7,12 @@ import net.sf.xapp.net.server.framework.smartconverter.ConversionHelper;
 import net.sf.xapp.net.server.framework.smartconverter.ConvertMeta;
 import net.sf.xapp.net.server.framework.smartconverter.ConvertResult;
 import net.sf.xapp.net.server.util.filesystemstore.FileContent;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DiffDetectorConverter extends AbstractConverter implements FileContentConverter
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final boolean suppressConversion;
 
     public DiffDetectorConverter(boolean suppressConversion)
@@ -41,7 +42,7 @@ public class DiffDetectorConverter extends AbstractConverter implements FileCont
             }
             else
             {
-                log.error(convertMeta);
+                log.error(convertMeta.toString());
                 throw new RuntimeException();
             }
             log.info(type + " needed converting");

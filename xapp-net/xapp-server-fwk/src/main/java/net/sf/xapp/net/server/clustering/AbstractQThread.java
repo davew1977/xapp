@@ -7,7 +7,8 @@
 package net.sf.xapp.net.server.clustering;
 
 import net.sf.xapp.net.common.framework.InMessage;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import java.util.concurrent.BlockingQueue;
@@ -20,7 +21,7 @@ public abstract class AbstractQThread extends Thread implements QHandler
 {
     protected final ClusterFacade cluster;
     private final boolean startThread;
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private boolean m_alive = true;
 
     public AbstractQThread(ClusterFacade cluster, boolean startThread)

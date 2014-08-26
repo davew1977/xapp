@@ -1,4 +1,4 @@
-package testmodel;
+package net.sf.xapp.examples.school;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
@@ -7,14 +7,7 @@ import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-@ValidImplementations({Teacher.class, Pupil.class})
-public interface Person extends FileSystem{
-    @Key
-    String getUsername();
-
-    String getFirstName();
-
-    String getSecondName();
-
+@ValidImplementations({ClassRoom.class, Person.class})
+public interface FileSystem {
     DirMeta getHomeDir();
 }

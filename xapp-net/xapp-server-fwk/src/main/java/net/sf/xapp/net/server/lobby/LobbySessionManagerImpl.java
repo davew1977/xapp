@@ -19,7 +19,8 @@ import net.sf.xapp.net.server.channels.NotifyProxy;
 import net.sf.xapp.net.server.framework.memdb.StorableType;
 import net.sf.xapp.net.server.framework.memdb.SubscriptionService;
 import net.sf.xapp.net.server.framework.memdb.SubscriptionServiceImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ import java.util.Set;
 
 public class LobbySessionManagerImpl extends AppAdaptor implements LobbySessionManager, LobbyInternal
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final SubscriptionService subscriptionService;
     private final String lobbyKey;
     private CommChannel commChannel;

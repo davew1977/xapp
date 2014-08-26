@@ -20,7 +20,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg index="0">
             <bean class="net.sf.xapp.net.server.clustering.TopicSubscriberMessageHandler">
                 <constructor-arg index="0" ref="clusterFacade"/>
-                <constructor-arg index="1" value="net.sf.xapp.net.server.connectionserver.listener.ConnectionListener"/>
+                <constructor-arg index="1" value="net.sf.xapp.net.api.connectionlistener.ConnectionListener"/>
                 <constructor-arg index="2">
                     <bean class="net.sf.xapp.net.api.connectionlistener.ConnectionListenerAdaptor">
                         <constructor-arg>

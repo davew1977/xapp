@@ -1,4 +1,4 @@
-package testmodel;
+package net.sf.xapp.examples.school;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,4 +1,4 @@
-package testmodel;
+package net.sf.xapp.examples.school;
 
 import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;

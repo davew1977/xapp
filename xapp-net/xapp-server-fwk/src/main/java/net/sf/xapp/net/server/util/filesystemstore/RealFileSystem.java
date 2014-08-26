@@ -8,9 +8,10 @@
 package net.sf.xapp.net.server.util.filesystemstore;
 
 import net.sf.xapp.utils.FileUtils;
-import org.apache.log4j.Logger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Delete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ public class RealFileSystem implements FileSystem
     private String m_path;
     private Map<String, Writer> m_writers;
     private AntFacade m_antFacade;
-    private final Logger m_log = Logger.getLogger(getClass());
+    private final Logger m_log = LoggerFactory.getLogger(getClass());
 
     /**
      * @param peristentNodeId the node id for the backup store

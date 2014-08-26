@@ -1,4 +1,4 @@
-package testmodel;
+package net.sf.xapp.examples.school;
 
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 import net.sf.xapp.annotations.objectmodelling.Key;
@@ -25,7 +25,6 @@ public class School {
     private List<ImageFile> picturesOfTheWeek = new ArrayList<ImageFile>();
 
     public School() {
-        java.lang.System.out.println("here");
     }
 
     @Key

@@ -25,8 +25,9 @@ import net.sf.xapp.net.server.channels.SimpleNotifier;
 import net.sf.xapp.net.server.framework.email.MailProxy;
 import net.sf.xapp.net.server.framework.persistendb.FileDB;
 import net.sf.xapp.net.server.util.PasswordGenerator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
+import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -40,7 +41,7 @@ import static net.sf.xapp.net.common.types.LobbyPropertyEnum.*;
  */
 public class SimpleUserStore implements UserStore, ConnectionListener, UserAdmin
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final MessageSender messageSender;
     private final AtomicInteger guestUserIdSeq = new AtomicInteger(0);
     private final UserCache userCache;

@@ -6,12 +6,13 @@
  */
 package net.sf.xapp.net.common.framework;
 
-import net.sf.xapp.net.common.framework.InMessage;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageInvocation<A> implements Runnable
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final A api;
     private final InMessage<A,Void> message;
 

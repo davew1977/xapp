@@ -15,7 +15,8 @@ import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.common.types.NodeId;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageSenderProxy implements MessageSender, ConnectionListener
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final Map<UserId, NodeId> connectionLocations;
     private final NodeExitPoint nodeExitPoint;
     private final ClusterFacade clusterFacade;
@@ -82,7 +83,7 @@ public class MessageSenderProxy implements MessageSender, ConnectionListener
         else
         {
             log.debug("skipping post message to " + userId + " who is not connected");
-            log.debug(message);
+            log.debug(message.toString());
         }
     }
 

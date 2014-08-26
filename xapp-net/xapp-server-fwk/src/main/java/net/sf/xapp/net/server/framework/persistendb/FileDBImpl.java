@@ -17,7 +17,8 @@ import net.sf.xapp.net.server.util.filesystemstore.FileContent;
 import net.sf.xapp.net.server.util.filesystemstore.FileSystem;
 import net.sf.xapp.net.server.util.filesystemstore.RealFileSystemFactory;
 import net.sf.xapp.utils.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xapp.Version;
 
 import javax.annotation.PreDestroy;
@@ -34,7 +35,7 @@ import java.util.Map;
  */
 public class FileDBImpl<E extends Entity,U> implements FileDB<E, U>
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final FileContentConverter fileContentConverter;
     private final Map<MessageTypeEnum, UpdateAction> actionMap;
     private final Class<E> entityClass;

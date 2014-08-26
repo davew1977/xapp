@@ -75,7 +75,7 @@ public class SimpleApplication<T> implements Application<T> {
     public boolean nodeSelected(Node node) {
         ObjectMeta objectMeta = node.objectMeta();
         if(objectMeta.getKey()!=null) {
-            appData.setLastSelected(node.wrappedObjectClass().getSimpleName() + ":" + objectMeta.getGlobalKey());
+            appData.setLastSelected(objectMeta.getType().getSimpleName() + ":" + objectMeta.getGlobalKey());
         }
         return false;
     }

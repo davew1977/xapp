@@ -10,7 +10,8 @@ import net.sf.xapp.net.api.out.Out;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.types.GenericException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Enables sync and async api implentations to handle errors in a consistent manner
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class ResultHandlingProxy<A> implements MessageHandler<A>
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final Out out;
     private final A delegate;
 

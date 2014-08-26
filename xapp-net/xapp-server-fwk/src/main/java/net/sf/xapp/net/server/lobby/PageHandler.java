@@ -9,14 +9,15 @@ package net.sf.xapp.net.server.lobby;
 import net.sf.xapp.net.api.clientlobbysession.ClientLobbySession;
 import net.sf.xapp.net.common.types.*;
 import net.sf.xapp.net.server.framework.memdb.LiveQueryListener;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PageHandler implements LiveQueryListener<LobbyEntity>
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final UserId userId;
     private final int viewId;
     private final int pageSize;

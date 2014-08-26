@@ -112,7 +112,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg index="1" ref="clusterFacade"/>
     </bean>
 
-    <bean name="userApi" class="net.sf.xapp.net.server.playerrepository.SimpleUserLookup"/>
+    <bean name="userLookup" class="net.sf.xapp.net.server.playerrepository.SimpleUserLookup"/>
+    <bean name="userApi" class="net.sf.xapp.net.server.playerrepository.UserApiImpl">
+        <constructor-arg ref="userLookup"/>
+    </bean>
     <bean name="userLocator" class="net.sf.xapp.net.server.channels.UserLocator"/>
 
     <bean name="xmlDb" class="net.sf.xapp.objserver.SimpleXmlDatabase">

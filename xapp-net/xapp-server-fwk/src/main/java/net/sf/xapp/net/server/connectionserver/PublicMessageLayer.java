@@ -18,7 +18,8 @@ import net.sf.xapp.net.server.channels.UserLocator;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.clustering.PublicEntryPoint;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 public class PublicMessageLayer<T> implements MessageLayer<T, UserId>, MessageSender
 {
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
     private IOLayer<T, UserId> ioLayer;
     private Map<UserId, T> sessions;
     private final PublicEntryPoint publicEntryPoint;

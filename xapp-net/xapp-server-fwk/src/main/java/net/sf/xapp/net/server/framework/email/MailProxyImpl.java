@@ -1,6 +1,7 @@
 package net.sf.xapp.net.server.framework.email;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -9,7 +10,7 @@ import java.util.Properties;
 
 public class MailProxyImpl extends Authenticator implements MailProxy
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final Properties props;
 
     public MailProxyImpl()

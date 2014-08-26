@@ -9,14 +9,15 @@ package net.sf.xapp.net.server.clustering;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * handles all async messages directed at this node
  */
 public class NodeAsyncMessageHandler implements MessageHandler
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final BeanManager beanManager;
     private final EntityRepository entityRepository;
 

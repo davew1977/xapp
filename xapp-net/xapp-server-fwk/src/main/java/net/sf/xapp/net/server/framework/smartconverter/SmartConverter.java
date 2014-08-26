@@ -12,14 +12,15 @@ import net.sf.xapp.codegen.model.Field;
 import net.sf.xapp.codegen.model.Message;
 import net.sf.xapp.codegen.model.Type;
 import net.sf.xapp.net.common.framework.LispObj;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SmartConverter
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private boolean debugEnabled;
     private Map<String, ComplexType> allTypesByClassname;
     private Map<String, ComplexType> allSubclassesByName;
@@ -70,7 +71,7 @@ public class SmartConverter
 
         if (debugEnabled)
         {
-            log.debug(ConversionHelper.analyze(rootComplexType, rootLispObj));
+            log.debug(ConversionHelper.analyze(rootComplexType, rootLispObj).toString());
         }
         ConvertResult<LispObj> result = helper.convert(rootLispObj, rootComplexType);
         boolean converted = result.isConverted();

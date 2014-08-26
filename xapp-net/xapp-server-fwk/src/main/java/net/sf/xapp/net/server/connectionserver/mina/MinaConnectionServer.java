@@ -9,11 +9,12 @@ package net.sf.xapp.net.server.connectionserver.mina;
 import net.sf.xapp.net.connectionserver.mina.BytePacketCodecFactory;
 import net.sf.xapp.net.server.clustering.NodeInfo;
 import net.sf.xapp.net.server.clustering.NodeInfoImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.mina.common.*;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.SocketAcceptor;
 import org.apache.mina.transport.socket.nio.SocketAcceptorConfig;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,7 +23,7 @@ import java.net.InetSocketAddress;
 
 public class MinaConnectionServer
 {
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
     private final IoHandler ioHandler;
     private final int port;
     private SocketAcceptor acceptor;

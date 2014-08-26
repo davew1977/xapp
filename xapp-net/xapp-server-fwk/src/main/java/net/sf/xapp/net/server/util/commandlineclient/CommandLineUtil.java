@@ -6,7 +6,8 @@
  */
 package net.sf.xapp.net.server.util.commandlineclient;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -18,7 +19,7 @@ public class CommandLineUtil extends Thread
 {
     private final boolean startThread;
     private boolean alive = true;
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
     private final CommandLineListener listener;
 
 

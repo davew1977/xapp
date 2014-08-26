@@ -47,7 +47,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg index="2" ref="nodeInfo"/>
         <constructor-arg index="3" ref="clusterFacade"/>
         <constructor-arg index="4" ref="playerLocator"/>
-        <constructor-arg index="5" ref="userApi"/>
+        <constructor-arg index="5" ref="userLookup"/>
     </bean>
     
     <alias name="publicMessageLayer" alias="messageSender"/>

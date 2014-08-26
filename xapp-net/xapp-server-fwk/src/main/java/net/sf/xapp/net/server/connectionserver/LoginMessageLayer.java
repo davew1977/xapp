@@ -11,13 +11,14 @@ import net.sf.xapp.net.api.userapi.to.*;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.GenericException;
 import net.sf.xapp.net.common.types.UserId;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginMessageLayer<T> implements MessageLayer<T, UserId> {
     private final UserApi userApi;
     private final MessageLayer<T, UserId> delegate;
     private IOLayer<T, UserId> ioLayer;
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     public LoginMessageLayer(MessageLayer<T, UserId> delegate, UserApi userApi) {
         this.userApi = userApi;

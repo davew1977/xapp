@@ -10,12 +10,13 @@ import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.Message;
 import net.sf.xapp.net.server.connectionserver.IOLayer;
 import net.sf.xapp.net.server.connectionserver.MessageLayer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.mina.common.*;
+import org.slf4j.LoggerFactory;
 
 public class MinaIOHandler<T> implements IoHandler, IOLayer<IoSession, T>
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final MessageLayer<IoSession, T> messageLayer;
     private final String SESSION_KEY = "sessionKey";
 

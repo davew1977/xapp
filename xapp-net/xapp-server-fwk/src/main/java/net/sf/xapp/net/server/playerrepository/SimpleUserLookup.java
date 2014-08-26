@@ -8,18 +8,16 @@ package net.sf.xapp.net.server.playerrepository;
 
 import net.sf.xapp.net.api.userlookup.UserLookup;
 import net.sf.xapp.net.api.userlookup.to.FindUserResponse;
-import net.sf.xapp.net.common.types.ErrorCode;
-import net.sf.xapp.net.common.types.GenericException;
-import net.sf.xapp.net.common.types.User;
-import net.sf.xapp.net.common.types.UserId;
-import org.apache.log4j.Logger;
+import net.sf.xapp.net.common.types.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SimpleUserLookup implements UserLookup
+public class SimpleUserLookup implements UserLookup, UserStore
 {
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
     private Map<UserId, User> userMap;
 
     public SimpleUserLookup()
@@ -65,4 +63,38 @@ public class SimpleUserLookup implements UserLookup
         s.findUser(new UserId("1"));
     }
 
+    @Override
+    public UserId addUser(UserInfo userInfo, ImageData profileImage) {
+        return null;
+    }
+
+    @Override
+    public UserId authenticateUser(String nickname, String password) {
+        return null;
+    }
+
+    @Override
+    public UserId authenticateUser(UserId userId, String keyToken, boolean bot) {
+        return null;
+    }
+
+    @Override
+    public UserId obtainGuestId(String nickname) {
+        return null;
+    }
+
+    @Override
+    public void resetPassword(String nickname, String email) {
+
+    }
+
+    @Override
+    public UserEntityWrapper getUser(UserId userId) {
+        return null;
+    }
+
+    @Override
+    public UserId getUserId(String nickname) {
+        return null;
+    }
 }

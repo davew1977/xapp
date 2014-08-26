@@ -9,7 +9,8 @@ package net.sf.xapp.net.server.util.commandlineclient;
 import net.sf.xapp.net.server.clustering.PublicEntryPoint;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.TransportHelper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -21,7 +22,7 @@ public class CommandLineInterpreter extends Thread
 {
     private final boolean startThread;
     private boolean alive = true;
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
     private final PublicEntryPoint publicEntryPoint;
 
 

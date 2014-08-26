@@ -94,6 +94,7 @@
         <module>xapp-net</module>
         <module>xapp-obj</module>
         <module>xapp-web</module>
+        <module>xapp-examples</module>
     </modules>
 
 </project>

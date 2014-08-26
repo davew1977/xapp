@@ -20,13 +20,14 @@ import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
 import net.sf.xapp.net.server.framework.memdb.StorableType;
 import net.sf.xapp.net.server.repos.EntityRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
 public class LobbyFactory
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final EntityRepository entityRepository;
     private final ClusterFacade clusterFacade;
     private final MessageSender messageSender;

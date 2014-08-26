@@ -9,7 +9,8 @@ import net.sf.xapp.net.common.util.GeneralUtils;
 import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.utils.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TestMessageSender extends MessageSenderAdaptor
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private LinkedBlockingQueue<InMessage> outMessages;
     private List<String> messagesAsString;

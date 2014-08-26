@@ -9,7 +9,8 @@ package net.sf.xapp.net.server.framework.memdb;
 import net.sf.xapp.net.common.types.ListOp;
 import net.sf.xapp.net.common.types.LobbyEntity;
 import net.sf.xapp.net.common.types.QueryData;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Set;
 
 public class SubscriptionServiceImpl implements SubscriptionService
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final String lobbyKey;
     private Database<LobbyEntity> db;
     private Map<QueryData, LiveQuery<LobbyEntity>> liveQueries;
