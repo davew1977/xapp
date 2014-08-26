@@ -181,6 +181,7 @@ public class Model {
         for (TransientApi api : deriveApis()) {
             for (Message message : api.getMessages()) {
                 Message m = new Message();
+                m.setModule(api.getModule());
                 m.setApi(api);
                 m.setName(message.getName());
                 m.setPackageName(message.getPackageName());

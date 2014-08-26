@@ -116,7 +116,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <bean name="userLocator" class="net.sf.xapp.net.server.channels.UserLocator"/>
 
     <bean name="xmlDb" class="net.sf.xapp.objserver.SimpleXmlDatabase">
-        <constructor-arg value="/Users/oldDave/dev/xapp/xapp-tools/src/test/resources"/>
+        <constructor-arg value="${obj.dir}"/>
     </bean>
 
     <bean name="objFactory" class="net.sf.xapp.objserver.ObjFactoryImpl">

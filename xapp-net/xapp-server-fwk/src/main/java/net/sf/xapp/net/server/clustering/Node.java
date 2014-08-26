@@ -9,19 +9,21 @@ package net.sf.xapp.net.server.clustering;
 import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.TransportHelper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 public class Node
 {
-    private final Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(Node.class);
     private static final String FAKE_CASHGAME_FEED_BEAN = "fakeCashGameLobbyFeed";
     private static final String FAKE_SNG_FEED_BEAN = "fakeSngLobbyFeed";
     private static final String CASH_GAME_FACTORY = "cashgameFactory";
@@ -97,7 +99,13 @@ public class Node
         Properties props = new Properties();
         try
         {
-            props.load(Node.class.getResourceAsStream("/ngpoker.properties"));
+            String propsFileName = "/xapp.obj.server.properties";
+            InputStream propsStream = Node.class.getResourceAsStream(propsFileName);
+            if (propsStream != null) {
+                props.load(propsStream);
+            } else {
+                log.info("{} not found", propsFileName);
+            }
         }
         catch (IOException e)
         {

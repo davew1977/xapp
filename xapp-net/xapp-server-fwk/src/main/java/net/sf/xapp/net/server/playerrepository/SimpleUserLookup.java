@@ -25,23 +25,23 @@ public class SimpleUserLookup implements UserLookup
     public SimpleUserLookup()
     {
         userMap = new HashMap<UserId, User>();
-        userMap.put(new UserId("100"), new User().deserialize("[[100],fergie,[10], Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("101"), new User().deserialize("[[101],gus_hanss,[10],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("102"), new User().deserialize("[[102],negreanu,[10],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("103"), new User().deserialize("[[103],phil_ivey,[10],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("104"), new User().deserialize("[[104],sam_farha,[11],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("105"), new User().deserialize("[[105],doyle,[11],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("106"), new User().deserialize("[[106],amarillo,[11],Canada, false, false, false, a@b.com]"));
-        userMap.put(new UserId("107"), new User().deserialize("[[107],moneymaker,[12],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("108"), new User().deserialize("[[108],lederer,[12],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("109"), new User().deserialize("[[109],jen_harman,[13],Canada, false, false, a@b.com]"));
-        userMap.put(new UserId("110"), new User().deserialize("[[110],steve,[13],Canada, false, false, a@b.com]"));
+        userMap.put(new UserId("100"), new User().deserialize("[[100],fergie, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("101"), new User().deserialize("[[101],gus_hanss, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("102"), new User().deserialize("[[102],negreanu, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("103"), new User().deserialize("[[103],phil_ivey, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("104"), new User().deserialize("[[104],sam_farha, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("105"), new User().deserialize("[[105],doyle, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("106"), new User().deserialize("[[106],amarillo, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("107"), new User().deserialize("[[107],moneymaker, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("108"), new User().deserialize("[[108],lederer, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("109"), new User().deserialize("[[109],jen_harman, false, false, a@b.com, Canada]"));
+        userMap.put(new UserId("110"), new User().deserialize("[[110],steve, false, false, a@b.com, Canada]"));
 
         //add 100 bots
         for(int i=0; i<100; i++)
         {
             userMap.put(new UserId(String.valueOf(10000 + i)), new User().deserialize(
-                    String.format("[[%s],bot_%s,[%s],Canada, false, false, a@b.com]", 10000+i, 10000+i, 10)));
+                    String.format("[[%s],bot_%s, false, false, a@b.com, Canada]", 10000+i, 10000+i)));
         }
     }
 

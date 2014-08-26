@@ -12,6 +12,8 @@ import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerAdaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.List;
  * Created by dwebber
  */
 public class ObjFactoryImpl {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final ClusterFacade clusterFacade;
     private final EventLoopManager eventLoopManager;
     private final EntityRepository entityRepository;
@@ -47,6 +50,7 @@ public class ObjFactoryImpl {
         List<ObjInfo> objInfos = xmlDatabase.findAll();
         for (ObjInfo objInfo : objInfos) {
             create_internal(objInfo.getKey(), objInfo.getObjectMeta());
+            log.info("creating live object: {}", objInfo.getKey());
         }
     }
 
