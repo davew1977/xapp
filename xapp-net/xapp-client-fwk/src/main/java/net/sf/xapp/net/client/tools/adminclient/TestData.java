@@ -8,6 +8,7 @@
 package net.sf.xapp.net.client.tools.adminclient;
 
 import net.sf.xapp.annotations.application.Container;
+import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.application.api.Launcher;
 import net.sf.xapp.marshalling.Marshaller;
@@ -16,6 +17,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.List;
 
@@ -29,9 +31,10 @@ public class TestData
     @Transient
     public ClassModel<TestData> m_cm;
 
-    public void setClassModel(ClassModel<TestData> cm)
+    @PreInit
+    public void init(ObjectMeta objectMeta)
     {
-        m_cm = cm;
+        m_cm = objectMeta.getClassModel();
 
     }
 

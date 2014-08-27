@@ -16,6 +16,7 @@ import java.io.File;
 public class ObjInfo {
     private String className;
     private String key;
+    private String fileName;
     private long revision;
     private ObjectMeta objectMeta;
 
@@ -43,10 +44,22 @@ public class ObjInfo {
         this.revision = revision;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public void load(File dir) throws ClassNotFoundException {
         Class aClass = Class.forName(className);
         Unmarshaller unmarshaller = new Unmarshaller(aClass);
-        objectMeta = unmarshaller.unmarshal(new File(dir, key + ".xml"));
+        objectMeta = unmarshaller.unmarshal(new File(dir, fileName()));
+    }
+
+    private String fileName() {
+        return fileName != null ? fileName : key + ".xml";
     }
 
     @Transient

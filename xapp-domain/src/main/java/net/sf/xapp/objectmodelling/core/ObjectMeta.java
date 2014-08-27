@@ -105,7 +105,7 @@ public class ObjectMeta<T> implements Namespace{
                 assert isNamespaceFor(aClass);
                 lookup = matchingMap(aClass);
             }
-            obj = lookup.get(p[0]);
+            obj = lookup != null ? lookup.get(p[0]) : null;
             if (obj == null) {
                 //todo find the best match
                 ClassModel cm = classModel.getClassDatabase().getClassModel(aClass);
