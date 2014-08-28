@@ -1,4 +1,4 @@
-package net.sf.xapp;
+package net.sf.xapp.objclient;
 
 import net.sf.xapp.net.client.framework.ClientContext;
 import net.sf.xapp.net.common.framework.MessageHandler;

@@ -1,4 +1,4 @@
-package net.sf.xapp.examples.school;
+package net.sf.xapp.examples.school.model;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.Reference;

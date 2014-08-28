@@ -1,4 +1,4 @@
-package net.sf.xapp.examples.school;
+package net.sf.xapp.examples.school.model;
 
 /**
  * © 2013 Newera Education Ltd

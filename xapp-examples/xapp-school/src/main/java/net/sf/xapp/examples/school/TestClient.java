@@ -1,14 +1,22 @@
-package net.sf.xapp;
+package net.sf.xapp.examples.school;
 
-import net.sf.xapp.net.client.framework.ClientContext;
+import net.sf.xapp.objclient.ObjClientContext;
+import net.sf.xapp.application.api.SimpleApplication;
+import net.sf.xapp.application.core.ApplicationContainerImpl;
+import net.sf.xapp.application.core.DefaultGUIContext;
+import net.sf.xapp.examples.school.model.SchoolSystem;
+import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxyImpl;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.XmlObj;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -25,7 +33,12 @@ public class TestClient {
         clientContext.wire(ObjManagerReply.class, "s1", new ObjManagerReply() {
             @Override
             public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
-                System.out.println(obj.getData());
+                Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
+                ObjectMeta objMeta = unmarshaller.unmarshalString(obj.getData());
+                ClassDatabase cdb = unmarshaller.getClassDatabase();
+                ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), cdb, objMeta));
+                appContainer.setUserGUI(new SimpleApplication());
+                appContainer.getMainFrame().setVisible(true);
             }
 
             @Override
