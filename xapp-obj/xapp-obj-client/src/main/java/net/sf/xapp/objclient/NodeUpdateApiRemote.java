@@ -39,9 +39,9 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
         for (ObjectMeta objectMeta : objectMetas) {
             List<PropChange> changes = new ArrayList<PropChange>();
             for (PropertyUpdate potentialUpdate : potentialUpdates) {
-                String prop = potentialUpdate.property.getName();
-                String oldVal = potentialUpdate.property.convert(objectMeta, potentialUpdate.oldVal);
-                String newVal = potentialUpdate.property.convert(objectMeta, potentialUpdate.newVal);
+                String prop = potentialUpdate.getPropertyName();
+                String oldVal = potentialUpdate.oldValAsString(objectMeta);
+                String newVal = potentialUpdate.newValAsString(objectMeta);
                 changes.add(new PropChange(prop, oldVal, newVal));
             }
             changeSets.add(new PropChangeSet(objectMeta.getId(), changes));

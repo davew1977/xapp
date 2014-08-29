@@ -619,4 +619,8 @@ public class ObjectMeta<T> implements Namespace{
     public String toXml() {
         return classModel.getClassDatabase().createMarshaller(classModel.getContainedClass()).toXMLString(instance);
     }
+
+    public Property getProperty(String propName) {
+        return classModel.getProperty(propName);
+    }
 }

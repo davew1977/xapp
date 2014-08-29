@@ -87,4 +87,6 @@ public interface ClassDatabase<T>
     ObjectMeta find(Object value);
 
     void removeInstance(ObjectMeta objectMeta);
+
+    ObjectMeta findObjById(Long objId);
 }

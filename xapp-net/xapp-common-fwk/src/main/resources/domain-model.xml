@@ -598,6 +598,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
             <DirMeta name="types">
               <ValueObject name="Delta"/>
               <ValueObject name="XmlObj">
+                <Field access="READ_ONLY" name="type" type="provided/java/lang/String"/>
                 <Field access="READ_ONLY" name="data" type="provided/java/lang/String"/>
                 <Field access="READ_ONLY" name="lastChangeRev" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>

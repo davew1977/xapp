@@ -49,4 +49,16 @@ public class PropertyUpdate
     private PropertyChange execute(ObjectMeta obj) {
         return obj.set(property, newVal);
     }
+
+    public String getPropertyName() {
+        return property.getName();
+    }
+
+    public String oldValAsString(ObjectMeta objectMeta) {
+        return property.convert(objectMeta, oldVal);
+    }
+
+    public String newValAsString(ObjectMeta objectMeta) {
+        return property.convert(objectMeta, newVal);
+    }
 }
