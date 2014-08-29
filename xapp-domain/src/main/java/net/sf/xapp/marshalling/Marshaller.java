@@ -159,7 +159,7 @@ public class Marshaller<T>
                     {
                         //ok we just want to marshal the id of the object
                         //the id is the name
-                        ClassModel classModel = m_classDatabase.getClassModel(property.getPropertyClass());
+                        ClassModel classModel = property.getPropertyClassModel();
                         ObjectMeta refObjMeta = classModel.find(value);
                         Namespace namespace = objectMeta.getNamespace(classModel);
                         writeAsAttr.add(new PropertyValuePair(property, fullPath(namespace, refObjMeta)));

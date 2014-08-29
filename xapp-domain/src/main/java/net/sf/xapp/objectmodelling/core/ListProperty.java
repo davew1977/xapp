@@ -16,63 +16,66 @@ import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
 import net.sf.xapp.marshalling.stringserializers.IntegerListSerializer;
 import net.sf.xapp.marshalling.stringserializers.LongListSerializer;
-import net.sf.xapp.utils.XappException;
 import net.sf.xapp.utils.StringUtils;
+import net.sf.xapp.utils.XappException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 
-public class ListProperty extends ContainerProperty
-{
+public class ListProperty extends ContainerProperty {
 
     public ListProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
                         Class containedType, EditorWidget editorWidget,
-                        Class parentClass)
-    {
+                        Class parentClass) {
         super(classModelManager, propertyAccess, aClass, containedType, editorWidget, parentClass);
     }
 
-    public Collection get(Object target)
-    {
+    public Collection get(Object target) {
         return (Collection) super.get(target);
     }
 
-    public List castToList(Object target)
-    {
+    public List castToList(Object target) {
         return (List) super.get(target); //note! will blow up if collection is set
     }
 
 
     @Override
-    public Object convert(ObjectMeta target, String value)
-    {
-        if(m_containedType==Integer.class)
-        {
+    public Object convert(ObjectMeta target, String value) {
+        if (m_containedType == Integer.class) {
             return IntegerListSerializer.doRead(value);
-        }
-        else if(m_containedType == Long.class)
-        {
+        } else if (m_containedType == Long.class) {
             return LongListSerializer.doRead(value);
-        }
-        else if(m_containedType==String.class)
-        {
+        } else if (m_containedType == String.class) {
             return StringUtils.appendToCollection(createCollection(), value);
-        }
-        else if(Enum.class.isAssignableFrom(m_containedType))
-        {
+        } else if (Enum.class.isAssignableFrom(m_containedType)) {
             return EnumListSerializer.doRead(value, m_containedType);
         }
         throw new XappException(getName() + " list property is not string serializable");
     }
 
+    @Override
+    public String convert(ObjectMeta objectMeta, Object obj) {
+        if (m_containedType == Integer.class) {
+            return IntegerListSerializer.doWrite((List<Integer>) obj);
+        } else if (m_containedType == Long.class) {
+            return LongListSerializer.doWrite((List<Long>) obj);
+        } else if (m_containedType == String.class) {
+            return StringUtils.join((Collection<? extends Object>) obj, ",");
+        } else if (Enum.class.isAssignableFrom(m_containedType)) {
+            return EnumListSerializer.doWrite((List<? extends Enum>) obj);
+        }
+        throw new XappException(getName() + " list property is not string serializable");
+    }
+
     public Collection createCollection() {
-        if(isList()) {
+        if (isList()) {
             return new ArrayList();
-        }
-        else if(isSetCollection()) {
+        } else if (isSetCollection()) {
             return new LinkedHashSet();
-        }
-        else throw new IllegalArgumentException("Collection of type "+m_class+" not supported");
+        } else throw new IllegalArgumentException("Collection of type " + m_class + " not supported");
     }
 
     @Override

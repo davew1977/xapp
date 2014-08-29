@@ -6,8 +6,12 @@ import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.types.ObjLoc;
+import net.sf.xapp.objserver.types.PropChange;
+import net.sf.xapp.objserver.types.PropChangeSet;
 import net.sf.xapp.objserver.types.XmlObj;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,14 +21,32 @@ import java.util.List;
 public class NodeUpdateApiRemote implements NodeUpdateApi {
     private ApplicationContainer appContainer;
     private ObjListener remote;
+
+    public NodeUpdateApiRemote(ApplicationContainer appContainer, ObjListener remote) {
+        this.appContainer = appContainer;
+        this.remote = remote;
+    }
+
     @Override
     public void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-
+        updateObjects(Arrays.asList(objectMeta), potentialUpdates);
     }
 
     @Override
     public void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates) {
+        List<PropChangeSet> changeSets = new ArrayList<PropChangeSet>();
 
+        for (ObjectMeta objectMeta : objectMetas) {
+            List<PropChange> changes = new ArrayList<PropChange>();
+            for (PropertyUpdate potentialUpdate : potentialUpdates) {
+                String prop = potentialUpdate.property.getName();
+                String oldVal = potentialUpdate.property.convert(objectMeta, potentialUpdate.oldVal);
+                String newVal = potentialUpdate.property.convert(objectMeta, potentialUpdate.newVal);
+                changes.add(new PropChange(prop, oldVal, newVal));
+            }
+            changeSets.add(new PropChangeSet(objectMeta.getId(), changes));
+        }
+        remote.propertiesChanged(changeSets);
     }
 
     @Override

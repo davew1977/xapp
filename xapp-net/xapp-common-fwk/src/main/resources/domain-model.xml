@@ -103,10 +103,10 @@
     <ObjectId id="100" name="UserAdminReply_GetUserDetailsResponse"/>
     <ObjectId id="101" name="ObjManagerReply_GetObjectResponse"/>
     <ObjectId id="102" name="ObjManagerReply_GetDeltasResponse"/>
-    <ObjectId id="103" name="ObjListener_PropertyChanged"/>
     <ObjectId id="104" name="ObjListener_ObjAdded"/>
     <ObjectId id="105" name="ObjListener_ObjMoved"/>
     <ObjectId id="106" name="ObjListener_ObjDeleted"/>
+    <ObjectId id="107" name="ObjListener_PropertiesChanged"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -607,6 +607,15 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
                 <Field access="READ_ONLY" name="index" optional="true" type="provided/java/lang/Integer"/>
               </ValueObject>
+              <ValueObject name="PropChange">
+                <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
+                <Field access="READ_ONLY" name="oldValue" optional="true" type="provided/java/lang/String"/>
+                <Field access="READ_ONLY" name="newValue" optional="true" type="provided/java/lang/String"/>
+              </ValueObject>
+              <ValueObject name="PropChangeSet">
+                <Field access="READ_ONLY" name="objId" type="provided/java/lang/Long"/>
+                <Field access="READ_ONLY" list="true" name="changes" type="xapp-common-fwk/net/sf/xapp/objserver/types/PropChange"/>
+              </ValueObject>
             </DirMeta>
             <DirMeta name="apis">
               <DirMeta name="objmanager">
@@ -627,11 +636,9 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               </DirMeta>
               <DirMeta name="objlistener">
                 <Api apiType="ASYNC" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ObjListener">
-                  <Message name="PropertyChanged">
-                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
-                    <Field access="READ_ONLY" name="oldValue" optional="true" type="provided/java/lang/String"/>
-                    <Field access="READ_ONLY" name="newValue" optional="true" type="provided/java/lang/String"/>
-                    <Response name="PropertyChangedResponse"/>
+                  <Message name="PropertiesChanged">
+                    <Field access="READ_ONLY" list="true" name="changeSets" type="xapp-common-fwk/net/sf/xapp/objserver/types/PropChangeSet"/>
+                    <Response name="PropertiesChangedResponse"/>
                   </Message>
                   <Message name="ObjAdded">
                     <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
@@ -674,5 +681,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2015" name="net_sf_xapp_net_common_types_Page"/>
     <ObjectId id="2016" name="net_sf_xapp_net_common_types_UserInLobby"/>
     <ObjectId id="2017" name="net_sf_xapp_objserver_types_ObjLoc"/>
+    <ObjectId id="2018" name="net_sf_xapp_objserver_types_PropChange"/>
+    <ObjectId id="2019" name="net_sf_xapp_objserver_types_PropChangeSet"/>
   </ObjectIds>
 </Model>

@@ -21,18 +21,20 @@ import net.sf.xapp.annotations.marshalling.MarshalAsElement;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
+import net.sf.xapp.marshalling.namevaluepair.PropertyValuePair;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
 
+import static net.sf.xapp.objectmodelling.core.NamespacePath.fullPath;
+
 /**
  * A property encapsulates meta data about a class's property. A property is an attribute of a class that is
  * accessible through a getter and optionally modifiable through a setter
  */
-public class Property<T> implements Comparable
-{
+public class Property<T> implements Comparable {
     protected final PropertyAccess m_propertyAccess;
     protected Class m_class;//class of return type of accessor
     private Reference m_reference;//true if this should point to another object in the datamodel
@@ -58,15 +60,14 @@ public class Property<T> implements Comparable
                     String query,
                     boolean editable,
                     TreeMeta treeMeta,
-                    boolean mandatory)
-    {
+                    boolean mandatory) {
         m_classDatabase = classDatabase;
         m_mandatory = mandatory;
         m_propertyAccess = propertyAccess;
         m_class = aClass;
         m_reference = ref;
         m_filterOnProperty = filterOnProperty;
-        this.key = key !=null;
+        this.key = key != null;
         m_editorWidget = editorWidget;
         m_formattedText = isformattedText;
         m_parentClass = parentClass;
@@ -77,62 +78,47 @@ public class Property<T> implements Comparable
         m_listeners = new ArrayList<PropertyChangeListener>();
     }
 
-    public void addChangeListener(PropertyChangeListener listener)
-    {
+    public void addChangeListener(PropertyChangeListener listener) {
         m_listeners.add(listener);
     }
 
-    public void setVisibilityRestricted(boolean visibilityRestricted)
-    {
+    public void setVisibilityRestricted(boolean visibilityRestricted) {
         m_visibilityRestricted = visibilityRestricted;
     }
 
-    public void setEditable(boolean editable)
-    {
+    public void setEditable(boolean editable) {
         m_editable = editable;
     }
 
-    public void setEditableOnCreation(boolean editableOnCreation)
-    {
+    public void setEditableOnCreation(boolean editableOnCreation) {
         m_editableOnCreation = editableOnCreation;
     }
 
-    public boolean isEditableOnCreation()
-    {
+    public boolean isEditableOnCreation() {
         return m_editableOnCreation;
     }
 
-    public Object get(Object target)
-    {
-        try
-        {
+    public Object get(Object target) {
+        try {
             return m_propertyAccess.get(target);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("WARNING: property " + this + " in " + m_parentClass.getSimpleName() + " cannot be retrieved on " + target + " of class " + target.getClass().getSimpleName());
             return null;
         }
     }
 
-    public RegularPropertyChange set(T target, Object newVal)
-    {
-        try
-        {
+    public RegularPropertyChange set(T target, Object newVal) {
+        try {
             Object oldVal = get(target);
-            if (!objEquals(oldVal, newVal))
-            {
+            if (!objEquals(oldVal, newVal)) {
                 m_propertyAccess.set(target, newVal);
-                for (PropertyChangeListener listener : m_listeners)
-                {
+                for (PropertyChangeListener listener : m_listeners) {
                     listener.propertyChanged(this, target, oldVal, newVal);
                 }
                 return new RegularPropertyChange(this, target, oldVal, newVal);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("WARNING: property " + this + " in " + m_parentClass.getSimpleName() + " cannot be set on " + target + " of class " + target.getClass().getSimpleName());
         }
@@ -145,155 +131,129 @@ public class Property<T> implements Comparable
      * @param target
      * @param value
      */
-    public void setSpecial(ObjectMeta<T> target, String value)
-    {
+    public void setSpecial(ObjectMeta<T> target, String value) {
         Object obj = convert(target, value);
 
         target.set(this, obj);
     }
 
-    public Object convert(ObjectMeta objectMeta, String value)
-    {
+    public String convert(ObjectMeta objectMeta, Object obj) {
+        Class propertyClass = getPropertyClass();
+        StringSerializer strSerializer = getClassDatabase().getStringSerializer(propertyClass);
+        if(obj == null) {
+            return null;
+        }
+        if(isStringPrimitiveOrEnum()) {
+            return String.valueOf(obj);
+        } else if(isReference()) {
+            ClassModel classModel = getPropertyClassModel();
+            ObjectMeta refObjMeta = classModel.find(obj);
+            Namespace namespace = objectMeta.getNamespace(classModel);
+            return fullPath(namespace, refObjMeta);
+        } else if(strSerializer != null) {
+            return strSerializer.write(obj);
+        } else if(obj instanceof StringSerializable) {
+            StringSerializable stringSerializable = (StringSerializable) obj;
+            return stringSerializable.writeString();
+        }
+        throw new XappException("property "+ this+" is not string serializable");
+    }
+
+    public Object convert(ObjectMeta objectMeta, String value) {
         Class propertyClass = getPropertyClass();
         StringSerializer strSerializer = getClassDatabase().getStringSerializer(propertyClass);
         Object obj = null;
-        if (propertyClass.equals(String.class))
-        {
+        if (propertyClass.equals(String.class)) {
             obj = value;
-        }
-        else if (propertyClass.equals((boolean.class)) || propertyClass.equals(Boolean.class))
-        {
+        } else if (propertyClass.equals((boolean.class)) || propertyClass.equals(Boolean.class)) {
             obj = Boolean.valueOf(value);
-        }
-        else if (propertyClass.equals((int.class)) || propertyClass.equals(Integer.class))
-        {
+        } else if (propertyClass.equals((int.class)) || propertyClass.equals(Integer.class)) {
             obj = new Integer(value);
-        }
-        else if (propertyClass.equals((short.class)) || propertyClass.equals(Short.class))
-        {
+        } else if (propertyClass.equals((short.class)) || propertyClass.equals(Short.class)) {
             obj = new Short(value);
-        }
-        else if (propertyClass.equals((byte.class)) || propertyClass.equals(Byte.class))
-        {
+        } else if (propertyClass.equals((byte.class)) || propertyClass.equals(Byte.class)) {
             obj = new Byte(value);
-        }
-        else if (propertyClass.equals((char.class)) || propertyClass.equals(Character.class))
-        {
+        } else if (propertyClass.equals((char.class)) || propertyClass.equals(Character.class)) {
             obj = value.charAt(0);
-        }
-        else if (propertyClass.equals((float.class)) || propertyClass.equals(Float.class))
-        {
+        } else if (propertyClass.equals((float.class)) || propertyClass.equals(Float.class)) {
             obj = new Float(value);
-        }
-        else if (propertyClass.equals((double.class)) || propertyClass.equals(Double.class))
-        {
+        } else if (propertyClass.equals((double.class)) || propertyClass.equals(Double.class)) {
             obj = new Double(value);
-        }
-        else if (propertyClass.equals((long.class)) || propertyClass.equals(Long.class))
-        {
+        } else if (propertyClass.equals((long.class)) || propertyClass.equals(Long.class)) {
             obj = new Long(value);
-        }
-        else if (propertyClass.isEnum())
-        {
+        } else if (propertyClass.isEnum()) {
             obj = Enum.valueOf(propertyClass, value);
-        }
-        else if (isReference())
-        {
+        } else if (isReference()) {
             obj = objectMeta.get(propertyClass, value);
-        }
-        else if (strSerializer != null)
-        {
+        } else if (strSerializer != null) {
             obj = strSerializer.read(value);
-        }
-        else if (StringSerializable.class.isAssignableFrom(propertyClass))
-        {
+        } else if (StringSerializable.class.isAssignableFrom(propertyClass)) {
             StringSerializable o = null;
-            try
-            {
+            try {
                 o = (StringSerializable) propertyClass.newInstance();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new XappException(e);
             }
             o.readString(value);
             obj = o;
-        }
-        else throw new XappException("property " + this + " is not StringSerializable");
+        } else throw new XappException("property " + this + " is not StringSerializable");
         return obj;
     }
 
-    public boolean isStringSerializable()
-    {
+    public boolean isStringSerializable() {
         return StringSerializable.class.isAssignableFrom(getPropertyClass()) ||
                 getClassDatabase().getStringSerializer(getPropertyClass()) != null;
     }
 
-    public String toString(Object val)
-    {
+    public String toString(Object val) {
         if (val == null) return null;
         StringSerializer ss;
-        if (isStringPrimitiveOrEnum())
-        {
+        if (isStringPrimitiveOrEnum()) {
             return String.valueOf(val);
-        }
-        else if (StringSerializable.class.isAssignableFrom(getPropertyClass()))
-        {
+        } else if (StringSerializable.class.isAssignableFrom(getPropertyClass())) {
             return ((StringSerializable) val).writeString();
-        }
-        else if ((ss = m_classDatabase.getStringSerializer(getPropertyClass())) != null)
-        {
+        } else if ((ss = m_classDatabase.getStringSerializer(getPropertyClass())) != null) {
             return ss.write(val);
         }
         return val.toString();
     }
 
 
-
-    public boolean isImmutable()
-    {
+    public boolean isImmutable() {
         return isStringPrimitiveOrEnum() || StringSerializable.class.isAssignableFrom(getMainType())
-                || m_classDatabase.getStringSerializer(getMainType())!=null;
+                || m_classDatabase.getStringSerializer(getMainType()) != null;
     }
 
 
-    public static boolean objEquals(Object oldVal, Object newVal)
-    {
+    public static boolean objEquals(Object oldVal, Object newVal) {
         return oldVal == null && newVal == null || oldVal != null && oldVal.equals(newVal);
     }
 
-    public Class getPropertyClass()
-    {
+    public Class getPropertyClass() {
         return m_class;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return m_propertyAccess.getName();
     }
 
-    public boolean isReadOnly()
-    {
+    public boolean isReadOnly() {
         return m_propertyAccess.isReadOnly();
     }
 
-    public boolean isReference()
-    {
+    public boolean isReference() {
         return m_reference != null;
     }
 
-    public Reference getReference()
-    {
+    public Reference getReference() {
         return m_reference;
     }
 
-    public boolean isStringOrPrimitive()
-    {
+    public boolean isStringOrPrimitive() {
         return isBoolean() || isInt() || isLong() || isDouble() || isFloat() || getMainType().isPrimitive() || getMainType().equals(String.class);
     }
 
-    public boolean isStringPrimitiveOrEnum()
-    {
+    public boolean isStringPrimitiveOrEnum() {
         return isStringOrPrimitive() || getMainType().isEnum();
     }
 
@@ -301,13 +261,11 @@ public class Property<T> implements Comparable
         return m_class;
     }
 
-    public boolean isList()
-    {
+    public boolean isList() {
         return List.class.isAssignableFrom(m_class);
     }
 
-    public boolean isMap()
-    {
+    public boolean isMap() {
         return Map.class.isAssignableFrom(m_class);
     }
 
@@ -315,15 +273,13 @@ public class Property<T> implements Comparable
         return Set.class.isAssignableFrom(m_class);
     }
 
-    public boolean isCollection()
-    {
+    public boolean isCollection() {
         return m_class.isAssignableFrom(Collection.class);
     }
 
-    public int compareTo(Object o)
-    {
+    public int compareTo(Object o) {
         Property other = (Property) o;
-        Integer order1 =  m_propertyAccess.getOrdering();
+        Integer order1 = m_propertyAccess.getOrdering();
         Integer order2 = other.m_propertyAccess.getOrdering();
 
         if (order1 == 0 && order2 == 0) //default to alphabetical
@@ -334,155 +290,126 @@ public class Property<T> implements Comparable
         return order1.compareTo(order2);
     }
 
-    public boolean isMarshalAsAttribute()
-    {
+    public boolean isMarshalAsAttribute() {
         return m_propertyAccess.getAnnotation(MarshalAsAttribute.class) != null;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return m_class.getSimpleName() + " " + StringUtils.decapitaliseFirst(getName());
     }
 
-    public ClassModel<T> getPropertyClassModel()
-    {
+    public ClassModel<T> getPropertyClassModel() {
         return m_classDatabase.getClassModel(m_class);
     }
 
-    public ClassModel getPropertyClassModel(Object instance)
-    {
+    public ClassModel getPropertyClassModel(Object instance) {
         Class aClass = instance.getClass();
         assert m_class.isAssignableFrom(aClass) : aClass.getSimpleName() + " not compatable with " + m_class.getSimpleName();
         return m_classDatabase.getClassModel(aClass);
     }
 
-    public String getFilterOnProperty()
-    {
+    public String getFilterOnProperty() {
         return m_filterOnProperty;
     }
 
-    public boolean isSimpleType()
-    {
+    public boolean isSimpleType() {
         return m_classDatabase.isSimpleType(m_class);
     }
 
-    public boolean isKey()
-    {
+    public boolean isKey() {
         return key;
     }
 
-    public boolean hasSpecialBoundComponent()
-    {
+    public boolean hasSpecialBoundComponent() {
         return m_editorWidget != null;
     }
 
-    public String getBoundPropertyArgs()
-    {
+    public String getBoundPropertyArgs() {
         return hasSpecialBoundComponent() ? m_editorWidget.args() : null;
     }
 
-    public boolean isTransient()
-    {
+    public boolean isTransient() {
         return m_propertyAccess.isTransient();
     }
 
     /**
      * @return true if not transient OR transient AND displayNodes is set to true
      */
-    public boolean isDisplayNodes()
-    {
+    public boolean isDisplayNodes() {
         return !m_propertyAccess.isTransient() || m_propertyAccess.displayNodes();
     }
 
-    public ClassDatabase getClassDatabase()
-    {
+    public ClassDatabase getClassDatabase() {
         return m_classDatabase;
     }
 
-    public boolean isMarshalAsElement()
-    {
+    public boolean isMarshalAsElement() {
         return m_propertyAccess.getAnnotation(MarshalAsElement.class) != null;
     }
 
-    public boolean isBoolean()
-    {
+    public boolean isBoolean() {
         return getMainType().equals(boolean.class) || getMainType().equals(Boolean.class);
     }
 
-    public boolean isPrimitiveBoolean()
-    {
+    public boolean isPrimitiveBoolean() {
         return getMainType().equals(boolean.class);
     }
 
-    public boolean isFormattedText()
-    {
+    public boolean isFormattedText() {
         return m_formattedText;
     }
 
-    public Class getParentClass()
-    {
+    public Class getParentClass() {
         return m_parentClass;
     }
 
-    public String getQuery()
-    {
+    public String getQuery() {
         return m_query;
     }
 
-    public boolean isEditable()
-    {
+    public boolean isEditable() {
         return m_editable && !isReadOnly();
     }
 
-    public boolean isMandatory()
-    {
+    public boolean isMandatory() {
         return m_mandatory;
     }
 
-    public void setMandatory(boolean mandatory)
-    {
+    public void setMandatory(boolean mandatory) {
         m_mandatory = mandatory;
     }
 
-    public boolean isVisibilityRestricted()
-    {
+    public boolean isVisibilityRestricted() {
         return m_visibilityRestricted && !isHidden();
     }
 
-    public boolean isDouble()
-    {
+    public boolean isDouble() {
         return getMainType() == double.class || getMainType() == Double.class;
     }
 
-    public boolean isInt()
-    {
+    public boolean isInt() {
         return getMainType() == int.class || getMainType() == Integer.class;
     }
 
-    public boolean isFloat()
-    {
+    public boolean isFloat() {
         return getMainType() == float.class || getMainType() == Float.class;
     }
 
-    public boolean isLong()
-    {
+    public boolean isLong() {
         return getMainType() == long.class || getMainType() == Long.class;
     }
 
-    public String getXMLMapping()
-    {
+    public String getXMLMapping() {
         XMLMapping xmlMapping = m_propertyAccess.getAnnotation(XMLMapping.class);
-        return xmlMapping!=null ? xmlMapping.value() : getName();
+        return xmlMapping != null ? xmlMapping.value() : getName();
     }
 
-	public boolean isEnum()
-	{
-		return getMainType().isEnum();
-	}
+    public boolean isEnum() {
+        return getMainType().isEnum();
+    }
 
-    public boolean isHidden()
-    {
-        return m_propertyAccess.getAnnotation(Hide.class)!=null;
+    public boolean isHidden() {
+        return m_propertyAccess.getAnnotation(Hide.class) != null;
     }
 
     public EditorWidget getEditorWidget() {
