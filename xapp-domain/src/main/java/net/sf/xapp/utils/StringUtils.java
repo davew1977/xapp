@@ -333,4 +333,12 @@ public class StringUtils
         }
         return sb.toString();
     }
+
+    public static String mask(String h, char c) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<h.length(); i++) {
+            sb.append(c);
+        }
+        return sb.toString();
+    }
 }
