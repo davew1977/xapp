@@ -19,7 +19,7 @@ public class ObjectMeta<T> implements Namespace{
     private final T instance;
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
-    private final Long id;
+    private Long id;
     private String key; //can change
     private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
@@ -623,5 +623,10 @@ public class ObjectMeta<T> implements Namespace{
 
     public Property getProperty(String propName) {
         return classModel.getProperty(propName);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+        classModel.registerWithClassDatabase(this);
     }
 }

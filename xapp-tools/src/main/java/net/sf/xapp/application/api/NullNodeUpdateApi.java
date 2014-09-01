@@ -40,11 +40,6 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void insertObject(ObjectLocation objectLocation, Object obj) {
-
-    }
-
-    @Override
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
 
     }
@@ -85,12 +80,12 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void deserializeAndInsert(Node node, ClassModel classModel, String text) {
-
+    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text) {
+        return null;
     }
 
     @Override
-    public void deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
-
+    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
+        return null;
     }
 }

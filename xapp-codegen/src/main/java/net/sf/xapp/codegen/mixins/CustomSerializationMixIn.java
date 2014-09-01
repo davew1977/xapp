@@ -97,6 +97,8 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
             ct.line("%s.writeData(out)", varname);
         } else if (type instanceof ComplexType) {
             ct.line("%s.writeData(out)", varname);
+        } else if(tn.equals("Class")) {
+            ct.line("out.writeUTF(%s.getName())", varname);
         } else if (type instanceof PrimitiveType) {
             ct.line("out.write%2$s(%1$s)", varname, ioNameForPrimitive(tn));
         } else if (tn.equals("ObjectType")) {
@@ -160,6 +162,8 @@ public class CustomSerializationMixIn extends SerializationGenerater implements 
         } else if (type instanceof ComplexType) {
             ct.line("%s = new %s()", varname, tn);
             ct.line("%s.readData(in)", varname);
+        } else if(tn.equals("Class")) {
+            ct.line("%s = net.sf.xapp.utils.ReflectionUtils.classForName(in.readUTF())", varname);
         } else if (type instanceof PrimitiveType) {
             ct.line("%s = in.read%s()", varname, ioNameForPrimitive(tn));
         } else if (tn.equals("ObjectType")) {

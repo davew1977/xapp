@@ -16,17 +16,14 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
-public class StringSerializationMixIn extends SerializationGenerater implements MixIn<ComplexType>
-{
+public class StringSerializationMixIn extends SerializationGenerater implements MixIn<ComplexType> {
     private final String utilPackageName;
 
-    public StringSerializationMixIn(String utilPackageName)
-    {
+    public StringSerializationMixIn(String utilPackageName) {
         this.utilPackageName = utilPackageName;
     }
 
-    void init(ComplexType complexType, CodeFile ct)
-    {
+    void init(ComplexType complexType, CodeFile ct) {
         //ct.addImport(m_fwkPackageName + ".StringSerializable");
         //ct.addImport(m_fwkPackageName + ".StringBuildable");
         ct.addImport("java.util.List");
@@ -35,28 +32,23 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
         ct.addImport(utilPackageName + ".StringUtils");
     }
 
-    public void genRead(ComplexType complexType, CodeFile ct)
-    {
+    public void genRead(ComplexType complexType, CodeFile ct) {
         ct.method("populateFrom", "void", "List<Object> _data");
         genCollectionHelperVars(complexType, ct, true);
         ct.line("boolean isNull");
         ct.line("Object _value");
         ct.line("List args"); //used for abtsract types
         List<Field> fields = complexType.resolveFields(true);
-        for (int i = 0; i < fields.size(); i++)
-        {
+        for (int i = 0; i < fields.size(); i++) {
             Field field = fields.get(i);
             ct.line("_value = _data.get(%s)", valueOf(i));
             ct.line("isNull = _value.equals(\"\")");
-            if (field.isMandatory())
-            {
+            if (field.isMandatory()) {
                 ct.startBlock("if(isNull)");
                 ct.line("throw new RuntimeException(\"mandatory property %s in %s was null\")", field.getName(), complexType.getName());
                 ct.endBlock();
                 genReadBlock(ct, field);
-            }
-            else
-            {
+            } else {
                 ct.startBlock("if(!isNull)");
                 genReadBlock(ct, field);
                 ct.endBlock();
@@ -68,25 +60,20 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
         ct.line("return this");
     }
 
-    public void genWrite(ComplexType complexType, CodeFile ct)
-    {
+    public void genWrite(ComplexType complexType, CodeFile ct) {
         List<Field> fields = complexType.resolveFields(true);
         ct.method("writeString", "void", "StringBuilder sb");
         append(ct, "[");
         ct.line("boolean isNull");
-        for (int i = 0; i < fields.size(); i++)
-        {
+        for (int i = 0; i < fields.size(); i++) {
             Field field = fields.get(i);
             ct.line("isNull = %s == null", field.getName());
-            if (field.isMandatory())
-            {
+            if (field.isMandatory()) {
                 ct.startBlock("if(isNull)");
                 ct.line("throw new RuntimeException(\"mandatory property %s in %s was null\")", field.getName(), complexType.getName());
                 ct.endBlock();
                 genWriteBlock(ct, field);
-            }
-            else
-            {
+            } else {
                 ct.startBlock("if(!isNull)");
                 genWriteBlock(ct, field);
                 ct.endBlock();
@@ -104,22 +91,19 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
         ct.line("return sb.toString()");
     }
 
-    private static void genWriteBlock(CodeFile ct, Field field)
-    {
+    private static void genWriteBlock(CodeFile ct, Field field) {
         String fn = field.getName();
         Type ft = field.getType();
         boolean reference = field.isReference();
-        if (field.isList())
-        {
+        if (field.isList()) {
             append(ct, "[");
             String varname = itemVarname(fn);
-            ct.startBlock("for(%s %s : %s)",ft, varname, fn);
+            ct.startBlock("for(%s %s : %s)", ft, varname, fn);
             genWriteObj(ct, varname, ft, reference);
             append(ct, ",");
             ct.endBlock();
             append(ct, "]");
-        }
-        else if (field.isMap()) {
+        } else if (field.isMap()) {
             append(ct, "[");
             Type mapKeyType = field.mapKeyType();
             ct.startBlock("for(Map.Entry<%s, %s> entry : %s.entrySet())", mapKeyType, ft.getName(), fn);
@@ -133,59 +117,45 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             ct.endBlock();
             append(ct, "]");
 
-        }
-        else
-        {
+        } else {
             genWriteObj(ct, fn, ft, reference);
         }
     }
 
-    private static CodeFile append(CodeFile ct, String s)
-    {
+    private static CodeFile append(CodeFile ct, String s) {
         return ct.line("sb.append(\"%s\")", s);
     }
 
-    private static void genWriteObj(CodeFile ct, String varname, Type type, boolean reference)
-    {
+    private static void genWriteObj(CodeFile ct, String varname, Type type, boolean reference) {
         String tn = type.getName();
         if (type instanceof ComplexType && reference) {
             ct.line("sb.append(%s)", varname);
-        } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract())
-        {
+        } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract()) {
             append(ct, "[");
             ct.line("sb.append(%s.type()).append(\",\")", varname);
             ct.line("%s.writeString(sb)", varname);
             append(ct, "]");
-        }
-        else if (type instanceof ComplexType)
-        {
+        } else if (type instanceof ComplexType) {
             ct.line("%s.writeString(sb)", varname);
-        }
-        else if (type.getName().equals("String"))
-        {
+        } else if (type.getName().equals("String")) {
             ct.line("sb.append(StringUtils.escapeSpecialChars(%s))", varname);
-        }
-        else
-        {
+        } else if (type.getName().equals("Class")) {
+            ct.line("sb.append(%s.getName())", varname);
+        } else {
             ct.line("sb.append(%s)", varname);
         }
     }
 
 
-    public static void genCollectionHelperVars(ComplexType complexType, CodeFile ct, boolean stringSerialisation)
-    {
+    public static void genCollectionHelperVars(ComplexType complexType, CodeFile ct, boolean stringSerialisation) {
         List<Field> collectionFields = complexType.fields(FieldMatcher.COLLECTION);
-        for (Field field : collectionFields)
-        {
-            if(field.isTransient())
-            {
+        for (Field field : collectionFields) {
+            if (field.isTransient()) {
                 continue;
             }
-            if (field.isList())
-            {
+            if (field.isList()) {
                 ct.line("%s %s", field.getType(), itemVarname(field.getName()));
-            }
-            else {
+            } else {
                 assert field.isMap();
                 ct.line("%s %s", field.getType(), mapValueVarname(field.getName()));
                 Type mapKeyType = field.mapKeyType();
@@ -193,23 +163,19 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
 
             }
         }
-        if (!collectionFields.isEmpty())
-        {
+        if (!collectionFields.isEmpty()) {
             ct.line("int length");
-            if (stringSerialisation)
-            {
+            if (stringSerialisation) {
                 ct.line("List list");
             }
         }
     }
 
-    private static void genReadBlock(CodeFile ct, Field field)
-    {
+    private static void genReadBlock(CodeFile ct, Field field) {
         String fn = field.getName();
         Type ft = field.getType();
         boolean reference = field.isReference();
-        if (field.isList())
-        {
+        if (field.isList()) {
             ct.line("list = (List) _value");
             ct.line("length = list.size()");
             ct.line("%s = new %s<%s>(length)", fn, field.isSet() ? "LinkedHashSet" : "ArrayList", ft.getName());
@@ -219,8 +185,7 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             genReadObj(ct, varname, ft, reference);
             ct.line("%1$s.add(%2$s)", fn, varname);
             ct.endBlock();
-        }
-        else if(field.isMap())  {
+        } else if (field.isMap()) {
             ct.line("list = (List) _value");
             ct.line("length = list.size()");
             ct.line("%s = new LinkedHashMap<%s,%s>()", fn, field.mapKeyType(), ft);
@@ -235,20 +200,16 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             ct.line("%s.put(%s, %s)", fn, keyvarname, valuevarname);
             ct.endBlock();
 
-        }
-        else
-        {
+        } else {
             genReadObj(ct, fn, ft, reference);
         }
     }
 
-    private static void genReadObj(CodeFile ct, String varname, Type type, boolean reference)
-    {
+    private static void genReadObj(CodeFile ct, String varname, Type type, boolean reference) {
         String tn = type.getName();
         if (type instanceof ComplexType && reference) {
             ct.line("%s = new Ref<%s>(%s.class, (String)_value)", varname, tn, tn);
-        } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract())
-        {
+        } else if (type instanceof ComplexType && ((ComplexType) type).isAbstract()) {
             ComplexType complexType = (ComplexType) type;
             Type baseType = complexType.baseType();
             ct.line("args = (List) _value");
@@ -256,78 +217,53 @@ public class StringSerializationMixIn extends SerializationGenerater implements 
             ct.line("String %sType = (String) args.get(0)", dtn);
             ct.line("%s = (%s) net.sf.xapp.Global.create(%sType)", varname, tn, dtn);
             ct.line("%s.populateFrom((List) args.get(1))", varname);
-        }
-        else if (type instanceof ComplexType)
-        {
+        } else if (type instanceof ComplexType) {
             ct.line("%s = new %s()", varname, tn);
             ct.line("%s.populateFrom((List) _value)", varname);
-        }
-        else
-        {
+        } else {
             ct.line("%s = %s", varname, genParseFromString(type, "(String) _value"));
         }
     }
 
-    public static String genParseFromString(Type type, Object var)
-    {
+    public static String genParseFromString(Type type, Object var) {
         String tn = type.getName();
-        if (type instanceof PrimitiveType)
-        {
-            if (tn.equals("String"))
-            {
+        if (type instanceof PrimitiveType) {
+            if (tn.equals("String")) {
                 return format("StringUtils.unescapeSpecialChars(%s)", var);
-            }
-            else if (tn.equals("Integer"))
-            {
+            } else if (tn.equals("Integer")) {
                 return format("Integer.parseInt(%s)", var);
-            }
-            else if (tn.equals("Long"))
-            {
+            } else if (tn.equals("Long")) {
                 return format("Long.parseLong(%s)", var);
-            }
-            else if (tn.equals("Boolean"))
-            {
+            } else if (tn.equals("Boolean")) {
                 return format("Boolean.parseBoolean(%s)", var);
-            }
-            else if (tn.equals("Float"))
-            {
+            } else if (tn.equals("Float")) {
                 return format("Float.parseFloat(%s)", var);
-            }
-            else if (tn.equals("Character"))
-            {
+            } else if (tn.equals("Character")) {
                 return format("Character.parseCharacter(%s)", var);
-            }
-            else if (tn.equals("Double"))
-            {
+            } else if (tn.equals("Double")) {
                 return format("Double.parseDouble(%s)", var);
-            }
-            else if (tn.equals("Byte"))
-            {
+            } else if (tn.equals("Byte")) {
                 return format("Byte.parseByte(%s)", var);
+            } else if(tn.equals("Class")) {
+                return format("net.sf.xapp.utils.ReflectionUtils.classForName(%s)", var);
             }
-        }
-        else if (tn.equals("ObjectType")) {
+        } else if (tn.equals("ObjectType")) {
             return format("net.sf.xapp.Global.getObjectType(%s)", var);
-        }
-        else if (type instanceof EnumType)
-        {
+        } else if (type instanceof EnumType) {
             return format("%s.valueOf(%s)", tn, var);
         }
         throw new IllegalArgumentException();
     }
 
-    public static String itemVarname(String lt)
-    {
+    public static String itemVarname(String lt) {
         return StringUtils.decapitaliseFirst(lt) + "Item";
     }
 
-    public static String mapKeyVarname(String lt)
-    {
+    public static String mapKeyVarname(String lt) {
         return StringUtils.decapitaliseFirst(lt) + "Key";
     }
 
-    public static String mapValueVarname(String lt)
-    {
+    public static String mapValueVarname(String lt) {
         return StringUtils.decapitaliseFirst(lt) + "Value";
     }
 }

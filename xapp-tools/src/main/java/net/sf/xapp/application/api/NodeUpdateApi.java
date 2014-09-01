@@ -32,7 +32,6 @@ public interface NodeUpdateApi {
     void moveObject(ObjectLocation objectLocation, ObjectMeta obj);
     void moveObject(Node parentNode, Object obj);
     void insertObject(Node parentNode, Object obj);
-    void insertObject(ObjectLocation objectLocation, Object obj);
 
     /**
      * initialize a recently created object with properties entered by the user
@@ -58,6 +57,6 @@ public interface NodeUpdateApi {
 
     Node changeType(ObjectMeta obj, ClassModel targetClassModel);
 
-    void deserializeAndInsert(Node node, ClassModel classModel, String text);
-    void deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text);
+    ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text);
+    ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text);
 }

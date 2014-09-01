@@ -98,7 +98,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     @Override
     public Long registerInstance(ObjectMeta objectMeta) {
-        long id = idSequence.getAndIncrement();
+        long id = objectMeta.getId() != null ? objectMeta.getId() : idSequence.getAndIncrement();
         instanceMap.put(id, objectMeta);
         return id;
     }
