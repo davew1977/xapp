@@ -57,12 +57,13 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objMoved(Long id, ObjLoc newObjLoc) {
-
+        ObjectMeta objectMeta = cdb.findObjById(id);
+        nodeUpdateApi.moveObject(toObjectLocation(newObjLoc), objectMeta);
     }
 
     @Override
     public void objDeleted(Long id) {
-
+        nodeUpdateApi.deleteObject(cdb.findObjById(id));
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {

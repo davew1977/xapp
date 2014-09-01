@@ -20,6 +20,61 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
+    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
+        return null;
+    }
+
+    @Override
+    public void moveObject(ObjectLocation objectLocation, ObjectMeta obj) {
+
+    }
+
+    @Override
+    public void moveObject(Node parentNode, Object obj) {
+
+    }
+
+    @Override
+    public void insertObject(Node parentNode, Object obj) {
+
+    }
+
+    @Override
+    public void insertObject(ObjectLocation objectLocation, Object obj) {
+
+    }
+
+    @Override
+    public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+
+    }
+
+    @Override
+    public PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
+        return null;
+    }
+
+    @Override
+    public void deleteObject(ObjectMeta objectMeta) {
+
+    }
+
+    @Override
+    public void createReference(Node parentNode, Object obj) {
+
+    }
+
+    @Override
+    public void removeReference(Node referenceNode) {
+
+    }
+
+    @Override
+    public void moveInList(Node node, int delta) {
+
+    }
+
+    @Override
     public void updateReferences(Node node, List<Object> objects) {
 
     }
@@ -35,48 +90,7 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
-        return null;
-    }
-
-    @Override
-    public PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        return null;
-    }
-
-    @Override
-    public void deleteObject(ObjectMeta objectMeta) {
-
-    }
-
-    @Override
-    public void moveObject(Node parentNode, Object obj) {
-
-    }
-
-    @Override
-    public void insertObject(Node parentNode, Object obj) {
-
-    }
-
-    @Override
-    public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-
-    }
-
-    @Override
-    public void createReference(Node parentNode, Object obj) {
-
-    }
-
-
-    @Override
-    public void removeReference(Node referenceNode) {
-
-    }
-
-    @Override
-    public void moveInList(Node node, int delta) {
+    public void deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
 
     }
 }

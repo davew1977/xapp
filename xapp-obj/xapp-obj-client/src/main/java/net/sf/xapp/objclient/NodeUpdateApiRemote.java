@@ -63,7 +63,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     @Override
     public void insertObject(Node parentNode, Object obj) {
         String xml = appContainer.getClassDatabase().createMarshaller(obj.getClass()).toXMLString(obj);
-        remote.objAdded(toObjLoc(parentNode), new XmlObj(xml, -1L, -1L));
+        remote.objAdded(toObjLoc(parentNode), new XmlObj(obj.getClass().getName(), xml, -1L, -1L));
     }
 
     @Override
@@ -108,6 +108,21 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void deserializeAndInsert(Node node, ClassModel classModel, String text) {
+
+    }
+
+    @Override
+    public void moveObject(ObjectLocation objectLocation, ObjectMeta obj) {
+
+    }
+
+    @Override
+    public void insertObject(ObjectLocation objectLocation, Object obj) {
+
+    }
+
+    @Override
+    public void deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
 
     }
 

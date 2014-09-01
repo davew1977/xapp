@@ -11,6 +11,8 @@ import net.sf.xapp.application.api.Launcher;
 import net.sf.xapp.application.utils.codegen.CodeFile;
 import net.sf.xapp.codegen.editor.Editor;
 import net.sf.xapp.codegen.model.*;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.utils.Filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +59,11 @@ public class Generator
         System.out.println(Arrays.asList(args));
         Generator generator = new Generator();
         generator.run(args);
+
+        /*Model model = generator.loadModel();
+
+        ObjectMeta objectMeta = model.cdb.getRootObjMeta().getObjMeta(Field.class, "xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj/id");
+        System.out.println(objectMeta.getGlobalKey());*/
     }
 
     public GeneratorContext getGeneratorContext() {

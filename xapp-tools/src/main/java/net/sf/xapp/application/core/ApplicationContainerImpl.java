@@ -122,6 +122,10 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     }
 
+    public void setNodeUpdateApi(NodeUpdateApi nodeUpdateApi) {
+        this.nodeUpdateApi = nodeUpdateApi;
+    }
+
     public Point getLatestPopUpPoint()
     {
         return m_latestPopUpPoint;

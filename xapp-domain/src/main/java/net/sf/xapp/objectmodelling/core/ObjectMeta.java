@@ -150,6 +150,7 @@ public class ObjectMeta<T> implements Namespace{
             if (objectMeta.isNamespaceFor(aClass)) {
                 path.addFirst(objectMeta);
             }
+            aClass = objectMeta.getType();
             objectMeta = objectMeta.getParent();
         }
         return path;

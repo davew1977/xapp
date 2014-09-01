@@ -29,6 +29,7 @@ public interface NodeUpdateApi {
     /**
      * This is used when an object already exists but has been moved within the object graph
      */
+    void moveObject(ObjectLocation objectLocation, ObjectMeta obj);
     void moveObject(Node parentNode, Object obj);
     void insertObject(Node parentNode, Object obj);
     void insertObject(ObjectLocation objectLocation, Object obj);
