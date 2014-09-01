@@ -17,6 +17,7 @@ import net.sf.xapp.application.commands.RefreshCommand;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -174,6 +175,18 @@ public class NodeImpl implements Node {
     @Override
     public boolean isObjectNode() {
         return objectNodeContext != null;
+    }
+
+    @Override
+    public Node find(Property property) {
+        for(int i=0; i<numChildren(); i++) {
+            Node node = getChildAt(i);
+            ObjectLocation objectLocation = node.toObjLocation();
+            if(objectLocation != null && objectLocation.getProperty().equals(property)) {
+                return node;
+            }
+        }
+        return this;
     }
 
     public ApplicationContainer getAppContainer() {

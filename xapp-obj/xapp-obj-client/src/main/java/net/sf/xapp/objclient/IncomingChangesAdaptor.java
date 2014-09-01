@@ -4,7 +4,9 @@ import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.api.StandaloneNodeUpdate;
+import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
@@ -50,6 +52,7 @@ public class IncomingChangesAdaptor implements ObjListener {
     @Override
     public void objAdded(ObjLoc objLoc, XmlObj obj) {
         Class type = ReflectionUtils.classForName(obj.getType());
+        nodeUpdateApi.deserializeAndInsert(toObjectLocation(objLoc), cdb.getClassModel(type), obj.getData());
     }
 
     @Override
@@ -60,5 +63,10 @@ public class IncomingChangesAdaptor implements ObjListener {
     @Override
     public void objDeleted(Long id) {
 
+    }
+
+    private ObjectLocation toObjectLocation(ObjLoc objLoc) {
+        ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
+        return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
     }
 }

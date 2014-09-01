@@ -19,6 +19,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objectmodelling.core.Property;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -129,4 +130,8 @@ public interface Node
 
     boolean isObjectNode();
 
+    /**
+     * find the node for this property. Could be "this" could be an immediate child
+     */
+    Node find(Property property);
 }

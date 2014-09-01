@@ -75,6 +75,18 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         appContainer.getApplication().nodeAdded(newNode);
     }
 
+    public void insertObject(ObjectLocation objectLocation, Object obj) {
+        insertObject(toNode(objectLocation), obj);
+    }
+
+    private Node toNode(ObjectLocation objectLocation) {
+        Node node = (Node) objectLocation.getObj().getAttachment();
+        if(node != null) {
+            node = node.find(objectLocation.getProperty());
+        }
+        return node;
+    }
+
     @Override
     public void insertObject(Node parentNode, Object obj) {
         ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true, -1);
@@ -152,9 +164,18 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
+    public void deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
+        deserializeAndInsert(toNode(objectLocation), classModel, text, Charset.forName("UTF-8")); //UTF 8 here, coz text comes from server
+    }
+
+    @Override
     public void deserializeAndInsert(Node node, ClassModel classModel, String text) {
+        deserializeAndInsert(node, classModel, text, Charset.defaultCharset()); //need default charset when pasting, coz then the text comes from the FS
+    }
+
+    public void deserializeAndInsert(Node node, ClassModel classModel, String text, Charset charset) {
         Unmarshaller un = new Unmarshaller(classModel);
-        ObjectMeta objectMeta = un.unmarshalString(text, Charset.defaultCharset(), node.toObjLocation());
+        ObjectMeta objectMeta = un.unmarshalString(text, charset, node.toObjLocation());
         insertNode(node, objectMeta);
     }
 
