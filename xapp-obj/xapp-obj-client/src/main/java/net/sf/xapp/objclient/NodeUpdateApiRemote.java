@@ -3,6 +3,7 @@ package net.sf.xapp.objclient;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeUpdateApi;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.types.ObjLoc;
@@ -10,6 +11,7 @@ import net.sf.xapp.objserver.types.ObjRef;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +21,11 @@ import java.util.List;
  * Created by dwebber
  */
 public class NodeUpdateApiRemote implements NodeUpdateApi {
-    private ApplicationContainer appContainer;
+    private ClassDatabase cdb;
     private ObjUpdate remote;
 
-    public NodeUpdateApiRemote(ApplicationContainer appContainer, ObjUpdate remote) {
-        this.appContainer = appContainer;
+    public NodeUpdateApiRemote(ClassDatabase cdb, ObjUpdate remote) {
+        this.cdb = cdb;
         this.remote = remote;
     }
 
@@ -47,18 +49,6 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
             changeSets.add(new PropChangeSet(objectMeta.getId(), changes));
         }
         remote.updateObject(changeSets);
-    }
-
-    @Override
-    public void moveObject(Node parentNode, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).find(obj);
-        remote.moveObject(objectMeta.getId(), toObjLoc(parentNode));
-    }
-
-    @Override
-    public void insertObject(Node parentNode, Object obj) {
-        String xml = appContainer.getClassDatabase().createMarshaller(obj.getClass()).toXMLString(obj);
-        remote.createObject(toObjLoc(parentNode), obj.getClass(), xml);
     }
 
     @Override
@@ -88,14 +78,8 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     @Override
-    public void createReference(Node parentNode, Object obj) {
-        ClassModel cm = appContainer.getClassDatabase().getClassModel(obj.getClass());
-        createRefs(parentNode.toObjLocation(), Arrays.asList(cm.find(obj)));
-    }
-
-    @Override
-    public void moveInList(Node node, int delta) {
-        remote.moveInList(toRef(node), delta);
+    public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta) {
+        remote.moveInList(toObjLoc(objectLocation), objectMeta.getId(), delta);
     }
 
     @Override
@@ -109,43 +93,26 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String xml) {
-        remote.createObject(toObjLoc(node), classModel.getContainedClass(), xml);
+    public void insertObject(ObjectLocation objectLocation, Object obj) {
+        String xml = cdb.createMarshaller(obj.getClass()).toXMLString(obj);
+        remote.createObject(toObjLoc(objectLocation), obj.getClass(), xml);
+    }
+
+    @Override
+    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
+        remote.createObject(toObjLoc(objectLocation), classModel.getContainedClass(), xml);
         return null;
     }
 
     @Override
-    public void moveObject(ObjectLocation objectLocation, ObjectMeta obj) {
-        remote.moveObject(obj.getId(), toObjLoc(objectLocation));
-    }
-
-    @Override
-    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
-        throw new UnsupportedOperationException("should not be called in this context");
-    }
-
-    private ObjLoc toObjLoc(Node node) {
-        return toObjLoc(node.toObjLocation());
+    public void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta) {
+        remote.moveObject(objMeta.getId(), toObjLoc(objectLocation));
     }
 
     private ObjLoc toObjLoc(ObjectLocation objectLocation) {
         return new ObjLoc(objectLocation.getObj().getId(), objectLocation.getProperty().getName());
     }
 
-    private ClassModel<Object> getClassModel(Object obj) {
-        return appContainer.getClassDatabase().getClassModel(obj.getClass());
-    }
-    private List<ObjRef> toRefs(ObjectLocation objectLocation, List<ObjectMeta> objMetas) {
-        List<ObjRef> refs = new ArrayList<ObjRef>();
-        for (ObjectMeta objMeta : objMetas) {
-            refs.add(new ObjRef(objMeta.getId(), toObjLoc(objectLocation)));
-        }
-        return refs;
-    }
-
-    private ObjRef toRef(Node node) {
-        return new ObjRef(node.objectMeta().getId(), toObjLoc(node));
-    }
     private List<Long> toIds(List<ObjectMeta> refsToAdd) {
         List<Long> result = new ArrayList<Long>();
         for (ObjectMeta objectMeta : refsToAdd) {

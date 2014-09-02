@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.core;
 
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +28,7 @@ public class Clipboard
     }
 
     public enum Action{CUT,COPY}
-    private List<Object> m_clipboardObjects = new ArrayList<Object>();
+    private List<ObjectMeta> clipboardObjects = new ArrayList<ObjectMeta>();
     private Action m_action;
 
     public Clipboard()
@@ -35,18 +37,18 @@ public class Clipboard
 
     public boolean areAllInstanceOf(Class clazz)
     {
-        for (Object clipboardObject : m_clipboardObjects)
+        for (ObjectMeta clipboardObject : clipboardObjects)
         {
-            if(!clazz.isInstance(clipboardObject)) return false;
+            if(!clipboardObject.isA(clazz)) return false;
         }
         return true;
     }
 
     public boolean listContainsAny(Collection list)
     {
-        for (Object clipboardObject : m_clipboardObjects)
+        for (ObjectMeta clipboardObject : clipboardObjects)
         {
-            if(list.contains(clipboardObject))
+            if(list.contains(clipboardObject.getInstance()))
             {
                 return true;
             }
@@ -54,19 +56,19 @@ public class Clipboard
         return false;
     }
 
-    public void setClipboardObjects(List<Object> clones)
+    public void setClipboardObjects(List<ObjectMeta> clones)
     {
-        m_clipboardObjects = clones;
+        clipboardObjects = clones;
     }
 
-    public List<Object> getClipboardObjects()
+    public List<ObjectMeta> getClipboardObjects()
     {
-        return m_clipboardObjects;
+        return clipboardObjects;
     }
 
-    public void addClipboardObject(Object clipboardObject)
+    public void addClipboardObject(ObjectMeta clipboardObject)
     {
-        m_clipboardObjects.add(clipboardObject);
+        clipboardObjects.add(clipboardObject);
     }
 
     public Action getAction()
@@ -80,7 +82,7 @@ public class Clipboard
      */
     public void setAction(Action action)
     {
-        m_clipboardObjects.clear();
+        clipboardObjects.clear();
         m_action = action;
     }
 }

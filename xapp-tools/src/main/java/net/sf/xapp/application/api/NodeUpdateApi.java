@@ -2,6 +2,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.*;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -27,11 +28,11 @@ public interface NodeUpdateApi {
     ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type);
 
     /**
-     * This is used when an object already exists but has been moved within the object graph
+     * This is used when an object already exists but has been moved within the object graph, or introduced to it for
+     * the first time
      */
-    void moveObject(ObjectLocation objectLocation, ObjectMeta obj);
-    void moveObject(Node parentNode, Object obj); //todo remove this method in favour of the above
-    void insertObject(Node parentNode, Object obj);
+    void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta);
+    void insertObject(ObjectLocation objectLocation, Object obj);
 
     /**
      * initialize a recently created object with properties entered by the user
@@ -48,14 +49,11 @@ public interface NodeUpdateApi {
      */
     void deleteObject(ObjectMeta objectMeta);
 
-    void createReference(Node parentNode, Object obj);
-
-    void moveInList(Node node, int delta);
+    void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta);
 
     void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove);
 
     void changeType(ObjectMeta obj, ClassModel targetClassModel);
 
-    ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text); //todo figure out how to use this method and delete the one below
-    ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text);
+    ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset);
 }

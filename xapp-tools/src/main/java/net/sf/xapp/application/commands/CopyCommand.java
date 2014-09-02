@@ -28,8 +28,7 @@ public class CopyCommand extends NodeCommand
     {
         ObjectMeta objectMeta= node.objectMeta();
         //assert instance instanceof Cloneable;
-        Object clone = objectMeta.cloneInstance();
         node.getAppContainer().getClipboard().setAction(Clipboard.Action.COPY);
-        node.getAppContainer().getClipboard().addClipboardObject(clone);
+        node.getAppContainer().getClipboard().addClipboardObject(objectMeta.copy());
     }
 }

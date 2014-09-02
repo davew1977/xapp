@@ -292,8 +292,9 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     public void saveToClipboard(Object obj)
     {
+        ObjectMeta objMeta = getClassDatabase().findOrCreateObjMeta(null, obj);
         getClipboard().setAction(Clipboard.Action.COPY);
-        getClipboard().addClipboardObject(obj);
+        getClipboard().addClipboardObject(objMeta);
     }
 
     public void refreshNode(Node node)
@@ -522,7 +523,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if (node != null) {
             throw new XappException("object " + obj + " is already added");
         }
-        getNodeUpdateApi().insertObject(parentNode, obj);
+        getNodeUpdateApi().insertObject(parentNode.toObjLocation(), obj);
     }
 
     @Override

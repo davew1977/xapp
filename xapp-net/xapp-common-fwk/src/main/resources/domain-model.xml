@@ -114,8 +114,8 @@
     <ObjectId id="111" name="ObjUpdate_MoveInList"/>
     <ObjectId id="112" name="ObjUpdate_UpdateRefs"/>
     <ObjectId id="113" name="ObjUpdate_ChangeType"/>
+    <ObjectId id="114" name="ObjListener_ObjMovedInList"/>
     <ObjectId id="117" name="ObjListener_TypeChanged"/>
-    <ObjectId id="118" name="ObjListener_RefMovedInList"/>
     <ObjectId id="119" name="ObjListener_RefsUpdated"/>
   </MessageIds>
   <Module name="provided">
@@ -627,10 +627,6 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="objId" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" list="true" name="changes" type="xapp-common-fwk/net/sf/xapp/objserver/types/PropChange"/>
               </ValueObject>
-              <ValueObject name="ObjRef">
-                <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
-                <Field access="READ_ONLY" name="newObjLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
-              </ValueObject>
             </DirMeta>
             <DirMeta name="apis">
               <DirMeta name="objmanager">
@@ -674,7 +670,8 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Response name="ChangeTypeResponse"/>
                   </Message>
                   <Message name="MoveInList">
-                    <Field access="READ_ONLY" name="ref" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="delta" type="provided/java/lang/Integer"/>
                     <Response name="MoveInListResponse"/>
                   </Message>
@@ -711,10 +708,11 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" name="newType" type="provided/java/lang/Class"/>
                     <Response name="TypeChangedResponse"/>
                   </Message>
-                  <Message name="RefMovedInList">
-                    <Field access="READ_ONLY" name="ref" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
+                  <Message name="ObjMovedInList">
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="delta" type="provided/java/lang/Integer"/>
-                    <Response name="RefMovedInListResponse"/>
+                    <Response name="ObjMovedInListResponse"/>
                   </Message>
                   <Message name="RefsUpdated">
                     <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
@@ -751,6 +749,5 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2017" name="net_sf_xapp_objserver_types_ObjLoc"/>
     <ObjectId id="2018" name="net_sf_xapp_objserver_types_PropChange"/>
     <ObjectId id="2019" name="net_sf_xapp_objserver_types_PropChangeSet"/>
-    <ObjectId id="2021" name="net_sf_xapp_objserver_types_ObjRef"/>
   </ObjectIds>
 </Model>

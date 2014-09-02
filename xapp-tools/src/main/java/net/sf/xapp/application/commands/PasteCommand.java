@@ -17,9 +17,11 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.core.Clipboard;
-import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PasteCommand extends NodeCommand
@@ -45,30 +47,23 @@ public class PasteCommand extends NodeCommand
     {
         ApplicationContainer applicationContainer = node.getAppContainer();
         Clipboard clipboard = applicationContainer.getClipboard();
-        List<Object> list = clipboard.getClipboardObjects();
-        List<Object> clones = new ArrayList<Object>();
+        List<ObjectMeta> list = clipboard.getClipboardObjects();
+        List<ObjectMeta> clones = new ArrayList<ObjectMeta>();
         NodeUpdateApi nodeUpdateApi = applicationContainer.getNodeUpdateApi();
-        for (Object clipboardObject : list) {
-            ClassModel classModel = applicationContainer.getClassDatabase().getClassModel(clipboardObject.getClass());
+        ObjectLocation objectLocation = node.toObjLocation();
+        for (ObjectMeta clipboardObject : list) {
 
             if (!node.containsReferences()) //don't remove or clone if we're only pasting references
             {
                 //remove if action was CUT
-                if (clipboard.isCut()) {
-                    nodeUpdateApi.moveObject(node, clipboardObject);
-                } else {
-                    nodeUpdateApi.insertObject(node, clipboardObject);
-                }
+                nodeUpdateApi.moveOrInsertObjMeta(objectLocation, clipboardObject);
                 //if cloneable then create new clone for clipboard
-                if (clipboardObject instanceof Cloneable) {
-                    Object clone = classModel.createClone(clipboardObject);
-                    clones.add(clone);
+                if (clipboardObject.isCopyable()) {
+                    clones.add(clipboardObject.copy());
                 }
-
-                //register so we get new object meta
             } else {
                 //create reference to obj
-                nodeUpdateApi.createReference(node, clipboardObject);
+                nodeUpdateApi.updateReferences(node.toObjLocation(), Arrays.asList(clipboardObject), new ArrayList<ObjectMeta>());
             }
         }
 

@@ -2,6 +2,7 @@ package net.sf.xapp.application.api;
 
 import net.sf.xapp.objectmodelling.core.*;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -25,19 +26,10 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void moveObject(ObjectLocation objectLocation, ObjectMeta obj) {
+    public void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta) {
 
     }
 
-    @Override
-    public void moveObject(Node parentNode, Object obj) {
-
-    }
-
-    @Override
-    public void insertObject(Node parentNode, Object obj) {
-
-    }
 
     @Override
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
@@ -55,27 +47,21 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void createReference(Node parentNode, Object obj) {
+    public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta) {
 
     }
-
-    @Override
-    public void moveInList(Node node, int delta) {
-
-    }
-
 
     @Override
     public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
     }
 
     @Override
-    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text) {
-        return null;
+    public void insertObject(ObjectLocation objectLocation, Object obj) {
+
     }
 
     @Override
-    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
+    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
         return null;
     }
 

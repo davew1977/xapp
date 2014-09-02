@@ -57,61 +57,24 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         return objMeta;
     }
 
-    @Override
-    public void moveObject(ObjectLocation newLocation, ObjectMeta objectMeta) {
-        moveObject(toNode(newLocation), objectMeta);
-    }
-
-    @Override
-    public void moveObject(Node parentNode, Object obj) {
-        moveObject(parentNode, getClassModel(obj).find(obj));
-    }
-
-    private void moveObject(Node parentNode, ObjectMeta objectMeta) {
-        ObjectLocation newLoc = parentNode.toObjLocation();
+    public void moveOrInsertObjMeta(ObjectLocation newLoc, ObjectMeta objMeta) {
         assert !newLoc.containsReferences();
         //find the old object and remove it
-        objectMeta.setHome(newLoc, true);
-        Node node = (Node) objectMeta.getAttachment();
+        objMeta.setHome(newLoc, true);
+        Node node = (Node) objMeta.getAttachment();
         if (node != null) {
             appContainer.getApplication().nodeAboutToBeRemoved(node, true);
             appContainer.removeNode(node);
         }
         //create new node
-        createNode(parentNode, objectMeta);
-    }
-
-    private Node toNode(ObjectLocation objectLocation) {
-        Node node = (Node) objectLocation.getObj().getAttachment();
-        if (node != null) {
-            node = node.find(objectLocation.getProperty());
-        }
-        return node;
+        createNode(toNode(newLoc), objMeta);
     }
 
     @Override
-    public void insertObject(Node parentNode, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(parentNode.toObjLocation(), obj, true, -1);
+    public void insertObject(ObjectLocation objectLocation, Object obj) {
+        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(objectLocation, obj, true, -1);
         //create the node
-        insertNode(parentNode, objectMeta);
-    }
-
-    private void insertNode(Node parentNode, ObjectMeta objectMeta) {
-        createNode(parentNode, objectMeta);
-        appContainer.getMainPanel().repaint();
-    }
-
-    private Node createNode(Node parentNode, ObjectMeta objectMeta) {
-        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-        appContainer.getApplication().nodeAdded(newNode);
-        return newNode;
-    }
-
-    @Override//todo remove
-    public void createReference(Node parentNode, Object obj) {
-        ObjectMeta objMeta = getClassModel(obj).find(obj);
-        objMeta.createAndSetReference(parentNode.toObjLocation());
-        appContainer.getNodeBuilder().createNode(parentNode, objMeta);
+        createNode(toNode(objectLocation), objectMeta);
     }
 
     @Override
@@ -154,29 +117,17 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
-        return deserializeAndInsert(toNode(objectLocation), classModel, text, Charset.forName("UTF-8")); //UTF 8 here, coz text comes from server
-    }
-
-    @Override
-    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text) {
-        return deserializeAndInsert(node, classModel, text, Charset.defaultCharset()); //need default charset when pasting, coz then the text comes from the FS
-    }
-
-    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text, Charset charset) {
+    public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
         Unmarshaller un = new Unmarshaller(classModel);
-        ObjectMeta objectMeta = un.unmarshalString(text, charset, node.toObjLocation());
-        insertNode(node, objectMeta);
+        ObjectMeta objectMeta = un.unmarshalString(xml, charset, objectLocation);
+        createNode(toNode(objectLocation), objectMeta);
         return objectMeta;
     }
 
     @Override
-    public void moveInList(Node node, int delta) {
-        //update model
-        int newIndex = node.objectMeta().updateIndex(node.getParent().toObjLocation(), delta);
-
-        //update jtree
-        node.updateIndex(newIndex);
+    public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta) {
+        int newIndex = objectMeta.updateIndex(objectLocation, delta);
+        ((Node) objectMeta.getAttachment(objectLocation)).updateIndex(newIndex);
     }
 
     @Override
@@ -203,5 +154,20 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     private ClassModel<Object> getClassModel(Object obj) {
         return appContainer.getClassDatabase().getClassModel(obj.getClass());
+    }
+
+    private Node toNode(ObjectLocation objectLocation) {
+        Node node = (Node) objectLocation.getObj().getAttachment();
+        if (node != null) {
+            node = node.find(objectLocation.getProperty());
+        }
+        return node;
+    }
+
+    private Node createNode(Node parentNode, ObjectMeta objectMeta) {
+        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
+        appContainer.getApplication().nodeAdded(newNode);
+        appContainer.getMainPanel().repaint();
+        return newNode;
     }
 }

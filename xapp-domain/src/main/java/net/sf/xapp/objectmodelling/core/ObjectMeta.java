@@ -1,7 +1,6 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
-import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.utils.XappException;
@@ -386,7 +385,7 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public Object getAttachment(ObjectLocation objectLocation) {
-        return references.get(objectLocation);
+        return home.equals(objectLocation) ? getAttachment() : references.get(objectLocation);
     }
     public Object getAttachment() {
         return attachment;
@@ -502,10 +501,10 @@ public class ObjectMeta<T> implements Namespace{
         references.remove(objectLocation);
     }
 
-    public int updateIndex(ObjectLocation location, int index) {
+    public int updateIndex(ObjectLocation location, int delta) {
         //find "my" location
         ObjectLocation myLocation = resolve(location);
-        return myLocation.adjustIndex(this, index);
+        return myLocation.adjustIndex(this, delta);
     }
 
     private ObjectLocation resolve(ObjectLocation location) {
@@ -526,7 +525,8 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public ObjectMeta copy() {
-        getClassModel().newInstance()
+        Object clone = getClassModel().createClone(instance);
+        return getClassModel().createObjMeta(null, (T) clone, false, -1);
     }
 
     public String getSimpleClassName() {
@@ -633,5 +633,13 @@ public class ObjectMeta<T> implements Namespace{
     public void setId(Long id) {
         this.id = id;
         classModel.registerWithClassDatabase(this);
+    }
+
+    public boolean isA(Class clazz) {
+        return clazz.isInstance(instance);
+    }
+
+    public boolean isCopyable() {
+        return instance instanceof Cloneable;
     }
 }

@@ -39,12 +39,12 @@ public class PasteXMLCommand extends NodeCommand
         ApplicationContainer applicationContainer = node.getAppContainer();
         Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 
-        String text = getTextFromClipboard(t);
+        String xml = getTextFromClipboard(t);
         //read opening tag
-        String className = text.substring(1, text.indexOf(' '));
+        String className = xml.substring(1, xml.indexOf(' '));
         ClassDatabase cdb = applicationContainer.getGuiContext().getClassDatabase();
         ClassModel classModel = cdb.getClassModelBySimpleName(className);
-        applicationContainer.getNodeUpdateApi().deserializeAndInsert(node, classModel, text);
+        applicationContainer.getNodeUpdateApi().deserializeAndInsert(node.toObjLocation(), classModel, xml, Charset.defaultCharset());
     }
 
     private String getTextFromClipboard(Transferable t) {

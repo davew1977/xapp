@@ -1,10 +1,8 @@
 package net.sf.xapp.objclient;
 
 import net.sf.xapp.application.api.ApplicationContainer;
-import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeUpdateApi;
 import net.sf.xapp.application.api.StandaloneNodeUpdate;
-import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
@@ -12,8 +10,8 @@ import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.types.*;
-import net.sf.xapp.utils.ReflectionUtils;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +46,15 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objAdded(ObjLoc objLoc, XmlObj obj) {
-        ObjectMeta objectMeta = nodeUpdateApi.deserializeAndInsert(toObjectLocation(objLoc), cdb.getClassModel(obj.getType()), obj.getData());
+        ObjectMeta objectMeta = nodeUpdateApi.deserializeAndInsert(toObjectLocation(objLoc),
+                cdb.getClassModel(obj.getType()), obj.getData(), Charset.forName("UTF-8"));
         objectMeta.setId(obj.getId());
     }
 
     @Override
     public void objMoved(Long id, ObjLoc newObjLoc) {
         ObjectMeta objectMeta = cdb.findObjById(id);
-        nodeUpdateApi.moveObject(toObjectLocation(newObjLoc), objectMeta);
+        nodeUpdateApi.moveOrInsertObjMeta(toObjectLocation(newObjLoc), objectMeta);
     }
 
     @Override
@@ -65,21 +64,29 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void refsUpdated(ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
-
+       nodeUpdateApi.updateReferences(toObjectLocation(objLoc), lookup(refsCreated), lookup(refsRemoved));
     }
 
     @Override
     public void typeChanged(Long id, Class newType) {
-
+       nodeUpdateApi.changeType(cdb.findObjById(id), cdb.getClassModel(newType));
     }
 
     @Override
-    public void refMovedInList(ObjRef ref, Integer delta) {
-
+    public void objMovedInList(ObjLoc objLoc, Long id, Integer delta) {
+        nodeUpdateApi.moveInList(toObjectLocation(objLoc), cdb.findObjById(id), delta);
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {
         ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
         return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
+    }
+
+    private List<ObjectMeta> lookup(List<Long> ids) {
+        List<ObjectMeta> result = new ArrayList<ObjectMeta>();
+        for (Long id : ids) {
+            result.add(cdb.findObjById(id));
+        }
+        return result;
     }
 }

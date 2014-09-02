@@ -36,7 +36,7 @@ public class MultiCutCommand extends MultiNodeCommand
         clipboard.setAction(Clipboard.Action.CUT);
         for (Node node : params)
         {
-            clipboard.addClipboardObject(node.wrappedObject());
+            clipboard.addClipboardObject(node.objectMeta());
         }
     }
 }

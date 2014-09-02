@@ -94,7 +94,7 @@ public class ListNodeContext {
         }
         //maybe add a paste option
         Clipboard clipboard = node.getAppContainer().getClipboard();
-        List<Object> clipboardObjects = clipboard.getClipboardObjects();
+        List<ObjectMeta> clipboardObjects = clipboard.getClipboardObjects();
         if (!clipboardObjects.isEmpty() &&
                 clipboard.areAllInstanceOf(classModel.getContainedClass()) &&
                 !clipboard.listContainsAny(getCollection())) {
