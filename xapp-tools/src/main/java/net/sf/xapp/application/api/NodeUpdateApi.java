@@ -30,7 +30,7 @@ public interface NodeUpdateApi {
      * This is used when an object already exists but has been moved within the object graph
      */
     void moveObject(ObjectLocation objectLocation, ObjectMeta obj);
-    void moveObject(Node parentNode, Object obj);
+    void moveObject(Node parentNode, Object obj); //todo remove this method in favour of the above
     void insertObject(Node parentNode, Object obj);
 
     /**
@@ -53,10 +53,10 @@ public interface NodeUpdateApi {
 
     void moveInList(Node node, int delta);
 
-    void updateReferences(Node node, List<Object> objects);
+    void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove);
 
-    Node changeType(ObjectMeta obj, ClassModel targetClassModel);
+    void changeType(ObjectMeta obj, ClassModel targetClassModel);
 
-    ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text);
+    ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text); //todo figure out how to use this method and delete the one below
     ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text);
 }

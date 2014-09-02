@@ -877,6 +877,14 @@ public class ClassModel<T> {
         return null;
     }
 
+    public List<ObjectMeta<T>> findAll(Collection<T> objs) {
+        List<ObjectMeta<T>> result = new ArrayList<ObjectMeta<T>>();
+        for (T obj : objs) {
+            result.add(find(obj));
+        }
+        return result;
+    }
+
     public boolean hasKey() {
         return getKeyProperty() != null;
     }

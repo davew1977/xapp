@@ -112,37 +112,23 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public void updateReferences(Node node, List<Object> newValues) {
-        Collection oldValues = node.getListNodeContext().getCollection();
-        List<Object> toRemove = new ArrayList<Object>(oldValues);
-        List<Object> toAdd = new ArrayList<Object>(newValues);
-        toRemove.removeAll(newValues);
-        toAdd.removeAll(oldValues);
-        //remove unlinked references
-        for (Object oldValue : toRemove) {
-            ObjectMeta objMeta = getClassModel(oldValue).find(oldValue);
-            objMeta.removeAndUnsetReference(node.toObjLocation());
+    public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
+        for (ObjectMeta objectMeta : refsToRemove) {
+            objectMeta.removeAndUnsetReference(objectLocation);
         }
-        //add new references
-        for (Object newValue : toAdd) {
-
-            ObjectMeta objMeta = getClassModel(newValue).find(newValue);
-            objMeta.createAndSetReference(node.toObjLocation());
+        for (ObjectMeta objectMeta : refsToAdd) {
+            objectMeta.createAndSetReference(objectLocation);
         }
-
-        boolean unchanged = toAdd.isEmpty() && toRemove.isEmpty();
-
-        if (!unchanged) {
-            appContainer.getNodeBuilder().refresh(node);
-            Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
-            ContainerProperty containerProperty = node.getListNodeContext().getContainerProperty();
-            map.put(containerProperty.getName(), new RegularPropertyChange(containerProperty, node.wrappedObject(), oldValues, newValues));
-            node.getAppContainer().getApplication().nodeUpdated(node, map);
-        }
+        Node node = toNode(objectLocation);
+        appContainer.getNodeBuilder().refresh(node);
+        Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
+        ContainerProperty containerProperty = node.getListNodeContext().getContainerProperty();
+        map.put(containerProperty.getName(), new RegularPropertyChange(containerProperty, node.wrappedObject(), refsToRemove, refsToAdd));
+        node.getAppContainer().getApplication().nodeUpdated(node, map);
     }
 
     @Override
-    public Node changeType(ObjectMeta obj, ClassModel targetClassModel) {
+    public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
         if (obj.hasReferences()) {
             /*
             to implement this we need to delete the references(done) and reset them where appropriate (not done)
@@ -163,7 +149,8 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         objHome.setIndex(newInstance, oldIndex);
         //refresh so a new Node will be created, then we must select that node
         //so that the whole operation is more transparent to the user
-        return appContainer.getNodeBuilder().createNode(parent, newInstance, oldIndex);
+        Node newNode = appContainer.getNodeBuilder().createNode(parent, newInstance, oldIndex);
+        appContainer.setSelectedNode(newNode);
     }
 
     @Override

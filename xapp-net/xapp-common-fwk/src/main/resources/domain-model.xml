@@ -111,9 +111,13 @@
     <ObjectId id="108" name="ObjUpdate_UpdateObject"/>
     <ObjectId id="109" name="ObjUpdate_DeleteObject"/>
     <ObjectId id="110" name="ObjUpdate_MoveObject"/>
+    <ObjectId id="111" name="ObjUpdate_MoveInList"/>
     <ObjectId id="113" name="ObjUpdate_ChangeType"/>
     <ObjectId id="114" name="ObjUpdate_CreateRefs"/>
     <ObjectId id="115" name="ObjUpdate_DeleteRefs"/>
+    <ObjectId id="117" name="ObjListener_TypeChanged"/>
+    <ObjectId id="118" name="ObjListener_RefMovedInList"/>
+    <ObjectId id="119" name="ObjListener_RefsUpdated"/>
   </MessageIds>
   <Module name="provided">
     <DirMeta name="java">
@@ -614,7 +618,6 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <ValueObject name="ObjLoc">
                 <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
-                <Field access="READ_ONLY" name="index" optional="true" type="provided/java/lang/Integer"/>
               </ValueObject>
               <ValueObject name="PropChange">
                 <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
@@ -679,6 +682,11 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" name="newType" type="provided/java/lang/Class"/>
                     <Response name="ChangeTypeResponse"/>
                   </Message>
+                  <Message name="MoveInList">
+                    <Field access="READ_ONLY" name="ref" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
+                    <Field access="READ_ONLY" name="delta" type="provided/java/lang/Integer"/>
+                    <Response name="MoveInListResponse"/>
+                  </Message>
                 </Api>
               </DirMeta>
               <DirMeta name="objlistener">
@@ -700,6 +708,22 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Message name="ObjDeleted">
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Response name="ObjDeletedResponse"/>
+                  </Message>
+                  <Message name="TypeChanged">
+                    <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="newType" type="provided/java/lang/Class"/>
+                    <Response name="TypeChangedResponse"/>
+                  </Message>
+                  <Message name="RefMovedInList">
+                    <Field access="READ_ONLY" name="ref" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
+                    <Field access="READ_ONLY" name="delta" type="provided/java/lang/Integer"/>
+                    <Response name="RefMovedInListResponse"/>
+                  </Message>
+                  <Message name="RefsUpdated">
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" list="true" name="refsCreated" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" list="true" name="refsRemoved" type="provided/java/lang/Long"/>
+                    <Response name="RefsUpdatedResponse"/>
                   </Message>
                 </Api>
               </DirMeta>

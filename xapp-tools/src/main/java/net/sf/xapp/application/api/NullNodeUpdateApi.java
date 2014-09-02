@@ -69,14 +69,9 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
 
     }
 
-    @Override
-    public void updateReferences(Node node, List<Object> objects) {
-
-    }
 
     @Override
-    public Node changeType(ObjectMeta obj, ClassModel targetClassModel) {
-        return null;
+    public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
     }
 
     @Override
@@ -87,5 +82,10 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     @Override
     public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String text) {
         return null;
+    }
+
+    @Override
+    public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
+
     }
 }

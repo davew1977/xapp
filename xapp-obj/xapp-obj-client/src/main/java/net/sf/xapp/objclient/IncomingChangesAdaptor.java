@@ -11,10 +11,7 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
-import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.PropChange;
-import net.sf.xapp.objserver.types.PropChangeSet;
-import net.sf.xapp.objserver.types.XmlObj;
+import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.utils.ReflectionUtils;
 
 import java.util.ArrayList;
@@ -64,6 +61,21 @@ public class IncomingChangesAdaptor implements ObjListener {
     @Override
     public void objDeleted(Long id) {
         nodeUpdateApi.deleteObject(cdb.findObjById(id));
+    }
+
+    @Override
+    public void refsUpdated(ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
+
+    }
+
+    @Override
+    public void typeChanged(Long id, Class newType) {
+
+    }
+
+    @Override
+    public void refMovedInList(ObjRef ref, Integer delta) {
+
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {

@@ -90,17 +90,20 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void createReference(Node parentNode, Object obj) {
-        remote.createRefs();
+        ClassModel cm = appContainer.getClassDatabase().getClassModel(obj.getClass());
+        createRefs(parentNode.toObjLocation(), Arrays.asList(cm.find(obj)));
     }
 
     @Override
     public void removeReference(Node referenceNode) {
-
+        Object obj = referenceNode.wrappedObject();
+        ClassModel cm = appContainer.getClassDatabase().getClassModel(obj.getClass());
+        createRefs(referenceNode.myObjLocation(), Arrays.asList(cm.find(obj)));
     }
 
     @Override
     public void moveInList(Node node, int delta) {
-
+        remote.moveInList(toRef(node), delta);
     }
 
     @Override
@@ -110,16 +113,14 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
         List<Object> toAdd = new ArrayList<Object>(newValues);
         toRemove.removeAll(newValues);
         toAdd.removeAll(oldValues);
-        //remove unlinked references
-        for (Object oldValue : toRemove) {
-            ObjectMeta objMeta = getClassModel(oldValue).find(oldValue);
+        ObjectLocation objectLocation = node.toObjLocation();
+        ClassModel cm = objectLocation.getPropClassModel();
+        if(!toRemove.isEmpty()) {
+            deleteRefs(objectLocation, cm.findAll(toRemove));
         }
-        //add new references
-        for (Object newValue : toAdd) {
-
-            ObjectMeta objMeta = getClassModel(newValue).find(newValue);
+        if(!toAdd.isEmpty()) {
+            createRefs(objectLocation, cm.findAll(toAdd));
         }
-
 
     }
 
@@ -132,19 +133,19 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     @Override
-    public Node changeType(ObjectMeta obj, ClassModel targetClassModel) {
-        return null;
+    public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
+        remote.changeType(obj.getId(), targetClassModel.getContainedClass());
     }
 
     @Override
-    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String text) {
-
+    public ObjectMeta deserializeAndInsert(Node node, ClassModel classModel, String xml) {
+        remote.createObject(toObjLoc(node), classModel.getContainedClass(), xml);
         return null;
     }
 
     @Override
     public void moveObject(ObjectLocation objectLocation, ObjectMeta obj) {
-
+        remote.moveObject(obj.getId(), toObjLoc(objectLocation));
     }
 
     @Override
@@ -153,24 +154,25 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     private ObjLoc toObjLoc(Node node) {
-        return toObjLoc(node.toObjLocation(), -1);
+        return toObjLoc(node.toObjLocation());
     }
 
     private ObjLoc toObjLoc(ObjectLocation objectLocation) {
-        return toObjLoc(objectLocation, -1);
+        return new ObjLoc(objectLocation.getObj().getId(), objectLocation.getProperty().getName());
     }
-    private ObjLoc toObjLoc(ObjectLocation objectLocation, int index) {
-        return new ObjLoc(objectLocation.getObj().getId(), objectLocation.getProperty().getName(), index);
-    }
+
     private ClassModel<Object> getClassModel(Object obj) {
         return appContainer.getClassDatabase().getClassModel(obj.getClass());
     }
-
     private List<ObjRef> toRefs(ObjectLocation objectLocation, List<ObjectMeta> objMetas) {
         List<ObjRef> refs = new ArrayList<ObjRef>();
         for (ObjectMeta objMeta : objMetas) {
             refs.add(new ObjRef(objMeta.getId(), toObjLoc(objectLocation)));
         }
         return refs;
+    }
+
+    private ObjRef toRef(Node node) {
+        return new ObjRef(node.objectMeta().getId(), toObjLoc(node));
     }
 }

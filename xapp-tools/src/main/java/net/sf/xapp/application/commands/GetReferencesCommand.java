@@ -17,6 +17,8 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.editor.EditorAdaptor;
 import net.sf.xapp.application.editor.widgets.ListReferenceGUI;
+import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 
 import java.util.*;
@@ -35,7 +37,32 @@ public class GetReferencesCommand extends NodeCommand
         {
             public void save(List<PropertyUpdate> changes, boolean closing)
             {
-                node.getAppContainer().getNodeUpdateApi().updateReferences(node, gui.getData());
+                List newValues = gui.getData();
+                ClassDatabase cdb = node.getClassDatabase();
+
+                Collection oldValues = node.getListNodeContext().getCollection();
+                List<Object> toRemove = new ArrayList<Object>(oldValues);
+                List<Object> toAdd = new ArrayList<Object>(newValues);
+                toRemove.removeAll(newValues);
+                toAdd.removeAll(oldValues);
+                List<ObjectMeta> refsToRemove = new ArrayList<ObjectMeta>();
+                List<ObjectMeta> refsToAdd = new ArrayList<ObjectMeta>();
+                //remove unlinked references
+                for (Object oldValue : toRemove) {
+                    ObjectMeta objMeta = cdb.getClassModel(oldValue.getClass()).find(oldValue);
+                    refsToRemove.add(objMeta);
+                }
+                //add new references
+                for (Object newValue : toAdd) {
+
+                    ObjectMeta objMeta = cdb.getClassModel(newValue.getClass()).find(newValue);
+                    refsToAdd.add(objMeta);
+                }
+
+                boolean unchanged = toAdd.isEmpty() && toRemove.isEmpty();
+                if(!unchanged) {
+                    node.getAppContainer().getNodeUpdateApi().updateReferences(node.toObjLocation(), refsToAdd, refsToRemove);
+                }
             }
         });
         gui.setLocationRelativeTo(node.getAppContainer().getMainPanel());

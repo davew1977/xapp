@@ -48,8 +48,7 @@ public class ChangeTypeCommand extends NodeCommand
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    Node newNode = appContainer.getNodeUpdateApi().changeType(node.objectMeta(), targetClassModel);
-                    appContainer.setSelectedNode(newNode);
+                    appContainer.getNodeUpdateApi().changeType(node.objectMeta(), targetClassModel);
                 }
             });
             menu.add(menuItem);
