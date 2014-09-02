@@ -49,7 +49,6 @@ public interface NodeUpdateApi {
     void deleteObject(ObjectMeta objectMeta);
 
     void createReference(Node parentNode, Object obj);
-    void removeReference(Node referenceNode);
 
     void moveInList(Node node, int delta);
 

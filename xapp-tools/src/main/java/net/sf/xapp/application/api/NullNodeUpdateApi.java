@@ -60,11 +60,6 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void removeReference(Node referenceNode) {
-
-    }
-
-    @Override
     public void moveInList(Node node, int delta) {
 
     }

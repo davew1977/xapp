@@ -16,6 +16,10 @@ import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.api.NodeUpdateApi;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RemoveCommand extends NodeCommand
 {
@@ -40,7 +44,7 @@ public class RemoveCommand extends NodeCommand
         Node childBefore = parentNode.getChildBefore(node);
 
         if(node.isReference()) {
-            nodeUpdateApi.removeReference(node);
+            nodeUpdateApi.updateReferences(node.toObjLocation(), new ArrayList<ObjectMeta>(), Arrays.asList(node.objectMeta()));
         } else {
             nodeUpdateApi.deleteObject(node.objectMeta());
         }

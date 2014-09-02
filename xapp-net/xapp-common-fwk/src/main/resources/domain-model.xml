@@ -112,9 +112,8 @@
     <ObjectId id="109" name="ObjUpdate_DeleteObject"/>
     <ObjectId id="110" name="ObjUpdate_MoveObject"/>
     <ObjectId id="111" name="ObjUpdate_MoveInList"/>
+    <ObjectId id="112" name="ObjUpdate_UpdateRefs"/>
     <ObjectId id="113" name="ObjUpdate_ChangeType"/>
-    <ObjectId id="114" name="ObjUpdate_CreateRefs"/>
-    <ObjectId id="115" name="ObjUpdate_DeleteRefs"/>
     <ObjectId id="117" name="ObjListener_TypeChanged"/>
     <ObjectId id="118" name="ObjListener_RefMovedInList"/>
     <ObjectId id="119" name="ObjListener_RefsUpdated"/>
@@ -669,14 +668,6 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" name="newObjLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
                     <Response name="MoveObjectResponse"/>
                   </Message>
-                  <Message name="CreateRefs">
-                    <Field access="READ_ONLY" list="true" name="refs" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
-                    <Response name="CreateRefsResponse"/>
-                  </Message>
-                  <Message name="DeleteRefs">
-                    <Field access="READ_ONLY" list="true" name="refs" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
-                    <Response name="DeleteRefsResponse"/>
-                  </Message>
                   <Message name="ChangeType">
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="newType" type="provided/java/lang/Class"/>
@@ -686,6 +677,12 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" name="ref" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjRef"/>
                     <Field access="READ_ONLY" name="delta" type="provided/java/lang/Integer"/>
                     <Response name="MoveInListResponse"/>
+                  </Message>
+                  <Message name="UpdateRefs">
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" list="true" name="refsToAdd" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" list="true" name="refsToRemove" type="provided/java/lang/Long"/>
+                    <Response name="UpdateRefsResponse"/>
                   </Message>
                 </Api>
               </DirMeta>

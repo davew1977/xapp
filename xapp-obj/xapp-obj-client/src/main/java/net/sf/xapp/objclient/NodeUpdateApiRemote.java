@@ -12,7 +12,6 @@ import net.sf.xapp.objserver.types.PropChangeSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -95,41 +94,13 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     @Override
-    public void removeReference(Node referenceNode) {
-        Object obj = referenceNode.wrappedObject();
-        ClassModel cm = appContainer.getClassDatabase().getClassModel(obj.getClass());
-        createRefs(referenceNode.myObjLocation(), Arrays.asList(cm.find(obj)));
-    }
-
-    @Override
     public void moveInList(Node node, int delta) {
         remote.moveInList(toRef(node), delta);
     }
 
     @Override
-    public void updateReferences(Node node, List<Object> newValues) {
-        Collection oldValues = node.getListNodeContext().getCollection();   //TODO repeated code here with standalone update api
-        List<Object> toRemove = new ArrayList<Object>(oldValues);
-        List<Object> toAdd = new ArrayList<Object>(newValues);
-        toRemove.removeAll(newValues);
-        toAdd.removeAll(oldValues);
-        ObjectLocation objectLocation = node.toObjLocation();
-        ClassModel cm = objectLocation.getPropClassModel();
-        if(!toRemove.isEmpty()) {
-            deleteRefs(objectLocation, cm.findAll(toRemove));
-        }
-        if(!toAdd.isEmpty()) {
-            createRefs(objectLocation, cm.findAll(toAdd));
-        }
-
-    }
-
-    private void createRefs(ObjectLocation objectLocation, List<ObjectMeta> objMetas) {
-        remote.createRefs(toRefs(objectLocation, objMetas));
-    }
-
-    private void deleteRefs(ObjectLocation objectLocation, List<ObjectMeta> objMetas) {
-        remote.deleteRefs(toRefs(objectLocation, objMetas));
+    public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
+        remote.updateRefs(toObjLoc(objectLocation), toIds(refsToAdd), toIds(refsToRemove));
     }
 
     @Override
@@ -174,5 +145,12 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     private ObjRef toRef(Node node) {
         return new ObjRef(node.objectMeta().getId(), toObjLoc(node));
+    }
+    private List<Long> toIds(List<ObjectMeta> refsToAdd) {
+        List<Long> result = new ArrayList<Long>();
+        for (ObjectMeta objectMeta : refsToAdd) {
+            result.add(objectMeta.getId());
+        }
+        return result;
     }
 }

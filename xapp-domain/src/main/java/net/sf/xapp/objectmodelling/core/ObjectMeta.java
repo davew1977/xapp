@@ -492,9 +492,10 @@ public class ObjectMeta<T> implements Namespace{
         references.put(objectLocation, attachment);
     }
 
-    public PropertyChange removeAndUnsetReference(ObjectLocation objectLocation) {
-        references.remove(objectLocation);
-        return objectLocation.unset(this);
+    public Object removeAndUnsetReference(ObjectLocation objectLocation) {
+        Object attachment = references.remove(objectLocation);
+        objectLocation.unset(this);
+        return attachment;
     }
 
     public void removeReference(ObjectLocation objectLocation) {
@@ -522,6 +523,10 @@ public class ObjectMeta<T> implements Namespace{
 
     public Object cloneInstance() {
         return getClassModel().createClone(instance);
+    }
+
+    public ObjectMeta copy() {
+        getClassModel().newInstance()
     }
 
     public String getSimpleClassName() {

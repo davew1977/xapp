@@ -46,8 +46,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         PropertyChange propertyChange = initObject(objectMeta, potentialUpdates);
         if (propertyChange.succeeded()) { //could fail if we're added an identical object to a set
-            Node node = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-            appContainer.getApplication().nodeAdded(node);
+            createNode(parentNode, objectMeta);
         }
     }
 
@@ -79,8 +78,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
             appContainer.removeNode(node);
         }
         //create new node
-        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-        appContainer.getApplication().nodeAdded(newNode);
+        createNode(parentNode, objectMeta);
     }
 
     private Node toNode(ObjectLocation objectLocation) {
@@ -99,12 +97,17 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     private void insertNode(Node parentNode, ObjectMeta objectMeta) {
-        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-        appContainer.getApplication().nodeAdded(newNode);
+        createNode(parentNode, objectMeta);
         appContainer.getMainPanel().repaint();
     }
 
-    @Override
+    private Node createNode(Node parentNode, ObjectMeta objectMeta) {
+        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
+        appContainer.getApplication().nodeAdded(newNode);
+        return newNode;
+    }
+
+    @Override//todo remove
     public void createReference(Node parentNode, Object obj) {
         ObjectMeta objMeta = getClassModel(obj).find(obj);
         objMeta.createAndSetReference(parentNode.toObjLocation());
@@ -113,18 +116,15 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
+        Node parentNode = toNode(objectLocation);
         for (ObjectMeta objectMeta : refsToRemove) {
-            objectMeta.removeAndUnsetReference(objectLocation);
+            Node node = (Node) objectMeta.removeAndUnsetReference(objectLocation);
+            removeNode(node);
         }
         for (ObjectMeta objectMeta : refsToAdd) {
             objectMeta.createAndSetReference(objectLocation);
+            createNode(parentNode, objectMeta);
         }
-        Node node = toNode(objectLocation);
-        appContainer.getNodeBuilder().refresh(node);
-        Map<String, PropertyChange> map = new HashMap<String, PropertyChange>();
-        ContainerProperty containerProperty = node.getListNodeContext().getContainerProperty();
-        map.put(containerProperty.getName(), new RegularPropertyChange(containerProperty, node.wrappedObject(), refsToRemove, refsToAdd));
-        node.getAppContainer().getApplication().nodeUpdated(node, map);
     }
 
     @Override
@@ -171,15 +171,6 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public void removeReference(Node node) {
-        assert node.isReference();
-        node.objectMeta().removeAndUnsetReference(node.myObjLocation());
-        appContainer.getApplication().nodeAboutToBeRemoved(node, false);
-        appContainer.removeNode(node);
-
-    }
-
-    @Override
     public void moveInList(Node node, int delta) {
         //update model
         int newIndex = node.objectMeta().updateIndex(node.getParent().toObjLocation(), delta);
@@ -195,13 +186,18 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         //clean up nodes
         Node node = (Node) objectMeta.getAttachment();
         if (node != null) {
-            appContainer.getApplication().nodeAboutToBeRemoved(node, false);
-            appContainer.removeNode(node);
+            removeNode(node);
         }
 
         for (Node referencingNode : attachments) {
-            appContainer.getApplication().nodeAboutToBeRemoved(referencingNode, false);
-            appContainer.removeNode(referencingNode);
+            removeNode(referencingNode);
+        }
+    }
+
+    private void removeNode(Node node) {
+        if (node != null) {
+            appContainer.getApplication().nodeAboutToBeRemoved(node, false);
+            appContainer.removeNode(node);
         }
     }
 
