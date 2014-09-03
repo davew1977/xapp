@@ -38,7 +38,7 @@ public class LiveObject implements ObjUpdate {
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
         Long rev = 0L;
         Long id = 0L;
-        listener.objAdded(objLoc, new XmlObj(type, xml, rev, id));
+        listener.objAdded(objLoc, new XmlObj(type, xml, rev, objectMeta.getId()));
     }
 
     @Override

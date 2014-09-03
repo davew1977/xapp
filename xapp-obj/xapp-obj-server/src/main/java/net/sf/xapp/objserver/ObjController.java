@@ -34,6 +34,10 @@ public class ObjController implements App, ObjManager {
         liveObject = new LiveObject(rootObj);
     }
 
+    public LiveObject getLiveObject() {
+        return liveObject;
+    }
+
     @Override
     public void userConnected(UserId userId) {
 

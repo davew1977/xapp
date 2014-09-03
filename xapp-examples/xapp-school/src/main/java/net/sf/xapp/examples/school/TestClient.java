@@ -38,6 +38,9 @@ public class TestClient {
         clientContext.wire(ObjManagerReply.class, remoteKey, new ObjManagerReply() {
             @Override
             public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
+
+                System.out.println(obj.getData());
+
                 Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
                 ObjectMeta objMeta = unmarshaller.unmarshalString(obj.getData());
                 ClassDatabase cdb = unmarshaller.getClassDatabase();
@@ -45,7 +48,7 @@ public class TestClient {
                 appContainer.setUserGUI(new SimpleApplication());
                 appContainer.getMainFrame().setVisible(true);
 
-                appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext.remoteObjListener(remoteKey)));
+                appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext.objUpdate(remoteKey)));
                 clientContext.wire(ObjListener.class, remoteKey, new IncomingChangesAdaptor(appContainer));
             }
 
@@ -55,7 +58,7 @@ public class TestClient {
             }
         });
 
-
+        clientContext.channel(remoteKey).join(clientContext.getUserId());
         clientContext.objManager(remoteKey).getObject(clientContext.getUserId());
 
     }

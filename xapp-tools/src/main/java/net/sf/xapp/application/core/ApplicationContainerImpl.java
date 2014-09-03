@@ -297,10 +297,11 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         getClipboard().addClipboardObject(objMeta);
     }
 
-    public void refreshNode(Node node)
+    public Node refreshNode(Node node)
     {
-        getNodeBuilder().refresh(node);
+        Node newNode = getNodeBuilder().refresh(node);
         m_mainTree.repaint();
+        return newNode;
     }
 
     @Override

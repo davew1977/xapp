@@ -136,8 +136,8 @@ public class NodeImpl implements Node {
     }
 
     @Override
-    public void refresh() {
-        getAppContainer().refreshNode(this);
+    public Node refresh() {
+        return getAppContainer().refreshNode(this);
     }
 
     @Override

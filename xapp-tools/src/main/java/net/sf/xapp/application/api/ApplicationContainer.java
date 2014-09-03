@@ -100,7 +100,7 @@ public interface ApplicationContainer<T>
      */
     List<Node> findReferencingNodes(Object obj);
     void saveToClipboard(Object obj);
-    void refreshNode(Node node);
+    Node refreshNode(Node node);
     void refreshNode(Object object);
 
     /**

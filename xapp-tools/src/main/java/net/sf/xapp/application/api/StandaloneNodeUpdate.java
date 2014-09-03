@@ -21,8 +21,9 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         Map<String, PropertyChange> changes = objectMeta.update(potentialUpdates);
         Node node = (Node) objectMeta.getAttachment();
         if (node != null) { //todo only refresh if sub-objects have changed
-            node.refresh();
+            Node newNode = node.refresh();
             appContainer.getApplication().nodeUpdated(node, changes);
+            appContainer.expand(newNode);
         }
     }
 

@@ -22,7 +22,7 @@ public class ObjClientContext extends ClientContext {
         return new ObjManagerAdaptor(key, getServerBoundMessageHandler());
     }
 
-    public ObjUpdate remoteObjListener(String key) {
-        return new ObjUpdateAdaptor(key, getServerBoundMessageHandler());
+    public ObjUpdate objUpdate(String key) {
+        return new ObjUpdateAdaptor(getUserId(), key, getServerBoundMessageHandler());
     }
 }

@@ -109,7 +109,7 @@ public interface Node
 
     ObjectMeta objectMeta();
 
-    void refresh();
+    Node refresh();
 
     /**
      * call when creating an obj location from the current node

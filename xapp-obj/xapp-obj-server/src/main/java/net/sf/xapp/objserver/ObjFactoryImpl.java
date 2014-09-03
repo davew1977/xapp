@@ -12,6 +12,8 @@ import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,10 +60,15 @@ public class ObjFactoryImpl {
         ObjController objController = new ObjController(key, objectMeta);
         ChannelImpl channel = new ChannelImpl(messageSender, userLocator, objController);
 
-        ChannelAdaptor channelEL = new ChannelAdaptor(key, new EventLoopMessageHandler<Channel>(eventLoopManager, channel));
-        ObjManager objServerEL = new ObjManagerAdaptor(key, new EventLoopMessageHandler<ObjManager>(eventLoopManager, objController));
+        ChannelAdaptor channelEL = new ChannelAdaptor(key,
+                new EventLoopMessageHandler<Channel>(eventLoopManager, channel));
+        ObjManager objServerEL = new ObjManagerAdaptor(key,
+                new EventLoopMessageHandler<ObjManager>(eventLoopManager, objController));
+        ObjUpdate objUpdateEL= new ObjUpdateAdaptor(key,
+                new EventLoopMessageHandler<ObjUpdate>(eventLoopManager, objController.getLiveObject()));
 
         entityRepository.add(ObjManager.class, key, objServerEL);
+        entityRepository.add(ObjUpdate.class, key, objUpdateEL);
         entityRepository.add(Channel.class, key, channelEL);
 
         clusterFacade.addEntityMapping(key);
