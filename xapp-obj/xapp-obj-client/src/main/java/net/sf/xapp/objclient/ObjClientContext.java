@@ -6,6 +6,8 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
 
 /**
  * © 2013 Newera Education Ltd
@@ -20,7 +22,7 @@ public class ObjClientContext extends ClientContext {
         return new ObjManagerAdaptor(key, getServerBoundMessageHandler());
     }
 
-    public ObjListener remoteObjListener(String key) {
-        return new ObjListenerAdaptor(key, getServerBoundMessageHandler());
+    public ObjUpdate remoteObjListener(String key) {
+        return new ObjUpdateAdaptor(key, getServerBoundMessageHandler());
     }
 }

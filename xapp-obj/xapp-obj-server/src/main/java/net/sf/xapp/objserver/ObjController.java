@@ -24,12 +24,14 @@ public class ObjController implements App, ObjManager {
 
     private final String key;
     private final ObjectMeta rootObj;
+    private final LiveObject liveObject;
 
     private long revision;
 
     public ObjController(String key, ObjectMeta rootObj) {
         this.key = key;
         this.rootObj = rootObj;
+        liveObject = new LiveObject(rootObj);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ObjController implements App, ObjManager {
 
         this.commChannel = channel;
         //wire up the comm channel as a listener on the public state
-        objListener = new ObjListenerAdaptor(getKey(), new BroadcastProxy<ObjListener, Void>(commChannel));
+        liveObject.setListener(new ObjListenerAdaptor(getKey(), new BroadcastProxy<ObjListener, Void>(commChannel)));
         objManagerReply = new ObjManagerReplyAdaptor(getKey(), new NotifyProxy<ObjManagerReply>(commChannel));
     }
 
@@ -74,7 +76,7 @@ public class ObjController implements App, ObjManager {
     @Override
     public void getObject(UserId principal) {
         //todo cache xml at this revision
-        objManagerReply.getObjectResponse(principal, new XmlObj(rootObj.toXml(), revision, rootObj.getId()), null);
+        objManagerReply.getObjectResponse(principal, new XmlObj(rootObj.getType(), rootObj.toXml(), revision, rootObj.getId()), null);
     }
 
     @Override

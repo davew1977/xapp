@@ -45,7 +45,7 @@ public class TestClient {
                 appContainer.setUserGUI(new SimpleApplication());
                 appContainer.getMainFrame().setVisible(true);
 
-                appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(appContainer, clientContext.remoteObjListener(remoteKey)));
+                appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext.remoteObjListener(remoteKey)));
                 clientContext.wire(ObjListener.class, remoteKey, new IncomingChangesAdaptor(appContainer));
             }
 
