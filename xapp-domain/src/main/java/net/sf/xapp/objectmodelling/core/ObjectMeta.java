@@ -1,6 +1,7 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
+import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.utils.XappException;
@@ -623,7 +624,9 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public String toXml() {
-        return classModel.getClassDatabase().createMarshaller(classModel.getContainedClass()).toXMLString(instance);
+        Marshaller marshaller = classModel.getClassDatabase().createMarshaller(classModel.getContainedClass());
+        marshaller.setIncludeIds(true);
+        return marshaller.toXMLString(instance);
     }
 
     public Property getProperty(String propName) {

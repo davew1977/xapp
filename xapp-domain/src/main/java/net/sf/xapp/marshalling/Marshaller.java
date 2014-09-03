@@ -34,8 +34,7 @@ import java.util.*;
 
 import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
 
-public class Marshaller<T>
-{
+public class Marshaller<T> {
     private Class m_class;
     private ClassModel<T> m_classModel;
     private ClassDatabase m_classDatabase;
@@ -46,14 +45,13 @@ public class Marshaller<T>
     public String m_encoding = "UTF-8";
     private boolean m_root;
     private boolean m_useCustomOrdering;
+    private boolean includeIds;
 
-    public Marshaller(Class clazz, ClassDatabase classDatabase, boolean formatted)
-    {
+    public Marshaller(Class clazz, ClassDatabase classDatabase, boolean formatted) {
         this(clazz, classDatabase, formatted, true); //externally created marshallers are always root
     }
 
-    private Marshaller(Class clazz, ClassDatabase classDatabase, boolean formatted, boolean root)
-    {
+    private Marshaller(Class clazz, ClassDatabase classDatabase, boolean formatted, boolean root) {
         m_root = root;
         m_class = clazz;
         m_classDatabase = classDatabase;
@@ -64,46 +62,43 @@ public class Marshaller<T>
         m_marshalFalseBooleanValues = Boolean.getBoolean("marshalFalseBooleanValues");
     }
 
-    public void setUseCustomOrdering(boolean useCustomOrdering)
-    {
+    public void setIncludeIds(boolean includeIds) {
+        this.includeIds = includeIds;
+        for (Marshaller marshaller : m_marshallerMap.values()) {
+            marshaller.setIncludeIds(includeIds);
+        }
+    }
+
+    public void setUseCustomOrdering(boolean useCustomOrdering) {
         m_useCustomOrdering = useCustomOrdering;
     }
 
-    public void setMarshalFalseBooleanValues(boolean marshalFalseBooleanValues)
-    {
+    public void setMarshalFalseBooleanValues(boolean marshalFalseBooleanValues) {
         m_marshalFalseBooleanValues = marshalFalseBooleanValues;
     }
 
-    public Marshaller(Class clazz)
-    {
+    public Marshaller(Class clazz) {
         this(clazz, new ClassModelManager(clazz), true);
     }
 
-    public void marshal(String targetFileName, T obj)
-    {
+    public void marshal(String targetFileName, T obj) {
         marshal(new File(targetFileName), obj);
     }
 
-    public void marshal(File targetFile, T obj)
-    {
-        try
-        {
+    public void marshal(File targetFile, T obj) {
+        try {
             FileOutputStream fos = new FileOutputStream(targetFile);
             OutputStreamWriter osw = new OutputStreamWriter(fos, m_encoding);
             marshal(osw, obj);
             osw.flush();
             osw.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new XappException(e);
         }
     }
 
-    public String toXMLString(T object)
-    {
-        if(object==null)
-        {
+    public String toXMLString(T object) {
+        if (object == null) {
             return null;
         }
         StringWriter stringWriter = new StringWriter();
@@ -111,89 +106,68 @@ public class Marshaller<T>
         return stringWriter.toString();
     }
 
-    public void marshal(Writer out, T object, String rootNodeName)
-    {
+    public void marshal(Writer out, T object, String rootNodeName) {
         XMLWriter xmlWriter = new DefaultXMLWriter(out, m_formatted);
         marshalInternal(xmlWriter, object, rootNodeName, false);
     }
 
-    public void marshalList(Writer out, List list, String rootNodeName)
-    {
+    public void marshalList(Writer out, List list, String rootNodeName) {
         XMLWriter xmlWriter = new DefaultXMLWriter(out, m_formatted);
         //TODO!
     }
 
-    private void marshalInternal(XMLWriter xmlWriter, final T object, String rootNodeName, boolean includeTypeAttribute)
-    {
+    private void marshalInternal(XMLWriter xmlWriter, final T object, String rootNodeName, boolean includeTypeAttribute) {
         Class oClazz = object.getClass();
         ObjectMeta objectMeta = m_classDatabase.getClassModel(oClazz).find(object);
-        if (!oClazz.equals(m_class))
-        {
+        if (!oClazz.equals(m_class)) {
             System.out.println("WARNING!: Wrong type for this marshaller. Object's class is " + object.getClass() + ", required class is " + m_class);
         }
 
-        if (rootNodeName == null)
-        {
+        if (rootNodeName == null) {
             rootNodeName = m_classModel.getXMLMapping();
         }
 
 
-        try
-        {
+        try {
 
             List<ComparableNameValuePair> writeAsAttr = new ArrayList<ComparableNameValuePair>();
             List<PropertyValuePair> writeAsElements = new ArrayList<PropertyValuePair>();
-            if (includeTypeAttribute)
-            {
+            if (includeTypeAttribute) {
                 writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.TYPE_ATTR_TAG, object.getClass().getSimpleName()));
             }
-            for (Property property : m_properties)
-            {
+            if (includeIds) {
+                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ID_ATTR_TAG, "" + objectMeta.getId()));
+            }
+            for (Property property : m_properties) {
                 if (property.isTransient()) continue;
 
                 Object value = property.get(object);
 
-                if (value != null)
-                {
-                    if (property.isReference())
-                    {
+                if (value != null) {
+                    if (property.isReference()) {
                         //ok we just want to marshal the id of the object
                         //the id is the name
                         ClassModel classModel = property.getPropertyClassModel();
                         ObjectMeta refObjMeta = classModel.find(value);
                         Namespace namespace = objectMeta.getNamespace(classModel);
                         writeAsAttr.add(new PropertyValuePair(property, fullPath(namespace, refObjMeta)));
-                    }
-                    else if (property.isPrimitiveBoolean() && !m_marshalFalseBooleanValues && !(Boolean) value)
-                    {
+                    } else if (property.isPrimitiveBoolean() && !m_marshalFalseBooleanValues && !(Boolean) value) {
                         //skip this one!
-                    }
-                    else if (value instanceof StringSerializable)
-                    {
+                    } else if (value instanceof StringSerializable) {
                         StringSerializable ss = (StringSerializable) value;
                         String strVal = ss.writeString();
                         writeAsAttr.add(new PropertyValuePair(property, strVal));
-                    }
-                    else if (property instanceof ListProperty) //skip empty lists
+                    } else if (property instanceof ListProperty) //skip empty lists
                     {
-                        if (((ListProperty) property).getContainedType() == Integer.class)
-                        {
+                        if (((ListProperty) property).getContainedType() == Integer.class) {
                             writeAsAttr.add(new PropertyValuePair(property, IntegerListSerializer.doWrite((List<Integer>) value)));
-                        }
-                        else if (((ListProperty) property).getContainedType() == String.class)
-                        {
+                        } else if (((ListProperty) property).getContainedType() == String.class) {
                             writeAsAttr.add(new PropertyValuePair(property, StringUtils.convertToString((Collection<String>) value)));
-                        }
-                        else if (((ListProperty) property).getContainedType() == Long.class)
-                        {
+                        } else if (((ListProperty) property).getContainedType() == Long.class) {
                             writeAsAttr.add(new PropertyValuePair(property, LongListSerializer.doWrite((List<Long>) value)));
-                        }
-                        else if (((ListProperty) property).getContainedTypeClassModel().isEnum())
-                        {
+                        } else if (((ListProperty) property).getContainedTypeClassModel().isEnum()) {
                             writeAsAttr.add(new PropertyValuePair(property, EnumListSerializer.doWrite((List<Enum>) value)));
-                        }
-                        else if (value != null && !((Collection) value).isEmpty())
-                        {
+                        } else if (value != null && !((Collection) value).isEmpty()) {
                             writeAsElements.add(new PropertyValuePair(property, value));
                         }
                     }
@@ -201,20 +175,14 @@ public class Marshaller<T>
                     else if (!property.isFormattedText() &&
                             !isMultiline(value) &&
                             (property.isMarshalAsAttribute() ||
-                                    (property.isStringPrimitiveOrEnum() && !property.isMarshalAsElement())))
-                    {
+                                    (property.isStringPrimitiveOrEnum() && !property.isMarshalAsElement()))) {
                         writeAsAttr.add(new PropertyValuePair(property, value));
-                    }
-                    else
-                    {
+                    } else {
                         StringSerializer stringSerializer = m_classDatabase.getStringSerializer(property.getPropertyClass());
-                        if (stringSerializer != null)
-                        {
+                        if (stringSerializer != null) {
                             String s = stringSerializer.write(value);
                             writeAsAttr.add(new PropertyValuePair(property, s));
-                        }
-                        else if (value != null && !value.equals(""))
-                        {
+                        } else if (value != null && !value.equals("")) {
                             writeAsElements.add(new PropertyValuePair(property, value));
                         }
                     }
@@ -225,64 +193,49 @@ public class Marshaller<T>
             boolean changeModelExists = m_root && !changeHistory.isEmpty() && m_classDatabase.getRootClassModel().equals(m_classModel);
             boolean elementsExist = !writeAsElements.isEmpty();
             xmlWriter.writeOpeningTag(rootNodeName, writeAsAttr, elementsExist);
-            if (elementsExist || changeModelExists)
-            {
+            if (elementsExist || changeModelExists) {
                 // Make sure the list is sorted in order to get a deterministic result with different Java versions and OS
-                if (!m_useCustomOrdering)
-                {
+                if (!m_useCustomOrdering) {
                     Collections.sort(writeAsElements);
                 }
 
-                for (PropertyValuePair propertyValuePair : writeAsElements)
-                {
-                    writeNode(propertyValuePair, xmlWriter, object);
+                for (PropertyValuePair propertyValuePair : writeAsElements) {
+                    writeNode(propertyValuePair, xmlWriter, object, includeIds);
                 }
 
-                if (changeModelExists)
-                {
+                if (changeModelExists) {
                     getMarshaller(ChangeModel.class).marshalInternal(xmlWriter, changeHistory.createChangeModel(), null, false);
                 }
                 xmlWriter.writeClosingTag(rootNodeName);
             }
             xmlWriter.flush();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new XappException(e);
         }
     }
 
-    protected static boolean isMultiline(Object value)
-    {
-        return value instanceof String && ((String)value).indexOf('\n')!=-1;
+    protected static boolean isMultiline(Object value) {
+        return value instanceof String && ((String) value).indexOf('\n') != -1;
     }
 
-    public void marshal(Writer out, T object)
-    {
-        try
-        {
+    public void marshal(Writer out, T object) {
+        try {
             marshal(out, object, null);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new XappException(e);
         }
     }
 
-    private void writeNode(PropertyValuePair propertyValuePair, XMLWriter out, Object parentObject) throws IOException
-    {
+    private void writeNode(PropertyValuePair propertyValuePair, XMLWriter out, Object parentObject, boolean includeIds) throws IOException {
         ObjectMeta objectMeta = m_classDatabase.getClassModel(parentObject.getClass()).find(parentObject);
 
         Object value = propertyValuePair.getValue();
         String tagName = propertyValuePair.getName();
         Property property = propertyValuePair.getProperty();
         assert value != null;
-        if (isPrimitive(value) || value.getClass().equals(String.class) || value.getClass().isEnum())
-        {
+        if (isPrimitive(value) || value.getClass().equals(String.class) || value.getClass().isEnum()) {
             out.writeSimpleTag(tagName, String.valueOf(value), property);
-        }
-        else if (property instanceof ContainerProperty)
-        {
+        } else if (property instanceof ContainerProperty) {
             ContainerProperty containerProperty = (ContainerProperty) property;
 
             Collection col = containerProperty.getCollection(parentObject);
@@ -291,35 +244,26 @@ public class Marshaller<T>
                 out.writeOpeningTag(tagName, null, elementsExist);
             }
 
-            if (elementsExist)
-            {
-                for (Object listItem : col)
-                {
+            if (elementsExist) {
+                for (Object listItem : col) {
                     Class aClass = listItem.getClass();
-                    if (aClass.isEnum())
-                    {
+                    if (aClass.isEnum()) {
                         out.writeSimpleTag(aClass.getSimpleName(), String.valueOf(listItem), null);
                         continue;
-                    }
-                    else if (containerProperty.containsReferences())
-                    {
+                    } else if (containerProperty.containsReferences()) {
                         List<ComparableNameValuePair> anAttr = new ArrayList<ComparableNameValuePair>();
                         ClassModel classModel = containerProperty.getContainedTypeClassModel();
                         ObjectMeta refObjMeta = classModel.find(listItem);
                         Namespace namespace = objectMeta.getNamespace(classModel);
                         anAttr.add(new SimpleNameValuePair("ref", fullPath(namespace, refObjMeta)));
                         out.writeOpeningTag(aClass.getSimpleName(), anAttr, false);
-                    }
-                    else if (getResourceURL(listItem) != null)
-                    {
+                    } else if (getResourceURL(listItem) != null) {
                         //skip this object if it is represented as a resource
                         String resource = getResourceURL(listItem);
                         List<ComparableNameValuePair> attrTags = new ArrayList<ComparableNameValuePair>();
                         attrTags.add(new SimpleNameValuePair(Unmarshaller.DJW_INCLUDE_TAG, resource));
                         out.writeOpeningTag(listItem.getClass().getSimpleName(), attrTags, false);
-                    }
-                    else
-                    {
+                    } else {
                         getMarshaller(aClass).marshalInternal(out, listItem, null, false);
                     }
                 }
@@ -327,51 +271,42 @@ public class Marshaller<T>
                     out.writeClosingTag(tagName);
                 }
             }
-        }
-        else if (getResourceURL(parentObject, property) != null)
-        {
+        } else if (getResourceURL(parentObject, property) != null) {
             //skip this object if it is represented as a resource
             String resource = getResourceURL(parentObject, property);
             List<ComparableNameValuePair> attrTags = new ArrayList<ComparableNameValuePair>();
             attrTags.add(new SimpleNameValuePair(Unmarshaller.DJW_INCLUDE_TAG, resource));
             out.writeOpeningTag(value.getClass().getSimpleName(), attrTags, false);
-        }
-        else
-        {
+        } else {
             Class aClass = value.getClass();
             getMarshaller(aClass).marshalInternal(out, value, tagName, !aClass.equals(property.getPropertyClass()));
         }
     }
 
-    private String getResourceURL(Object listItem)
-    {
+    private String getResourceURL(Object listItem) {
         return m_classDatabase.getMarshallerContext().getIncludedResourceURL(listItem);
     }
 
-    private String getResourceURL(Object parentObject, Property property)
-    {
+    private String getResourceURL(Object parentObject, Property property) {
         return m_classDatabase.getMarshallerContext().getIncludedResourceURLByReference(new PropertyObjectPair(property, parentObject));
     }
 
-    private Marshaller getMarshaller(Class aClass)
-    {
+    private Marshaller getMarshaller(Class aClass) {
         Marshaller marsh = m_marshallerMap.get(aClass);
-        if (marsh == null)
-        {
+        if (marsh == null) {
             marsh = new Marshaller(aClass, m_classDatabase, m_formatted, false);
             marsh.setMarshalFalseBooleanValues(m_marshalFalseBooleanValues);
             marsh.setUseCustomOrdering(m_useCustomOrdering);
+            marsh.setIncludeIds(includeIds);
             m_marshallerMap.put(aClass, marsh);
         }
         return marsh;
     }
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
     }
 
-    private boolean isPrimitive(Object obj)
-    {
+    private boolean isPrimitive(Object obj) {
         Class cl = obj.getClass();
         return cl.equals(Boolean.class) ||
                 cl.equals(Byte.class) ||
@@ -385,25 +320,21 @@ public class Marshaller<T>
 
     }
 
-    public ClassDatabase getClassDatabase()
-    {
+    public ClassDatabase getClassDatabase() {
         return m_classDatabase;
     }
 
-    public static String toXML(Object obj)
-    {
+    public static String toXML(Object obj) {
         Marshaller marshaller = new Marshaller(obj.getClass());
         marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false, -1);
         return marshaller.toXMLString(obj);
     }
 
-    public static <E> String toXML(E obj, InspectionType inspectionType)
-    {
+    public static <E> String toXML(E obj, InspectionType inspectionType) {
         return new Marshaller<E>(obj.getClass(), new ClassModelManager(obj.getClass(), inspectionType), true).toXMLString(obj);
     }
 
-    public void reset(ClassDatabase classDatabase)
-    {
+    public void reset(ClassDatabase classDatabase) {
         m_classDatabase = classDatabase;
         m_classModel = classDatabase.getClassModel(m_class);
         m_properties = m_classModel.getAllProperties();
