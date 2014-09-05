@@ -46,9 +46,8 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objAdded(ObjLoc objLoc, XmlObj obj) {
-        ObjectMeta objectMeta = nodeUpdateApi.deserializeAndInsert(toObjectLocation(objLoc),
+        nodeUpdateApi.deserializeAndInsert(toObjectLocation(objLoc),
                 cdb.getClassModel(obj.getType()), obj.getData(), Charset.forName("UTF-8"));
-        objectMeta.setId(obj.getId());
     }
 
     @Override

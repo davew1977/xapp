@@ -35,9 +35,10 @@ public class LiveObject implements ObjUpdate {
     public void createObject(ObjLoc objLoc, Class type, String xml) {
 
         Unmarshaller un = new Unmarshaller(cdb.getClassModel(type));
+        un.setMaster(true);
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
         Long rev = 0L;
-        Long id = 0L;
+        Long id = 0L;                                              //todo wrong id passed as attr in the xml
         listener.objAdded(objLoc, new XmlObj(type, xml, rev, objectMeta.getId()));
     }
 
@@ -84,7 +85,7 @@ public class LiveObject implements ObjUpdate {
         }
         ObjectLocation objHome = obj.getHome();
         int oldIndex = obj.index();
-        ObjectMeta newInstance = cm.newInstance(objHome, true);
+        ObjectMeta newInstance = cm.newInstance(objHome, true, null);
         List<Property> properties = cm.getAllProperties();
         for (Property property : properties) {
             newInstance.set(property, obj.get(property));

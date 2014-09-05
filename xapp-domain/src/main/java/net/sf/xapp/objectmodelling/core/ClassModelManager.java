@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContext<T>, ClassModelContext
 {
     private Class rootType;
-    private AtomicLong idSequence = new AtomicLong(0);
+    private AtomicLong idSequence = new AtomicLong(0); //only used if the objects don't have an id already
     private Map<Long, ObjectMeta> instanceMap;
     private HashMap<Class, ClassModel> classModelMap;
     private HashMap<String, ClassModel> classModelBySimpleClassNameMap;//e.g. "Config" -> Config Class Model
@@ -97,8 +97,8 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     }
 
     @Override
-    public Long registerInstance(ObjectMeta objectMeta) {
-        long id = objectMeta.getId() != null ? objectMeta.getId() : idSequence.getAndIncrement();
+    public Long registerInstance(ObjectMeta objectMeta, Long id) {
+        id = id != null ? id : idSequence.getAndIncrement();
         instanceMap.put(id, objectMeta);
         return id;
     }

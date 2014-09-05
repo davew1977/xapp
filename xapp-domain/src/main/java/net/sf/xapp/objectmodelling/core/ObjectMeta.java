@@ -26,7 +26,7 @@ public class ObjectMeta<T> implements Namespace{
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
     private List<PendingObjectReference> pendingRefsToSet = new ArrayList<PendingObjectReference>();
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, int index) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, int index, Long id) {
         final ClassDatabase cdb = classModel.getClassDatabase();
         this.classModel = classModel;
         this.instance = obj;
@@ -37,7 +37,7 @@ public class ObjectMeta<T> implements Namespace{
                 lookupSets.put(aClass, new HashSet<ObjectMeta>());
             }
         }
-        this.id = classModel.registerWithClassDatabase(this);
+        this.id = classModel.registerWithClassDatabase(this, id);
         key = (String) get(classModel.getKeyProperty());
         setHome(home, updateModelHomeRef, index);
 
@@ -527,7 +527,7 @@ public class ObjectMeta<T> implements Namespace{
 
     public ObjectMeta copy() {
         Object clone = getClassModel().createClone(instance);
-        return getClassModel().createObjMeta(null, (T) clone, false, -1);
+        return getClassModel().createObjMeta(null, (T) clone, false, -1, null);
     }
 
     public String getSimpleClassName() {
@@ -631,11 +631,6 @@ public class ObjectMeta<T> implements Namespace{
 
     public Property getProperty(String propName) {
         return classModel.getProperty(propName);
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-        classModel.registerWithClassDatabase(this);
     }
 
     public boolean isA(Class clazz) {

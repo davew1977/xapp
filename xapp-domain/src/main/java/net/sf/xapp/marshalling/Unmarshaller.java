@@ -35,11 +35,16 @@ public class Unmarshaller<T> {
     private boolean m_validate;
     private boolean m_verbose = Boolean.getBoolean("verbose");
     private boolean m_root;
+    private boolean master; //for example on a server node, ignores any id attributes
 
     private Unmarshaller(ClassModel classModel, boolean root) {
         this.classModel = classModel;
         m_unmarshallerMap = new HashMap<ClassModel, Unmarshaller>();
         m_root = root;
+    }
+
+    public void setMaster(boolean master) {
+        this.master = master;
     }
 
     public Unmarshaller(ClassModel classModel) {
@@ -141,8 +146,15 @@ public class Unmarshaller<T> {
     private ObjectMeta<T> unmarshal(Element element, ObjectLocation parent) throws Exception {
         ClassDatabase cdb = classModel.getClassDatabase();
 
+        Long id = null;
+        if (!master) {
+            Attr attributeNode = element.getAttributeNode(ID_ATTR_TAG);
+            if(attributeNode != null) {
+                id = Long.parseLong(attributeNode.getNodeValue());
+            }
+        }
         //if an element exists we should create an empty object instead of setting to null
-        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true);
+        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true, id);
 
         NodeList nodeList = element.getChildNodes();
         for (int n = 0; n < nodeList.getLength(); n++) {
@@ -199,10 +211,6 @@ public class Unmarshaller<T> {
         for (int j = 0; j < attributes.getLength(); j++) {
             Node attrNode = attributes.item(j);
             if (attrNode.getNodeName().equals(TYPE_ATTR_TAG)) continue;
-            if (attrNode.getNodeName().equals(ID_ATTR_TAG)) {
-                objMeta.setId(Long.parseLong(attrNode.getNodeValue()));
-                continue;
-            }
             Property property = classModel.getProperty(attrNode.getNodeName());
             if (property == null || property.isReadOnly()) {
                 if (m_verbose)

@@ -326,7 +326,7 @@ public class Marshaller<T> {
 
     public static String toXML(Object obj) {
         Marshaller marshaller = new Marshaller(obj.getClass());
-        marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false, -1);
+        marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false, -1, null);
         return marshaller.toXMLString(obj);
     }
 

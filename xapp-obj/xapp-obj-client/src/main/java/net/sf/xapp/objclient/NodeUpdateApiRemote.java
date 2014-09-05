@@ -53,7 +53,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
         //TODO introduce synchronous service on server to handle object creation
         //TODO typically to handle default values etc
-        return type.newInstance(homeLocation, false);
+        return type.newInstance(homeLocation, false, -1L);
     }
 
     @Override
