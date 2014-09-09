@@ -160,6 +160,9 @@ public class Property<T> implements Comparable {
     }
 
     public Object convert(ObjectMeta objectMeta, String value) {
+        if(value == null) {
+            return null;
+        }
         Class propertyClass = getPropertyClass();
         StringSerializer strSerializer = getClassDatabase().getStringSerializer(propertyClass);
         Object obj = null;

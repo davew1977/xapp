@@ -38,8 +38,8 @@ public class LiveObject implements ObjUpdate {
         un.setMaster(true);
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
         Long rev = 0L;
-        Long id = 0L;                                              //todo wrong id passed as attr in the xml
-        listener.objAdded(objLoc, new XmlObj(type, xml, rev, objectMeta.getId()));
+        Long id = 0L;
+        listener.objAdded(objLoc, new XmlObj(type, objectMeta.toXml(), rev, objectMeta.getId()));
     }
 
     @Override
