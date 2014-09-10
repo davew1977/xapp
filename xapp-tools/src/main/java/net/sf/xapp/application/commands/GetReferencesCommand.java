@@ -46,7 +46,7 @@ public class GetReferencesCommand extends NodeCommand
                 List<Object> toAdd = new ArrayList<Object>(newValues);
                 toRemove.removeAll(newValues);
                 toAdd.removeAll(oldValues);
-                ClassModel cm = node.getListNodeContext().getContainerProperty().getPropertyClassModel();
+                ClassModel cm = node.getListNodeContext().getContainerProperty().getContainedTypeClassModel();
                 List<ObjectMeta> refsToRemove = cm.findAll(toRemove);
                 List<ObjectMeta> refsToAdd = cm.findAll(toAdd);
                 boolean unchanged = toAdd.isEmpty() && toRemove.isEmpty();

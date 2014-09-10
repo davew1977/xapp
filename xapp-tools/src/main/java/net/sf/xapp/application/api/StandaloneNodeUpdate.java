@@ -103,12 +103,12 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         Node parent = node.getParent();
         ObjectLocation objHome = obj.getHome();
         int oldIndex = node.index();
-        ObjectMeta newInstance = targetClassModel.newInstance(objHome, true, null);
+        deleteObject(obj);
+        ObjectMeta newInstance = targetClassModel.newInstance(objHome, true, obj.getId());
         List<Property> properties = targetClassModel.getAllProperties();
         for (Property property : properties) {
             newInstance.set(property, obj.get(property));
         }
-        deleteObject(obj);
 
         objHome.setIndex(newInstance, oldIndex);
         //refresh so a new Node will be created, then we must select that node

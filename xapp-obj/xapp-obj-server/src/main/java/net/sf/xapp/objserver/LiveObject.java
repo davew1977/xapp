@@ -85,12 +85,12 @@ public class LiveObject implements ObjUpdate {
         }
         ObjectLocation objHome = obj.getHome();
         int oldIndex = obj.index();
-        ObjectMeta newInstance = cm.newInstance(objHome, true, null);
+        obj.dispose();
+        ObjectMeta newInstance = cm.newInstance(objHome, true, id);
         List<Property> properties = cm.getAllProperties();
         for (Property property : properties) {
             newInstance.set(property, obj.get(property));
         }
-        obj.dispose();
 
         objHome.setIndex(newInstance, oldIndex);
         listener.typeChanged(id, newType);

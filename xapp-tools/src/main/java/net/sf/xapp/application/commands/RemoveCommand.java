@@ -44,7 +44,7 @@ public class RemoveCommand extends NodeCommand
         Node childBefore = parentNode.getChildBefore(node);
 
         if(node.isReference()) {
-            nodeUpdateApi.updateReferences(node.toObjLocation(), new ArrayList<ObjectMeta>(), Arrays.asList(node.objectMeta()));
+            nodeUpdateApi.updateReferences(node.myObjLocation(), new ArrayList<ObjectMeta>(), Arrays.asList(node.objectMeta()));
         } else {
             nodeUpdateApi.deleteObject(node.objectMeta());
         }
