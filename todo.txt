@@ -1,3 +1,5 @@
+BUG: create embedded object - should create an object on the server instead of locally, and
+
 implement difference in UI updates based on whether it was "me" or someone else doing the update
 
 implement prop priority, to allow simplified editor, which will expand for the advanced properties
