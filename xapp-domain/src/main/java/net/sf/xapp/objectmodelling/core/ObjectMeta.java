@@ -37,7 +37,7 @@ public class ObjectMeta<T> implements Namespace{
                 lookupSets.put(aClass, new HashSet<ObjectMeta>());
             }
         }
-        this.id = classModel.registerWithClassDatabase(this, id);
+        setId(id);
         key = (String) get(classModel.getKeyProperty());
         setHome(home, updateModelHomeRef, index);
 
@@ -62,6 +62,10 @@ public class ObjectMeta<T> implements Namespace{
                 }
             });
         }
+    }
+
+    public void setId(Long id) {
+        this.id = classModel.registerWithClassDatabase(this, id);
     }
 
     public void mapByKey(ObjectMeta obj) {

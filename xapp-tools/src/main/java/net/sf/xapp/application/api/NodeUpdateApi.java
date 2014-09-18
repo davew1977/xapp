@@ -25,7 +25,7 @@ public interface NodeUpdateApi {
      *
      * created object is not yet placed in the model
      */
-    ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type);
+    void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback);
 
     /**
      * This is used when an object already exists but has been moved within the object graph, or introduced to it for

@@ -14,6 +14,7 @@ package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeUpdateApi;
+import net.sf.xapp.application.api.ObjCreateCallback;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.core.*;
@@ -158,24 +159,29 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
 
     private void doCreateObject(ClassModel validImpl)
     {
-        final ObjectMeta objMeta = nodeUpdateApi.createObject(objLocation, validImpl);
-        EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
-        Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
-        {
-            public void save(List<PropertyUpdate> changes, boolean closing)
-            {
-                nodeUpdateApi.initObject(objMeta, changes);
-                m_propertyValue = objMeta.getInstance();
-                updateState();
-            }
-
+        nodeUpdateApi.createObject(objLocation, validImpl, new ObjCreateCallback() {
             @Override
-            public void close() {
-                nodeUpdateApi.deleteObject(objMeta);
+            public void objCreated(final ObjectMeta objMeta) {
+                EditableContext editableContext = new SingleTargetEditableContext(objMeta, SingleTargetEditableContext.Mode.CREATE, nodeUpdateApi);
+                Editor defaultEditor = EditorManager.getInstance().getEditor(editableContext, new EditorAdaptor()
+                {
+                    public void save(List<PropertyUpdate> changes, boolean closing)
+                    {
+                        nodeUpdateApi.initObject(objMeta, changes);
+                        m_propertyValue = objMeta.getInstance();
+                        updateState();
+                    }
+
+                    @Override
+                    public void close() {
+                        nodeUpdateApi.deleteObject(objMeta);
+                    }
+                });
+                defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);
+                defaultEditor.getMainFrame().setVisible(true);
             }
         });
-        defaultEditor.getMainFrame().setLocationRelativeTo(m_mainPanel);
-        defaultEditor.getMainFrame().setVisible(true);
+
     }
 
     public JComponent getComponent()

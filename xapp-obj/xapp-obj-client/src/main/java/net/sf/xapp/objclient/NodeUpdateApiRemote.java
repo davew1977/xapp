@@ -2,6 +2,8 @@ package net.sf.xapp.objclient;
 
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeUpdateApi;
+import net.sf.xapp.application.api.ObjCreateCallback;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
@@ -21,10 +23,14 @@ import java.util.List;
 public class NodeUpdateApiRemote implements NodeUpdateApi {
     private ClassDatabase cdb;
     private ObjUpdate remote;
+    private UserId userId;
+    private IncomingChangesAdaptor incomingChangesAdaptor;
 
-    public NodeUpdateApiRemote(ClassDatabase cdb, ObjUpdate remote) {
+    public NodeUpdateApiRemote(ClassDatabase cdb, ObjClientContext clientContext, String remoteKey, IncomingChangesAdaptor incomingChangesAdaptor) {
         this.cdb = cdb;
-        this.remote = remote;
+        this.remote = clientContext.objUpdate(remoteKey);
+        this.userId = clientContext.getUserId();
+        this.incomingChangesAdaptor = incomingChangesAdaptor;
     }
 
     @Override
@@ -46,14 +52,13 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
             }
             changeSets.add(new PropChangeSet(objectMeta.getId(), changes));
         }
-        remote.updateObject(changeSets);
+        remote.updateObject(userId, changeSets);
     }
 
     @Override
-    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
-        //TODO introduce synchronous service on server to handle object creation
-        //TODO typically to handle default values etc
-        return type.newInstance(homeLocation, false, -1L);
+    public void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback) {
+        incomingChangesAdaptor.setObjCreateCallback(callback);
+        remote.createEmptyObject(userId, toObjLoc(homeLocation), type.getContainedClass());
     }
 
     @Override
@@ -63,48 +68,45 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public PropertyChange initObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
-        objectMeta.update(potentialUpdates);
-        remote.createObject(toObjLoc(objectMeta.getHome()), objectMeta.getType(), objectMeta.toXml());
-        //delete local version of object
-        objectMeta.dispose();
+        updateObject(objectMeta, potentialUpdates);
         return null;
     }
 
     @Override
     public void deleteObject(ObjectMeta objectMeta) {
-        remote.deleteObject(objectMeta.getId());
+        remote.deleteObject(userId, objectMeta.getId());
     }
 
     @Override
     public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta) {
-        remote.moveInList(toObjLoc(objectLocation), objectMeta.getId(), delta);
+        remote.moveInList(userId, toObjLoc(objectLocation), objectMeta.getId(), delta);
     }
 
     @Override
     public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
-        remote.updateRefs(toObjLoc(objectLocation), toIds(refsToAdd), toIds(refsToRemove));
+        remote.updateRefs(userId, toObjLoc(objectLocation), toIds(refsToAdd), toIds(refsToRemove));
     }
 
     @Override
     public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
-        remote.changeType(obj.getId(), targetClassModel.getContainedClass());
+        remote.changeType(userId, obj.getId(), targetClassModel.getContainedClass());
     }
 
     @Override
     public void insertObject(ObjectLocation objectLocation, Object obj) {
         String xml = cdb.createMarshaller(obj.getClass()).toXMLString(obj);
-        remote.createObject(toObjLoc(objectLocation), obj.getClass(), xml);
+        remote.createObject(userId, toObjLoc(objectLocation), obj.getClass(), xml);
     }
 
     @Override
     public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
-        remote.createObject(toObjLoc(objectLocation), classModel.getContainedClass(), xml);
+        remote.createObject(userId, toObjLoc(objectLocation), classModel.getContainedClass(), xml);
         return null;
     }
 
     @Override
     public void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta) {
-        remote.moveObject(objMeta.getId(), toObjLoc(objectLocation));
+        remote.moveObject(userId, objMeta.getId(), toObjLoc(objectLocation));
     }
 
     private ObjLoc toObjLoc(ObjectLocation objectLocation) {

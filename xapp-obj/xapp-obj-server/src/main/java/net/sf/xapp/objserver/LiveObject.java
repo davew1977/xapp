@@ -2,6 +2,7 @@ package net.sf.xapp.objserver;
 
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.marshalling.Unmarshaller;
+import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
@@ -32,18 +33,22 @@ public class LiveObject implements ObjUpdate {
     }
 
     @Override
-    public void createObject(ObjLoc objLoc, Class type, String xml) {
+    public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
 
         Unmarshaller un = new Unmarshaller(cdb.getClassModel(type));
         un.setMaster(true);
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
-        Long rev = 0L;
-        Long id = 0L;
-        listener.objAdded(objLoc, new XmlObj(type, objectMeta.toXml(), rev, objectMeta.getId()));
+        listener.objAdded(principal, objLoc, new XmlObj(type, objectMeta.toXml(), 0L, objectMeta.getId()));
     }
 
     @Override
-    public void updateObject(List<PropChangeSet> changeSets) {
+    public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
+        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true, null);
+        listener.objCreated(principal, objLoc, new XmlObj(type, objectMeta.toXml(), 0L, objectMeta.getId()));
+    }
+
+    @Override
+    public void updateObject(UserId principal, List<PropChangeSet> changeSets) {
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
             ObjectMeta objectMeta = cdb.findObjById(objId);
@@ -56,25 +61,25 @@ public class LiveObject implements ObjUpdate {
             }
             objectMeta.update(updates);
         }
-        listener.propertiesChanged(changeSets);
+        listener.propertiesChanged(principal, changeSets);
     }
 
     @Override
-    public void deleteObject(Long id) {
+    public void deleteObject(UserId principal, Long id) {
         cdb.findObjById(id).dispose();
-        listener.objDeleted(id);
+        listener.objDeleted(principal, id);
     }
 
     @Override
-    public void moveObject(Long id, ObjLoc newObjLoc) {
+    public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
 
         cdb.findObjById(id).setHome(toObjectLocation(newObjLoc), true);
 
-        listener.objMoved(id, newObjLoc);
+        listener.objMoved(principal, id, newObjLoc);
     }
 
     @Override
-    public void changeType(Long id, Class newType) {
+    public void changeType(UserId principal, Long id, Class newType) {
         ObjectMeta obj = cdb.findObjById(id);
         ClassModel cm = cdb.getClassModel(newType);
         if (obj.hasReferences()) {
@@ -93,19 +98,19 @@ public class LiveObject implements ObjUpdate {
         }
 
         objHome.setIndex(newInstance, oldIndex);
-        listener.typeChanged(id, newType);
+        listener.typeChanged(principal, id, newType);
     }
 
     @Override
-    public void moveInList(ObjLoc objLoc, Long id, Integer delta) {
+    public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
         ObjectMeta obj = cdb.findObjById(id);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
         obj.updateIndex(objectLocation, delta);
-        listener.objMovedInList(objLoc, id, delta);
+        listener.objMovedInList(principal, objLoc, id, delta);
     }
 
     @Override
-    public void updateRefs(ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
+    public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
         List<ObjectMeta> toRemove = lookup(refsToRemove);
         List<ObjectMeta> toAdd = lookup(refsToAdd);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
@@ -116,7 +121,7 @@ public class LiveObject implements ObjUpdate {
             objectMeta.createAndSetReference(objectLocation);
         }
 
-        listener.refsUpdated(objLoc, refsToAdd, refsToRemove);
+        listener.refsUpdated(principal, objLoc, refsToAdd, refsToRemove);
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {

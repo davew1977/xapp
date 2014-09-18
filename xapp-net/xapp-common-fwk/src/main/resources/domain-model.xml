@@ -115,6 +115,8 @@
     <ObjectId id="112" name="ObjUpdate_UpdateRefs"/>
     <ObjectId id="113" name="ObjUpdate_ChangeType"/>
     <ObjectId id="114" name="ObjListener_ObjMovedInList"/>
+    <ObjectId id="115" name="ObjUpdate_CreateEmptyObject"/>
+    <ObjectId id="116" name="ObjListener_ObjCreated"/>
     <ObjectId id="117" name="ObjListener_TypeChanged"/>
     <ObjectId id="119" name="ObjListener_RefsUpdated"/>
   </MessageIds>
@@ -644,7 +646,12 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     </Response>
                   </Message>
                 </Api>
-                <Api apiType="ASYNC" description="api for clients to use to update the master object on the server" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" hidePrincipalField="true" name="ObjUpdate" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                <Api apiType="ASYNC" description="api for clients to use to update the master object on the server" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ObjUpdate" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                  <Message name="CreateEmptyObject">
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" name="type" type="provided/java/lang/Class"/>
+                    <Response name="CreateEmptyObjectResponse"/>
+                  </Message>
                   <Message name="CreateObject">
                     <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
                     <Field access="READ_ONLY" name="type" type="provided/java/lang/Class"/>
@@ -686,35 +693,48 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <DirMeta name="objlistener">
                 <Api apiType="ASYNC" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ObjListener">
                   <Message name="PropertiesChanged">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" list="true" name="changeSets" type="xapp-common-fwk/net/sf/xapp/objserver/types/PropChangeSet"/>
                     <Response name="PropertiesChangedResponse"/>
                   </Message>
+                  <Message name="ObjCreated">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
+                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
+                    <Field access="READ_ONLY" name="obj" type="xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj"/>
+                    <Response name="ObjCreatedResponse"/>
+                  </Message>
                   <Message name="ObjAdded">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
                     <Field access="READ_ONLY" name="obj" type="xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj"/>
                     <Response name="ObjAddedResponse"/>
                   </Message>
                   <Message name="ObjMoved">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="newObjLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
                     <Response name="ObjMovedResponse"/>
                   </Message>
                   <Message name="ObjDeleted">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Response name="ObjDeletedResponse"/>
                   </Message>
                   <Message name="TypeChanged">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="newType" type="provided/java/lang/Class"/>
                     <Response name="TypeChangedResponse"/>
                   </Message>
                   <Message name="ObjMovedInList">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="delta" type="provided/java/lang/Integer"/>
                     <Response name="ObjMovedInListResponse"/>
                   </Message>
                   <Message name="RefsUpdated">
+                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
                     <Field access="READ_ONLY" list="true" name="refsCreated" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" list="true" name="refsRemoved" type="provided/java/lang/Long"/>

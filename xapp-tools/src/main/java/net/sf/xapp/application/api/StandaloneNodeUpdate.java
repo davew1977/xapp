@@ -52,10 +52,10 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
+    public void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback) {
         ObjectMeta objMeta = type.newInstance(homeLocation, false, null);
         appContainer.getApplication().nodeAboutToBeAdded(homeLocation, objMeta);
-        return objMeta;
+        callback.objCreated(objMeta);
     }
 
     public void moveOrInsertObjMeta(ObjectLocation newLoc, ObjectMeta objMeta) {

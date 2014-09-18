@@ -21,8 +21,8 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public ObjectMeta createObject(ObjectLocation homeLocation, ClassModel type) {
-        return null;
+    public void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback) {
+
     }
 
     @Override

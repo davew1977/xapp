@@ -23,6 +23,6 @@ public class ObjClientContext extends ClientContext {
     }
 
     public ObjUpdate objUpdate(String key) {
-        return new ObjUpdateAdaptor(getUserId(), key, getServerBoundMessageHandler());
+        return new ObjUpdateAdaptor(key, getServerBoundMessageHandler());
     }
 }
