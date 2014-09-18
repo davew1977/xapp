@@ -79,7 +79,7 @@ public interface ClassDatabase<T>
     InspectionType getInspectionType();
     void setMarshalDatesAsLongs();
 
-    Long registerInstance(ObjectMeta objectMeta, Long id);
+    void registerInstance(ObjectMeta objectMeta);
 
     Collection<ObjectMeta> allManagedObjects();
 
@@ -89,4 +89,6 @@ public interface ClassDatabase<T>
     void removeInstance(ObjectMeta objectMeta);
 
     ObjectMeta findObjById(Long objId);
+
+    Long nextId();
 }

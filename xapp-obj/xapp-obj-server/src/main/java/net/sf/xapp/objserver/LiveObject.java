@@ -43,7 +43,7 @@ public class LiveObject implements ObjUpdate {
 
     @Override
     public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true, null);
+        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true, cdb.nextId());
         listener.objCreated(principal, objLoc, new XmlObj(type, objectMeta.toXml(), 0L, objectMeta.getId()));
     }
 

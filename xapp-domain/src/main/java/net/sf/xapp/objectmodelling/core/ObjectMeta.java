@@ -65,7 +65,10 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void setId(Long id) {
-        this.id = classModel.registerWithClassDatabase(this, id);
+        if (id != null) {
+            this.id = id;
+            classModel.registerWithClassDatabase(this);
+        }
     }
 
     public void mapByKey(ObjectMeta obj) {

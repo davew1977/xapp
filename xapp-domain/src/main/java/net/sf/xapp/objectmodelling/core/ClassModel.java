@@ -618,8 +618,8 @@ public class ClassModel<T> {
         }
     }
 
-    public Long registerWithClassDatabase(ObjectMeta objectMeta, Long id) {
-        return getClassDatabase().registerInstance(objectMeta, id);
+    public void registerWithClassDatabase(ObjectMeta objectMeta) {
+        getClassDatabase().registerInstance(objectMeta);
     }
 
     public void tryAndCallPostInit(ObjectMeta objectMeta) {

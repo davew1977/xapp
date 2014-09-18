@@ -152,6 +152,8 @@ public class Unmarshaller<T> {
             if(attributeNode != null) {
                 id = Long.parseLong(attributeNode.getNodeValue());
             }
+        } else {
+            id = cdb.nextId();
         }
         //if an element exists we should create an empty object instead of setting to null
         ObjectMeta<T> objectMeta = classModel.newInstance(parent, true, id);
@@ -279,6 +281,7 @@ public class Unmarshaller<T> {
         Unmarshaller unmarshaller = m_unmarshallerMap.get(classModel);
         if (unmarshaller == null) {
             unmarshaller = new Unmarshaller(classModel, false);
+            unmarshaller.setMaster(master);
             unmarshaller.m_verbose = m_verbose;
             m_unmarshallerMap.put(classModel, unmarshaller);
         }

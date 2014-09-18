@@ -55,6 +55,7 @@ public class ObjInfo {
     public void load(File dir) throws ClassNotFoundException {
         Class aClass = Class.forName(className);
         Unmarshaller unmarshaller = new Unmarshaller(aClass);
+        unmarshaller.setMaster(true);
         objectMeta = unmarshaller.unmarshal(new File(dir, fileName()));
     }
 
