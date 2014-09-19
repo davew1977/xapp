@@ -36,15 +36,14 @@ public class LiveObject implements ObjUpdate {
     public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
 
         Unmarshaller un = new Unmarshaller(cdb.getClassModel(type));
-        un.setMaster(true);
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
-        listener.objAdded(principal, objLoc, new XmlObj(type, objectMeta.toXml(), 0L, objectMeta.getId()));
+        listener.objAdded(principal, objLoc, toXmlObj(objectMeta));
     }
 
     @Override
     public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true, cdb.nextId());
-        listener.objCreated(principal, objLoc, new XmlObj(type, objectMeta.toXml(), 0L, objectMeta.getId()));
+        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true);
+        listener.objCreated(principal, objLoc, toXmlObj(objectMeta));
     }
 
     @Override
@@ -91,14 +90,15 @@ public class LiveObject implements ObjUpdate {
         ObjectLocation objHome = obj.getHome();
         int oldIndex = obj.index();
         obj.dispose();
-        ObjectMeta newInstance = cm.newInstance(objHome, true, id);
+        objHome.setIndex(oldIndex);
+        ObjectMeta newInstance = cm.newInstance(objHome, true);
         List<Property> properties = cm.getAllProperties();
         for (Property property : properties) {
             newInstance.set(property, obj.get(property));
         }
 
-        objHome.setIndex(newInstance, oldIndex);
-        listener.typeChanged(principal, id, newType);
+        //should not be needed : objHome.setIndex(newInstance, oldIndex);
+        listener.typeChanged(principal, new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), oldIndex), id, toXmlObj(newInstance));
     }
 
     @Override
@@ -135,5 +135,9 @@ public class LiveObject implements ObjUpdate {
             result.add(cdb.findObjById(id));
         }
         return result;
+    }
+
+    private XmlObj toXmlObj(ObjectMeta objectMeta) {
+        return new XmlObj(objectMeta.getType(), objectMeta.toXml(), 0L, objectMeta.getId());
     }
 }

@@ -9,10 +9,15 @@ import java.util.Map;
 public class ObjectLocation {
     private final ObjectMeta obj;
     private final Property property;
+    private int index = -1;
 
     public ObjectLocation(ObjectMeta obj, Property property) {
         this.obj = obj;
         this.property = property;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index != null ? index : -1;
     }
 
     public ObjectMeta getObj() {
@@ -52,9 +57,6 @@ public class ObjectLocation {
     }
 
     public PropertyChange set(ObjectMeta ref) {
-        return set(ref, -1);
-    }
-    public PropertyChange set(ObjectMeta ref, int index) {
         if (property.isContainer()) {
             ContainerProperty cp = (ContainerProperty) property;
             return cp.add(obj, index, ref);
@@ -79,7 +81,8 @@ public class ObjectLocation {
 
     public int setIndex(ObjectMeta objectMeta, int index) {
         unset(objectMeta);
-        set(objectMeta, index);
+        setIndex(index);
+        set(objectMeta);
         return index;
     }
 
@@ -155,5 +158,9 @@ public class ObjectLocation {
             objMeta.flushPendingRefs();
             objMeta = objMeta.getParent();
         }
+    }
+
+    public Integer getIndex() {
+        return index == -1 ? null : index;
     }
 }

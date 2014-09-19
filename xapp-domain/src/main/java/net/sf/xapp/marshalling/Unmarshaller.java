@@ -35,16 +35,11 @@ public class Unmarshaller<T> {
     private boolean m_validate;
     private boolean m_verbose = Boolean.getBoolean("verbose");
     private boolean m_root;
-    private boolean master; //for example on a server node, ignores any id attributes
 
     private Unmarshaller(ClassModel classModel, boolean root) {
         this.classModel = classModel;
         m_unmarshallerMap = new HashMap<ClassModel, Unmarshaller>();
         m_root = root;
-    }
-
-    public void setMaster(boolean master) {
-        this.master = master;
     }
 
     public Unmarshaller(ClassModel classModel) {
@@ -146,17 +141,15 @@ public class Unmarshaller<T> {
     private ObjectMeta<T> unmarshal(Element element, ObjectLocation parent) throws Exception {
         ClassDatabase cdb = classModel.getClassDatabase();
 
-        Long id = null;
-        if (!master) {
+        //if an element exists we should create an empty object instead of setting to null
+        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true);
+
+        if (!getClassDatabase().isMaster()) {
             Attr attributeNode = element.getAttributeNode(ID_ATTR_TAG);
             if(attributeNode != null) {
-                id = Long.parseLong(attributeNode.getNodeValue());
+                objectMeta.setId(Long.parseLong(attributeNode.getNodeValue()));
             }
-        } else {
-            id = cdb.nextId();
         }
-        //if an element exists we should create an empty object instead of setting to null
-        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true, id);
 
         NodeList nodeList = element.getChildNodes();
         for (int n = 0; n < nodeList.getLength(); n++) {
@@ -281,7 +274,6 @@ public class Unmarshaller<T> {
         Unmarshaller unmarshaller = m_unmarshallerMap.get(classModel);
         if (unmarshaller == null) {
             unmarshaller = new Unmarshaller(classModel, false);
-            unmarshaller.setMaster(master);
             unmarshaller.m_verbose = m_verbose;
             m_unmarshallerMap.put(classModel, unmarshaller);
         }

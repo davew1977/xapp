@@ -110,7 +110,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     private ObjLoc toObjLoc(ObjectLocation objectLocation) {
-        return new ObjLoc(objectLocation.getObj().getId(), objectLocation.getProperty().getName());
+        return new ObjLoc(objectLocation.getObj().getId(), objectLocation.getProperty().getName(), objectLocation.getIndex());
     }
 
     private List<Long> toIds(List<ObjectMeta> refsToAdd) {

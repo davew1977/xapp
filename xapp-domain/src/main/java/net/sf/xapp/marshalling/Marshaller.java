@@ -45,7 +45,6 @@ public class Marshaller<T> {
     public String m_encoding = "UTF-8";
     private boolean m_root;
     private boolean m_useCustomOrdering;
-    private boolean includeIds;
 
     public Marshaller(Class clazz, ClassDatabase classDatabase, boolean formatted) {
         this(clazz, classDatabase, formatted, true); //externally created marshallers are always root
@@ -60,13 +59,6 @@ public class Marshaller<T> {
         Collections.sort(m_properties);
         m_formatted = formatted;
         m_marshalFalseBooleanValues = Boolean.getBoolean("marshalFalseBooleanValues");
-    }
-
-    public void setIncludeIds(boolean includeIds) {
-        this.includeIds = includeIds;
-        for (Marshaller marshaller : m_marshallerMap.values()) {
-            marshaller.setIncludeIds(includeIds);
-        }
     }
 
     public void setUseCustomOrdering(boolean useCustomOrdering) {
@@ -135,8 +127,12 @@ public class Marshaller<T> {
             if (includeTypeAttribute) {
                 writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.TYPE_ATTR_TAG, object.getClass().getSimpleName()));
             }
-            if (includeIds) {
-                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ID_ATTR_TAG, "" + objectMeta.getId()));
+            if (getClassDatabase().isMaster()) {
+                Long id = objectMeta.getId();
+                if(id == null) {
+                    throw new RuntimeException("trying to marshall object without id");
+                }
+                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ID_ATTR_TAG, "" + id));
             }
             for (Property property : m_properties) {
                 if (property.isTransient()) continue;
@@ -200,7 +196,7 @@ public class Marshaller<T> {
                 }
 
                 for (PropertyValuePair propertyValuePair : writeAsElements) {
-                    writeNode(propertyValuePair, xmlWriter, object, includeIds);
+                    writeNode(propertyValuePair, xmlWriter, object);
                 }
 
                 if (changeModelExists) {
@@ -226,7 +222,7 @@ public class Marshaller<T> {
         }
     }
 
-    private void writeNode(PropertyValuePair propertyValuePair, XMLWriter out, Object parentObject, boolean includeIds) throws IOException {
+    private void writeNode(PropertyValuePair propertyValuePair, XMLWriter out, Object parentObject) throws IOException {
         ObjectMeta objectMeta = m_classDatabase.getClassModel(parentObject.getClass()).find(parentObject);
 
         Object value = propertyValuePair.getValue();
@@ -297,7 +293,6 @@ public class Marshaller<T> {
             marsh = new Marshaller(aClass, m_classDatabase, m_formatted, false);
             marsh.setMarshalFalseBooleanValues(m_marshalFalseBooleanValues);
             marsh.setUseCustomOrdering(m_useCustomOrdering);
-            marsh.setIncludeIds(includeIds);
             m_marshallerMap.put(aClass, marsh);
         }
         return marsh;
@@ -326,7 +321,7 @@ public class Marshaller<T> {
 
     public static String toXML(Object obj) {
         Marshaller marshaller = new Marshaller(obj.getClass());
-        marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false, -1, null);
+        marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false);
         return marshaller.toXMLString(obj);
     }
 

@@ -26,7 +26,7 @@ public class ObjectMeta<T> implements Namespace{
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
     private List<PendingObjectReference> pendingRefsToSet = new ArrayList<PendingObjectReference>();
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, int index, Long id) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, Long id) {
         final ClassDatabase cdb = classModel.getClassDatabase();
         this.classModel = classModel;
         this.instance = obj;
@@ -39,7 +39,7 @@ public class ObjectMeta<T> implements Namespace{
         }
         setId(id);
         key = (String) get(classModel.getKeyProperty());
-        setHome(home, updateModelHomeRef, index);
+        setHome(home, updateModelHomeRef);
 
         //add metas for children of this object
         List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
@@ -451,19 +451,11 @@ public class ObjectMeta<T> implements Namespace{
         }
         return result;
     }
+    public PropertyChange setHomeRef() {
+        return this.home.set(this);
+    }
 
     public PropertyChange setHome(ObjectLocation newLoc, boolean updateModel) {
-        return setHome(newLoc, updateModel, -1);
-    }
-
-    public PropertyChange setHomeRef() {
-        return setHomeRef(-1);
-    }
-    public PropertyChange setHomeRef(int index) {
-        return this.home.set(this, index);
-    }
-
-    public PropertyChange setHome(ObjectLocation newLoc, boolean updateModel, int index) {
         ObjectLocation old = home;
         if (!Property.objEquals(old, newLoc)) {
             if (updateModel && old != null) {
@@ -471,7 +463,7 @@ public class ObjectMeta<T> implements Namespace{
             }
             this.home = newLoc;
             if (updateModel && newLoc != null) {
-                return setHomeRef(index);
+                return setHomeRef();
             }
             updateMetaHierarchy(key);
         }
@@ -534,7 +526,7 @@ public class ObjectMeta<T> implements Namespace{
 
     public ObjectMeta copy() {
         Object clone = getClassModel().createClone(instance);
-        return getClassModel().createObjMeta(null, (T) clone, false, -1, null);
+        return getClassModel().createObjMeta(null, (T) clone, false);
     }
 
     public String getSimpleClassName() {
@@ -632,7 +624,6 @@ public class ObjectMeta<T> implements Namespace{
 
     public String toXml() {
         Marshaller marshaller = classModel.getClassDatabase().createMarshaller(classModel.getContainedClass());
-        marshaller.setIncludeIds(true);
         return marshaller.toXMLString(instance);
     }
 

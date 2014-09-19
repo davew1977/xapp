@@ -91,4 +91,8 @@ public interface ClassDatabase<T>
     ObjectMeta findObjById(Long objId);
 
     Long nextId();
+
+    boolean isMaster();
+
+    void setMaster();
 }

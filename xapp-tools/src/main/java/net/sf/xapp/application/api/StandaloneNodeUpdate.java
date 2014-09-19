@@ -53,7 +53,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback) {
-        ObjectMeta objMeta = type.newInstance(homeLocation, false, null);
+        ObjectMeta objMeta = type.newInstance(homeLocation, false);
         appContainer.getApplication().nodeAboutToBeAdded(homeLocation, objMeta);
         callback.objCreated(objMeta);
     }
@@ -73,7 +73,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
 
     @Override
     public void insertObject(ObjectLocation objectLocation, Object obj) {
-        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(objectLocation, obj, true, -1, null);
+        ObjectMeta objectMeta = getClassModel(obj).createObjMeta(objectLocation, obj, true);
         //create the node
         createNode(toNode(objectLocation), objectMeta);
     }
@@ -104,7 +104,8 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         ObjectLocation objHome = obj.getHome();
         int oldIndex = node.index();
         deleteObject(obj);
-        ObjectMeta newInstance = targetClassModel.newInstance(objHome, true, obj.getId());
+        ObjectMeta newInstance = targetClassModel.newInstance(objHome, true);
+        newInstance.setId(obj.getId());
         List<Property> properties = targetClassModel.getAllProperties();
         for (Property property : properties) {
             newInstance.set(property, obj.get(property));

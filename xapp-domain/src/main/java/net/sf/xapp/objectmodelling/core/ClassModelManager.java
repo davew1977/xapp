@@ -56,6 +56,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private boolean m_initializing;
     private ObjectMeta<T> rootObjMeta;
     private InspectionType m_inspectionType;
+    private boolean master;
 
     public ClassModelManager(Class<T> rootType)
     {
@@ -130,6 +131,20 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public Long nextId() {
         return idSequence.getAndIncrement();
+    }
+
+    @Override
+    public boolean isMaster() {
+        return master;
+    }
+
+    @Override
+    public void setMaster() {
+        master=true;
+    }
+
+    public void setMaster(boolean master) {
+        this.master = master;
     }
 
     public Unmarshaller getRootUnmarshaller()

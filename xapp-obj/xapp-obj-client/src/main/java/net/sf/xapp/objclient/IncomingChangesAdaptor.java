@@ -87,8 +87,10 @@ public class IncomingChangesAdaptor implements ObjListener {
     }
 
     @Override
-    public void typeChanged(UserId userId, Long id, Class newType) {
-       nodeUpdateApi.changeType(cdb.findObjById(id), cdb.getClassModel(newType));
+    public void typeChanged(UserId user, ObjLoc objLoc, Long oldId, XmlObj newObj) {
+        //remove old object
+        nodeUpdateApi.deleteObject(cdb.findObjById(oldId));
+        insertObj(objLoc, newObj);
     }
 
     @Override
@@ -98,7 +100,9 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {
         ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
-        return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
+        ObjectLocation objectLocation = new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
+        objectLocation.setIndex(objLoc.getIndex());
+        return objectLocation;
     }
 
     private List<ObjectMeta> lookup(List<Long> ids) {
