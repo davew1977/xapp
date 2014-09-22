@@ -1,15 +1,15 @@
-BUG: create embedded object - should create an object on the server instead of locally, and
+DONE: BUG: create embedded object - should create an object on the server instead of locally, and
 
 implement difference in UI updates based on whether it was "me" or someone else doing the update
 
 implement prop priority, to allow simplified editor, which will expand for the advanced properties
 
-DONE: paste xml not working when there is a reference in the pasted object
-DONE: prevent module from being a namespace for the java files
 
-POSTPONE: (statically widened them instead) auto widen reference drop downs
 add a "package" class which can extend dirmeta, but will allow providing an alias for the package name to improve usability in the editor
 
+DONE: paste xml not working when there is a reference in the pasted object
+DONE: prevent module from being a namespace for the java files
+POSTPONE: (statically widened them instead) auto widen reference drop downs
 DONE: figure out how to specify a special path separator
 DONE: list property annotation should also apply to the generated xml
 

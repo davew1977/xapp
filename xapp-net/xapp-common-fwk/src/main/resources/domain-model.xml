@@ -328,7 +328,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 </Api>
               </DirMeta>
               <DirMeta name="chatapp">
-                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ChatApp" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" hidePrincipalField="true" name="ChatApp" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
                   <Message name="NewChatMessage">
                     <Field access="READ_ONLY" name="message" type="provided/java/lang/String"/>
                     <Response name="NewChatMessageResponse"/>
@@ -344,10 +344,12 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Response name="ChatBroadcastResponse"/>
                   </Message>
                   <Message name="UserJoined">
+                    <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
                     <Response name="UserJoinedResponse"/>
                   </Message>
                   <Message name="UserLeft">
+                    <Field access="READ_ONLY" name="userId" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
                     <Field access="READ_ONLY" name="nickname" type="provided/java/lang/String"/>
                     <Response name="UserLeftResponse"/>
                   </Message>
@@ -367,7 +369,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <DirMeta name="chatuser">
                 <Api apiType="ASYNC" clientVisible="true" errors="" hideEntityKey="true" name="ChatUser" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
                   <Message name="ChatChannelState">
-                    <Field access="READ_ONLY" list="true" name="members" type="provided/java/lang/String"/>
+                    <Field access="READ_ONLY" mapKeyType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId" name="members" type="provided/java/lang/String"/>
                     <Response name="ChatChannelStateResponse"/>
                   </Message>
                 </Api>

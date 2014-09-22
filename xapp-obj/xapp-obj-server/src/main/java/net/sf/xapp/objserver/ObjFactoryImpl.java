@@ -2,9 +2,13 @@ package net.sf.xapp.objserver;
 
 import net.sf.xapp.net.api.channel.Channel;
 import net.sf.xapp.net.api.channel.ChannelAdaptor;
+import net.sf.xapp.net.api.chatapp.ChatApp;
+import net.sf.xapp.net.api.chatapp.ChatAppAdaptor;
 import net.sf.xapp.net.api.messagesender.MessageSender;
+import net.sf.xapp.net.api.userlookup.UserLookup;
 import net.sf.xapp.net.server.channels.ChannelImpl;
 import net.sf.xapp.net.server.channels.UserLocator;
+import net.sf.xapp.net.server.chat.ChatAppImpl;
 import net.sf.xapp.net.server.clustering.ClusterFacade;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopManager;
 import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
@@ -32,19 +36,21 @@ public class ObjFactoryImpl {
     private final MessageSender messageSender;
     private final UserLocator userLocator;
     private final SimpleXmlDatabase xmlDatabase;
+    private final UserLookup userLookup;
 
     public ObjFactoryImpl(ClusterFacade clusterFacade,
                           EventLoopManager eventLoopManager,
                           EntityRepository entityRepository,
                           MessageSender messageSender,
                           UserLocator userLocator,
-                          SimpleXmlDatabase xmlDatabase) {
+                          SimpleXmlDatabase xmlDatabase, UserLookup userLookup) {
         this.clusterFacade = clusterFacade;
         this.eventLoopManager = eventLoopManager;
         this.entityRepository = entityRepository;
         this.messageSender = messageSender;
         this.userLocator = userLocator;
         this.xmlDatabase = xmlDatabase;
+        this.userLookup = userLookup;
     }
 
     @PostConstruct
@@ -58,10 +64,13 @@ public class ObjFactoryImpl {
 
     public void create_internal(String key, ObjectMeta objectMeta) {
         ObjController objController = new ObjController(key, objectMeta);
+        ChatAppImpl chatApp = new ChatAppImpl(userLookup, key);
         ChannelImpl channel = new ChannelImpl(messageSender, userLocator, objController);
 
         ChannelAdaptor channelEL = new ChannelAdaptor(key,
                 new EventLoopMessageHandler<Channel>(eventLoopManager, channel));
+        ChatApp chatEl = new ChatAppAdaptor(key,
+                new EventLoopMessageHandler<ChatApp>(eventLoopManager, chatApp));
         ObjManager objServerEL = new ObjManagerAdaptor(key,
                 new EventLoopMessageHandler<ObjManager>(eventLoopManager, objController));
         ObjUpdate objUpdateEL= new ObjUpdateAdaptor(key,
@@ -70,6 +79,7 @@ public class ObjFactoryImpl {
         entityRepository.add(ObjManager.class, key, objServerEL);
         entityRepository.add(ObjUpdate.class, key, objUpdateEL);
         entityRepository.add(Channel.class, key, channelEL);
+        entityRepository.add(ChatApp.class, key, chatApp);
 
         clusterFacade.addEntityMapping(key);
     }

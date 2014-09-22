@@ -22,13 +22,14 @@ import net.sf.xapp.net.server.channels.NotifyProxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ChatAppImpl implements ChatApp, App
 {
     private final String key;
     private ChatClient chatClient;
-    private Map<UserId, UserEndpoint> nicknameMap;
+    private Map<UserId, String> nicknameMap;
     private UserLookup userLookup;
     private CommChannel commChannel;
 
@@ -36,7 +37,7 @@ public class ChatAppImpl implements ChatApp, App
     {
         this.userLookup = userLookup;
         this.key = key;
-        nicknameMap = new HashMap<UserId, UserEndpoint>();
+        nicknameMap = new LinkedHashMap<UserId, String>();
     }
 
     public void setCommChannel(CommChannel commChannel)
@@ -54,7 +55,7 @@ public class ChatAppImpl implements ChatApp, App
     @Override
     public void newChatMessage(UserId sender, String message)
     {
-        chatClient.chatBroadcast(sender, message, nicknameMap.get(sender).nickname);
+        chatClient.chatBroadcast(sender, message, nicknameMap.get(sender));
     }
 
     @Override
@@ -74,33 +75,15 @@ public class ChatAppImpl implements ChatApp, App
     {
         String nickname = userLookup.findUser(userId).getUser().getUsername();
         ChatUser chatPlayer = new ChatUserAdaptor(new NotifyProxy<ChatUser>(commChannel));
-        nicknameMap.put(userId, new UserEndpoint(nickname, chatPlayer));
-        chatClient.userJoined(nickname);
-        Collection<UserEndpoint> chatUsers = nicknameMap.values();
-        ArrayList<String> usernames = new ArrayList<String>();
-        for (UserEndpoint user : chatUsers)
-        {
-            usernames.add(user.nickname);
-        }
-        chatPlayer.chatChannelState(userId, usernames);
+        nicknameMap.put(userId, nickname);
+        chatClient.userJoined(userId, nickname);
+        chatPlayer.chatChannelState(userId, nicknameMap);
     }
 
     @Override
     public void userLeft(UserId userId)
     {
-        chatClient.userLeft(nicknameMap.remove(userId).nickname);
-    }
-
-    private static class UserEndpoint
-    {
-        private final String nickname;
-        private final ChatUser chatUser;
-
-        private UserEndpoint(String nickname, ChatUser chatUser)
-        {
-            this.nickname = nickname;
-            this.chatUser = chatUser;
-        }
+        chatClient.userLeft(userId, nicknameMap.remove(userId));
     }
 
     @Override

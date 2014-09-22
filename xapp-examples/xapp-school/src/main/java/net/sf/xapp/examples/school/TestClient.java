@@ -1,5 +1,10 @@
 package net.sf.xapp.examples.school;
 
+import net.sf.xapp.net.api.chatapp.ChatApp;
+import net.sf.xapp.net.api.chatclient.ChatClient;
+import net.sf.xapp.net.api.chatclient.ChatClientAdaptor;
+import net.sf.xapp.net.api.chatuser.ChatUser;
+import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.objclient.IncomingChangesAdaptor;
 import net.sf.xapp.objclient.NodeUpdateApiRemote;
 import net.sf.xapp.objclient.ObjClientContext;
@@ -12,6 +17,7 @@ import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxyImpl;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.objclient.ui.ChatPane;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
@@ -35,6 +41,13 @@ public class TestClient {
 
 
         final String remoteKey = "s1";
+        ChatPane chatPane = new ChatPane(clientContext);
+        clientContext.wire(ChatClient.class, remoteKey, chatPane);
+        clientContext.wire(ChatUser.class, remoteKey, chatPane);
+        ChatApp chatApp = clientContext.chatApp(remoteKey);
+        chatPane.addListener(new Callback("newChatMessage", chatApp));
+
+
         clientContext.wire(ObjManagerReply.class, remoteKey, new ObjManagerReply() {
             @Override
             public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {

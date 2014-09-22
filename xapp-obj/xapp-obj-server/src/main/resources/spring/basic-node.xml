@@ -130,5 +130,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg index="3" ref="messageSenderProxy"/>
         <constructor-arg index="4" ref="userLocator"/>
         <constructor-arg index="5" ref="xmlDb"/>
+        <constructor-arg index="6" ref="userLookup"/>
     </bean>
 </beans>

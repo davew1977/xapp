@@ -1,5 +1,7 @@
 package net.sf.xapp.objclient;
 
+import net.sf.xapp.net.api.chatapp.ChatApp;
+import net.sf.xapp.net.api.chatapp.ChatAppAdaptor;
 import net.sf.xapp.net.client.framework.ClientContext;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
@@ -24,5 +26,9 @@ public class ObjClientContext extends ClientContext {
 
     public ObjUpdate objUpdate(String key) {
         return new ObjUpdateAdaptor(key, getServerBoundMessageHandler());
+    }
+
+    public ChatApp chatApp(String key) {
+        return new ChatAppAdaptor(getUserId(), key, getServerBoundMessageHandler());
     }
 }
