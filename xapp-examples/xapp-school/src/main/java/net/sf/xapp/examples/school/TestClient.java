@@ -24,7 +24,9 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.XmlObj;
+import net.sf.xapp.uifwk.XScrollPane;
 
+import java.awt.*;
 import java.io.File;
 import java.util.List;
 
@@ -41,11 +43,20 @@ public class TestClient {
 
 
         final String remoteKey = "s1";
-        ChatPane chatPane = new ChatPane(clientContext);
+        final ChatPane chatPane = new ChatPane(clientContext);
         clientContext.wire(ChatClient.class, remoteKey, chatPane);
         clientContext.wire(ChatUser.class, remoteKey, chatPane);
-        ChatApp chatApp = clientContext.chatApp(remoteKey);
-        chatPane.addListener(new Callback("newChatMessage", chatApp));
+        final ChatApp chatApp = clientContext.chatApp(remoteKey);
+        chatPane.addListener(new Callback() {
+            @Override
+            public <T> T call(Object... args) {
+                chatApp.newChatMessage(clientContext.getUserId(), (String) args[0]);
+                return null;
+            }
+        });
+        chatPane.setSize(200,300);
+        //final XScrollPane scrollPane = new XScrollPane(chatPane);
+        //scrollPane.setPreferredSize(new Dimension(200, 250));
 
 
         clientContext.wire(ObjManagerReply.class, remoteKey, new ObjManagerReply() {
@@ -58,6 +69,7 @@ public class TestClient {
                 ObjectMeta objMeta = unmarshaller.unmarshalString(obj.getData());
                 ClassDatabase cdb = unmarshaller.getClassDatabase();
                 ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), cdb, objMeta));
+                appContainer.add(chatPane, "bottomLeft");
                 appContainer.setUserGUI(new SimpleApplication());
                 appContainer.getMainFrame().setVisible(true);
 

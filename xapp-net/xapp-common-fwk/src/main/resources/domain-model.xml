@@ -328,7 +328,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 </Api>
               </DirMeta>
               <DirMeta name="chatapp">
-                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" hidePrincipalField="true" name="ChatApp" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
+                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="" hideEntityKey="true" name="ChatApp" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId">
                   <Message name="NewChatMessage">
                     <Field access="READ_ONLY" name="message" type="provided/java/lang/String"/>
                     <Response name="NewChatMessageResponse"/>

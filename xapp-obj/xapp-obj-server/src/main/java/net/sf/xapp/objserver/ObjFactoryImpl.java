@@ -65,7 +65,7 @@ public class ObjFactoryImpl {
     public void create_internal(String key, ObjectMeta objectMeta) {
         ObjController objController = new ObjController(key, objectMeta);
         ChatAppImpl chatApp = new ChatAppImpl(userLookup, key);
-        ChannelImpl channel = new ChannelImpl(messageSender, userLocator, objController);
+        ChannelImpl channel = new ChannelImpl(messageSender, userLocator, objController, chatApp);
 
         ChannelAdaptor channelEL = new ChannelAdaptor(key,
                 new EventLoopMessageHandler<Channel>(eventLoopManager, channel));
@@ -79,7 +79,7 @@ public class ObjFactoryImpl {
         entityRepository.add(ObjManager.class, key, objServerEL);
         entityRepository.add(ObjUpdate.class, key, objUpdateEL);
         entityRepository.add(Channel.class, key, channelEL);
-        entityRepository.add(ChatApp.class, key, chatApp);
+        entityRepository.add(ChatApp.class, key, chatEl);
 
         clusterFacade.addEntityMapping(key);
     }

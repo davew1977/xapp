@@ -23,8 +23,8 @@ public class ChatMessageCellRenderer extends XCellRenderer<ChatBroadcast>
 {
     public static int LINE_GAP = 5;
     public static int WORD_GAP = 3;
-    public static final Pattern CARD_PATTERN = Pattern.compile("[\\dATJQK][hcds]");
-    public static final Pattern HAND_PATTERN = Pattern.compile("[\\dATJQK][\\dATJQK]s?");
+    //public static final Pattern CARD_PATTERN = Pattern.compile("[\\dATJQK][hcds]");
+    //public static final Pattern HAND_PATTERN = Pattern.compile("[\\dATJQK][\\dATJQK]s?");
     private final ClientContext clientContext;
     private final int TEXT_START_Y = 18;
     String nickname;

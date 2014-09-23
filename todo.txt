@@ -1,3 +1,5 @@
+BUG: client not notified if user disconnects
+
 DONE: BUG: create embedded object - should create an object on the server instead of locally, and
 
 implement difference in UI updates based on whether it was "me" or someone else doing the update

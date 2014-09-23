@@ -29,6 +29,6 @@ public class ObjClientContext extends ClientContext {
     }
 
     public ChatApp chatApp(String key) {
-        return new ChatAppAdaptor(getUserId(), key, getServerBoundMessageHandler());
+        return new ChatAppAdaptor(key, getServerBoundMessageHandler());
     }
 }

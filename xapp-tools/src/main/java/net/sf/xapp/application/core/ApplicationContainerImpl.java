@@ -21,11 +21,9 @@ import net.sf.xapp.application.search.SearchFormControl;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.application.utils.tipoftheday.Tip;
 import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
-import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.XappException;
 
@@ -52,10 +50,13 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     private JTree m_mainTree;
     private JPanel m_mainPanel;
     private JComponent m_userPanel;
+    private JComponent bottomLeftPanel;
+    private JComponent leftPane;
     private JFrame m_mainFrame;
     private GUIContext<T> m_guiContext;
     private Application m_application;
-    private JSplitPane m_splitPane;
+    private JSplitPane horizSplitPane;
+    private JSplitPane leftVertSplitPane;
     private JLabel m_statusBar;
     private NodeBuilder m_nodeBuilder;
     private Context m_context;
@@ -64,7 +65,6 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     private SpecialTreeGraphics m_specialTreeGraphics;
     private MyTreeCellRenderer m_treeCellRenderer;
     private List<Command> m_currentKeyCommands = new ArrayList<Command>();
-    private Map<TreeMeta, Tree> m_subTreeMap = new HashMap<TreeMeta, Tree>();
     private boolean m_systemExit = true;
     private SearchFormControl m_searchFormControl;
     private ScheduledThreadPoolExecutor m_executor = new ScheduledThreadPoolExecutor(1);
@@ -118,8 +118,12 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         actions.put(DefaultAction.SAVE, new SaveAction());
         actions.put(DefaultAction.FIND, new FindAction());
 
-        getMainFrame();
+        //getMainFrame();
 
+    }
+
+    public void add(JComponent comp, String location) {
+       bottomLeftPanel = comp;
     }
 
     public void setNodeUpdateApi(NodeUpdateApi nodeUpdateApi) {
@@ -402,14 +406,32 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     private JSplitPane getSplitPane()
     {
-        if (m_splitPane == null)
+        if (horizSplitPane == null)
         {
-            m_mainTreeScrollPane = new JScrollPane(getMainTree());
-            m_mainTreeScrollPane.setPreferredSize(new Dimension(200, 500));
-            m_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mainTreeScrollPane, getUserPanel());
+
+            horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getLeftPane(), getUserPanel());
 
         }
-        return m_splitPane;
+        return horizSplitPane;
+    }
+
+    private Component getLeftPane() {
+        if(leftPane==null) {
+            if(bottomLeftPanel!=null) {
+                leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getMainTreeScrollPane(), bottomLeftPanel);
+            } else {
+                leftPane = getMainTreeScrollPane();
+            }
+        }
+        return leftPane;
+    }
+
+    private JComponent getMainTreeScrollPane() {
+        if(m_mainTreeScrollPane ==null ) {
+            m_mainTreeScrollPane = new JScrollPane(getMainTree());
+            m_mainTreeScrollPane.setPreferredSize(new Dimension(200, 500));
+        }
+        return m_mainTreeScrollPane;
     }
 
     public JTree getMainTree()

@@ -51,7 +51,6 @@ public class ChatAppImpl implements ChatApp, App
     {
         return AppType.CHAT_ROOM;
     }
-
     @Override
     public void newChatMessage(UserId sender, String message)
     {

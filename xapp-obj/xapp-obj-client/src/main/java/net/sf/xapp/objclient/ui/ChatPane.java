@@ -127,7 +127,7 @@ public class ChatPane extends XPane implements ChatClient, ChatUser {
 
     @Override
     public void chatBroadcast(UserId userId, String message, String senderNickname) {
-        addMessage(new ChatBroadcast(null, userId, senderNickname, message));
+        addMessage(new ChatBroadcast(null, userId, message, senderNickname));
     }
 
     @Override
