@@ -88,10 +88,21 @@ public class ChatPane extends XPane implements ChatClient, ChatUser {
     @Override
     public void setSize(int w, int h) {
         super.setSize(w, h);
+        setSizeInternal(w, h);
+    }
+
+    private void setSizeInternal(int w, int h) {
         tf.setSize(w, 20);
         tf.setLocation(0, h - 20);
         messageSP.setSize(w, h - 20);
         chatItems.setCellRenderer(new ChatMessageCellRenderer(w, messageSP, clientContext));
+    }
+
+
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
+        setSizeInternal(width, height);
     }
 
     public void messageTyped() {
@@ -135,6 +146,8 @@ public class ChatPane extends XPane implements ChatClient, ChatUser {
         addMessage(new ChatBroadcast(null, userId, "JOINED", nickname));
 
     }
+
+
 
     @Override
     public void userLeft(UserId userId, String nickname) {

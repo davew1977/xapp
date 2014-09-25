@@ -419,6 +419,8 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if(leftPane==null) {
             if(bottomLeftPanel!=null) {
                 leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getMainTreeScrollPane(), bottomLeftPanel);
+                ((JSplitPane)leftPane).setDividerLocation(350);
+                ((JSplitPane)leftPane).setOneTouchExpandable(true);
             } else {
                 leftPane = getMainTreeScrollPane();
             }
