@@ -6,19 +6,18 @@
 
     <parent>
         <groupId>net.sf.xapp</groupId>
-        <artifactId>xapp</artifactId>
+        <artifactId>xapp-obj</artifactId>
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>xapp-obj</artifactId>
+    <artifactId>xapp-obj-common</artifactId>
     <version>1.2.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
-    <modules>
-        <module>xapp-obj-server</module>
-        <module>xapp-obj-common</module>
-        <module>xapp-obj-client</module>
-        <module>xapp-ui-fwk</module>
-    </modules>
-
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.xapp</groupId>
+            <artifactId>xapp-common-fwk</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

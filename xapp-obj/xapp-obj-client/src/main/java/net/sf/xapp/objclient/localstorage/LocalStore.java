@@ -42,7 +42,8 @@ public class LocalStore extends ObjListenerAdaptor implements SaveStrategy{
     }
 
     public Object reconstruct(List<Delta> deltas) {
-
+        //TODO unmarshal the saved version
+        //TODO apply the deltas to the model
     }
 
     @Override
