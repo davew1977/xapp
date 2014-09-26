@@ -18,6 +18,8 @@ import net.sf.xapp.application.commands.*;
 import net.sf.xapp.application.editor.*;
 import net.sf.xapp.application.search.SearchContext;
 import net.sf.xapp.application.search.SearchFormControl;
+import net.sf.xapp.application.strategies.SaveStrategy;
+import net.sf.xapp.application.strategies.StandaloneSaveStrategy;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.application.utils.tipoftheday.Tip;
 import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
@@ -101,6 +103,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     private JScrollPane m_mainTreeScrollPane;
     private Point m_latestPopUpPoint = new Point(0, 0);
     private TreeNodeFilter m_treeNodeFilter = new DefaultTreeNodeFilter();
+    private SaveStrategy saveStrategy = new StandaloneSaveStrategy(this);
 
 
     public ApplicationContainerImpl(GUIContext guiContext)
@@ -128,6 +131,10 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     public void setNodeUpdateApi(NodeUpdateApi nodeUpdateApi) {
         this.nodeUpdateApi = nodeUpdateApi;
+    }
+
+    public void setSaveStrategy(SaveStrategy saveStrategy) {
+        this.saveStrategy = saveStrategy;
     }
 
     public Point getLatestPopUpPoint()
@@ -334,7 +341,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return m_userPanel;
     }
 
-    private void updateFrameTitle()
+    public void updateFrameTitle()
     {
         String fileName = m_guiContext.getCurrentFile() != null ? m_guiContext.getCurrentFile().getName() : "";
         getMainFrame().setTitle(m_guiContext.getRootType().toString() + " : " + fileName);
@@ -952,22 +959,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         public void actionPerformed(ActionEvent e)
         {
             runBeforeHook(myAction);
-            if (m_guiContext.getCurrentFile() == null)
-            {
-
-                JFileChooser chooser = new JFileChooser();
-                chooser.setCurrentDirectory(new File("."));
-                int returnVal = chooser.showSaveDialog(getMainPanel());
-                if (returnVal == JFileChooser.APPROVE_OPTION)
-                {
-                    m_guiContext.saveToFile(chooser.getSelectedFile());
-                }
-            }
-            else
-            {
-                m_guiContext.saveToFile();
-            }
-            updateFrameTitle();
+            saveStrategy.save();
 
             runAfterHook(myAction);
         }
