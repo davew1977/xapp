@@ -3,6 +3,7 @@ package net.sf.xapp.objserver;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.objcommon.SimpleObjUpdater;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
@@ -20,12 +21,11 @@ import java.util.List;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-public class LiveObject implements ObjUpdate {
+public class LiveObject extends SimpleObjUpdater {
     private ObjListener listener;
-    private ClassDatabase cdb;
 
     public LiveObject(ObjectMeta rootObject) {
-        this.cdb = rootObject.getClassDatabase();
+        super(rootObject);
     }
 
     public void setListener(ObjListener listener) {
@@ -34,110 +34,57 @@ public class LiveObject implements ObjUpdate {
 
     @Override
     public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
-
-        Unmarshaller un = new Unmarshaller(cdb.getClassModel(type));
-        ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
+        super.createObject(principal, objLoc, type, xml);
+        ObjectMeta objectMeta = cdb.lastCreated();
         listener.objAdded(principal, objLoc, toXmlObj(objectMeta));
     }
 
     @Override
     public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true);
+        super.createEmptyObject(principal, objLoc, type);
+        ObjectMeta objectMeta = cdb.lastCreated();
         listener.objCreated(principal, objLoc, toXmlObj(objectMeta));
     }
 
     @Override
     public void updateObject(UserId principal, List<PropChangeSet> changeSets) {
-        for (PropChangeSet changeSet : changeSets) {
-            Long objId = changeSet.getObjId();
-            ObjectMeta objectMeta = cdb.findObjById(objId);
-            List<PropertyUpdate> updates = new ArrayList<PropertyUpdate>();
-            for (PropChange propChange : changeSet.getChanges()) {
-                Property property = objectMeta.getProperty(propChange.getProperty());
-                Object oldVal = property.convert(objectMeta, propChange.getOldValue());
-                Object newVal = property.convert(objectMeta, propChange.getNewValue());
-                updates.add(new PropertyUpdate(property, oldVal, newVal));
-            }
-            objectMeta.update(updates);
-        }
+        super.updateObject(principal, changeSets);
         listener.propertiesChanged(principal, changeSets);
     }
 
     @Override
     public void deleteObject(UserId principal, Long id) {
-        cdb.findObjById(id).dispose();
+        super.deleteObject(principal, id);
         listener.objDeleted(principal, id);
     }
 
     @Override
     public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
-
-        cdb.findObjById(id).setHome(toObjectLocation(newObjLoc), true);
-
+        super.moveObject(principal, id, newObjLoc);
         listener.objMoved(principal, id, newObjLoc);
     }
 
     @Override
     public void changeType(UserId principal, Long id, Class newType) {
-        ObjectMeta obj = cdb.findObjById(id);
-        ClassModel cm = cdb.getClassModel(newType);
-        if (obj.hasReferences()) {
-            /*
-            to implement this we need to delete the references(done) and reset them where appropriate (not done)
-             */
-            throw new UnsupportedOperationException("cannot currently change type on an object which has references");
-        }
-        ObjectLocation objHome = obj.getHome();
-        int oldIndex = obj.index();
-        obj.dispose();
-        objHome.setIndex(oldIndex);
-        ObjectMeta newInstance = cm.newInstance(objHome, true);
-        List<Property> properties = cm.getAllProperties();
-        for (Property property : properties) {
-            newInstance.set(property, obj.get(property));
-        }
-
+        super.changeType(principal, id, newType);
+        ObjectMeta objectMeta = cdb.lastCreated();
+        ObjectLocation objHome = objectMeta.getHome();
+        int index = objectMeta.index();
         //should not be needed : objHome.setIndex(newInstance, oldIndex);
-        listener.typeChanged(principal, new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), oldIndex), id, toXmlObj(newInstance));
+        listener.typeChanged(principal, new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), index), id, toXmlObj(objectMeta));
     }
 
     @Override
     public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
-        ObjectMeta obj = cdb.findObjById(id);
-        ObjectLocation objectLocation = toObjectLocation(objLoc);
-        obj.updateIndex(objectLocation, delta);
+        super.moveInList(principal, objLoc, id, delta);
         listener.objMovedInList(principal, objLoc, id, delta);
     }
 
     @Override
     public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
-        List<ObjectMeta> toRemove = lookup(refsToRemove);
-        List<ObjectMeta> toAdd = lookup(refsToAdd);
-        ObjectLocation objectLocation = toObjectLocation(objLoc);
-        for (ObjectMeta objectMeta : toRemove) {
-            objectMeta.removeAndUnsetReference(objectLocation);
-        }
-        for (ObjectMeta objectMeta : toAdd) {
-            objectMeta.createAndSetReference(objectLocation);
-        }
+        super.updateRefs(principal, objLoc, refsToAdd, refsToRemove);
 
         listener.refsUpdated(principal, objLoc, refsToAdd, refsToRemove);
     }
 
-    private ObjectLocation toObjectLocation(ObjLoc objLoc) {
-        ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
-        return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
-    }
-
-    private List<ObjectMeta> lookup(List<Long> ids) {
-        List<ObjectMeta> result = new ArrayList<ObjectMeta>();
-        for (Long id : ids) {
-            result.add(cdb.findObjById(id));
-        }
-        return result;
-    }
-
-    private XmlObj toXmlObj(ObjectMeta objectMeta) {
-        return new XmlObj(objectMeta.getType(), objectMeta.toXml(), 0L, objectMeta.getId());
-    }
 }

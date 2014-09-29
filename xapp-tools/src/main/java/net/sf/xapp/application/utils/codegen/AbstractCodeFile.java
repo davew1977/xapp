@@ -560,7 +560,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
                 dir.mkdirs();
             }
             File srcFile = new File(dir, getFileName());
-            FileUtils._writeFile(sb.toString(), srcFile);
+            FileUtils.writeFile(sb.toString(), srcFile);
             logger.info("written " + srcFile);
         }
     }

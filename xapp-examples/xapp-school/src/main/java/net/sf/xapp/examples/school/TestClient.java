@@ -17,6 +17,7 @@ import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxyImpl;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.objclient.localstorage.LocalStore;
 import net.sf.xapp.objclient.ui.ChatPane;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
@@ -58,6 +59,8 @@ public class TestClient {
         //final XScrollPane scrollPane = new XScrollPane(chatPane);
         //scrollPane.setPreferredSize(new Dimension(200, 250));
 
+        final LocalStore localStore = new LocalStore(clientContext.getUserId().getValue(), "schools", remoteKey);
+
 
         clientContext.wire(ObjManagerReply.class, remoteKey, new ObjManagerReply() {
             @Override
@@ -65,10 +68,9 @@ public class TestClient {
 
                 System.out.println(obj.getData());
 
-                Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
-                ObjectMeta objMeta = unmarshaller.unmarshalString(obj.getData());
-                ClassDatabase cdb = unmarshaller.getClassDatabase();
-                ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), cdb, objMeta));
+                localStore.reset(obj);
+                ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), localStore.getCdb(), localStore.getObjMeta()));
+                appContainer.setSaveStrategy(localStore);
                 appContainer.add(chatPane, "bottomLeft");
                 appContainer.setUserGUI(new SimpleApplication());
                 appContainer.getMainFrame().setVisible(true);
@@ -79,8 +81,8 @@ public class TestClient {
             }
 
             @Override
-            public void getDeltasResponse(UserId principal, List<Delta> deltas, ErrorCode errorCode) {
-
+            public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, ErrorCode errorCode) {
+                localStore.reconstruct(type, deltas);
             }
         });
 

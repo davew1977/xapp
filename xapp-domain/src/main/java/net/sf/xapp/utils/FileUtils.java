@@ -22,24 +22,20 @@ import java.net.MalformedURLException;
 
 public class FileUtils
 {
-    public void writeFile(String content, File file)
+
+    public static void writeFile(Object content, File file)
     {
-        _writeFile(content, file);
+        writeFile(content, file, "UTF-8");
     }
 
-    public static void _writeFile(String content, File file)
-    {
-        writeFile(content, file, null);
-    }
-
-    public static void writeFile(String content, File file, String encoding)
+    public static void writeFile(Object content, File file, String encoding)
     {
 
         try
         {
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter osw = encoding != null ? new OutputStreamWriter(fos, encoding) : new OutputStreamWriter(fos);
-            osw.write(content);
+            osw.write(String.valueOf(content));
             osw.flush();
             osw.close();
         }
@@ -49,12 +45,12 @@ public class FileUtils
         }
     }
 
-    public static void writeFile(String content, String name)
+    public static void writeFile(Object content, String name)
     {
         writeFile(content, name, null);
     }
 
-    public static void writeFile(String content, String name, String encoding)
+    public static void writeFile(Object content, String name, String encoding)
     {
         writeFile(content, new File(name), encoding);
     }

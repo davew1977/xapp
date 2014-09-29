@@ -12,11 +12,11 @@ import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.application.utils.codegen.CodeFile;
 import net.sf.xapp.codegen.Generator;
 import net.sf.xapp.objectmodelling.core.PropertyChange;
-import net.sf.xapp.codegen.AntFacade;
 import net.sf.xapp.codegen.ChangeMeta;
 import net.sf.xapp.codegen.model.*;
 import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
+import net.sf.xapp.utils.ant.AntFacade;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;

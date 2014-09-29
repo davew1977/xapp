@@ -95,4 +95,6 @@ public interface ClassDatabase<T>
     boolean isMaster();
 
     void setMaster();
+
+    ObjectMeta lastCreated();
 }

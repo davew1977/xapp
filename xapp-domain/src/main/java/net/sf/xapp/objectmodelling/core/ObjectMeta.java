@@ -638,4 +638,8 @@ public class ObjectMeta<T> implements Namespace{
     public boolean isCopyable() {
         return instance instanceof Cloneable;
     }
+
+    public Long getRevision() {
+        return 0L;
+    }
 }

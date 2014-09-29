@@ -45,6 +45,7 @@ public class Marshaller<T> {
     public String m_encoding = "UTF-8";
     private boolean m_root;
     private boolean m_useCustomOrdering;
+    private boolean marshalIds = true;
 
     public Marshaller(Class clazz, ClassDatabase classDatabase, boolean formatted) {
         this(clazz, classDatabase, formatted, true); //externally created marshallers are always root
@@ -127,13 +128,16 @@ public class Marshaller<T> {
             if (includeTypeAttribute) {
                 writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.TYPE_ATTR_TAG, object.getClass().getSimpleName()));
             }
-            if (getClassDatabase().isMaster()) {
-                Long id = objectMeta.getId();
-                if(id == null) {
-                    throw new RuntimeException("trying to marshall object without id");
-                }
+
+            Long id = objectMeta.getId();
+            if(id == null) {
+                //TODO handle a false marshalids scenario
+                //throw new RuntimeException("trying to marshall object without id");
+            }
+            if (marshalIds && id != null) {
                 writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ID_ATTR_TAG, "" + id));
             }
+
             for (Property property : m_properties) {
                 if (property.isTransient()) continue;
 

@@ -57,6 +57,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private ObjectMeta<T> rootObjMeta;
     private InspectionType m_inspectionType;
     private boolean master;
+    private ObjectMeta lastCreated;
 
     public ClassModelManager(Class<T> rootType)
     {
@@ -100,6 +101,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void registerInstance(ObjectMeta objectMeta) {
         instanceMap.put(objectMeta.getId(), objectMeta);
+        lastCreated = objectMeta;
     }
 
     @Override
@@ -141,6 +143,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void setMaster() {
         master=true;
+    }
+
+    @Override
+    public ObjectMeta lastCreated() {
+        return lastCreated;
     }
 
     public void setMaster(boolean master) {
@@ -443,11 +450,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return m_inspectionType;
     }
 
-
-    public void registerInstance(ClassModel classModel, Object instance)
-    {
-
-    }
 
     public KeyChangeDictionary getKeyChangeDictionary()
     {

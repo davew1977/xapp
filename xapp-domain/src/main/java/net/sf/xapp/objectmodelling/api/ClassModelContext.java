@@ -20,7 +20,6 @@ import net.sf.xapp.objectmodelling.difftracking.KeyChangeDictionary;
  */
 public interface ClassModelContext
 {
-    void registerInstance(ClassModel classModel, Object instance);
 
     KeyChangeDictionary getKeyChangeDictionary();
 

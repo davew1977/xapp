@@ -23,7 +23,7 @@ import net.sf.xapp.objserver.types.XmlObj;
  * Handles the objupdate api and applies the changes to the class database
  */
 public class SimpleObjUpdater implements ObjUpdate {
-    private ClassDatabase cdb;
+    protected ClassDatabase cdb;
 
     public SimpleObjUpdater(ObjectMeta rootObject) {
         this.cdb = rootObject.getClassDatabase();
@@ -121,7 +121,7 @@ public class SimpleObjUpdater implements ObjUpdate {
         return result;
     }
 
-    protected XmlObj toXmlObj(ObjectMeta objectMeta) {
-        return new XmlObj(objectMeta.getType(), objectMeta.toXml(), 0L, objectMeta.getId());
+    public static XmlObj toXmlObj(ObjectMeta objectMeta) {
+        return new XmlObj(objectMeta.getType(), objectMeta.toXml(), objectMeta.getRevision(), objectMeta.getId());
     }
 }

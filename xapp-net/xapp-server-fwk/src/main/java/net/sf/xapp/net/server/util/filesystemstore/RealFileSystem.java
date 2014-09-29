@@ -8,6 +8,8 @@
 package net.sf.xapp.net.server.util.filesystemstore;
 
 import net.sf.xapp.utils.FileUtils;
+import net.sf.xapp.utils.ant.AntFacade;
+
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.slf4j.Logger;
