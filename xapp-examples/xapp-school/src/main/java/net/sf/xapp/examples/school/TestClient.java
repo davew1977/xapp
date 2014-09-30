@@ -69,6 +69,16 @@ public class TestClient {
                 System.out.println(obj.getData());
 
                 localStore.reset(obj);
+                lauchGUI();
+            }
+
+            @Override
+            public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
+                localStore.reconstruct(type, deltas, revTo);
+                lauchGUI();
+            }
+
+            private void lauchGUI() {
                 ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), localStore.getCdb(), localStore.getObjMeta()));
                 appContainer.setSaveStrategy(localStore);
                 appContainer.add(chatPane, "bottomLeft");
@@ -76,13 +86,8 @@ public class TestClient {
                 appContainer.getMainFrame().setVisible(true);
 
                 IncomingChangesAdaptor incomingChangesAdaptor = new IncomingChangesAdaptor(appContainer, clientContext);
-                appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext, remoteKey, incomingChangesAdaptor));
+                appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(localStore.getCdb(), clientContext, remoteKey, incomingChangesAdaptor));
                 clientContext.wire(ObjListener.class, remoteKey, incomingChangesAdaptor);
-            }
-
-            @Override
-            public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, ErrorCode errorCode) {
-                localStore.reconstruct(type, deltas);
             }
         });
 

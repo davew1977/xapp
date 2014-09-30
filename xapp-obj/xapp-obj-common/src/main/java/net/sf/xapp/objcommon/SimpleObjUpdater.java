@@ -22,7 +22,7 @@ import net.sf.xapp.objserver.types.XmlObj;
 /**
  * Handles the objupdate api and applies the changes to the class database
  */
-public class SimpleObjUpdater implements ObjUpdate {
+public class SimpleObjUpdater implements ObjUpdate, ObjListener {
     protected ClassDatabase cdb;
 
     public SimpleObjUpdater(ObjectMeta rootObject) {
@@ -106,6 +106,46 @@ public class SimpleObjUpdater implements ObjUpdate {
         for (ObjectMeta objectMeta : toAdd) {
             objectMeta.createAndSetReference(objectLocation);
         }
+    }
+
+    @Override
+    public void propertiesChanged(UserId user, List<PropChangeSet> changeSets) {
+        updateObject(user, changeSets);
+    }
+
+    @Override
+    public void objCreated(UserId user, ObjLoc objLoc, XmlObj obj) {
+        createEmptyObject(user, objLoc, obj.getType());
+    }
+
+    @Override
+    public void objAdded(UserId user, ObjLoc objLoc, XmlObj obj) {
+        createObject(user, objLoc, obj.getType(), obj.getData());
+    }
+
+    @Override
+    public void objMoved(UserId user, Long id, ObjLoc newObjLoc) {
+        moveObject(user, id, newObjLoc);
+    }
+
+    @Override
+    public void objDeleted(UserId user, Long id) {
+        deleteObject(user, id);
+    }
+
+    @Override
+    public void typeChanged(UserId user, ObjLoc objLoc, Long oldId, XmlObj newObj) {
+        changeType(user, oldId, newObj.getType());
+    }
+
+    @Override
+    public void objMovedInList(UserId user, ObjLoc objLoc, Long id, Integer delta) {
+        moveInList(user, objLoc, id, delta);
+    }
+
+    @Override
+    public void refsUpdated(UserId user, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
+         updateRefs(user, objLoc, refsCreated, refsRemoved);
     }
 
     protected ObjectLocation toObjectLocation(ObjLoc objLoc) {
