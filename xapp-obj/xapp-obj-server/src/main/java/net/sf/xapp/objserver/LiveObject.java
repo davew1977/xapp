@@ -27,23 +27,12 @@ import java.util.List;
  */
 public class LiveObject extends SimpleObjUpdater {
     private ObjListener listener;
-    private long latestRevision;
 
     public LiveObject(ObjectMeta rootObject) {
         super(rootObject);
         listener = new ObjListenerAdaptor(null, new Multicaster<ObjListener>());
 
-        addListener(new ObjListenerAdaptor() {
-            @Override
-            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
-                latestRevision++;
-                return null;
-            }
-        });
-    }
 
-    public void addListener(ObjListener li) {
-        ((Multicaster<ObjListener>)((ObjListenerAdaptor)listener).getDelegate()).addDelegate(li);
     }
 
     @Override
@@ -101,11 +90,11 @@ public class LiveObject extends SimpleObjUpdater {
         listener.refsUpdated(principal, objLoc, refsToAdd, refsToRemove);
     }
 
-    public long getLatestRevision() {
-        return latestRevision;
+    public XmlObj createXmlObj() {
+        return new XmlObj(rootObj.getType(), rootObj.toXml(), cdb.getRev(), rootObj.getId());
     }
 
-    public XmlObj createXmlObj() {
-        return new XmlObj(rootObj.getType(), rootObj.toXml(), latestRevision, rootObj.getId());
+    public void addListener(ObjListener li) {
+        ((Multicaster<ObjListener>)((ObjListenerAdaptor)listener).getDelegate()).addDelegate(li);
     }
 }

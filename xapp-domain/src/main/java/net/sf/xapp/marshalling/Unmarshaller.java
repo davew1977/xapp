@@ -29,8 +29,9 @@ import java.util.*;
 public class Unmarshaller<T> {
     private ClassModel<T> classModel;
     private HashMap<ClassModel, Unmarshaller> m_unmarshallerMap;
-    public static final String TYPE_ATTR_TAG = "_type";
-    public static final String ID_ATTR_TAG = "_id";
+    public static final String ATTR_TYPE = "_type";
+    public static final String ATTR_ID = "_id";
+    public static final String ATTR_REV = "_rev";
     public static final String DJW_INCLUDE_TAG = "djw-include";
     private boolean m_validate;
     private boolean m_verbose = Boolean.getBoolean("verbose");
@@ -145,7 +146,7 @@ public class Unmarshaller<T> {
         ObjectMeta<T> objectMeta = classModel.newInstance(parent, true);
 
         if (!getClassDatabase().isMaster()) {
-            Attr attributeNode = element.getAttributeNode(ID_ATTR_TAG);
+            Attr attributeNode = element.getAttributeNode(ATTR_ID);
             if(attributeNode != null) {
                 objectMeta.setId(Long.parseLong(attributeNode.getNodeValue()));
             }
@@ -205,7 +206,7 @@ public class Unmarshaller<T> {
         NamedNodeMap attributes = element.getAttributes();
         for (int j = 0; j < attributes.getLength(); j++) {
             Node attrNode = attributes.item(j);
-            if (attrNode.getNodeName().equals(TYPE_ATTR_TAG)) continue;
+            if (attrNode.getNodeName().equals(ATTR_TYPE)) continue;
             Property property = classModel.getProperty(attrNode.getNodeName());
             if (property == null || property.isReadOnly()) {
                 if (m_verbose)
@@ -254,7 +255,7 @@ public class Unmarshaller<T> {
         ClassDatabase classDatabase = classModel.getClassDatabase();
         ClassModel classModel = classDatabase.getClassModel(objectLocation.getPropertyClass());
         if (classModel.isAbstract()) {
-            Node className = node.getAttributes().getNamedItem(TYPE_ATTR_TAG);
+            Node className = node.getAttributes().getNamedItem(ATTR_TYPE);
             //if class name is null then try at least to instantiate "abstract class"
             classModel = className != null ?
                     classModel.getValidImplementation(className.getNodeValue()) : classModel;

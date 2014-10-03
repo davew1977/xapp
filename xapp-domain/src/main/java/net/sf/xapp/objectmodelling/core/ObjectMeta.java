@@ -20,6 +20,7 @@ public class ObjectMeta<T> implements Namespace{
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
     private Long id;
+    private Long rev = 0L;
     private String key; //can change
     private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
@@ -355,7 +356,7 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public String meta() {
-        return String.format("id: %s, class: %s, key: %s, global key: %s", id, getType(), key, getGlobalKey());
+        return String.format("id: %s, revision: %s, class: %s, key: %s, global key: %s", id, rev, getType(), key, getGlobalKey());
     }
 
     public String getGlobalKey() {
@@ -640,6 +641,27 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public Long getRevision() {
-        return 0L;
+        return rev;
+    }
+
+    public void updateRev() {
+        updateRev(false);
+    }
+
+    public void updateRev(boolean includeComplexChildren) {
+        rev = getClassDatabase().getRev();
+        if (getParent() != null) {
+            getParent().updateRev();
+            if (includeComplexChildren) {
+                List<ObjectMeta> children = allChildren();
+                for (ObjectMeta child : children) {
+                    child.setRev(rev);
+                }
+            }
+        }
+    }
+
+    public void setRev(Long rev) {
+        this.rev = rev;
     }
 }

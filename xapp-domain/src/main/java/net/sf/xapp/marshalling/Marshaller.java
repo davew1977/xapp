@@ -126,7 +126,7 @@ public class Marshaller<T> {
             List<ComparableNameValuePair> writeAsAttr = new ArrayList<ComparableNameValuePair>();
             List<PropertyValuePair> writeAsElements = new ArrayList<PropertyValuePair>();
             if (includeTypeAttribute) {
-                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.TYPE_ATTR_TAG, object.getClass().getSimpleName()));
+                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_TYPE, object.getClass().getSimpleName()));
             }
 
             Long id = objectMeta.getId();
@@ -135,7 +135,12 @@ public class Marshaller<T> {
                 //throw new RuntimeException("trying to marshall object without id");
             }
             if (marshalIds && id != null) {
-                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ID_ATTR_TAG, "" + id));
+                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_ID, "" + id));
+            }
+
+            Long rev = objectMeta.getRevision();
+            if(rev != 0L) {
+                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_REV, "" + rev));
             }
 
             for (Property property : m_properties) {

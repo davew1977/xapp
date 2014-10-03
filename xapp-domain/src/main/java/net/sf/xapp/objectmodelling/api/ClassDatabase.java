@@ -96,5 +96,9 @@ public interface ClassDatabase<T>
 
     void setMaster();
 
+    void incrementRevision();
+
     ObjectMeta lastCreated();
+
+    Long getRev();
 }
