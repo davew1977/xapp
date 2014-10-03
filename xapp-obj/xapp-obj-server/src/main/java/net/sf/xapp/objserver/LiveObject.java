@@ -2,11 +2,15 @@ package net.sf.xapp.objserver;
 
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.marshalling.Unmarshaller;
+import net.sf.xapp.net.common.framework.Adaptor;
+import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.Multicaster;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objcommon.SimpleObjUpdater;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
+import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
@@ -23,13 +27,23 @@ import java.util.List;
  */
 public class LiveObject extends SimpleObjUpdater {
     private ObjListener listener;
+    private long latestRevision;
 
     public LiveObject(ObjectMeta rootObject) {
         super(rootObject);
+        listener = new ObjListenerAdaptor(null, new Multicaster<ObjListener>());
+
+        addListener(new ObjListenerAdaptor() {
+            @Override
+            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
+                latestRevision++;
+                return null;
+            }
+        });
     }
 
-    public void setListener(ObjListener listener) {
-        this.listener = listener;
+    public void addListener(ObjListener li) {
+        ((Multicaster<ObjListener>)((ObjListenerAdaptor)listener).getDelegate()).addDelegate(li);
     }
 
     @Override
@@ -87,4 +101,11 @@ public class LiveObject extends SimpleObjUpdater {
         listener.refsUpdated(principal, objLoc, refsToAdd, refsToRemove);
     }
 
+    public long getLatestRevision() {
+        return latestRevision;
+    }
+
+    public XmlObj createXmlObj() {
+        return new XmlObj(rootObj.getType(), rootObj.toXml(), latestRevision, rootObj.getId());
+    }
 }

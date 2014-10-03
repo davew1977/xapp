@@ -19,18 +19,13 @@ import net.sf.xapp.objserver.types.XmlObj;
  */
 public class ObjController implements App, ObjManager {
     private CommChannel commChannel;
-    private ObjListener objListener;
     private ObjManagerReply objManagerReply;
 
     private final String key;
-    private final ObjectMeta rootObj;
     private final LiveObject liveObject;
-
-    private long revision;
 
     public ObjController(String key, ObjectMeta rootObj) {
         this.key = key;
-        this.rootObj = rootObj;
         liveObject = new LiveObject(rootObj);
     }
 
@@ -68,7 +63,7 @@ public class ObjController implements App, ObjManager {
 
         this.commChannel = channel;
         //wire up the comm channel as a listener on the public state
-        liveObject.setListener(new ObjListenerAdaptor(getKey(), new BroadcastProxy<ObjListener, Void>(commChannel)));
+        liveObject.addListener(new ObjListenerAdaptor(getKey(), new BroadcastProxy<ObjListener, Void>(commChannel)));
         objManagerReply = new ObjManagerReplyAdaptor(getKey(), new NotifyProxy<ObjManagerReply>(commChannel));
     }
 
@@ -80,11 +75,15 @@ public class ObjController implements App, ObjManager {
     @Override
     public void getObject(UserId principal) {
         //todo cache xml at this revision
-        objManagerReply.getObjectResponse(principal, new XmlObj(rootObj.getType(), rootObj.toXml(), revision, rootObj.getId()), null);
+        objManagerReply.getObjectResponse(principal, liveObject.createXmlObj(), null);
     }
 
     @Override
     public void getDeltas(UserId principal, Long revFrom, Long revTo) {
+        if(revTo != null) {
+            throw new UnsupportedOperationException("revto not yet supported");
+        }
 
+        //todo
     }
 }

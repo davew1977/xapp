@@ -23,6 +23,7 @@ import net.sf.xapp.objserver.types.XmlObj;
  * Handles the objupdate api and applies the changes to the class database
  */
 public class SimpleObjUpdater implements ObjUpdate, ObjListener {
+    protected ObjectMeta rootObj;
     protected ClassDatabase cdb;
 
     public SimpleObjUpdater(ObjectMeta rootObject) {
