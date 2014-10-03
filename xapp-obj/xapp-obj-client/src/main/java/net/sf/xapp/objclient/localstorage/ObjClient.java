@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import net.sf.xapp.net.api.chatuser.ChatUser;
 import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxyImpl;
+import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objclient.IncomingChangesAdaptor;
@@ -28,6 +30,7 @@ import net.sf.xapp.objcommon.SimpleObjUpdater;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
+import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.XmlObj;
@@ -38,7 +41,7 @@ import net.sf.xapp.utils.ant.AntFacade;
  * © 2013 Newera Education Ltd
  * Created by dwebber
  */
-public class ObjClient implements SaveStrategy, ObjManagerReply {
+public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {
     public static final String LOCAL_DIR = System.getProperty("user.home", ".") + "/xapp-cache";
     private final ObjClientContext clientContext;
     private final String objId;
@@ -59,7 +62,9 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
         revFile = new File(dir, "rev.txt");
         objFile = new File(dir, "obj.xml");
         deltaFile = new File(dir, "deltas.txt");
-        initialDeltas = FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
+        initialDeltas = readDeltas();
+
+        init();
     }
 
     public void init() {
@@ -73,11 +78,17 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
     }
 
     public long getLastKnownRevision() {
-        if(revFile.exists()) {
+        if (revFile.exists()) {
             long rev = Long.parseLong(FileUtils.readFile(revFile));
             return rev + initialDeltas.length;
         }
         return -1;
+    }
+
+    @Override
+    public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
+        write(new Delta(inMessage).serialize(), getDeltaWriter());
+        return null;
     }
 
     /**
@@ -87,7 +98,7 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
         closeDeltaWriter();
         new AntFacade().deleteFile(deltaFile);
         FileUtils.writeFile(obj.getData(), objFile);
-        FileUtils.writeFile(obj.getLastChangeRev(), objFile);
+        FileUtils.writeFile(obj.getLastChangeRev(), revFile);
         Unmarshaller unmarshaller = new Unmarshaller(obj.getType());
         objMeta = unmarshaller.unmarshalString(obj.getData());
         cdb = unmarshaller.getClassDatabase();
@@ -128,7 +139,7 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
     }
 
     private OutputStreamWriter getDeltaWriter() {
-        if(deltaWriter==null) {
+        if (deltaWriter == null) {
             try {
                 deltaWriter = new OutputStreamWriter(new FileOutputStream(deltaFile, true), "UTF-8");
             } catch (Exception e) {
@@ -146,23 +157,23 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
         return cdb;
     }
 
-
     @Override
     public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
 
         System.out.println(obj.getData());
 
         reset(obj);
-        lauchGUI();
+        launchGUI();
     }
+
 
     @Override
     public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
         reconstruct(type, deltas, revTo);
-        lauchGUI();
+        launchGUI();
     }
 
-    private void lauchGUI() {
+    private void launchGUI() {
         final ChatPane chatPane = new ChatPane(clientContext);
         clientContext.wire(ChatClient.class, objId, chatPane);
         clientContext.wire(ChatUser.class, objId, chatPane);
@@ -174,7 +185,7 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
                 return null;
             }
         });
-        chatPane.setSize(200,300);
+        chatPane.setSize(200, 300);
 
         ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), cdb, objMeta));
         appContainer.setSaveStrategy(this);
@@ -185,6 +196,24 @@ public class ObjClient implements SaveStrategy, ObjManagerReply {
         IncomingChangesAdaptor incomingChangesAdaptor = new IncomingChangesAdaptor(appContainer, clientContext);
         appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext, objId, incomingChangesAdaptor));
         clientContext.wire(ObjListener.class, objId, incomingChangesAdaptor);
+        clientContext.wire(ObjListener.class, objId, this);
+    }
+
+    private String[] readDeltas() {
+        if (deltaFile.exists()) {
+            return FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
+        } else {
+            return new String[0];
+        }
+    }
+
+    private void write(String line, Writer writer) {
+        try {
+            writer.write(line + "\n");
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String[] args) {
