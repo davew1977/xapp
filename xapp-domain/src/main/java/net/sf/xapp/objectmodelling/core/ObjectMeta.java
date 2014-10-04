@@ -83,12 +83,12 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void storeRef(ObjectMeta objectMeta) {
-        assert isNamespaceFor(objectMeta.getType());
+        //assert isNamespaceFor(objectMeta.getType());
         findMatchingSet(objectMeta.getType()).add(objectMeta);
     }
 
     public void removeRef(ObjectMeta objectMeta) {
-        assert isNamespaceFor(objectMeta.getType());
+        //assert isNamespaceFor(objectMeta.getType());
         findMatchingSet(objectMeta.getType()).remove(objectMeta);
 
     }

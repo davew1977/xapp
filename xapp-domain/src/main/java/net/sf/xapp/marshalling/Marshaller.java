@@ -129,18 +129,20 @@ public class Marshaller<T> {
                 writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_TYPE, object.getClass().getSimpleName()));
             }
 
-            Long id = objectMeta.getId();
-            if(id == null) {
-                //TODO handle a false marshalids scenario
-                //throw new RuntimeException("trying to marshall object without id");
-            }
-            if (marshalIds && id != null) {
-                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_ID, "" + id));
-            }
+            if (objectMeta != null) {
+                Long id = objectMeta.getId();
+                if(id == null) {
+                    //TODO handle a false marshalids scenario
+                    //throw new RuntimeException("trying to marshall object without id");
+                }
+                if (marshalIds && id != null) {
+                    writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_ID, "" + id));
+                }
 
-            Long rev = objectMeta.getRevision();
-            if(rev != 0L) {
-                writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_REV, "" + rev));
+                Long rev = objectMeta.getRevision();
+                if(rev != 0L) {
+                    writeAsAttr.add(new SimpleNameValuePair(Unmarshaller.ATTR_REV, "" + rev));
+                }
             }
 
             for (Property property : m_properties) {
