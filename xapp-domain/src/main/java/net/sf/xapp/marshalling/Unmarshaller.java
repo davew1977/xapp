@@ -152,6 +152,11 @@ public class Unmarshaller<T> {
             }
         }
 
+        Attr attributeNode = element.getAttributeNode(ATTR_REV);
+        if(attributeNode != null) {
+            objectMeta.setRev(Long.parseLong(attributeNode.getNodeValue()));
+        }
+
         NodeList nodeList = element.getChildNodes();
         for (int n = 0; n < nodeList.getLength(); n++) {
             Node node = nodeList.item(n);

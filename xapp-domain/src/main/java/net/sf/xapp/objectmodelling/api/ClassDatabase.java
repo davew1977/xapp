@@ -101,4 +101,6 @@ public interface ClassDatabase<T>
     ObjectMeta lastCreated();
 
     Long getRev();
+
+    void setRevision(Long rev);
 }

@@ -42,6 +42,7 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void propertiesChanged(UserId userId, Long rev, List<PropChangeSet> changeSets) {
+        cdb.setRevision(rev);
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
             ObjectMeta objectMeta = cdb.findObjById(objId);
@@ -53,17 +54,23 @@ public class IncomingChangesAdaptor implements ObjListener {
                 updates.add(new PropertyUpdate(property, oldVal, newVal));
             }
             nodeUpdateApi.updateObject(objectMeta, updates);
+            objectMeta.updateRev();
         }
     }
 
     @Override
     public void objAdded(UserId userId, Long rev, ObjLoc objLoc, XmlObj obj) {
-        insertObj(objLoc, obj);
+        cdb.setRevision(rev);
+        ObjectMeta objectMeta = insertObj(objLoc, obj);
+        objectMeta.updateRev();
     }
 
     @Override
     public void objCreated(UserId userId, Long rev, ObjLoc objLoc, XmlObj obj) {
+        cdb.setRevision(rev);
         ObjectMeta objectMeta = insertObj(objLoc, obj);
+        objectMeta.updateRev();
+
         if(userId.equals(thisUserId)){
             objCreateCallback.objCreated(objectMeta);
             objCreateCallback=null;
@@ -72,30 +79,47 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objMoved(UserId userId, Long rev, Long id, ObjLoc newObjLoc) {
+        cdb.setRevision(rev);
         ObjectMeta objectMeta = cdb.findObjById(id);
-        nodeUpdateApi.moveOrInsertObjMeta(toObjectLocation(newObjLoc), objectMeta);
+        ObjectLocation objectLocation = toObjectLocation(newObjLoc);
+        nodeUpdateApi.moveOrInsertObjMeta(objectLocation, objectMeta);
+
+        objectLocation.getObj().updateRev();
     }
 
     @Override
     public void objDeleted(UserId userId, Long rev, Long id) {
-        nodeUpdateApi.deleteObject(cdb.findObjById(id));
+        cdb.setRevision(rev);
+        ObjectMeta objMeta = cdb.findObjById(id);
+        nodeUpdateApi.deleteObject(objMeta);
+
+        objMeta.updateRev();
     }
 
     @Override
     public void refsUpdated(UserId userId, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
-       nodeUpdateApi.updateReferences(toObjectLocation(objLoc), lookup(refsCreated), lookup(refsRemoved));
+        cdb.setRevision(rev);
+        ObjectLocation objectLocation = toObjectLocation(objLoc);
+        nodeUpdateApi.updateReferences(objectLocation, lookup(refsCreated), lookup(refsRemoved));
+
+        objectLocation.getObj().updateRev();
     }
 
     @Override
     public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long oldId, XmlObj newObj) {
+        cdb.setRevision(rev);
         //remove old object
         nodeUpdateApi.deleteObject(cdb.findObjById(oldId));
-        insertObj(objLoc, newObj);
+        ObjectMeta objectMeta = insertObj(objLoc, newObj);
+        objectMeta.updateRev();
     }
 
     @Override
     public void objMovedInList(UserId userId, Long rev, ObjLoc objLoc, Long id, Integer delta) {
-        nodeUpdateApi.moveInList(toObjectLocation(objLoc), cdb.findObjById(id), delta);
+        cdb.setRevision(rev);
+        ObjectLocation objectLocation = toObjectLocation(objLoc);
+        nodeUpdateApi.moveInList(objectLocation, cdb.findObjById(id), delta);
+        objectLocation.getObj().updateRev();
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {

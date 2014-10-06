@@ -30,6 +30,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     public SimpleObjUpdater(ObjectMeta rootObject) {
         this.cdb = rootObject.getClassDatabase();
+        this.rootObj = rootObject;
     }
     @Override
     public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
@@ -207,5 +208,13 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     public static XmlObj toXmlObj(ObjectMeta objectMeta) {
         return new XmlObj(objectMeta.getType(), objectMeta.toXml(), objectMeta.getRevision(), objectMeta.getId());
+    }
+
+    public Long getLatestRev() {
+        return cdb.getRev();
+    }
+
+    public Class getType() {
+        return rootObj.getType();
     }
 }

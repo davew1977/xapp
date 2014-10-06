@@ -58,7 +58,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private InspectionType m_inspectionType;
     private boolean master;
     private ObjectMeta lastCreated;
-    private Long rev;
+    private long rev;
 
     public ClassModelManager(Class<T> rootType)
     {
@@ -159,6 +159,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public Long getRev() {
         return rev;
+    }
+
+    @Override
+    public void setRevision(Long rev) {
+        this.rev = rev;
     }
 
     public void setMaster(boolean master) {

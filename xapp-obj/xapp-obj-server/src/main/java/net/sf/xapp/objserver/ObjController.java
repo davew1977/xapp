@@ -2,7 +2,7 @@ package net.sf.xapp.objserver;
 
 import net.sf.xapp.net.common.types.AppType;
 import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.server.channels.App;
+import net.sf.xapp.net.server.channels.AppAdaptor;
 import net.sf.xapp.net.server.channels.BroadcastProxy;
 import net.sf.xapp.net.server.channels.CommChannel;
 import net.sf.xapp.net.server.channels.NotifyProxy;
@@ -12,17 +12,15 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
-import net.sf.xapp.objserver.types.XmlObj;
 
 /**
  * This is the single threaded entry point handling requests to update and view a managed object
  */
-public class ObjController implements App, ObjManager {
-    private CommChannel commChannel;
-    private ObjManagerReply objManagerReply;
+public class ObjController extends AppAdaptor implements ObjManager {
 
     private final String key;
     private final LiveObject liveObject;
+    private ObjTracker objTracker;
 
     public ObjController(String key, ObjectMeta rootObj) {
         this.key = key;
@@ -34,26 +32,6 @@ public class ObjController implements App, ObjManager {
     }
 
     @Override
-    public void userConnected(UserId userId) {
-
-    }
-
-    @Override
-    public void userDisconnected(UserId userId) {
-
-    }
-
-    @Override
-    public void userJoined(UserId userId) {
-
-    }
-
-    @Override
-    public void userLeft(UserId userId) {
-
-    }
-
-    @Override
     public String getKey() {
         return key;
     }
@@ -61,10 +39,12 @@ public class ObjController implements App, ObjManager {
     @Override
     public void setCommChannel(CommChannel channel) {
 
-        this.commChannel = channel;
         //wire up the comm channel as a listener on the public state
-        liveObject.addListener(new ObjListenerAdaptor(getKey(), new BroadcastProxy<ObjListener, Void>(commChannel)));
-        objManagerReply = new ObjManagerReplyAdaptor(getKey(), new NotifyProxy<ObjManagerReply>(commChannel));
+        liveObject.addListener(new ObjListenerAdaptor(getKey(), new BroadcastProxy<ObjListener, Void>(channel)));
+
+        ObjManagerReply objManagerReply = new ObjManagerReplyAdaptor(getKey(), new NotifyProxy<ObjManagerReply>(channel));
+        objTracker = new ObjTracker(liveObject, objManagerReply);
+        liveObject.addListener(objTracker);
     }
 
     @Override
@@ -74,16 +54,11 @@ public class ObjController implements App, ObjManager {
 
     @Override
     public void getObject(UserId principal) {
-        //todo cache xml at this revision
-        objManagerReply.getObjectResponse(principal, liveObject.createXmlObj(), null);
+        objTracker.getObject(principal);
     }
 
     @Override
     public void getDeltas(UserId principal, Long revFrom, Long revTo) {
-        if(revTo != null) {
-            throw new UnsupportedOperationException("revto not yet supported");
-        }
-
-        //todo
+        objTracker.getDeltas(principal, revFrom, revTo);
     }
 }

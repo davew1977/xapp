@@ -31,8 +31,11 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
+import net.sf.xapp.objserver.types.ObjLoc;
+import net.sf.xapp.objserver.types.PropChangeSet;
 import net.sf.xapp.objserver.types.XmlObj;
 import net.sf.xapp.utils.FileUtils;
 import net.sf.xapp.utils.ReflectionUtils;
@@ -75,22 +78,31 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         clientContext.wire(ObjManagerReply.class, objId, this);
 
         clientContext.channel(objId).join(clientContext.getUserId());
-        clientContext.objManager(objId).getObject(clientContext.getUserId());
+
+        ObjManager objManager = clientContext.objManager(objId);
+        long rev = getLastKnownRevision();
+        if(rev != -1) {
+            objManager.getDeltas(clientContext.getUserId(), rev, null);
+        } else {
+            objManager.getObject(clientContext.getUserId());
+        }
     }
 
     public long getLastKnownRevision() {
         if (revFile.exists()) {
-            long rev = Long.parseLong(FileUtils.readFile(revFile));
+            long rev = Long.parseLong(FileUtils.readFile(revFile).split("\n")[0]);
             return rev + initialDeltas.length;
         }
+
+        //todo new algorithm:
+        // if deltas exist then parse them, and use the last one to get the last known rev
+        // otherwise use the revision file
         return -1;
     }
 
     @Override
     public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
         write(new Delta(inMessage).serialize(), getDeltaWriter());
-        Long rev = ReflectionUtils.call(inMessage, "getRev");
-        objMeta.setRev(rev);  //todo perhaps this is the place to update the individual objects revs
         return null;
     }
 
@@ -105,6 +117,7 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         Unmarshaller unmarshaller = new Unmarshaller(obj.getType());
         objMeta = unmarshaller.unmarshalString(obj.getData());
         cdb = unmarshaller.getClassDatabase();
+        cdb.setRevision(obj.getLastChangeRev());
     }
 
     public void reconstruct(Class type, List<Delta> deltas, Long revTo) {
@@ -173,8 +186,12 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
 
     @Override
     public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
-        reconstruct(type, deltas, revTo);
-        launchGUI();
+        if(errorCode==null) {
+            reconstruct(type, deltas, revTo);
+            launchGUI();
+        } else {
+            clientContext.objManager(objId).getObject(clientContext.getUserId());
+        }
     }
 
     private void launchGUI() {
@@ -203,7 +220,7 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         clientContext.wire(ObjListener.class, objId, this);
     }
 
-    private String[] readDeltas() {
+    private String[] readDeltas() {              // todo read and parse deltas
         if (deltaFile.exists()) {
             return FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
         } else {

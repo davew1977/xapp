@@ -56,6 +56,7 @@ public class ObjInfo {
         Class aClass = Class.forName(className);
         Unmarshaller unmarshaller = new Unmarshaller(aClass);
         unmarshaller.getClassDatabase().setMaster();
+        unmarshaller.getClassDatabase().setRevision(revision);
         objectMeta = unmarshaller.unmarshal(new File(dir, fileName()));
     }
 

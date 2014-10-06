@@ -31,40 +31,38 @@ public class LiveObject extends SimpleObjUpdater {
     public LiveObject(ObjectMeta rootObject) {
         super(rootObject);
         listener = new ObjListenerAdaptor(null, new Multicaster<ObjListener>());
-
-
     }
 
     @Override
     public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
         super.createObject(principal, objLoc, type, xml);
         ObjectMeta objectMeta = cdb.lastCreated();
-        listener.objAdded(principal, objLoc, toXmlObj(objectMeta));
+        listener.objAdded(principal, cdb.getRev(), objLoc, toXmlObj(objectMeta));
     }
 
     @Override
     public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
         super.createEmptyObject(principal, objLoc, type);
         ObjectMeta objectMeta = cdb.lastCreated();
-        listener.objCreated(principal, objLoc, toXmlObj(objectMeta));
+        listener.objCreated(principal, cdb.getRev(), objLoc, toXmlObj(objectMeta));
     }
 
     @Override
     public void updateObject(UserId principal, List<PropChangeSet> changeSets) {
         super.updateObject(principal, changeSets);
-        listener.propertiesChanged(principal, changeSets);
+        listener.propertiesChanged(principal, cdb.getRev(), changeSets);
     }
 
     @Override
     public void deleteObject(UserId principal, Long id) {
         super.deleteObject(principal, id);
-        listener.objDeleted(principal, id);
+        listener.objDeleted(principal, cdb.getRev(), id);
     }
 
     @Override
     public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
         super.moveObject(principal, id, newObjLoc);
-        listener.objMoved(principal, id, newObjLoc);
+        listener.objMoved(principal, cdb.getRev(), id, newObjLoc);
     }
 
     @Override
@@ -74,20 +72,20 @@ public class LiveObject extends SimpleObjUpdater {
         ObjectLocation objHome = objectMeta.getHome();
         int index = objectMeta.index();
         //should not be needed : objHome.setIndex(newInstance, oldIndex);
-        listener.typeChanged(principal, new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), index), id, toXmlObj(objectMeta));
+        listener.typeChanged(principal, cdb.getRev(), new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), index), id, toXmlObj(objectMeta));
     }
 
     @Override
     public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
         super.moveInList(principal, objLoc, id, delta);
-        listener.objMovedInList(principal, objLoc, id, delta);
+        listener.objMovedInList(principal, cdb.getRev(), objLoc, id, delta);
     }
 
     @Override
     public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
         super.updateRefs(principal, objLoc, refsToAdd, refsToRemove);
 
-        listener.refsUpdated(principal, objLoc, refsToAdd, refsToRemove);
+        listener.refsUpdated(principal, cdb.getRev(), objLoc, refsToAdd, refsToRemove);
     }
 
     public XmlObj createXmlObj() {
