@@ -35,6 +35,7 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.XmlObj;
 import net.sf.xapp.utils.FileUtils;
+import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.ant.AntFacade;
 
 /**
@@ -88,6 +89,8 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     @Override
     public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
         write(new Delta(inMessage).serialize(), getDeltaWriter());
+        Long rev = ReflectionUtils.call(inMessage, "getRev");
+        objMeta.setRev(rev);  //todo perhaps this is the place to update the individual objects revs
         return null;
     }
 
@@ -120,7 +123,8 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         for (Delta delta : deltas) {
             delta.getMessage().visit(objUpdater);
         }
-        FileUtils.writeFile(revTo, objFile);
+        objMeta.setRev(revTo);
+        save();
     }
 
     @Override

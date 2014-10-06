@@ -139,43 +139,51 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     @Override
-    public void propertiesChanged(UserId user, List<PropChangeSet> changeSets) {
+    public void propertiesChanged(UserId user, Long rev, List<PropChangeSet> changeSets) {
         updateObject(user, changeSets);
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void objCreated(UserId user, ObjLoc objLoc, XmlObj obj) {
+    public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
         createEmptyObject(user, objLoc, obj.getType());
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void objAdded(UserId user, ObjLoc objLoc, XmlObj obj) {
+    public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
         createObject(user, objLoc, obj.getType(), obj.getData());
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void objMoved(UserId user, Long id, ObjLoc newObjLoc) {
+    public void objMoved(UserId user, Long rev, Long id, ObjLoc newObjLoc) {
         moveObject(user, id, newObjLoc);
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void objDeleted(UserId user, Long id) {
+    public void objDeleted(UserId user, Long rev, Long id) {
         deleteObject(user, id);
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void typeChanged(UserId user, ObjLoc objLoc, Long oldId, XmlObj newObj) {
+    public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long oldId, XmlObj newObj) {
         changeType(user, oldId, newObj.getType());
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void objMovedInList(UserId user, ObjLoc objLoc, Long id, Integer delta) {
+    public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
         moveInList(user, objLoc, id, delta);
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
-    public void refsUpdated(UserId user, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
-         updateRefs(user, objLoc, refsCreated, refsRemoved);
+    public void refsUpdated(UserId user, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
+        updateRefs(user, objLoc, refsCreated, refsRemoved);
+        assert cdb.getRev().equals(rev);
     }
 
     @Override
