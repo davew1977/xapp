@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.xapp.application.api.SimpleApplication;
@@ -34,8 +35,6 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.PropChangeSet;
 import net.sf.xapp.objserver.types.XmlObj;
 import net.sf.xapp.utils.FileUtils;
 import net.sf.xapp.utils.ReflectionUtils;
@@ -52,7 +51,7 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     private final File revFile;
     private final File objFile;
     private final File deltaFile;
-    private final String[] initialDeltas;
+    private final List<Delta> initialDeltas;
     private OutputStreamWriter deltaWriter;
 
     private ObjectMeta objMeta;
@@ -89,15 +88,15 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     }
 
     public long getLastKnownRevision() {
-        if (revFile.exists()) {
-            long rev = Long.parseLong(FileUtils.readFile(revFile).split("\n")[0]);
-            return rev + initialDeltas.length;
-        }
-
-        //todo new algorithm:
         // if deltas exist then parse them, and use the last one to get the last known rev
-        // otherwise use the revision file
-        return -1;
+        if(!initialDeltas.isEmpty()) {
+            InMessage message = initialDeltas.get(initialDeltas.size() - 1).getMessage();
+            return ReflectionUtils.call(message, "getRev");
+        } else if(revFile.exists()) {
+            return Long.parseLong(FileUtils.readFile(revFile).split("\n")[0]);
+        } else {
+            return -1;
+        }
     }
 
     @Override
@@ -128,8 +127,7 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta);
 
         //apply local updates
-        for (String initialDelta : initialDeltas) {
-            Delta delta = new Delta().deserialize(initialDelta);
+        for (Delta delta: initialDeltas) {
             delta.getMessage().visit(objUpdater);
         }
         //apply server updates (since our previous session ended)
@@ -220,12 +218,15 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         clientContext.wire(ObjListener.class, objId, this);
     }
 
-    private String[] readDeltas() {              // todo read and parse deltas
+    private List<Delta> readDeltas() {              // todo read and parse deltas
+        List<Delta> deltas = new ArrayList<Delta>();
         if (deltaFile.exists()) {
-            return FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
-        } else {
-            return new String[0];
+            String[] lines = FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
+            for (String line : lines) {
+                deltas.add(new Delta().deserialize(line));
+            }
         }
+        return deltas;
     }
 
     private void write(String line, Writer writer) {
