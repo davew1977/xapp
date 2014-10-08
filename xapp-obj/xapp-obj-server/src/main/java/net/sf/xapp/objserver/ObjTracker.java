@@ -20,6 +20,7 @@ import net.sf.xapp.objserver.types.Revision;
  */
 public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
     public static final int MAX_SIZE = 1000;//
+    public static final int MAX_DELTAS_RETURNED = 100;//
     private final LiveObject liveObject;
     private final ObjManagerReply objManagerReply;
     private SimpleCache<Long, Revision> revisions;
@@ -47,8 +48,16 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.DELTA_TOO_OLD);
             return;
         }
+
+        long returnCount = latestRev - revFrom;
+        if(returnCount > MAX_DELTAS_RETURNED) {
+            objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.TOO_MANY_DELTAS);
+            return;
+        }
+
         List<Delta> deltas = new ArrayList<Delta>();
-        for(long r = revFrom + 1; r <= latestRev; r++) {
+        for(int i=0; i < returnCount; i++) {
+            long r = revFrom + i + 1;
             deltas.add(revisions.get(r).getDelta());
         }
         objManagerReply.getDeltasResponse(principal, deltas, liveObject.getType(), revTo, null);

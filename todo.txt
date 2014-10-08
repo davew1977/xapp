@@ -1,4 +1,6 @@
-create delta limit, max no of deltas that a client can be behind before server will choose the send the entire state instead
+BUG: create person no longer working
+
+DONE: create delta limit, max no of deltas that a client can be behind before server will choose the send the entire state instead
 
 BUG: client not notified if user disconnects
 
