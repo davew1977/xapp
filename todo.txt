@@ -1,3 +1,5 @@
+create delta limit, max no of deltas that a client can be behind before server will choose the send the entire state instead
+
 BUG: client not notified if user disconnects
 
 DONE: BUG: create embedded object - should create an object on the server instead of locally, and
