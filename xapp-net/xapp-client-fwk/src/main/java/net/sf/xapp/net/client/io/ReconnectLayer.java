@@ -17,6 +17,7 @@ public class ReconnectLayer implements Connectable, ConnectionListener
     private final ServerProxy serverProxy;
     private boolean connected;
     private boolean reconnect = true;
+    private Exception lastException;
 
     public ReconnectLayer(ServerProxy serverProxy)
     {
@@ -26,8 +27,11 @@ public class ReconnectLayer implements Connectable, ConnectionListener
 
     public boolean connect()
     {
-        connectWithRetry();
-        return false;
+        connected = serverProxy.connect();
+        if(!connected) {
+            throw new RuntimeException(lastException);
+        }
+        return connected;
     }
 
     public void disconnected()
@@ -76,7 +80,7 @@ public class ReconnectLayer implements Connectable, ConnectionListener
     @Override
     public void handleConnectException(Exception e)
     {
-
+        lastException = e;
     }
 
     @Override

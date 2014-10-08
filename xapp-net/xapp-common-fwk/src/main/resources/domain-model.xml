@@ -623,7 +623,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <ValueObject name="ObjLoc">
                 <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>
-                <Field access="READ_ONLY" name="index" optional="true" type="provided/java/lang/Integer"/>
+                <Field access="READ_ONLY" defaultValue="-1" name="index" type="provided/java/lang/Integer"/>
               </ValueObject>
               <ValueObject name="PropChange">
                 <Field access="READ_ONLY" name="property" type="provided/java/lang/String"/>

@@ -160,7 +160,7 @@ public class ObjectLocation {
         }
     }
 
-    public Integer getIndex() {
-        return index == -1 ? null : index;
+    public int getIndex() {
+        return index;
     }
 }

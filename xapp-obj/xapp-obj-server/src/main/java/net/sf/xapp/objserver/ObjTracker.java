@@ -48,7 +48,7 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             return;
         }
         List<Delta> deltas = new ArrayList<Delta>();
-        for(long r = revFrom; r<=latestRev; r++) {
+        for(long r = revFrom + 1; r <= latestRev; r++) {
             deltas.add(revisions.get(r).getDelta());
         }
         objManagerReply.getDeltasResponse(principal, deltas, liveObject.getType(), revTo, null);

@@ -134,7 +134,6 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
         for (Delta delta : deltas) {
             delta.getMessage().visit(objUpdater);
         }
-        objMeta.setRev(revTo);
         save();
     }
 

@@ -147,7 +147,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-        createEmptyObject(user, objLoc, obj.getType());
+        createObject(user, objLoc, obj.getType(), obj.getData());
         assert cdb.getRev().equals(rev);
     }
 
