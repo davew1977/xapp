@@ -4,7 +4,7 @@ import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 @ValidImplementations({ClassRoom.class, Person.class})

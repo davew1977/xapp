@@ -5,7 +5,7 @@ import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.utils.Filter;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public enum PropertyFilter implements Filter<Property> {

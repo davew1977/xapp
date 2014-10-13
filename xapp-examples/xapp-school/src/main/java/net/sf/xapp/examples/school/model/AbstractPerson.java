@@ -6,7 +6,7 @@ import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 @NamespaceFor(FileMeta.class)

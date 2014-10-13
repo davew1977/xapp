@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 @NamespaceFor(FileMeta.class)

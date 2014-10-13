@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class NodeUpdateApiRemote implements NodeUpdateApi {

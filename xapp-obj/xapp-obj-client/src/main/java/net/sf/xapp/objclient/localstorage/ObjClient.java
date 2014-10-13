@@ -41,7 +41,7 @@ import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.ant.AntFacade;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 @NamespaceFor({Person.class, FileMeta.class, ClassRoom.class})

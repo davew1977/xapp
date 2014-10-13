@@ -4,7 +4,7 @@ package net.sf.xapp.net.common.framework;
 import net.sf.xapp.net.common.framework.Entity;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class Ref<T extends Entity> {

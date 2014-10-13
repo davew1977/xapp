@@ -1,7 +1,7 @@
 package net.sf.xapp.application.api;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class AppData {

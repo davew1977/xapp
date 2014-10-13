@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class NullNodeUpdateApi implements NodeUpdateApi {

@@ -8,7 +8,7 @@ import java.util.Map;
 import net.sf.xapp.net.common.types.UserId;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class Helper {

@@ -7,7 +7,7 @@ import net.sf.xapp.application.api.Launcher;
 import java.util.Map;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class SchoolSystem {

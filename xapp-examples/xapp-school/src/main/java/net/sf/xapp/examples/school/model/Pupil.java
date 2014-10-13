@@ -4,7 +4,7 @@ import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class Pupil extends AbstractPerson {

@@ -3,7 +3,7 @@ package net.sf.xapp.objserver;
 import net.sf.xapp.net.server.clustering.Node;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class Main {

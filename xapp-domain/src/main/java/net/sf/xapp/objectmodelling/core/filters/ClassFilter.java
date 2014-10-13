@@ -3,7 +3,7 @@ package net.sf.xapp.objectmodelling.core.filters;
 import net.sf.xapp.utils.Filter;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class ClassFilter implements Filter {

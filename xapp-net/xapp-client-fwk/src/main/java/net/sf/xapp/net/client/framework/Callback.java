@@ -5,7 +5,7 @@ import net.sf.xapp.net.common.util.ReflectionUtils;
 import java.lang.reflect.Method;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class Callback

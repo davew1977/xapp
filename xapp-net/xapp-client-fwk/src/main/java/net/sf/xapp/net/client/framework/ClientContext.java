@@ -1,7 +1,7 @@
 package net.sf.xapp.net.client.framework;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 

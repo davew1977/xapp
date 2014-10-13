@@ -15,7 +15,7 @@ import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.Revision;
 
 /**
- * © 2013 Newera Education Ltd
+ * © Webatron Ltd
  * Created by dwebber
  */
 public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
