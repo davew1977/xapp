@@ -38,7 +38,7 @@ public class TestBase {
 
         node = new TestNode(backUpDir, "/spring/basic-node.xml",
                 "/spring/channels.xml",
-                "/spring/admin-server.xml",
+                "/spring/connection-server.xml",
                 "/spring/test.xml",
                 "/spring/node-0.xml");
 

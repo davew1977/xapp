@@ -118,8 +118,13 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     </bean>
     <bean name="userLocator" class="net.sf.xapp.net.server.channels.UserLocator"/>
 
-    <bean name="xmlDb" class="net.sf.xapp.objserver.SimpleXmlDatabase">
-        <constructor-arg value="${obj.dir}"/>
+    <bean name="objLoader" class="net.sf.xapp.objserver.SimpleObjLoader">
+        <constructor-arg index="0" value="net.sf.xapp.examples.school.model.SchoolSystem"/>
+        <constructor-arg index="1">
+            <list>
+                <value>/db-system.xml</value>
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean name="objFactory" class="net.sf.xapp.objserver.ObjFactoryImpl">
@@ -129,7 +134,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg index="2" ref="entityRepository"/>
         <constructor-arg index="3" ref="messageSenderProxy"/>
         <constructor-arg index="4" ref="userLocator"/>
-        <constructor-arg index="5" ref="xmlDb"/>
+        <constructor-arg index="5" ref="objLoader"/>
         <constructor-arg index="6" ref="userLookup"/>
     </bean>
 </beans>

@@ -1,4 +1,4 @@
-<SchoolSystem personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis">
+<SchoolSystem personOfTheYear="Alfriston School/acarver" pupilOfTheYear="Alfriston School/alicew" teacherOfTheYear="Alfriston School/etrevis" key="s1">
   <Schools>
     <School headTeacher="etrevis" name="Alfriston School" schoolDescription="Ruby/docs/bestwork/class rules" starOfTheWeek="alicew">
       <ClassRooms>

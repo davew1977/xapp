@@ -35,7 +35,7 @@ public class ObjFactoryImpl {
     private final EntityRepository entityRepository;
     private final MessageSender messageSender;
     private final UserLocator userLocator;
-    private final SimpleXmlDatabase xmlDatabase;
+    private final ObjLoader objLoader;
     private final UserLookup userLookup;
 
     public ObjFactoryImpl(ClusterFacade clusterFacade,
@@ -43,22 +43,24 @@ public class ObjFactoryImpl {
                           EntityRepository entityRepository,
                           MessageSender messageSender,
                           UserLocator userLocator,
-                          SimpleXmlDatabase xmlDatabase, UserLookup userLookup) {
+                          ObjLoader objLoader,
+                          UserLookup userLookup) {
         this.clusterFacade = clusterFacade;
         this.eventLoopManager = eventLoopManager;
         this.entityRepository = entityRepository;
         this.messageSender = messageSender;
         this.userLocator = userLocator;
-        this.xmlDatabase = xmlDatabase;
+        this.objLoader = objLoader;
         this.userLookup = userLookup;
     }
 
     @PostConstruct
     public void init() throws ClassNotFoundException {
-        List<ObjInfo> objInfos = xmlDatabase.findAll();
-        for (ObjInfo objInfo : objInfos) {
-            create_internal(objInfo.getKey(), objInfo.getObjectMeta());
-            log.info("creating live object: {}", objInfo.getKey());
+        List<ObjectMeta> objInfos = objLoader.loadAll();
+        for (ObjectMeta objectMeta : objInfos) {
+            String key = objectMeta.getKey();
+            create_internal(key, objectMeta);
+            log.info("creating live object: {}", key);
         }
     }
 

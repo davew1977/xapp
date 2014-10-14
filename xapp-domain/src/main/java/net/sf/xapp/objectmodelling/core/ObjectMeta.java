@@ -292,7 +292,7 @@ public class ObjectMeta<T> implements Namespace{
         return namespacePath(classModel.getContainedClass());
     }
     public String getKey() {
-        return key;
+        return key != null ? key : (String) get(classModel.getKeyProperty());
     }
 
     public Map<String, ObjectMeta> getAll(final Class containedClass) {

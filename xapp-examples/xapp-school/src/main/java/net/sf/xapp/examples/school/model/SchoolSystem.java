@@ -1,5 +1,6 @@
 package net.sf.xapp.examples.school.model;
 
+import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Launcher;
@@ -11,10 +12,20 @@ import java.util.Map;
  * Created by dwebber
  */
 public class SchoolSystem {
+    private String key;
     private Pupil pupilOfTheYear;
     private Teacher teacherOfTheYear;
     private Person personOfTheYear;
     private Map<String, School> schools;
+
+    @Key
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public Map<String, School> getSchools() {
         return schools;
