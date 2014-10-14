@@ -1,4 +1,4 @@
-package net.sf.xapp.objclient.localstorage;
+package net.sf.xapp.objclient;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,9 +23,6 @@ import net.sf.xapp.net.client.io.ServerProxyImpl;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.objclient.IncomingChangesAdaptor;
-import net.sf.xapp.objclient.NodeUpdateApiRemote;
-import net.sf.xapp.objclient.ObjClientContext;
 import net.sf.xapp.objclient.ui.ChatPane;
 import net.sf.xapp.objcommon.SimpleObjUpdater;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
@@ -45,7 +42,6 @@ import net.sf.xapp.utils.ant.AntFacade;
  * Created by dwebber
  */
 public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {
-    public static final String LOCAL_DIR = System.getProperty("user.home", ".") + "/xapp-cache";
     private final ObjClientContext clientContext;
     private final String objId;
     private final File revFile;
@@ -57,10 +53,10 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     private ObjectMeta objMeta;
     private ClassDatabase cdb;
 
-    public ObjClient(String userId, HostInfo hostInfo, String appId, String objId) {
+    public ObjClient(String localDir, String userId, HostInfo hostInfo, String appId, String objId) {
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
         this.objId = objId;
-        File dir = new File(new File(new File(LOCAL_DIR, userId), appId), objId);
+        File dir = new File(new File(new File(localDir, userId), appId), objId);
         dir.mkdirs();
         revFile = new File(dir, "rev.txt");
         objFile = new File(dir, "obj.xml");
@@ -238,6 +234,6 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     }
 
     public static void main(String[] args) {
-        new ObjClient(args[0], HostInfo.parse(args[1]), args[2], args[3]);
+        new ObjClient(System.getProperty("user.home", ".") + "/xapp-cache", args[0], HostInfo.parse(args[1]), args[2], args[3]);
     }
 }

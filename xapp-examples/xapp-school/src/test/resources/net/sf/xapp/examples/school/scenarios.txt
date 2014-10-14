@@ -1,0 +1,37 @@
+scenario 1 (check basic start up):
+ 1) Start client
+ 2) ensure entire state is loaded
+ 3) ensure rev.txt contains 0
+ 4) ensure obj.xml is written
+ 5) do model change (add text file to a pupil)
+ 6) ensure deltas.xml is written
+
+ scenario 2 (check that save resets the saved state)
+ 1) do all of scenario 1
+ 2) call "save()" in the client app
+ 3) ensure there's no delta file, obj.xml is written, and rev.txt is at 1
+
+ scenario 3 (start up after hard client shutdown - where app not saved)
+ 1) do all of scenario 1
+ 2) kill client
+ 3) restart client
+ 4) ensure client queries for deltas since 1
+ 5) ensure server send succes response with no deltas
+ 6) ensure client applies the locally saved deltas
+ 7) ensure client resets the state (rev.txt at 1 and no deltas file)
+
+ scenario 4 (start up after hard shutdown when server deltas occur)
+ 1) join 2 clients
+ 2) do model change from client 1 (add text file to pupil)
+ 3) ensure both clients deltas files contain 1 delta
+ 4) hard shutdown client 1
+ 5) do 2 model changes from client 2 (add another image file to same user, change text in first text file)
+ 6) restart client 1
+ 7) ensure local deltas are applies
+ 8) ensure server was asked for deltas since 1
+ 9) ensure server sends deltas 2 and 3
+ 10) ensure that deltas 1,2 and 3 are applied to the client
+ 11) make a 4th model change (move the second img file up in the list)
+ 12) client 1 deltas file should contain delta 4 only, rev.txt should be set to 3
+ 13) ensure client 2 deltas file contains all 4 deltas, rev.txt should be 0
+
