@@ -64,30 +64,28 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         objMeta.setHome(newLoc, true);
         Node node = (Node) objMeta.getAttachment();
         if (node != null) {
-            appContainer.getApplication().nodeAboutToBeRemoved(node, true);
-            appContainer.removeNode(node);
+            appContainer.removeNode(node, true);
         }
         //create new node
-        appContainer.createNode(toNode(newLoc), objMeta);
+        appContainer.createNode(newLoc, objMeta);
     }
 
     @Override
     public void insertObject(ObjectLocation objectLocation, Object obj) {
         ObjectMeta objectMeta = getClassModel(obj).createObjMeta(objectLocation, obj, true);
         //create the node
-        appContainer.createNode(toNode(objectLocation), objectMeta);
+        appContainer.createNode(objectLocation, objectMeta);
     }
 
     @Override
     public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
-        Node parentNode = toNode(objectLocation);
         for (ObjectMeta objectMeta : refsToRemove) {
             Node node = (Node) objectMeta.removeAndUnsetReference(objectLocation);
-            removeNode(node);
+            appContainer.removeNode(node);
         }
         for (ObjectMeta objectMeta : refsToAdd) {
             objectMeta.createAndSetReference(objectLocation);
-            appContainer.createNode(parentNode, objectMeta);
+            appContainer.createNode(objectLocation, objectMeta);
         }
     }
 
@@ -122,7 +120,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
         Unmarshaller un = new Unmarshaller(classModel);
         ObjectMeta objectMeta = un.unmarshalString(xml, charset, objectLocation);
-        appContainer.createNode(toNode(objectLocation), objectMeta);
+        appContainer.createNode(objectLocation, objectMeta);
         return objectMeta;
     }
 
@@ -138,31 +136,14 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         Collection<Node> attachments = (Collection<Node>) objectMeta.dispose();
         //clean up nodes
         Node node = (Node) objectMeta.getAttachment();
-        if (node != null) {
-            removeNode(node);
-        }
+        appContainer.removeNode(node);
 
         for (Node referencingNode : attachments) {
-            removeNode(referencingNode);
-        }
-    }
-
-    private void removeNode(Node node) {
-        if (node != null) {
-            appContainer.getApplication().nodeAboutToBeRemoved(node, false);
-            appContainer.removeNode(node);
+            appContainer.removeNode(referencingNode);
         }
     }
 
     private ClassModel<Object> getClassModel(Object obj) {
         return appContainer.getClassDatabase().getClassModel(obj.getClass());
-    }
-
-    public static Node toNode(ObjectLocation objectLocation) {
-        Node node = (Node) objectLocation.getObj().getAttachment();
-        if (node != null) {
-            node = node.find(objectLocation.getProperty());
-        }
-        return node;
     }
 }

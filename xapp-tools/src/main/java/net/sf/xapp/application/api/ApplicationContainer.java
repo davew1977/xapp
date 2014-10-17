@@ -20,6 +20,7 @@ import net.sf.xapp.application.editor.Editor;
 import net.sf.xapp.application.editor.EditorListener;
 import net.sf.xapp.application.utils.tipoftheday.Tip;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
@@ -208,7 +209,9 @@ public interface ApplicationContainer<T>
 
     Clipboard getClipboard();
 
+    void removeNode(Long objId);
     void removeNode(Node node);
+    void removeNode(Node node, boolean notifyApp);
 
     MyTreeCellRenderer getTreeCellRenderer();
 
@@ -236,6 +239,7 @@ public interface ApplicationContainer<T>
 
     NodeUpdateApi getNodeUpdateApi();
 
+    Node createNode(ObjectLocation parent, ObjectMeta objectMeta);
     Node createNode(Node parent, ObjectMeta objectMeta);
 
     /**

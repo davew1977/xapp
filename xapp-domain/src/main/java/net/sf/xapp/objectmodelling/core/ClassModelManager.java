@@ -58,6 +58,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private InspectionType m_inspectionType;
     private boolean master;
     private ObjectMeta lastCreated;
+    private ObjectMeta lastDeleted;
     private long rev;
 
     public ClassModelManager(Class<T> rootType)
@@ -124,6 +125,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void removeInstance(ObjectMeta objectMeta) {
         instanceMap.remove(objectMeta.getId());
+        lastDeleted = objectMeta;
     }
 
     @Override
@@ -164,6 +166,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void setRevision(Long rev) {
         this.rev = rev;
+    }
+
+    @Override
+    public ObjectMeta lastDeleted() {
+        return lastDeleted;
     }
 
     public void setMaster(boolean master) {

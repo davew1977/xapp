@@ -25,6 +25,7 @@ import net.sf.xapp.application.utils.tipoftheday.Tip;
 import net.sf.xapp.application.utils.tipoftheday.TipOfDayDialog;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.XappException;
@@ -504,6 +505,14 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     }
 
     @Override
+    public Node createNode(ObjectLocation parent, ObjectMeta objectMeta) {
+        Node node = getNodeBuilder().getNode(parent.getObj().getId());
+        if (node != null) {
+            node = node.find(parent.getProperty());
+        }
+        return createNode(node, objectMeta);
+    }
+
     public Node createNode(Node parent, ObjectMeta objectMeta) {
         Node newNode = getNodeBuilder().createNode(parent, objectMeta);
         getApplication().nodeAdded(newNode);
@@ -666,6 +675,11 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return m_context.getClipboard();
     }
 
+    @Override
+    public void removeNode(Long objId) {
+        removeNode(getNodeBuilder().getNode(objId));
+    }
+
     public Application getApplication()
     {
         return m_application;
@@ -793,10 +807,22 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         addHook(beforeHooks, action, hook);
     }
 
-    public void removeNode(Node node)
+    public void removeNode(Node node) {
+
+        removeNode(node, false);
+    }
+    public void removeNode(Node node, boolean wasCut) {
+        removeNode(node, true, wasCut);
+    }
+    public void removeNode(Node node, boolean notifyApp, boolean wasCut)
     {
         //note this method only modifies the JTree NOT the data model
-        ((DefaultTreeModel) getMainTree().getModel()).removeNodeFromParent(node.getJtreeNode());
+        if (node != null) {
+            if (notifyApp) {
+                getApplication().nodeAboutToBeRemoved(node, wasCut);
+            }
+            ((DefaultTreeModel) getMainTree().getModel()).removeNodeFromParent(node.getJtreeNode());
+        }
     }
 
     public void searchResultSelected(Object selectedValue)

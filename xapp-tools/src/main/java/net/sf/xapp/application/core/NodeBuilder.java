@@ -19,8 +19,11 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
 
 import javax.swing.tree.DefaultTreeModel;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Creates the JTree nodes according to the model
@@ -28,10 +31,15 @@ import java.util.List;
 public class NodeBuilder {
     private ApplicationContainerImpl appContainer;
     private ClassDatabase cdb;
+    private Map<Long, Node> nodeMap;
+    private Map<Long, List<Node>> refNodeMap;
+
 
     public NodeBuilder(ApplicationContainerImpl appContainer) {
         this.appContainer = appContainer;
         cdb = this.appContainer.getClassDatabase();
+        nodeMap = new HashMap<Long, Node>();
+        refNodeMap = new HashMap<Long, List<Node>>();
     }
 
     public Node createTree() {
@@ -55,6 +63,7 @@ public class NodeBuilder {
         // 3) an object node containing a set of objects (if it is a "container" class)
         // 4) an object node containing one or more complex objects (ones important enough to have their own nodes)
         Node newNode = new NodeImpl(appContainer, parentNode, insertIndex, objMeta);
+        registerNode(newNode);
         //if node is not a reference then populate the chilren
         if (!newNode.isReference()) {
             //create child nodes for "container list prop"
@@ -104,6 +113,31 @@ public class NodeBuilder {
         return newNode;
     }
 
+    private void registerNode(Node newNode) {
+        Long objId = newNode.objectMeta().getId();
+        if(newNode.isReference()) {
+            List<Node> nodes = refNodeMap.get(objId);
+            if(nodes==null) {
+                nodes = new ArrayList<Node>();
+                refNodeMap.put(objId, nodes);
+            }
+            nodes.add(newNode);
+        } else {
+            nodeMap.put(objId, newNode);
+        }
+        //TODO nodes are not removed currently - assume node turnover is not that great, but of course it depends on the application
+
+    }
+
+    public List<Node> getRefNodes(Long objId) {
+        List<Node> nodes = refNodeMap.get(objId);
+        return nodes != null ? nodes : new ArrayList<Node>();
+    }
+
+    public Node getNode(Long objId) {
+        return nodeMap.get(objId);
+    }
+
     private Node createListNode(Node parentNode, ContainerProperty listProperty, int insertIndex) {
         ObjectMeta listOwner = parentNode.objectMeta();
         Node listNode = new NodeImpl(appContainer,parentNode, insertIndex, new ObjectLocation(listOwner, listProperty));
@@ -128,7 +162,7 @@ public class NodeBuilder {
         } else {
             Node parent = node.getParent();
             int oldIndex = parent.indexOf(node);
-            appContainer.removeNode(node);
+            appContainer.removeNode(node, false, false);
             if (node.isObjectNode()) {
                 newNode = createNode(parent, node.objectMeta(), oldIndex);
             } else {
@@ -137,5 +171,15 @@ public class NodeBuilder {
         }
         appContainer.getMainPanel().repaint();
         return newNode;
+    }
+
+    public Node getRefNode(Long id, ObjectLocation objectLocation) {
+        List<Node> refNodes = getRefNodes(id);
+        for (Node refNode : refNodes) {
+            if(refNode.myObjLocation().equals(objectLocation)) {
+                return refNode;
+            }
+        }
+        return null;
     }
 }

@@ -429,7 +429,7 @@ public class ObjectMeta<T> implements Namespace{
         return attachments;
     }
 
-    private Collection<Object> attachments() {
+    public Collection<Object> attachments() {
         ArrayList<Object> result = new ArrayList<Object>();
         for (Object o : references.values()) {
             if(o!=null) {
