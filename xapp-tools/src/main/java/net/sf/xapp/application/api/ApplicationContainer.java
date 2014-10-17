@@ -20,6 +20,7 @@ import net.sf.xapp.application.editor.Editor;
 import net.sf.xapp.application.editor.EditorListener;
 import net.sf.xapp.application.utils.tipoftheday.Tip;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.awt.*;
@@ -234,6 +235,8 @@ public interface ApplicationContainer<T>
     List<Node> getSelectedNodes();
 
     NodeUpdateApi getNodeUpdateApi();
+
+    Node createNode(Node parent, ObjectMeta objectMeta);
 
     /**
      * Interface for application specific hooks.

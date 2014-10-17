@@ -41,17 +41,17 @@ import net.sf.xapp.utils.ant.AntFacade;
  * © Webatron Ltd
  * Created by dwebber
  */
-public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {
-    private final ObjClientContext clientContext;
-    private final String objId;
+public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {
+    protected final ObjClientContext clientContext;
+    protected final String objId;
     private final File revFile;
     private final File objFile;
     private final File deltaFile;
     private final List<Delta> initialDeltas;
     private OutputStreamWriter deltaWriter;
 
-    private ObjectMeta objMeta;
-    private ClassDatabase cdb;
+    protected ObjectMeta objMeta;
+    protected ClassDatabase cdb;
 
     public ObjClient(String localDir, String userId, HostInfo hostInfo, String appId, String objId) {
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
@@ -97,6 +97,7 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
 
     @Override
     public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
+        cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
         write(new Delta(inMessage).serialize(), getDeltaWriter());
         return null;
     }
@@ -169,11 +170,8 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
 
     @Override
     public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
-
-        System.out.println(obj.getData());
-
         reset(obj);
-        launchGUI();
+        objMetaLoaded_internal();
     }
 
 
@@ -181,39 +179,20 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
         if(errorCode==null) {
             reconstruct(type, deltas, revTo);
-            launchGUI();
+            objMetaLoaded_internal();
         } else {
             clientContext.objManager(objId).getObject(clientContext.getUserId());
         }
     }
 
-    private void launchGUI() {
-        final ChatPane chatPane = new ChatPane(clientContext);
-        clientContext.wire(ChatClient.class, objId, chatPane);
-        clientContext.wire(ChatUser.class, objId, chatPane);
-        final ChatApp chatApp = clientContext.chatApp(objId);
-        chatPane.addListener(new Callback() {
-            @Override
-            public <T> T call(Object... args) {
-                chatApp.newChatMessage(clientContext.getUserId(), (String) args[0]);
-                return null;
-            }
-        });
-        chatPane.setSize(200, 300);
-
-        ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), cdb, objMeta));
-        appContainer.setSaveStrategy(this);
-        appContainer.add(chatPane, "bottomLeft");
-        appContainer.setUserGUI(new SimpleApplication());
-        appContainer.getMainFrame().setVisible(true);
-
-        IncomingChangesAdaptor incomingChangesAdaptor = new IncomingChangesAdaptor(appContainer, clientContext);
-        appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext, objId, incomingChangesAdaptor));
-        clientContext.wire(ObjListener.class, objId, incomingChangesAdaptor);
+    private void objMetaLoaded_internal() {
         clientContext.wire(ObjListener.class, objId, this);
+        objMetaLoaded();
     }
 
-    private List<Delta> readDeltas() {              // todo read and parse deltas
+    protected abstract void objMetaLoaded();
+
+    private List<Delta> readDeltas() {
         List<Delta> deltas = new ArrayList<Delta>();
         if (deltaFile.exists()) {
             String[] lines = FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
@@ -234,6 +213,6 @@ public class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjMa
     }
 
     public static void main(String[] args) {
-        new ObjClient(System.getProperty("user.home", ".") + "/xapp-cache", args[0], HostInfo.parse(args[1]), args[2], args[3]);
+        new GUIObjClient(System.getProperty("user.home", ".") + "/xapp-cache", args[0], HostInfo.parse(args[1]), args[2], args[3]);
     }
 }

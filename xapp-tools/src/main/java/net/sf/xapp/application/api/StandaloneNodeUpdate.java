@@ -47,7 +47,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         PropertyChange propertyChange = initObject(objectMeta, potentialUpdates);
         if (propertyChange.succeeded()) { //could fail if we're added an identical object to a set
-            createNode(parentNode, objectMeta);
+            appContainer.createNode(parentNode, objectMeta);
         }
     }
 
@@ -68,14 +68,14 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
             appContainer.removeNode(node);
         }
         //create new node
-        createNode(toNode(newLoc), objMeta);
+        appContainer.createNode(toNode(newLoc), objMeta);
     }
 
     @Override
     public void insertObject(ObjectLocation objectLocation, Object obj) {
         ObjectMeta objectMeta = getClassModel(obj).createObjMeta(objectLocation, obj, true);
         //create the node
-        createNode(toNode(objectLocation), objectMeta);
+        appContainer.createNode(toNode(objectLocation), objectMeta);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         }
         for (ObjectMeta objectMeta : refsToAdd) {
             objectMeta.createAndSetReference(objectLocation);
-            createNode(parentNode, objectMeta);
+            appContainer.createNode(parentNode, objectMeta);
         }
     }
 
@@ -122,7 +122,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
         Unmarshaller un = new Unmarshaller(classModel);
         ObjectMeta objectMeta = un.unmarshalString(xml, charset, objectLocation);
-        createNode(toNode(objectLocation), objectMeta);
+        appContainer.createNode(toNode(objectLocation), objectMeta);
         return objectMeta;
     }
 
@@ -158,18 +158,11 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         return appContainer.getClassDatabase().getClassModel(obj.getClass());
     }
 
-    private Node toNode(ObjectLocation objectLocation) {
+    public static Node toNode(ObjectLocation objectLocation) {
         Node node = (Node) objectLocation.getObj().getAttachment();
         if (node != null) {
             node = node.find(objectLocation.getProperty());
         }
         return node;
-    }
-
-    private Node createNode(Node parentNode, ObjectMeta objectMeta) {
-        Node newNode = appContainer.getNodeBuilder().createNode(parentNode, objectMeta);
-        appContainer.getApplication().nodeAdded(newNode);
-        appContainer.getMainPanel().repaint();
-        return newNode;
     }
 }

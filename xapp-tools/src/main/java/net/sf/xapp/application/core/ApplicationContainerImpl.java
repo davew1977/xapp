@@ -503,6 +503,14 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return nodeUpdateApi;
     }
 
+    @Override
+    public Node createNode(Node parent, ObjectMeta objectMeta) {
+        Node newNode = getNodeBuilder().createNode(parent, objectMeta);
+        getApplication().nodeAdded(newNode);
+        getMainPanel().repaint();
+        return newNode;
+    }
+
     private List<Command> getCommands(Node node, CommandContext commandContext)
     {
         List<Command> commands = new ArrayList<Command>();

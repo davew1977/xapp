@@ -42,7 +42,6 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void propertiesChanged(UserId userId, Long rev, List<PropChangeSet> changeSets) {
-        cdb.setRevision(rev);
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
             ObjectMeta objectMeta = cdb.findObjById(objId);
@@ -60,14 +59,12 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objAdded(UserId userId, Long rev, ObjLoc objLoc, XmlObj obj) {
-        cdb.setRevision(rev);
         ObjectMeta objectMeta = insertObj(objLoc, obj);
         objectMeta.updateRev();
     }
 
     @Override
     public void objCreated(UserId userId, Long rev, ObjLoc objLoc, XmlObj obj) {
-        cdb.setRevision(rev);
         ObjectMeta objectMeta = insertObj(objLoc, obj);
         objectMeta.updateRev();
 
@@ -79,7 +76,6 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objMoved(UserId userId, Long rev, Long id, ObjLoc newObjLoc) {
-        cdb.setRevision(rev);
         ObjectMeta objectMeta = cdb.findObjById(id);
         ObjectLocation objectLocation = toObjectLocation(newObjLoc);
         nodeUpdateApi.moveOrInsertObjMeta(objectLocation, objectMeta);
@@ -89,7 +85,6 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objDeleted(UserId userId, Long rev, Long id) {
-        cdb.setRevision(rev);
         ObjectMeta objMeta = cdb.findObjById(id);
         nodeUpdateApi.deleteObject(objMeta);
 
@@ -98,7 +93,6 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void refsUpdated(UserId userId, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
-        cdb.setRevision(rev);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
         nodeUpdateApi.updateReferences(objectLocation, lookup(refsCreated), lookup(refsRemoved));
 
@@ -107,7 +101,6 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long oldId, XmlObj newObj) {
-        cdb.setRevision(rev);
         //remove old object
         nodeUpdateApi.deleteObject(cdb.findObjById(oldId));
         ObjectMeta objectMeta = insertObj(objLoc, newObj);
@@ -116,18 +109,11 @@ public class IncomingChangesAdaptor implements ObjListener {
 
     @Override
     public void objMovedInList(UserId userId, Long rev, ObjLoc objLoc, Long id, Integer delta) {
-        cdb.setRevision(rev);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
         nodeUpdateApi.moveInList(objectLocation, cdb.findObjById(id), delta);
         objectLocation.getObj().updateRev();
     }
 
-    private ObjectLocation toObjectLocation(ObjLoc objLoc) {
-        ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
-        ObjectLocation objectLocation = new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
-        objectLocation.setIndex(objLoc.getIndex());
-        return objectLocation;
-    }
 
     private List<ObjectMeta> lookup(List<Long> ids) {
         List<ObjectMeta> result = new ArrayList<ObjectMeta>();

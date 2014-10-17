@@ -20,7 +20,7 @@ public class AutoTest extends TestBase {
      */
     @Test
     public void testScenario1() {
-        //TODO create server spring context
+
 
         //TODO ensure example school s1 exists
 

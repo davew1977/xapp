@@ -33,8 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ClientContext implements MessageHandler, Connectable, ClientControl
-{
+public class ClientContext implements MessageHandler, Connectable, ClientControl {
     private final Logger log = Logger.getLogger(getClass());
     private Connectable server;
     private UserId userId;
@@ -48,23 +47,19 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
     private long initTime;
     private boolean guest;
 
-    public ClientContext()
-    {
+    public ClientContext() {
         this(null, new NullMessageHandler());
     }
 
-    public ClientContext(MessageHandler serverProxy)
-    {
+    public ClientContext(MessageHandler serverProxy) {
         this(null, serverProxy);
     }
 
-    public ClientContext(String userId)
-    {
+    public ClientContext(String userId) {
         this(userId, new NullMessageHandler());
     }
 
-    public ClientContext(String userId, MessageHandler serverProxy)
-    {
+    public ClientContext(String userId, MessageHandler serverProxy) {
         this.userId = userId != null ? new UserId(userId) : null;
         messageDispatcher = new MessageDispatcher();
         currentlyLoadingKeys = new HashSet<String>();
@@ -72,78 +67,60 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
 
         this.serverBoundMessageHandler = serverProxy;
 
-        if (serverProxy instanceof ServerProxy)
-        {
+        if (serverProxy instanceof ServerProxy) {
             ServerProxy proxy = (ServerProxy) serverProxy;
             proxy.setClient(this);
             server = new ReconnectLayer(proxy);
-        }
-        else
-        {
+        } else {
         }
     }
 
-    private <T> T create(String className)
-    {
-        try
-        {
+    private <T> T create(String className) {
+        try {
             return (T) Class.forName(className).newInstance();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean connect()
-    {
-        if (server == null)
-        {
+    public boolean connect() {
+        if (server == null) {
             throw new RuntimeException("no server to connect to");
         }
         return server.connect();
     }
 
     @Override
-    public void disconnect()
-    {
-        if (server != null)
-        {
+    public void disconnect() {
+        if (server != null) {
             //clear all state
             messageDispatcher.clearStatefulHandlers();
             server.disconnect();
-        }
-        else
-        {
+        } else {
             log.info("no server to disconnect from");
         }
     }
 
-    public void setReconnect(boolean reconnect)
-    {
+    public void setReconnect(boolean reconnect) {
         ((ReconnectLayer) server).setReconnect(reconnect);
     }
 
     @Override
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return server.isConnected();
     }
 
-    public UserId getUserId()
-    {
+    public UserId getUserId() {
         return userId;
     }
 
-    public MessageHandler getServerBoundMessageHandler()
-    {
+    public MessageHandler getServerBoundMessageHandler() {
         return serverBoundMessageHandler;
     }
 
     @Override
-    public Object handleMessage(final InMessage inMessage)
-    {
+    public Object handleMessage(final InMessage inMessage) {
         /**
          * always perform all tasks on the event dispatch thread
          */
@@ -156,28 +133,23 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
         return null;
     }
 
-    public String username()
-    {
+    public String username() {
         return user != null ? user.getUserInfo().getNickname() : previousUsername;
     }
 
-    public void setPreviousUsername(String previousUsername)
-    {
+    public void setPreviousUsername(String previousUsername) {
         this.previousUsername = previousUsername;
     }
 
-    public void setChannelJoiner(ChannelJoiner channelJoiner)
-    {
+    public void setChannelJoiner(ChannelJoiner channelJoiner) {
         this.channelJoiner = channelJoiner;
     }
 
-    public ChannelJoiner getChannelJoiner()
-    {
+    public ChannelJoiner getChannelJoiner() {
         return channelJoiner;
     }
 
-    public UserEntity getUser()
-    {
+    public UserEntity getUser() {
         return user;
     }
 
@@ -189,25 +161,21 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
      * @param impl
      * @param <T>
      */
-    public <T> void wire(Class<T> aClass, String key, T impl)
-    {
+    public <T> void wire(Class<T> aClass, String key, T impl) {
         assert aClass.isInterface();
         messageDispatcher.addDelegate(aClass, key, impl);
     }
 
-    public <T> void wire(Class<T> aClass, T impl)
-    {
+    public <T> void wire(Class<T> aClass, T impl) {
         assert aClass.isInterface();
         messageDispatcher.addDelegate(aClass, impl);
     }
 
-    public void unwireAll(String entityKey)
-    {
+    public void unwireAll(String entityKey) {
         messageDispatcher.removeAllForKey(entityKey);
     }
 
-    public <T> Channel joinChannel(String key, Class<T> channelClientClass, T impl)
-    {
+    public <T> Channel joinChannel(String key, Class<T> channelClientClass, T impl) {
         messageDispatcher.removeAllForKey(key);
         wire(channelClientClass, key, impl);
         Channel channel = channel(key);
@@ -215,41 +183,33 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
         return channel;
     }
 
-    public void addConnectionListener(ConnectionListener listener)
-    {
-        if (serverBoundMessageHandler instanceof ServerProxy)
-        {
+    public void addConnectionListener(ConnectionListener listener) {
+        if (serverBoundMessageHandler instanceof ServerProxy) {
             ServerProxy serverProxy = (ServerProxy) serverBoundMessageHandler;
             serverProxy.addListener(listener);
-        }
-        else
-        {
+        } else {
             log.info("no server proxy to add listener to");
         }
     }
 
     @Override
-    public void setInitialInfo(UserId principal, List<UserLocation> locations, Long serverTime, Boolean guest)
-    {
+    public void setInitialInfo(UserId principal, List<UserLocation> locations, Long serverTime, Boolean guest) {
         this.serverTime = serverTime;
         this.initTime = System.currentTimeMillis();
         this.guest = guest;
     }
 
-    public long serverTimeMillis()
-    {
+    public long serverTimeMillis() {
         return serverTime + (System.currentTimeMillis() - initTime);
     }
 
     @Override
-    public void forceJoinChannel(UserId principal, String channelId, AppType appType)
-    {
+    public void forceJoinChannel(UserId principal, String channelId, AppType appType) {
 
     }
 
     @Override
-    public void setUser(UserId principal, UserEntity user)
-    {
+    public void setUser(UserId principal, UserEntity user) {
         assert principal == null || userId.equals(principal);
         log.debug(user);
         this.user = user;
@@ -258,60 +218,48 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
 
     }
 
-    public LobbySessionManager lobbySessionManager(String lobbyKey)
-    {
+    public LobbySessionManager lobbySessionManager(String lobbyKey) {
         return new LobbySessionManagerAdaptor(lobbyKey, serverBoundMessageHandler);
     }
 
-    public UserApi userApi()
-    {
+    public UserApi userApi() {
         return new UserApiAdaptor(serverBoundMessageHandler);
     }
 
-    public Channel channel(String key)
-    {
+    public Channel channel(String key) {
         return new ChannelAdaptor(key, serverBoundMessageHandler);
     }
 
-    public ChatApp chatApp(String key)
-    {
+    public ChatApp chatApp(String key) {
         return new ChatAppAdaptor(key, serverBoundMessageHandler);
     }
 
-    public void setUserId(UserId userId)
-    {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
-    public void login()
-    {
+
+    public void login() {
         login(false);
     }
 
-    public void login(boolean bot)
-    {
+    public void login(boolean bot) {
         userApi().loginWithToken(getUserId(), "foo", bot);
     }
 
-    public void connectAndLogin()
-    {
+    public void connectAndLogin() {
         boolean connected = connect();
-        if(connected)
-        {
+        if (connected) {
             login();
-        }
-        else
-        {
+        } else {
             throw new RuntimeException("could not connect");
         }
     }
 
-    public void addGenericHandler(MessageHandler messageHandler)
-    {
+    public void addGenericHandler(MessageHandler messageHandler) {
         messageDispatcher.addGenericHandler(messageHandler);
     }
 
-    public boolean isGuest()
-    {
+    public boolean isGuest() {
         return guest;
     }
 }
