@@ -520,6 +520,16 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         return newNode;
     }
 
+    @Override
+    public Node getNode(Long id, ObjectLocation objectLocation) {
+        return getNodeBuilder().getNode(id, objectLocation);
+    }
+
+    @Override
+    public Collection<Node> getRefNodes(Long id) {
+        return getNodeBuilder().getRefNodes(id);
+    }
+
     private List<Command> getCommands(Node node, CommandContext commandContext)
     {
         List<Command> commands = new ArrayList<Command>();
@@ -822,6 +832,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
                 getApplication().nodeAboutToBeRemoved(node, wasCut);
             }
             ((DefaultTreeModel) getMainTree().getModel()).removeNodeFromParent(node.getJtreeNode());
+            getNodeBuilder().nodeRemoved(node);
         }
     }
 

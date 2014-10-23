@@ -25,6 +25,7 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -241,6 +242,10 @@ public interface ApplicationContainer<T>
 
     Node createNode(ObjectLocation parent, ObjectMeta objectMeta);
     Node createNode(Node parent, ObjectMeta objectMeta);
+
+    Node getNode(Long id, ObjectLocation objectLocation);
+
+    Collection<Node> getRefNodes(Long id);
 
     /**
      * Interface for application specific hooks.

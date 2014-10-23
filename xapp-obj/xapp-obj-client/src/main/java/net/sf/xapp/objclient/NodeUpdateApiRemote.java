@@ -6,10 +6,13 @@ import net.sf.xapp.application.api.ObjCreateCallback;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
+import net.sf.xapp.objserver.apis.objlistener.ObjListener;
+import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
+import net.sf.xapp.objserver.types.XmlObj;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -24,15 +27,28 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     private ClassDatabase cdb;
     private ObjUpdate remote;
     private UserId userId;
-    private IncomingChangesAdaptor incomingChangesAdaptor;
+    private ObjCreateCallback objCreateCallback;
 
-    public NodeUpdateApiRemote(ClassDatabase cdb, ObjClientContext clientContext, String remoteKey, IncomingChangesAdaptor incomingChangesAdaptor) {
+    public NodeUpdateApiRemote(final ClassDatabase cdb, ObjClientContext clientContext, String remoteKey) {
         this.cdb = cdb;
         this.remote = clientContext.objUpdate(remoteKey);
         this.userId = clientContext.getUserId();
-        this.incomingChangesAdaptor = incomingChangesAdaptor;
+        clientContext.wire(ObjListener.class, remoteKey, new ObjListenerAdaptor() {
+            @Override
+            public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
+                if(userId.equals(NodeUpdateApiRemote.this.userId)){
+                    objCreateCallback.objCreated(cdb.lastCreated());
+                    objCreateCallback=null;
+                }
+            }
+        });
     }
-
+    private void setObjCreateCallback(ObjCreateCallback objCreateCallback) {
+        if(this.objCreateCallback != null) {
+            throw new IllegalArgumentException("One create at a time!");
+        }
+        this.objCreateCallback = objCreateCallback;
+    }
     @Override
     public void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         updateObjects(Arrays.asList(objectMeta), potentialUpdates);
@@ -57,7 +73,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback) {
-        incomingChangesAdaptor.setObjCreateCallback(callback);
+        setObjCreateCallback(callback);
         remote.createEmptyObject(userId, toObjLoc(homeLocation), type.getContainedClass());
     }
 

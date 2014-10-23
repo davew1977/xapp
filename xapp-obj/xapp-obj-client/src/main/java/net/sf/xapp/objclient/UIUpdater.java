@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
-import net.sf.xapp.application.api.StandaloneNodeUpdate;
+import net.sf.xapp.application.api.ObjCreateCallback;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
@@ -21,18 +21,24 @@ import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
 import net.sf.xapp.objserver.types.XmlObj;
 
-import static net.sf.xapp.application.api.StandaloneNodeUpdate.*;
-
 /**
  * We assume model is already updated and our responsibility is to update the App UI
  */
 public class UIUpdater implements ObjListener {
     private final ClassDatabase cdb;
     private final ApplicationContainer appContainer;
+    private ObjCreateCallback objCreateCallback;
 
     public UIUpdater(ClassDatabase cdb, ApplicationContainer appContainer) {
         this.cdb = cdb;
         this.appContainer = appContainer;
+    }
+
+    public void setObjCreateCallback(ObjCreateCallback objCreateCallback) {
+        if(this.objCreateCallback != null) {
+            throw new IllegalArgumentException("One create at a time!");
+        }
+        this.objCreateCallback = objCreateCallback;
     }
 
 
@@ -77,7 +83,7 @@ public class UIUpdater implements ObjListener {
     @Override
     public void objDeleted(UserId user, Long rev, Long id) {
         //clean up nodes
-        Collection<Node> refNodes = appContainer.getNodeBuilder().getRefNodes(id);
+        Collection<Node> refNodes = appContainer.getRefNodes(id);
 
         appContainer.removeNode(id);
 
@@ -96,13 +102,20 @@ public class UIUpdater implements ObjListener {
     @Override
     public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
         ObjectMeta objectMeta = obj(id);
-        Node node = appContainer.getNodeBuilder().getRefNode(id, toObjectLocation(objLoc));
+        Node node = appContainer.getNode(id, toObjectLocation(objLoc));
         node.updateIndex(objectMeta.index());
     }
 
     @Override
     public void refsUpdated(UserId user, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
-
+        ObjectLocation objectLocation = toObjectLocation(objLoc);
+        for (Long id : refsRemoved) {
+            Node refNode = appContainer.getNode(id, objectLocation);
+            appContainer.removeNode(refNode);
+        }
+        for (Long id : refsCreated) {
+            appContainer.createNode(objectLocation, obj(id));
+        }
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {

@@ -125,8 +125,6 @@ public class NodeBuilder {
         } else {
             nodeMap.put(objId, newNode);
         }
-        //TODO nodes are not removed currently - assume node turnover is not that great, but of course it depends on the application
-
     }
 
     public List<Node> getRefNodes(Long objId) {
@@ -173,7 +171,14 @@ public class NodeBuilder {
         return newNode;
     }
 
-    public Node getRefNode(Long id, ObjectLocation objectLocation) {
+    /**
+     * find the node depending on the location, could be the main node or a reference node
+     */
+    public Node getNode(Long id, ObjectLocation objectLocation) {
+        Node node = getNode(id);
+        if(node.myObjLocation().equals(objectLocation)) {
+            return node;
+        }
         List<Node> refNodes = getRefNodes(id);
         for (Node refNode : refNodes) {
             if(refNode.myObjLocation().equals(objectLocation)) {
@@ -181,5 +186,15 @@ public class NodeBuilder {
             }
         }
         return null;
+    }
+
+    public void nodeRemoved(Node node) {
+        Long id = node.objectMeta().getId();
+        if(node.isReference()) {
+            List<Node> refNodes = getRefNodes(id);
+            refNodes.remove(node);
+        } else {
+            nodeMap.remove(id);
+        }
     }
 }
