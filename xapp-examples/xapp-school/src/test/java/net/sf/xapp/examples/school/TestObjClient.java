@@ -15,6 +15,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
@@ -85,6 +86,14 @@ public class TestObjClient extends ObjUpdateAdaptor {
         return objClient.getObjFile();
     }
 
+    public File getDeltaFile() {
+        return objClient.getDeltaFile();
+    }
+
+    public List<Delta> readDeltas() {
+        return objClient.readDeltas();
+    }
+
     public ObjectMeta getObjMeta() {
         return objClient.getObjMeta();
     }
@@ -95,5 +104,9 @@ public class TestObjClient extends ObjUpdateAdaptor {
 
     public void updateObject(ObjectMeta objectMeta, String propName, String value) {
         updateObject(getUserId(), asList(new PropChangeSet(objectMeta.getId(), asList(new PropChange(propName, null, value)))));
+    }
+
+    public ObjClient getObjClient() {
+        return objClient;
     }
 }

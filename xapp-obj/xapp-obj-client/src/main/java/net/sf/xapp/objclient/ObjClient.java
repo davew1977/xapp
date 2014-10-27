@@ -193,7 +193,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     protected abstract void objMetaLoaded();
 
-    private List<Delta> readDeltas() {
+    public List<Delta> readDeltas() {
         List<Delta> deltas = new ArrayList<Delta>();
         if (deltaFile.exists()) {
             String[] lines = FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
