@@ -27,8 +27,10 @@ import net.sf.xapp.objserver.types.XmlObj;
 public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, ObjListener {
     protected ObjectMeta rootObj;
     protected ClassDatabase cdb;
+    protected boolean incrementRevisions;
 
-    public SimpleObjUpdater(ObjectMeta rootObject) {
+    public SimpleObjUpdater(ObjectMeta rootObject, boolean incrementRevisions) {
+        this.incrementRevisions = incrementRevisions;
         this.cdb = rootObject.getClassDatabase();
         this.rootObj = rootObject;
     }
@@ -148,7 +150,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     @Override
     public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
         createObject(user, objLoc, obj.getType(), obj.getData());
-        assert cdb.getRev().equals(rev);
+        assert cdb.getRev().equals(rev) : cdb.getRev() + " != " + rev;
     }
 
     @Override
@@ -189,7 +191,9 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
-        cdb.incrementRevision();
+        if (incrementRevisions) {
+            cdb.incrementRevision();
+        }
         return null;
     }
 

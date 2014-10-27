@@ -44,16 +44,16 @@ import net.sf.xapp.utils.ant.AntFacade;
 public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {
     protected final ObjClientContext clientContext;
     protected final String objId;
-    private final File revFile;
-    private final File objFile;
-    private final File deltaFile;
-    private final List<Delta> initialDeltas;
+    protected final File revFile;
+    protected final File objFile;
+    protected final File deltaFile;
+    protected final List<Delta> initialDeltas;
     private OutputStreamWriter deltaWriter;
 
     protected ObjectMeta objMeta;
     protected ClassDatabase cdb;
 
-    public ObjClient(String localDir, String userId, HostInfo hostInfo, String appId, String objId) {
+    public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, String objId) {
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
         this.objId = objId;
         File dir = new File(new File(new File(localDir, userId), appId), objId);
@@ -121,7 +121,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         objMeta = unmarshaller.unmarshal(objFile);
         cdb = unmarshaller.getClassDatabase();
 
-        SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta);
+        SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta, true);
 
         //apply local updates
         for (Delta delta: initialDeltas) {
@@ -187,6 +187,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     private void objMetaLoaded_internal() {
         clientContext.wire(ObjListener.class, objId, this);
+        clientContext.wire(ObjListener.class, objId, new SimpleObjUpdater(objMeta, false));
         objMetaLoaded();
     }
 
@@ -214,5 +215,29 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     public static void main(String[] args) {
         new GUIObjClient(System.getProperty("user.home", ".") + "/xapp-cache", args[0], HostInfo.parse(args[1]), args[2], args[3]);
+    }
+
+    public ObjClientContext getClientContext() {
+        return clientContext;
+    }
+
+    public String getObjId() {
+        return objId;
+    }
+
+    public File getRevFile() {
+        return revFile;
+    }
+
+    public File getObjFile() {
+        return objFile;
+    }
+
+    public File getDeltaFile() {
+        return deltaFile;
+    }
+
+    public List<Delta> getInitialDeltas() {
+        return initialDeltas;
     }
 }

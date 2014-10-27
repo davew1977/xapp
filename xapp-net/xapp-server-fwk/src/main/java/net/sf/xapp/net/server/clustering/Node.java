@@ -18,6 +18,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -116,7 +117,8 @@ public class Node
 
     public <T> T getBean(Class<T> aClass)
     {
-        return (T) appContext.getBeansOfType(aClass).values().iterator().next();
+        Collection<T> values = appContext.getBeansOfType(aClass).values();
+        return values.isEmpty() ? null : (T) values.iterator().next();
     }
 
     public ClassPathXmlApplicationContext  getAppContext()

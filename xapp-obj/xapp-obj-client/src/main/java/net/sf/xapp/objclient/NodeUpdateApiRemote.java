@@ -36,7 +36,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
         clientContext.wire(ObjListener.class, remoteKey, new ObjListenerAdaptor() {
             @Override
             public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-                if(userId.equals(NodeUpdateApiRemote.this.userId)){
+                if(userId.equals(user)){
                     objCreateCallback.objCreated(cdb.lastCreated());
                     objCreateCallback=null;
                 }

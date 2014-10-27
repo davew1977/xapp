@@ -29,7 +29,7 @@ public class LiveObject extends SimpleObjUpdater {
     private ObjListener listener;
 
     public LiveObject(ObjectMeta rootObject) {
-        super(rootObject);
+        super(rootObject, true);
         listener = new ObjListenerAdaptor(null, new Multicaster<ObjListener>());
     }
 

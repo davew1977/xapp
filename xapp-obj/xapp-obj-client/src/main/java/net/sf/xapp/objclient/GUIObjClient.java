@@ -19,7 +19,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
  */
 public class GUIObjClient extends ObjClient {
     public GUIObjClient(String localDir, String userId, HostInfo hostInfo, String appId, String objId) {
-        super(localDir, userId, hostInfo, appId, objId);
+        super(new File(localDir), userId, hostInfo, appId, objId);
     }
 
     @Override

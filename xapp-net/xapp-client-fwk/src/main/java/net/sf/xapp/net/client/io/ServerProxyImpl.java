@@ -86,7 +86,8 @@ public class ServerProxyImpl implements ServerProxy
                     }
                     catch(SocketException e)
                     {
-                        if(e.getMessage().equals("Connection reset"))
+                        if(e.getMessage().equals("Connection reset") ||
+                                e.getMessage().equalsIgnoreCase("Socket closed"))
                         {
                             for (ConnectionListener listener : listeners)
                             {

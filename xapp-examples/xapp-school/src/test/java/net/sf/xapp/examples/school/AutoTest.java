@@ -1,6 +1,29 @@
 package net.sf.xapp.examples.school;
 
+import java.io.File;
+import java.util.Arrays;
+
+import net.sf.xapp.examples.school.model.Pupil;
+import net.sf.xapp.examples.school.model.SchoolSystem;
+import net.sf.xapp.examples.school.model.TextFile;
+import net.sf.xapp.marshalling.Unmarshaller;
+import net.sf.xapp.net.api.channel.Channel;
+import net.sf.xapp.net.api.chatapp.ChatApp;
+import net.sf.xapp.net.common.types.UserId;
+import net.sf.xapp.net.server.repos.EntityRepository;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objserver.apis.objmanager.ObjManager;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
+import net.sf.xapp.objserver.types.ObjLoc;
+import net.sf.xapp.objserver.types.PropChange;
+import net.sf.xapp.objserver.types.PropChangeSet;
+import net.sf.xapp.utils.FileUtils;
+
+import org.junit.Assert;
 import org.junit.Test;
+
+import static java.util.Arrays.*;
+import static org.junit.Assert.*;
 
 /**
  * © Webatron Ltd
@@ -19,18 +42,44 @@ public class AutoTest extends TestBase {
      *
      */
     @Test
-    public void testScenario1() {
+    public void testScenario1() throws InterruptedException {
 
 
-        //TODO ensure example school s1 exists
+        EntityRepository entityRepository = node.getEntityRepository();
+        int i = entityRepository.countEntitiesWithKey("s1");
 
-        //TODO join 2 clients
+        assertEquals(4, i);
+        assertNotNull(entityRepository.find(ChatApp.class, "s1"));
+        assertNotNull(entityRepository.find(Channel.class, "s1"));
+        assertNotNull(entityRepository.find(ObjManager.class, "s1"));
+        assertNotNull(entityRepository.find(ObjUpdate.class, "s1"));
 
-        //TODO scenario 1: 1 client check that entire state is returned
+        File client1Dir = new File(backUpDir, "client_1");
+        TestObjClient testClient_1 = new TestObjClient(client1Dir, "100", "school", "s1");
+        testClient_1.waitUntilInitialized();
 
-        //TODO scenario 2:
-        //TODO 1) 1 client start clean
-        //TOD, make edit (add text file), force close
+        //check a few facts about the school
+        ObjectMeta obj_56 = testClient_1.getCdb().findObjById(56L);
+        assertTrue(obj_56.isA(Pupil.class));
+        assertEquals("Berwick School", obj_56.getParent().get("name"));
+        assertEquals("Hadwin", obj_56.get("secondName"));
+
+        //check the rev file contents
+        assertEquals("0", FileUtils.readFile(testClient_1.getRevFile()).split("\n")[0]);
+        //check object file exists and can be unmarshalled
+        Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
+        ObjectMeta objMeta = unmarshaller.unmarshal(testClient_1.getObjFile());
+        //check identical to object retrieved from server
+        assertEquals(testClient_1.getObjMeta().toXml(), objMeta.toXml());
+
+        UserId uid = testClient_1.getUserId();
+        testClient_1.createEmptyObject(uid, new ObjLoc(59L, "Files", -1), TextFile.class);
+        ObjectMeta objectMeta = testClient_1.getCdb().lastCreated();
+        assertTrue(objectMeta.isA(TextFile.class));
+        testClient_1.updateObject(objectMeta, "Name", "BooBoo");
+
+
+        testClient_1.close();
     }
 
 }

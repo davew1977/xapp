@@ -30,16 +30,18 @@ public class TestBase {
             };
         }
     };
+    protected String backUpDir;
 
     public void setUp(Description description) throws Exception
     {
-        String backUpDir = "_NG_BACKUP_UNIT_TESTS/" + description.getMethodName();
+        backUpDir = "_OBJ_SERVER_UNIT_TESTS/" + description.getMethodName();
         new AntFacade().deleteDir(new File(backUpDir));
 
         node = new TestNode(backUpDir, "/spring/basic-node.xml",
                 "/spring/channels.xml",
                 "/spring/connection-server.xml",
-                "/spring/test.xml",
+                "/spring/admin-server.xml",
+                //"/spring/test.xml",
                 "/spring/node-0.xml");
 
 
