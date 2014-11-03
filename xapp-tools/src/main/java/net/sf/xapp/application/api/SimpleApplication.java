@@ -55,6 +55,11 @@ public class SimpleApplication<T> implements Application<T>
 
     }
 
+    @Override
+    public void fileReloaded() {
+
+    }
+
     public List<Command> getCommands(Node node)
     {
         return new ArrayList<Command>();

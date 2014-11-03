@@ -36,6 +36,8 @@ public interface Application<T>
 
     void nodesSelected(List<Node> nodes, Class commonClass);
 
+    void fileReloaded();
+
     /**
 	 * Indicators for default actions built into the framework.
 	 * This is set is easy to extend when additional deefault actions

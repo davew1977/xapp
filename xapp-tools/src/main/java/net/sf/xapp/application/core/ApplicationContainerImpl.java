@@ -980,6 +980,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         m_nodeBuilder.createTree();
         updateFrameTitle();
         EditorManager.getInstance().reset(); //editor widgets can contain stale references
+        m_application.fileReloaded();
         return o;
     }
 
