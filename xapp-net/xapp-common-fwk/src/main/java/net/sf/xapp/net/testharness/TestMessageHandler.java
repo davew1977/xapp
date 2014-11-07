@@ -5,6 +5,7 @@ import net.sf.xapp.net.api.messagesender.MessageSenderAdaptor;
 import net.sf.xapp.net.api.messagesender.to.Broadcast;
 import net.sf.xapp.net.api.messagesender.to.Post;
 import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.util.GeneralUtils;
 import net.sf.xapp.net.common.util.StringUtils;
@@ -18,22 +19,22 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class TestMessageSender extends MessageSenderAdaptor
+public class TestMessageHandler implements MessageHandler
 {
     private final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
 
     private LinkedBlockingQueue<InMessage> outMessages;
     private List<String> messagesAsString;
 
-    public TestMessageSender()
+    public TestMessageHandler()
     {
         outMessages = new LinkedBlockingQueue<InMessage>();
         messagesAsString = new ArrayList<String>();
     }
 
     @Override
-    public synchronized <T> T handleMessage(InMessage<MessageSender, T> inMessage)
-    {
+    public Object handleMessage(InMessage inMessage) {
+
         log.info(inMessage.serialize());
         messagesAsString.add(inMessage.serialize());
         outMessages.add(inMessage);
@@ -93,9 +94,12 @@ public class TestMessageSender extends MessageSenderAdaptor
         {
             return (InMessage) ((Post) inMessage).getMessage();
         }
-        else
+        else if(inMessage instanceof Broadcast)
         {
             return (InMessage) ((Broadcast) inMessage).getMessage();
+        }
+        else {
+            return inMessage;
         }
     }
 

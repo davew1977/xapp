@@ -4,17 +4,23 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import net.sf.xapp.examples.school.model.Pupil;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.common.util.ReflectionUtils;
+import net.sf.xapp.net.testharness.TestMessageHandler;
 import net.sf.xapp.objclient.ObjClient;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
+import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.to.GetDeltasResponse;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
@@ -32,9 +38,17 @@ public class TestObjClient extends ObjUpdateAdaptor {
     private ObjUpdate remoteServer;
     private CountDownLatch initSignal = new CountDownLatch(1);
     private CountDownLatch syncSignal;
+    private TestMessageHandler messageHandler = new TestMessageHandler();
+
 
     public TestObjClient(File localDir, String userId, String appId, String objId) {
         objClient = new ObjClient(localDir, userId, HostInfo.parse("11375"), appId, objId) {
+            @Override
+            protected void preInit() {
+                clientContext.wire(ObjManagerReply.class, objId, new ObjManagerReplyAdaptor(messageHandler));
+                clientContext.wire(ObjListener.class, objId, new ObjListenerAdaptor(messageHandler));
+            }
+
             @Override
             protected void objMetaLoaded() {
                 initSignal.countDown();
@@ -59,7 +73,7 @@ public class TestObjClient extends ObjUpdateAdaptor {
     }
 
     public void close() {
-        objClient.getClientContext().disconnect();
+        objClient.close();
     }
 
     @Override
@@ -108,5 +122,18 @@ public class TestObjClient extends ObjUpdateAdaptor {
 
     public ObjClient getObjClient() {
         return objClient;
+    }
+
+    public <T> T waitFor(MessageTypeEnum messageTypeEnum, Object... propValuePairs) throws InterruptedException {
+        return (T) messageHandler.waitFor(messageTypeEnum, propValuePairs);
+    }
+
+    public ObjectMeta createEmptyObject(ObjLoc loc, Class aClass) {
+        createEmptyObject(getUserId(), loc, aClass);
+        return lastCreated();
+    }
+
+    public ObjectMeta lastCreated() {
+        return objClient.getLastCreated();
     }
 }

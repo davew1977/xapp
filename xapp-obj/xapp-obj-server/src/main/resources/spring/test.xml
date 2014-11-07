@@ -16,7 +16,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
     <context:annotation-config/>
     
-    <bean name="messageSenderProxy" class="net.sf.xapp.net.testharness.TestMessageSender"/>
+    <bean name="messageSenderProxy" class="net.sf.xapp.net.testharness.TestMessageHandler"/>
 
     <bean name="serviceLookup" class="net.sf.xapp.net.server.clustering.StaticServiceLookup">
         <constructor-arg index="0">

@@ -35,19 +35,27 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         this.rootObj = rootObject;
     }
     @Override
-    public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
-
+    public final void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
         Unmarshaller un = new Unmarshaller(cdb.getClassModel(type));
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
         super.createObject(principal, objLoc, type, xml);
         objectMeta.updateRev(true);
+        objAdded(principal, objLoc, objectMeta);
     }
 
     @Override
-    public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
+    public final void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
         ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true);
         super.createEmptyObject(principal, objLoc, type);
         objectMeta.updateRev();
+        objAdded(principal, objLoc, objectMeta);
+    }
+
+    /**
+     * override this instead of the 2 create methods from the ObjUpdate interface
+     */
+    protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
+
     }
 
     @Override
@@ -94,7 +102,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     @Override
-    public void changeType(UserId principal, Long id, Class newType) {
+    public final void changeType(UserId principal, Long id, Class newType) {
         ObjectMeta obj = cdb.findObjById(id);
         ClassModel cm = cdb.getClassModel(newType);
         if (obj.hasReferences()) {
@@ -115,6 +123,11 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         super.changeType(principal, id, newType);
 
         newInstance.updateRev();
+        typeChanged(principal, id, newInstance);
+    }
+
+    protected void typeChanged(UserId principal, Long oldId, ObjectMeta newInstance) {
+
     }
 
     @Override
@@ -145,12 +158,6 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     public void propertiesChanged(UserId user, Long rev, List<PropChangeSet> changeSets) {
         updateObject(user, changeSets);
         assert cdb.getRev().equals(rev);
-    }
-
-    @Override
-    public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-        createObject(user, objLoc, obj.getType(), obj.getData());
-        assert cdb.getRev().equals(rev) : cdb.getRev() + " != " + rev;
     }
 
     @Override
@@ -220,5 +227,9 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     public Class getType() {
         return rootObj.getType();
+    }
+
+    public ObjectMeta getRootObj() {
+        return rootObj;
     }
 }

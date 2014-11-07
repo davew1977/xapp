@@ -32,6 +32,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.types.Delta;
+import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.XmlObj;
 import net.sf.xapp.utils.FileUtils;
 import net.sf.xapp.utils.ReflectionUtils;
@@ -52,6 +53,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     protected ObjectMeta objMeta;
     protected ClassDatabase cdb;
+    private ObjectMeta lastCreated;
 
     public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, String objId) {
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
@@ -62,7 +64,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         objFile = new File(dir, "obj.xml");
         deltaFile = new File(dir, "deltas.txt");
         initialDeltas = readDeltas();
-
+        preInit();
         init();
     }
 
@@ -187,11 +189,17 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     private void objMetaLoaded_internal() {
         clientContext.wire(ObjListener.class, objId, this);
-        clientContext.wire(ObjListener.class, objId, new SimpleObjUpdater(objMeta, false));
+        clientContext.wire(ObjListener.class, objId, new SimpleObjUpdater(objMeta, false) {
+            @Override
+            protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
+                ObjClient.this.lastCreated = objectMeta;
+            }
+        });
         objMetaLoaded();
     }
 
     protected abstract void objMetaLoaded();
+    protected abstract void preInit();
 
     public List<Delta> readDeltas() {
         List<Delta> deltas = new ArrayList<Delta>();
@@ -239,5 +247,14 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     public List<Delta> getInitialDeltas() {
         return initialDeltas;
+    }
+
+    public ObjectMeta getLastCreated() {
+        return lastCreated;
+    }
+
+    public void close() {
+        clientContext.disconnect();
+        closeDeltaWriter();
     }
 }

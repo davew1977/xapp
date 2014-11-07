@@ -7,7 +7,7 @@
 package net.sf.xapp.net.common.framework.scheduling;
 
 import net.sf.xapp.net.common.framework.InMessage;
-import net.sf.xapp.net.testharness.TestMessageSender;
+import net.sf.xapp.net.testharness.TestMessageHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -107,13 +107,13 @@ public class DummyScheduledMessageHandler<A> implements ScheduledMessageHandler<
     public void assertFiredInOrder(String... events)
     {
         List<String> messagesAsString = messageStringList();
-        TestMessageSender.assertFiredInAnyOrder(messagesAsString, events);
+        TestMessageHandler.assertFiredInAnyOrder(messagesAsString, events);
     }
 
     public void assertFiredInAnyOrder(String... events)
     {
         List<String> stringList = messageStringList();
-        TestMessageSender.assertFiredInAnyOrder(stringList, events);
+        TestMessageHandler.assertFiredInAnyOrder(stringList, events);
     }
 
     private List<String> messageStringList()

@@ -21,11 +21,11 @@ import net.sf.xapp.net.server.framework.eventloop.EventLoopMessageHandler;
 import net.sf.xapp.net.server.lobby.LobbySessionManagerImpl;
 import net.sf.xapp.net.server.playerrepository.SimpleUserStore;
 import net.sf.xapp.net.server.repos.EntityRepository;
-import net.sf.xapp.net.testharness.TestMessageSender;
+import net.sf.xapp.net.testharness.TestMessageHandler;
 
 public class TestNode implements Processor {
     private final Node node;
-    private final TestMessageSender testMessageSender;
+    private final TestMessageHandler testMessageHandler;
     private ScriptPreprocessor scriptPreprocessor;
 
     public TestNode(String backupDirOverride, String... configs) {
@@ -37,7 +37,7 @@ public class TestNode implements Processor {
                 node.handle(message);
             }
         });
-        testMessageSender = node.getBean(TestMessageSender.class);
+        testMessageHandler = node.getBean(TestMessageHandler.class);
 
     }
 
@@ -47,26 +47,26 @@ public class TestNode implements Processor {
     }
 
     public InMessage waitFor(MessageTypeEnum m, Object... propValuePairs) throws InterruptedException {
-        return testMessageSender.waitFor(m, propValuePairs);
+        return testMessageHandler.waitFor(m, propValuePairs);
     }
 
     public List<InMessage> waitFor(int count, MessageTypeEnum m, Object... propValuePairs) throws InterruptedException {
         List<InMessage> result = new ArrayList<InMessage>();
         for (int i = 0; i < count; i++) {
-            result.add(testMessageSender.waitFor(m, propValuePairs));
+            result.add(testMessageHandler.waitFor(m, propValuePairs));
         }
         return result;
     }
 
     public void assertFiredInOrder(String... events) {
-        testMessageSender.assertFiredInOrder(events);
+        testMessageHandler.assertFiredInOrder(events);
     }
 
     public void assertFiredInAnyOrder(String... events) {
-        testMessageSender.assertFiredInAnyOrder(events);
+        testMessageHandler.assertFiredInAnyOrder(events);
     }
 
-    private <T, H> T getTarget(Class<H> lookupClass, Class<T> targetClass, String key) {
+    public <T, H> T getTarget(Class<H> lookupClass, Class<T> targetClass, String key) {
         Adaptor<H> adaptor = (Adaptor<H>) node.getBean(EntityRepository.class).find(lookupClass, key);
         EventLoopMessageHandler<H> eventLoopMessageHandler = (EventLoopMessageHandler<H>) adaptor.getDelegate();
         return (T) eventLoopMessageHandler.getDelegate();

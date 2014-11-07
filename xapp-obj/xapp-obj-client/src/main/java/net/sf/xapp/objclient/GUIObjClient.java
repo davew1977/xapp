@@ -49,4 +49,9 @@ public class GUIObjClient extends ObjClient {
         appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext, objId));
 
     }
+
+    @Override
+    protected void preInit() {
+
+    }
 }

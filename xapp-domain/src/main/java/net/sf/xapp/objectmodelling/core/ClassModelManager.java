@@ -154,11 +154,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     }
 
     @Override
-    public ObjectMeta lastCreated() {
-        return lastCreated;
-    }
-
-    @Override
     public Long getRev() {
         return rev;
     }
@@ -166,11 +161,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void setRevision(Long rev) {
         this.rev = rev;
-    }
-
-    @Override
-    public ObjectMeta lastDeleted() {
-        return lastDeleted;
     }
 
     public void setMaster(boolean master) {

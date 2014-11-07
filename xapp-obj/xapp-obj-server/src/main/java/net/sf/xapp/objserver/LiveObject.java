@@ -34,17 +34,8 @@ public class LiveObject extends SimpleObjUpdater {
     }
 
     @Override
-    public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
-        super.createObject(principal, objLoc, type, xml);
-        ObjectMeta objectMeta = cdb.lastCreated();
+    protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
         listener.objAdded(principal, cdb.getRev(), objLoc, toXmlObj(objectMeta));
-    }
-
-    @Override
-    public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        super.createEmptyObject(principal, objLoc, type);
-        ObjectMeta objectMeta = cdb.lastCreated();
-        listener.objCreated(principal, cdb.getRev(), objLoc, toXmlObj(objectMeta));
     }
 
     @Override
@@ -66,13 +57,11 @@ public class LiveObject extends SimpleObjUpdater {
     }
 
     @Override
-    public void changeType(UserId principal, Long id, Class newType) {
-        super.changeType(principal, id, newType);
-        ObjectMeta objectMeta = cdb.lastCreated();
-        ObjectLocation objHome = objectMeta.getHome();
-        int index = objectMeta.index();
+    protected void typeChanged(UserId principal, Long oldId, ObjectMeta newInstance) {
+        ObjectLocation objHome = newInstance.getHome();
+        int index = newInstance.index();
         //should not be needed : objHome.setIndex(newInstance, oldIndex);
-        listener.typeChanged(principal, cdb.getRev(), new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), index), id, toXmlObj(objectMeta));
+        listener.typeChanged(principal, cdb.getRev(), new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), index), oldId, toXmlObj(newInstance));
     }
 
     @Override

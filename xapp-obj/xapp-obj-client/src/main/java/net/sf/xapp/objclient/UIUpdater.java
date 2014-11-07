@@ -63,11 +63,6 @@ public class UIUpdater implements ObjListener {
     }
 
     @Override
-    public void objCreated(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-        appContainer.createNode(toObjectLocation(objLoc), obj(obj));
-    }
-
-    @Override
     public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
         appContainer.createNode(toObjectLocation(objLoc), obj(obj));
     }

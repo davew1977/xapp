@@ -98,11 +98,8 @@ public interface ClassDatabase<T>
 
     void incrementRevision();
 
-    ObjectMeta lastCreated();
-
     Long getRev();
 
     void setRevision(Long rev);
 
-    ObjectMeta lastDeleted();
 }
