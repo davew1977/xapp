@@ -142,6 +142,26 @@ public class AutoTest extends TestBase {
         assertEquals(9, c2.readDeltas().size());
     }
 
+    /**
+     * 1) add 2 clients
+     * 2) create new person
+     * 3) create 3 new files
+     * 4) update person settings and favourite hat
+     * 5) set person description to one of new files
+     * 6) reorder files
+     * 7) update ruby class's pupil list, remove jamiec and add the new pupil
+     * 8) move jamiec to the other school
+     * 9) convert jamiec to a teacher
+     * 10) make new pupil school's star of the week
+     * 11) check both clients have identical picture
+     * 12) remove new pupil and ensure all references are removed
+     */
+    @Test
+    public void testScenario5() {
+
+    }
+
+
     private TestObjClient scenario1_internal() throws InterruptedException {
         EntityRepository entityRepository = node.getEntityRepository();
         int i = entityRepository.countEntitiesWithKey("s1");
