@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import net.sf.xapp.application.api.ModelProxy;
 import net.sf.xapp.examples.school.model.Pupil;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.common.framework.InMessage;
@@ -32,12 +33,10 @@ import static java.util.Arrays.asList;
  * © 2014 Webatron Ltd
  * Created by dwebber
  */
-public class TestObjClient extends ObjUpdateAdaptor {
+public class TestObjClient implements ModelProxy{
 
     private ObjClient objClient;
-    private ObjUpdate remoteServer;
     private CountDownLatch initSignal = new CountDownLatch(1);
-    private CountDownLatch syncSignal;
     private TestMessageHandler messageHandler = new TestMessageHandler();
 
 
@@ -52,20 +51,10 @@ public class TestObjClient extends ObjUpdateAdaptor {
             @Override
             protected void objMetaLoaded() {
                 initSignal.countDown();
-                objClient.getClientContext().wire(ObjListener.class, objId, new ObjListenerAdaptor() {
-                    @Override
-                    public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
-                        UserId u = (UserId) ReflectionUtils.call(inMessage, "getUser");
-                        if(objClient.getClientContext().getUserId().equals(u)) {
-                            syncSignal.countDown();
-                        }
-                        return null;
-                    }
-                });
+
             }
         };
 
-        remoteServer = objClient.getClientContext().objUpdate(objId);
     }
 
     public void waitUntilInitialized() throws InterruptedException {
@@ -74,18 +63,6 @@ public class TestObjClient extends ObjUpdateAdaptor {
 
     public void close() {
         objClient.close();
-    }
-
-    @Override
-    public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
-        inMessage.visit(remoteServer);
-        syncSignal = new CountDownLatch(1);
-        try {
-            syncSignal.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
     }
 
     public ClassDatabase getCdb() {
@@ -116,10 +93,6 @@ public class TestObjClient extends ObjUpdateAdaptor {
         return objClient.getClientContext().getUserId();
     }
 
-    public void updateObject(ObjectMeta objectMeta, String propName, String value) {
-        updateObject(getUserId(), asList(new PropChangeSet(objectMeta.getId(), asList(new PropChange(propName, null, value)))));
-    }
-
     public ObjClient getObjClient() {
         return objClient;
     }
@@ -128,9 +101,48 @@ public class TestObjClient extends ObjUpdateAdaptor {
         return (T) messageHandler.waitFor(messageTypeEnum, propValuePairs);
     }
 
-    public ObjectMeta createEmptyObject(ObjLoc loc, Class aClass) {
-        createEmptyObject(getUserId(), loc, aClass);
-        return lastCreated();
+    public ModelProxy getModelProxy() {
+        return objClient.getModelProxy();
+    }
+
+    @Override
+    public <T> void add(Object parent, String property, T obj) {
+        getModelProxy().add(parent, property, obj);
+    }
+
+    @Override
+    public <T> T create(Object parent, String property, Class<T> type) {
+        return getModelProxy().create(parent, property, type);
+    }
+
+    @Override
+    public <T> T create(Long parentId, String property, Class<T> type) {
+        return getModelProxy().create(parentId, property, type);
+    }
+
+    @Override
+    public <T> T checkout(T obj) {
+        return getModelProxy().checkout(obj);
+    }
+
+    @Override
+    public <T> T checkout(Class<T> type, Long id) {
+        return getModelProxy().checkout(type, id);
+    }
+
+    @Override
+    public <T> void commit(T obj) {
+        getModelProxy().commit(obj);
+    }
+
+    @Override
+    public <T> void cancelCheckout(T obj) {
+        getModelProxy().cancelCheckout(obj);
+    }
+
+    @Override
+    public <T> void delete(T obj) {
+        getModelProxy().delete(obj);
     }
 
     public ObjectMeta lastCreated() {

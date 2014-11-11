@@ -19,6 +19,11 @@ public enum PropertyFilter implements Filter<Property> {
         public boolean matches(Property property) {
             return property.isReference() || (property instanceof ContainerProperty && ((ContainerProperty) property).containsReferences());
         }
-    };
+    }, CONVERTIBLE_TO_STRING {
+        @Override
+        public boolean matches(Property property) {
+            return !property.isContainer() && property.canConvertToString();
+        }
+    }
 
 }

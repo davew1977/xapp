@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.xapp.application.api.ModelProxy;
 import net.sf.xapp.application.api.SimpleApplication;
 import net.sf.xapp.application.core.ApplicationContainerImpl;
 import net.sf.xapp.application.core.DefaultGUIContext;
@@ -54,6 +55,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     protected ObjectMeta objMeta;
     protected ClassDatabase cdb;
     private ObjectMeta lastCreated;
+    private ModelProxy modelProxy;
 
     public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, String objId) {
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
@@ -195,6 +197,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
                 ObjClient.this.lastCreated = objectMeta;
             }
         });
+        modelProxy = new ModelProxyImpl(this);
         objMetaLoaded();
     }
 
@@ -256,5 +259,9 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     public void close() {
         clientContext.disconnect();
         closeDeltaWriter();
+    }
+
+    public ModelProxy getModelProxy() {
+        return modelProxy;
     }
 }

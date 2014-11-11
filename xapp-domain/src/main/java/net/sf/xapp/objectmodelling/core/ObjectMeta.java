@@ -664,4 +664,12 @@ public class ObjectMeta<T> implements Namespace{
     public void setRev(Long rev) {
         this.rev = rev;
     }
+
+    public Map<Property, String> snapshot() {
+        Map<Property, String> result = new HashMap<Property, String>();
+        for (Property property : classModel.getAllProperties(PropertyFilter.CONVERTIBLE_TO_STRING)) {
+            result.put(property, property.convert(this, get(property)));
+        }
+        return result;
+    }
 }

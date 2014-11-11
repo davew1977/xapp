@@ -21,7 +21,6 @@ import net.sf.xapp.annotations.marshalling.MarshalAsElement;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
-import net.sf.xapp.marshalling.namevaluepair.PropertyValuePair;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
@@ -47,7 +46,6 @@ public class Property<T> implements Comparable {
     private String m_query = "";
     private boolean m_editable;
     private boolean m_editableOnCreation;
-    private TreeMeta m_treeMeta;
     private List<PropertyChangeListener> m_listeners;
     private boolean m_mandatory;
     private boolean m_visibilityRestricted = true; //defaults to visible in dynamic GUI
@@ -74,7 +72,6 @@ public class Property<T> implements Comparable {
         m_query = query;
         m_editable = editable;
         m_editableOnCreation = editable;
-        m_treeMeta = treeMeta;
         m_listeners = new ArrayList<PropertyChangeListener>();
     }
 
@@ -425,6 +422,10 @@ public class Property<T> implements Comparable {
 
     public boolean isComplexNonReference() {
         return !(isReference() || isImmutable() || isTransient());
+    }
+
+    public boolean canConvertToString(){
+        return isReference() || isImmutable() || isTransient();
     }
 
     public boolean isContainer() {

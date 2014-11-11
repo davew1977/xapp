@@ -5,13 +5,13 @@ import java.util.List;
 
 import net.sf.xapp.examples.school.model.PersonSettings;
 import net.sf.xapp.examples.school.model.Pupil;
+import net.sf.xapp.examples.school.model.School;
 import net.sf.xapp.examples.school.model.SchoolSystem;
 import net.sf.xapp.examples.school.model.TextFile;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.api.channel.Channel;
 import net.sf.xapp.net.api.chatapp.ChatApp;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
-import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.LiveObject;
@@ -113,23 +113,27 @@ public class AutoTest extends TestBase {
     public void testScenario4() throws InterruptedException {
         TestObjClient c1 = createClient("100");
         TestObjClient c2 = createClient("101");
-        ObjectMeta chocky = c1.createEmptyObject(new ObjLoc(45L, "People", -1), Pupil.class);
-        assertTrue(chocky.isA(Pupil.class));
-        c1.updateObject(chocky, "Username", "Chocky");
-        c1.updateObject(chocky, "FirstName", "Chocky");
-        c1.updateObject(chocky, "SecondName", "Chimp");
-        ObjectMeta personSettings = c2.createEmptyObject(new ObjLoc(chocky.getId(), "PersonSettings", -1), PersonSettings.class);
-        c1.updateObject(personSettings, "FavouriteWords", "Nice,Pork Chop,Dance");
-        c2.waitFor(MessageTypeEnum.ObjListener_PropertiesChanged, "Rev", 6L);
-        PersonSettings settings = (PersonSettings) c2.getCdb().findObjById(personSettings.getId()).getInstance();
-        assertEquals("Pork Chop", settings.getFavouriteWords()[1]);
+        School school = (School) c1.getCdb().findObjById(45L).getInstance();
+        Pupil charlie = c1.create(school, "People", Pupil.class);
+        charlie.setUsername("Chocky");
+        charlie.setFirstName("Chocky");
+        charlie.setSecondName("Chimp");
+        c1.commit(charlie);
+        charlie = c2.checkout(Pupil.class, 87L);
+        PersonSettings personSettings = c2.create(charlie, "PersonSettings", PersonSettings.class);
+        personSettings.setFavouriteWords(new String[] {"Nice", "Pork Chop", "Dance"});
+        c2.commit(personSettings);
+        c2.waitFor(MessageTypeEnum.ObjListener_PropertiesChanged, "Rev", 4L);
+        personSettings = (PersonSettings) c2.getCdb().findObjById(89L).getInstance();
+        assertEquals("Pork Chop", personSettings.getFavouriteWords()[1]);
 
         c1.close();
-        ObjectMeta textFile = c2.createEmptyObject(new ObjLoc(88L, "Files", -1), TextFile.class);
-        c2.updateObject(textFile, "Text", "This is a text doc about chocky");
+        TextFile textFile = c2.create(88L, "Files", TextFile.class);
+        textFile.setText("This is a text doc about charlie");
+        c2.commit(textFile);
 
-        assertEquals(6, c1.readDeltas().size()); //this client missed 2 deltas
-        assertEquals(8, c2.readDeltas().size());
+        assertEquals(4, c1.readDeltas().size()); //this client missed 2 deltas
+        assertEquals(6, c2.readDeltas().size());
 
         c1 = createClient("100");
         GetDeltasResponse response = c1.waitFor(MessageTypeEnum.ObjManagerReply_GetDeltasResponse);
@@ -137,9 +141,11 @@ public class AutoTest extends TestBase {
         assertEquals(c1.getObjMeta().toXml(), c2.getObjMeta().toXml());
 
         //make one last change
-        c1.updateObject(textFile, "Name", "My work");
+        TextFile charlieFile = c1.checkout(TextFile.class, 90L);
+        charlieFile.setName("My Work");
+        c1.commit(charlieFile);
         assertEquals(1, c1.readDeltas().size());
-        assertEquals(9, c2.readDeltas().size());
+        assertEquals(7, c2.readDeltas().size());
     }
 
     /**
@@ -157,8 +163,9 @@ public class AutoTest extends TestBase {
      * 12) remove new pupil and ensure all references are removed
      */
     @Test
-    public void testScenario5() {
-
+    public void testScenario5() throws InterruptedException {
+        TestObjClient c1 = createClient("100");
+        TestObjClient c2 = createClient("101");
     }
 
 
@@ -172,28 +179,28 @@ public class AutoTest extends TestBase {
         assertNotNull(entityRepository.find(ObjManager.class, "s1"));
         assertNotNull(entityRepository.find(ObjUpdate.class, "s1"));
 
-        TestObjClient testClient_1 = createClient("100");
+        TestObjClient c1 = createClient("100");
 
         //check a few facts about the school
-        ObjectMeta obj_56 = testClient_1.getCdb().findObjById(56L);
+        ObjectMeta obj_56 = c1.getCdb().findObjById(56L);
         assertTrue(obj_56.isA(Pupil.class));
         assertEquals("Berwick School", obj_56.getParent().get("name"));
         assertEquals("Hadwin", obj_56.get("secondName"));
 
         //check the rev file contents
-        assertEquals("0", FileUtils.readFile(testClient_1.getRevFile()).split("\n")[0]);
+        assertEquals("0", FileUtils.readFile(c1.getRevFile()).split("\n")[0]);
         //check object file exists and can be unmarshalled
         Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
-        ObjectMeta objMeta = unmarshaller.unmarshal(testClient_1.getObjFile());
+        ObjectMeta objMeta = unmarshaller.unmarshal(c1.getObjFile());
         //check identical to object retrieved from server
-        assertEquals(testClient_1.getObjMeta().toXml(), objMeta.toXml());
-
-        testClient_1.createEmptyObject(new ObjLoc(59L, "Files", -1), TextFile.class);
-        ObjectMeta objectMeta = testClient_1.lastCreated();
+        assertEquals(c1.getObjMeta().toXml(), objMeta.toXml());
+        TextFile textFile = c1.create(59L, "Files", TextFile.class);
+        ObjectMeta objectMeta = c1.lastCreated();
         assertTrue(objectMeta.isA(TextFile.class));
-        testClient_1.updateObject(objectMeta, "Name", "BooBoo");
+        textFile.setName("BooBoo");
+        c1.commit(textFile);
 
-        List<Delta> deltas = testClient_1.readDeltas();
+        List<Delta> deltas = c1.readDeltas();
         assertEquals(2, deltas.size());
         PropertiesChanged update = (PropertiesChanged) deltas.get(1).getMessage();
         assertEquals((Object) 87L, update.getChangeSets().get(0).getObjId());
@@ -202,8 +209,8 @@ public class AutoTest extends TestBase {
 
         assertEquals("BooBoo", objectMeta.get("Name"));
 
-        testClient_1.close();
-        return testClient_1;
+        c1.close();
+        return c1;
     }
 
     private void ensureNoDeltaFileAndRevAt1(TestObjClient client) {
