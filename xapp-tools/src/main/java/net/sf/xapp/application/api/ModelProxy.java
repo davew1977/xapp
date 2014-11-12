@@ -9,7 +9,7 @@ public interface ModelProxy {
     /**
      * save an object in the model at the given location (if location is a list, then it will be added to the end
      */
-    <T> void add(Object parent, String property, T obj);
+    <T> T add(Object parent, String property, T obj);
 
     /**
      * creates an empty object and checks it out
@@ -34,7 +34,9 @@ public interface ModelProxy {
     /**
      * commit the changes to the model (and the server, if we are distributed)
      */
-    <T> void commit(T obj);
+    void commit(Object... objects);
+
+    void moveInList(Object parent, String property, Object objectToMove, int delta);
 
     /**
      * end a checkout without a commit, note that this will not revert any changes made locally to the object
@@ -45,4 +47,6 @@ public interface ModelProxy {
      * delete the obj
      */
     <T> void delete(T obj);
+
+    <T> T getModel();
 }

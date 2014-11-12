@@ -3,6 +3,11 @@ package net.sf.xapp.examples.school;
 import java.io.File;
 import java.util.List;
 
+import net.sf.xapp.examples.school.model.Colour;
+import net.sf.xapp.examples.school.model.DirMeta;
+import net.sf.xapp.examples.school.model.Hat;
+import net.sf.xapp.examples.school.model.HatType;
+import net.sf.xapp.examples.school.model.ImageFile;
 import net.sf.xapp.examples.school.model.PersonSettings;
 import net.sf.xapp.examples.school.model.Pupil;
 import net.sf.xapp.examples.school.model.School;
@@ -166,6 +171,34 @@ public class AutoTest extends TestBase {
     public void testScenario5() throws InterruptedException {
         TestObjClient c1 = createClient("100");
         TestObjClient c2 = createClient("101");
+        ObjectMeta rootObjMeta = c1.getCdb().getRootObjMeta();
+        SchoolSystem s1 = c1.getModel();
+        Pupil jc = new Pupil();
+        jc.setUsername("jc");
+        jc.setSecondName("cox");
+        jc.setFirstName("jerome");
+        jc.setPersonSettings(new PersonSettings());
+        jc = c1.add(s1.getSchools().get("Alfriston School"), "People", jc);
+        ImageFile if1 = c1.create(jc.getHomeDir(), "Files", ImageFile.class);
+        TextFile tf1 = c1.create(jc.getHomeDir(), "Files", TextFile.class);
+        DirMeta dm1 = c1.create(jc.getHomeDir(), "Files", DirMeta.class);
+        Hat favouriteHat = c1.create(jc.getPersonSettings(), "FavouriteHat", Hat.class);
+        favouriteHat.setColour(Colour.pink);
+        favouriteHat.setType(HatType.Straw);
+        if1.setName("image file 1.jpg");
+        tf1.setName("text file 1.txt");
+        dm1.setName("work-dir");
+        c1.commit(if1, tf1, dm1, favouriteHat);
+        TextFile tf2 = c1.create(dm1, "Files", TextFile.class);
+        tf2.setName("June Bug.txt");
+        tf2.setText("The best in the world\never");
+        c1.commit(tf2);
+        c1.moveInList(jc.getHomeDir(), "Files", dm1, -2);
+        //root model should be at revision 12
+        assertEquals(12L, (long) rootObjMeta.getRevision());
+
+        c2.waitFor(MessageTypeEnum.ObjListener_ObjMovedInList);
+        c2.getObjClient().save();
     }
 
 

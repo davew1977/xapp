@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import net.sf.xapp.application.api.ModelProxy;
-import net.sf.xapp.examples.school.model.Pupil;
 import net.sf.xapp.net.client.io.HostInfo;
-import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.net.common.util.ReflectionUtils;
 import net.sf.xapp.net.testharness.TestMessageHandler;
 import net.sf.xapp.objclient.ObjClient;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
@@ -19,15 +16,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
-import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
-import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
-import net.sf.xapp.objserver.apis.objmanager.to.GetDeltasResponse;
 import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.PropChange;
-import net.sf.xapp.objserver.types.PropChangeSet;
-
-import static java.util.Arrays.asList;
 
 /**
  * © 2014 Webatron Ltd
@@ -106,8 +95,13 @@ public class TestObjClient implements ModelProxy{
     }
 
     @Override
-    public <T> void add(Object parent, String property, T obj) {
-        getModelProxy().add(parent, property, obj);
+    public <T> T add(Object parent, String property, T obj) {
+        return getModelProxy().add(parent, property, obj);
+    }
+
+    @Override
+    public <T> T getModel() {
+        return getModelProxy().getModel();
     }
 
     @Override
@@ -131,8 +125,13 @@ public class TestObjClient implements ModelProxy{
     }
 
     @Override
-    public <T> void commit(T obj) {
+    public void commit(Object... obj) {
         getModelProxy().commit(obj);
+    }
+
+    @Override
+    public void moveInList(Object parent, String property, Object objectToMove, int delta) {
+        getModelProxy().moveInList(parent, property, objectToMove, delta);
     }
 
     @Override

@@ -125,7 +125,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
         remote.moveObject(userId, objMeta.getId(), toObjLoc(objectLocation));
     }
 
-    private ObjLoc toObjLoc(ObjectLocation objectLocation) {
+    public static ObjLoc toObjLoc(ObjectLocation objectLocation) {
         return new ObjLoc(objectLocation.getObj().getId(), objectLocation.getProperty().getName(), objectLocation.getIndex());
     }
 

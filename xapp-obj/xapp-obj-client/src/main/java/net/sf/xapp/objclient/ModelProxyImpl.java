@@ -22,8 +22,7 @@ import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
 
 /**
- * © 2013 Newera Education Ltd
- * Created by dwebber
+ * Manages updates to the remote object model
  */
 public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     private ClassDatabase cdb;
@@ -50,8 +49,9 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
 
     @Override
-    public <T> void add(Object parent, String property, T obj) {
-        createObject(userId(), new ObjLoc(cdb.find(parent).getId(), property, -1), obj.getClass(), cdb.createMarshaller(obj.getClass()).toXMLString(obj));
+    public <T> T add(Object parent, String property, T obj) {
+        createObject(userId(), createObjLoc(parent, property), obj.getClass(), cdb.createMarshaller(obj.getClass()).toXMLString(obj));
+        return (T) lastCreated().getInstance();
     }
 
     @Override
@@ -80,24 +80,33 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
 
     @Override
-    public <T> void commit(T obj) {
-        ObjectMeta<?> objectMeta = cdb.find(obj);
-        Map<Property, String> previous = snapshots.remove(objectMeta.getId());
-        Map<Property, String> snapshot = objectMeta.snapshot();
-        List<Property> properties = objectMeta.getProperties();
-        List<PropChange> changes = new ArrayList<PropChange>();
-        for (Property property : properties) {
-            String oldVal = previous.get(property);
-            String newVal = snapshot.get(property);
-            if(!Property.objEquals(oldVal, newVal)) {
-                changes.add(new PropChange(property.getName(), oldVal, newVal));
+    public void commit(Object... itemsToCommit) {
+        for (Object obj : itemsToCommit) {
+            ObjectMeta<?> objectMeta = cdb.find(obj);
+            Map<Property, String> previous = snapshots.remove(objectMeta.getId());
+            Map<Property, String> snapshot = objectMeta.snapshot();
+            List<Property> properties = objectMeta.getProperties();
+            List<PropChange> changes = new ArrayList<PropChange>();
+            for (Property property : properties) {
+                String oldVal = previous.get(property);
+                String newVal = snapshot.get(property);
+                if(!Property.objEquals(oldVal, newVal)) {
+                    changes.add(new PropChange(property.getName(), oldVal, newVal));
+                }
+            }
+            if (!changes.isEmpty()) {
+                List<PropChangeSet> changeSets = new ArrayList<PropChangeSet>();
+                changeSets.add(new PropChangeSet(objectMeta.getId(), changes));
+                updateObject(userId(), changeSets);
             }
         }
-        if (!changes.isEmpty()) {
-            List<PropChangeSet> changeSets = new ArrayList<PropChangeSet>();
-            changeSets.add(new PropChangeSet(objectMeta.getId(), changes));
-            updateObject(userId(), changeSets);
-        }
+    }
+
+    @Override
+    public void moveInList(Object parent, String property, Object objectToMove, int delta) {
+        Long id = cdb.find(objectToMove).getId();
+        ObjLoc objLoc = createObjLoc(parent, property);
+        moveInList(userId(), objLoc, id, delta);
     }
 
     @Override
@@ -108,6 +117,11 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     @Override
     public <T> void delete(T obj) {
         deleteObject(userId(), cdb.find(obj).getId());
+    }
+
+    @Override
+    public <T> T getModel() {
+        return (T) cdb.getRootInstance();
     }
 
     @Override
@@ -128,5 +142,9 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     private UserId userId() {
         return objClient.getClientContext().getUserId();
+    }
+
+    private ObjLoc createObjLoc(Object parent, String property) {
+        return new ObjLoc(cdb.find(parent).getId(), property, -1);
     }
 }
