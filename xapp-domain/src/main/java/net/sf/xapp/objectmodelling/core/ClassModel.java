@@ -484,7 +484,7 @@ public class ClassModel<T> {
         return new ArrayList<Property>(m_propertyMap.values());
     }
 
-    public List<Property> getAllProperties(PropertyFilter filter) {
+    public List<Property> getAllProperties(Filter<Property> filter) {
         return CollectionsUtils.filter(m_propertyMap.values(), filter);
     }
 

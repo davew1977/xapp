@@ -105,6 +105,11 @@ public class TestObjClient implements ModelProxy{
     }
 
     @Override
+    public void moveTo(Object parent, String property, Object objectToMove) {
+        getModelProxy().moveTo(parent, property, objectToMove);
+    }
+
+    @Override
     public <T> T create(Object parent, String property, Class<T> type) {
         return getModelProxy().create(parent, property, type);
     }
@@ -144,7 +149,57 @@ public class TestObjClient implements ModelProxy{
         getModelProxy().delete(obj);
     }
 
+    @Override
+    public void addRefs(Object parent, String property, Object... objectsToAdd) {
+        getModelProxy().addRefs(parent, property, objectsToAdd);
+    }
+
+    @Override
+    public void removeRefs(Object parent, String property, Object... objectsToRemove) {
+        getModelProxy().removeRefs(parent, property, objectsToRemove);
+    }
+
+    @Override
+    public void changeType(Object obj, Class newType) {
+        getModelProxy().changeType(obj, newType);
+    }
+
     public ObjectMeta lastCreated() {
         return objClient.getLastCreated();
+    }
+
+    @Override
+    public <T> T add(Object parent, T obj) {
+        return getModelProxy().add(parent, obj);
+    }
+
+    @Override
+    public <T> T create(Object parent, Class<T> type) {
+        return getModelProxy().create(parent, type);
+    }
+
+    @Override
+    public <T> T create(Long parentId, Class<T> type) {
+        return getModelProxy().create(parentId, type);
+    }
+
+    @Override
+    public void moveInList(Object parent, Object objectToMove, int delta) {
+        getModelProxy().moveInList(parent, objectToMove, delta);
+    }
+
+    @Override
+    public void addRefs(Object parent, Object... objectsToAdd) {
+        getModelProxy().addRefs(parent, objectsToAdd);
+    }
+
+    @Override
+    public void removeRefs(Object parent, Object... objectsToRemove) {
+        getModelProxy().removeRefs(parent, objectsToRemove);
+    }
+
+    @Override
+    public void moveTo(Object parent, Object objectToMove) {
+        getModelProxy().moveTo(parent, objectToMove);
     }
 }

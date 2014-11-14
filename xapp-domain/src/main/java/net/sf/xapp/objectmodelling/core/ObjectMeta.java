@@ -4,10 +4,12 @@ import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
+import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
 
+import static java.lang.String.*;
 import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
 import static net.sf.xapp.utils.ReflectionUtils.*;
 
@@ -118,13 +120,13 @@ public class ObjectMeta<T> implements Namespace{
                 //todo find the best match
                 ClassModel cm = classModel.getClassDatabase().getClassModel(aClass);
                 Vector<ObjectMeta> objMetas = cm.getAllInstancesInHierarchy();
-                System.out.println(String.format("%s %s not found, namespace is %s\nperforming slow search instead", aClass.getSimpleName(), path, instance));
+                System.out.println(format("%s %s not found, namespace is %s\nperforming slow search instead", aClass.getSimpleName(), path, instance));
                 for (ObjectMeta objMeta : objMetas) {
                     if(objMeta.getKey().equals(p[0])) {
                         return objMeta;
                     }
                 }
-                throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
+                throw new XappException(format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
             }
             return obj;
         } else {
@@ -136,7 +138,7 @@ public class ObjectMeta<T> implements Namespace{
                     return objectMeta.find(aClass, p[1]);
                 }
             }
-            throw new XappException(String.format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
+            throw new XappException(format("%s %s not found, namespace is %s", aClass.getSimpleName(), path, instance));
         }
     }
 
@@ -356,7 +358,7 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public String meta() {
-        return String.format("id: %s, revision: %s, class: %s, key: %s, global key: %s", id, rev, getType(), key, getGlobalKey());
+        return format("id: %s, revision: %s, class: %s, key: %s, global key: %s", id, rev, getType(), key, getGlobalKey());
     }
 
     public String getGlobalKey() {
@@ -518,7 +520,7 @@ public class ObjectMeta<T> implements Namespace{
                 return reference;
             }
         }
-        throw new IllegalArgumentException(String.format("object %s not in location %s", this, location));
+        throw new IllegalArgumentException(format("object %s not in location %s", this, location));
     }
 
     public Object cloneInstance() {
@@ -671,5 +673,27 @@ public class ObjectMeta<T> implements Namespace{
             result.put(property, property.convert(this, get(property)));
         }
         return result;
+    }
+
+    /**
+     * Find a property compatible with the given type. If more than one found throw exception
+     */
+    public String findMatchingProperty(final Class type) {
+        return findMatchingProperty(type, PropertyFilter.ALL );
+    }
+    public String findMatchingProperty(final Class type, final Filter<Property> filter) {
+        List<Property> props = classModel.getAllProperties(new Filter<Property>() {
+            @Override
+            public boolean matches(Property property) {
+                return property.getMainType().isAssignableFrom(type) && filter.matches(property);
+            }
+        });
+        if(props.isEmpty()) {
+            throw new IllegalArgumentException(format("No property of type %s found on %s:%s", type.getSimpleName(), getClassModel().getContainedClass().getSimpleName(), this));
+        }
+        if(props.size() > 1) {
+            throw new IllegalArgumentException(format("More than 1 prop found (%s) of type %s found on %s (%s)", props.size(), type, this, props));
+        }
+        return props.get(0).getName();
     }
 }

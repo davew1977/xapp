@@ -3,11 +3,13 @@ package net.sf.xapp.examples.school;
 import java.io.File;
 import java.util.List;
 
+import net.sf.xapp.examples.school.model.ClassRoom;
 import net.sf.xapp.examples.school.model.Colour;
 import net.sf.xapp.examples.school.model.DirMeta;
 import net.sf.xapp.examples.school.model.Hat;
 import net.sf.xapp.examples.school.model.HatType;
 import net.sf.xapp.examples.school.model.ImageFile;
+import net.sf.xapp.examples.school.model.Person;
 import net.sf.xapp.examples.school.model.PersonSettings;
 import net.sf.xapp.examples.school.model.Pupil;
 import net.sf.xapp.examples.school.model.School;
@@ -25,7 +27,6 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.to.GetDeltasResponse;
 import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.utils.FileUtils;
 
 import org.junit.Test;
@@ -178,10 +179,11 @@ public class AutoTest extends TestBase {
         jc.setSecondName("cox");
         jc.setFirstName("jerome");
         jc.setPersonSettings(new PersonSettings());
-        jc = c1.add(s1.getSchools().get("Alfriston School"), "People", jc);
-        ImageFile if1 = c1.create(jc.getHomeDir(), "Files", ImageFile.class);
-        TextFile tf1 = c1.create(jc.getHomeDir(), "Files", TextFile.class);
-        DirMeta dm1 = c1.create(jc.getHomeDir(), "Files", DirMeta.class);
+        School alfristonSchool = s1.getSchools().get("Alfriston School");
+        jc = c1.add(alfristonSchool, "People", jc);
+        ImageFile if1 = c1.create(jc.getHomeDir(), ImageFile.class);
+        TextFile tf1 = c1.create(jc.getHomeDir(), TextFile.class);
+        DirMeta dm1 = c1.create(jc.getHomeDir(), DirMeta.class);
         Hat favouriteHat = c1.create(jc.getPersonSettings(), "FavouriteHat", Hat.class);
         favouriteHat.setColour(Colour.pink);
         favouriteHat.setType(HatType.Straw);
@@ -189,16 +191,27 @@ public class AutoTest extends TestBase {
         tf1.setName("text file 1.txt");
         dm1.setName("work-dir");
         c1.commit(if1, tf1, dm1, favouriteHat);
-        TextFile tf2 = c1.create(dm1, "Files", TextFile.class);
+        TextFile tf2 = c1.create(dm1, TextFile.class);
         tf2.setName("June Bug.txt");
         tf2.setText("The best in the world\never");
         c1.commit(tf2);
-        c1.moveInList(jc.getHomeDir(), "Files", dm1, -2);
+        assertEquals(2, alfristonSchool.getPeople().get("jc").getHomeDir().getFiles().indexOf(dm1));
+        c1.moveInList(jc.getHomeDir(), dm1, -2);
+        assertEquals(0, alfristonSchool.getPeople().get("jc").getHomeDir().getFiles().indexOf(dm1));
         //root model should be at revision 12
         assertEquals(12L, (long) rootObjMeta.getRevision());
 
-        c2.waitFor(MessageTypeEnum.ObjListener_ObjMovedInList);
-        c2.getObjClient().save();
+        //remove one pupil
+        ClassRoom ruby = alfristonSchool.getClassRooms().get("Emerald");
+        Person jamiec = alfristonSchool.getPeople().get("jamiec");
+        c1.removeRefs(ruby, jamiec);
+        c1.addRefs(ruby, jc, alfristonSchool.getPeople().get("eliasw"));
+
+        c1.moveTo(s1.getSchools().get("Berwick School"), jamiec);
+
+
+        //c2.waitFor(MessageTypeEnum.ObjListener_ObjMovedInList);
+        c1.getObjClient().save();
     }
 
 
