@@ -1,3 +1,18 @@
+BUG/IMPROVEMENT: {
+    if you move say, jamiec from alfriston school to berwick, any existing references to jamiec cannot currently be handled. Effectively absolute
+    paths for reference objects to not work. It might be that this is not always desirable - but for now it seems reasonable to require that all
+    jamiec's references are removed before he can be moved to berwick.
+
+    Ultimately, I guess things should "just work" which means that remaining references to jamiec must save as absolute paths. Trouble is, on unmarshalling
+    the pending ref tasks are tied to the Alfriston School object and are flushed when alfriston has finished unmarshalling. Berwick has  not been unmarshalled at that point and
+    so the reference cannot be set
+
+    this made me think that the lookupMap and lookupSet in ObjectMeta is foolish. Why can't look ups by path just be recursive instead and walk the tree? must have less scope
+    for error. then absolute paths and paths with "../" can be handled too. Also, when unmarshalling, if the flushpending refs cannot be fulfilled, then the
+    unsettable refs should be pushed up the hierarchy where they can be tried again
+}
+
+
 REFACTOR: standalone node update api should not be used by the incoming changes adaptor, the jtree updates should be decoupled from the model updates
 
 BUG: create person no longer working

@@ -136,7 +136,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public void addRefs(Object parent, String property, Object... objectsToAdd) {
-        ObjLoc objLoc = createObjLoc(parent, property, objectsToAdd[0].getClass(), PropertyFilter.COMPLEX_NON_REFERENCE);
+        ObjLoc objLoc = createObjLoc(parent, property, objectsToAdd[0].getClass(), PropertyFilter.REFERENCE);
         updateRefs(userId(), objLoc, toIds(objectsToAdd), new ArrayList<Long>());
     }
 
@@ -147,7 +147,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public void removeRefs(Object parent, String property, Object... objectsToRemove) {
-        ObjLoc objLoc = createObjLoc(parent, property, objectsToRemove[0].getClass(), PropertyFilter.COMPLEX_NON_REFERENCE);
+        ObjLoc objLoc = createObjLoc(parent, property, objectsToRemove[0].getClass(), PropertyFilter.REFERENCE);
         updateRefs(userId(), objLoc, new ArrayList<Long>(), toIds(objectsToRemove));
     }
 

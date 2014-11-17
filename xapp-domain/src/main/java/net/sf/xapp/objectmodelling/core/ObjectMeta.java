@@ -354,7 +354,7 @@ public class ObjectMeta<T> implements Namespace{
 
     @Override
     public String toString() {
-        return key;
+        return key != null ? key : "";
     }
 
     public String meta() {
