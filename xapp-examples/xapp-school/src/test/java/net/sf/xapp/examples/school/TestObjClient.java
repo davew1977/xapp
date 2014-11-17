@@ -125,8 +125,8 @@ public class TestObjClient implements ModelProxy{
     }
 
     @Override
-    public <T> T checkout(Class<T> type, Long id) {
-        return getModelProxy().checkout(type, id);
+    public <T> T checkout(Long id) {
+        return getModelProxy().checkout(id);
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.sf.xapp.objcommon;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.common.framework.InMessage;
@@ -13,6 +14,7 @@ import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.PropertyUpdate;
+import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
@@ -113,20 +115,21 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         }
         ObjectLocation objHome = obj.getHome();
         int oldIndex = obj.index();
+        Map<Property, Object> snapshot = obj.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
         obj.dispose();
         objHome.setIndex(oldIndex);
         ObjectMeta newInstance = cm.newInstance(objHome, true);
-        List<Property> properties = cm.getAllProperties();
+        List<Property> properties = cm.getAllProperties(PropertyFilter.CONVERTIBLE_TO_STRING);
         for (Property property : properties) {
-            newInstance.set(property, obj.get(property));
+            newInstance.set(property, snapshot.get(property));
         }
         super.changeType(principal, id, newType);
 
         newInstance.updateRev();
-        typeChanged(principal, id, newInstance);
+        typeChanged(principal, new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), oldIndex), id, newInstance);
     }
 
-    protected void typeChanged(UserId principal, Long oldId, ObjectMeta newInstance) {
+    protected void typeChanged(UserId principal, ObjLoc objLoc, Long oldId, ObjectMeta newInstance) {
 
     }
 
@@ -175,12 +178,6 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     @Override
     public void objDeleted(UserId user, Long rev, Long id) {
         deleteObject(user, id);
-        assert cdb.getRev().equals(rev);
-    }
-
-    @Override
-    public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long oldId, XmlObj newObj) {
-        changeType(user, oldId, newObj.getType());
         assert cdb.getRev().equals(rev);
     }
 

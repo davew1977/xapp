@@ -667,10 +667,10 @@ public class ObjectMeta<T> implements Namespace{
         this.rev = rev;
     }
 
-    public Map<Property, String> snapshot() {
-        Map<Property, String> result = new HashMap<Property, String>();
-        for (Property property : classModel.getAllProperties(PropertyFilter.CONVERTIBLE_TO_STRING)) {
-            result.put(property, property.convert(this, get(property)));
+    public Map<Property, Object> snapshot(Filter<Property> filter) {
+        Map<Property, Object> result = new HashMap<Property, Object>();
+        for (Property property : classModel.getAllProperties(filter)) {
+            result.put(property, get(property));
         }
         return result;
     }

@@ -18,6 +18,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.to.ChangeType;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
@@ -31,7 +32,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     private CountDownLatch syncSignal;
     private ObjUpdate remoteServer;
     private ObjClient objClient;
-    private Map<Long, Map<Property, String>> snapshots = new HashMap<Long, Map<Property, String>>();
+    private Map<Long, Map<Property, Object>> snapshots = new HashMap<Long, Map<Property, Object>>();
 
     public ModelProxyImpl(final ObjClient objClient) {
         this.cdb = objClient.cdb;
@@ -84,14 +85,14 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     @Override
     public <T> T checkout(T obj) {
         ObjectMeta objectMeta = cdb.find(obj);
-        snapshots.put(objectMeta.getId(), objectMeta.snapshot());
+        snapshots.put(objectMeta.getId(), objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING));
         return obj;
     }
 
     @Override
-    public <T> T checkout(Class<T> type, Long id) {
+    public <T> T checkout(Long id) {
         ObjectMeta<T> objectMeta = cdb.findObjById(id);
-        snapshots.put(objectMeta.getId(), objectMeta.snapshot());
+        snapshots.put(objectMeta.getId(), objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING));
         return objectMeta.getInstance();
     }
 
@@ -99,15 +100,19 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     public void commit(Object... itemsToCommit) {
         for (Object obj : itemsToCommit) {
             ObjectMeta<?> objectMeta = cdb.find(obj);
-            Map<Property, String> previous = snapshots.remove(objectMeta.getId());
-            Map<Property, String> snapshot = objectMeta.snapshot();
+            Map<Property, Object> previous = snapshots.remove(objectMeta.getId());
+            Map<Property, Object> snapshot = objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
             List<Property> properties = objectMeta.getProperties();
             List<PropChange> changes = new ArrayList<PropChange>();
             for (Property property : properties) {
-                String oldVal = previous.get(property);
-                String newVal = snapshot.get(property);
+                Object oldVal = previous.get(property);
+                Object newVal = snapshot.get(property);
                 if(!Property.objEquals(oldVal, newVal)) {
-                    changes.add(new PropChange(property.getName(), oldVal, newVal));
+                    changes.add(new PropChange(property.getName(),
+                            property.convert(objectMeta, oldVal),
+                            property.convert(objectMeta, newVal)));
+                    //replace old value
+                    property.set(obj, oldVal);
                 }
             }
             if (!changes.isEmpty()) {
@@ -187,7 +192,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     @Override
     public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
         inMessage.visit(remoteServer);
-        syncSignal = new CountDownLatch(1);
+        syncSignal = new CountDownLatch(inMessage instanceof ChangeType ? 2 : 1); //we wait for 2 responses with change type
         try {
             syncSignal.await();
         } catch (InterruptedException e) {

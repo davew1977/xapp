@@ -7,6 +7,7 @@ import net.sf.xapp.annotations.objectmodelling.Reference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public class School {
     private Teacher headTeacher;
     private Pupil starOfTheWeek;
     private TextFile schoolDescription;
-    private Map<String, Person> people = new HashMap<String, Person>();
-    private Map<String, ClassRoom> classRooms = new HashMap<String, ClassRoom>();
+    private Map<String, Person> people = new LinkedHashMap<String, Person>();
+    private Map<String, ClassRoom> classRooms = new LinkedHashMap<String, ClassRoom>();
     private List<ImageFile> picturesOfTheWeek = new ArrayList<ImageFile>();
 
     public School() {

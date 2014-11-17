@@ -31,7 +31,7 @@ public interface ModelProxy {
     /**
      * signal from the app that it wishes to modify the given object
      */
-    <T> T checkout(Class<T> type, Long id);
+    <T> T checkout(Long id);
 
     /**
      * commit the changes to the model (and the server, if we are distributed)

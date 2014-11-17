@@ -14,6 +14,7 @@ import net.sf.xapp.examples.school.model.PersonSettings;
 import net.sf.xapp.examples.school.model.Pupil;
 import net.sf.xapp.examples.school.model.School;
 import net.sf.xapp.examples.school.model.SchoolSystem;
+import net.sf.xapp.examples.school.model.Teacher;
 import net.sf.xapp.examples.school.model.TextFile;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.net.api.channel.Channel;
@@ -125,7 +126,7 @@ public class AutoTest extends TestBase {
         charlie.setFirstName("Chocky");
         charlie.setSecondName("Chimp");
         c1.commit(charlie);
-        charlie = c2.checkout(Pupil.class, 87L);
+        charlie = c2.checkout(87L);
         PersonSettings personSettings = c2.create(charlie, "PersonSettings", PersonSettings.class);
         personSettings.setFavouriteWords(new String[] {"Nice", "Pork Chop", "Dance"});
         c2.commit(personSettings);
@@ -147,7 +148,7 @@ public class AutoTest extends TestBase {
         assertEquals(c1.getObjMeta().toXml(), c2.getObjMeta().toXml());
 
         //make one last change
-        TextFile charlieFile = c1.checkout(TextFile.class, 90L);
+        TextFile charlieFile = c1.checkout(90L);
         charlieFile.setName("My Work");
         c1.commit(charlieFile);
         assertEquals(1, c1.readDeltas().size());
@@ -180,11 +181,12 @@ public class AutoTest extends TestBase {
         jc.setFirstName("jerome");
         jc.setPersonSettings(new PersonSettings());
         School alfristonSchool = s1.getSchools().get("Alfriston School");
-        jc = c1.add(alfristonSchool, "People", jc);
+        School berwickSchool = s1.getSchools().get("Berwick School");
+        jc = c1.add(alfristonSchool, jc);
         ImageFile if1 = c1.create(jc.getHomeDir(), ImageFile.class);
         TextFile tf1 = c1.create(jc.getHomeDir(), TextFile.class);
         DirMeta dm1 = c1.create(jc.getHomeDir(), DirMeta.class);
-        Hat favouriteHat = c1.create(jc.getPersonSettings(), "FavouriteHat", Hat.class);
+        Hat favouriteHat = c1.create(jc.getPersonSettings(), Hat.class);
         favouriteHat.setColour(Colour.pink);
         favouriteHat.setType(HatType.Straw);
         if1.setName("image file 1.jpg");
@@ -202,16 +204,29 @@ public class AutoTest extends TestBase {
         assertEquals(12L, (long) rootObjMeta.getRevision());
 
         //remove one pupil
-        ClassRoom ruby = alfristonSchool.getClassRooms().get("Emerald");
+        ClassRoom emerald = alfristonSchool.getClassRooms().get("Emerald");
+        ClassRoom ruby = alfristonSchool.getClassRooms().get("Ruby");
         Person jamiec = alfristonSchool.getPeople().get("jamiec");
+        c1.removeRefs(emerald, jamiec);
+        c1.addRefs(emerald, jc, alfristonSchool.getPeople().get("eliasw"));
+
+        //remove refs to jamie c (if we don't, then alfriston/ruby will reference a pupil in berwick, which will cause an unmarshal error)
         c1.removeRefs(ruby, jamiec);
-        c1.addRefs(ruby, jc, alfristonSchool.getPeople().get("eliasw"));
-
-        c1.moveTo(s1.getSchools().get("Berwick School"), jamiec);
 
 
-        //c2.waitFor(MessageTypeEnum.ObjListener_ObjMovedInList);
+        c1.moveTo(berwickSchool, jamiec);
+
+        Pupil eliasw = (Pupil) berwickSchool.getPeople().get("eliasw");
+        c1.checkout(eliasw);
+        eliasw.setAnotherFileSystem(null);
+        c1.commit(eliasw);
+
+        c1.changeType(jamiec, Teacher.class);
+
+        c2.waitFor(MessageTypeEnum.ObjListener_ObjAdded);
         c1.getObjClient().save();
+
+        assertEquals(c1.getObjMeta().toXml(), c2.getObjMeta().toXml());
     }
 
 

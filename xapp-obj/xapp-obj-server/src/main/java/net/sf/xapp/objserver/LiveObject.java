@@ -57,11 +57,10 @@ public class LiveObject extends SimpleObjUpdater {
     }
 
     @Override
-    protected void typeChanged(UserId principal, Long oldId, ObjectMeta newInstance) {
-        ObjectLocation objHome = newInstance.getHome();
-        int index = newInstance.index();
+    protected void typeChanged(UserId principal, ObjLoc objLoc, Long oldId, ObjectMeta newInstance) {
         //should not be needed : objHome.setIndex(newInstance, oldIndex);
-        listener.typeChanged(principal, cdb.getRev(), new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), index), oldId, toXmlObj(newInstance));
+        listener.objDeleted(principal, cdb.getRev(), oldId);
+        listener.objAdded(principal, cdb.getRev(), objLoc, toXmlObj(newInstance));
     }
 
     @Override

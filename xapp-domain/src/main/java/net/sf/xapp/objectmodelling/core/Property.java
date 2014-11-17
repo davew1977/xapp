@@ -442,4 +442,14 @@ public class Property<T> implements Comparable {
     public ClassModel getMainTypeClassModel() {
         return getClassDatabase().getClassModel(getMainType());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return getName().equals(((Property)obj).getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
 }

@@ -88,13 +88,6 @@ public class UIUpdater implements ObjListener {
     }
 
     @Override
-    public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long oldId, XmlObj newObj) {
-        objDeleted(user, rev, oldId);
-        Node newNode = appContainer.createNode(toObjectLocation(objLoc), obj(newObj));
-        appContainer.setSelectedNode(newNode);
-    }
-
-    @Override
     public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
         ObjectMeta objectMeta = obj(id);
         Node node = appContainer.getNode(id, toObjectLocation(objLoc));

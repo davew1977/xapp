@@ -136,7 +136,8 @@ public class ContainerProperty extends Property
         if(isList()) {
             return ((List) get(container.getInstance())).indexOf(objectMeta.getInstance());
         } else {
-            throw new UnsupportedOperationException("Cannot call indexOf unless list " + this);
+            return -1;
+            //throw new UnsupportedOperationException("Cannot call indexOf unless list " + this);
         }
     }
 

@@ -116,7 +116,6 @@
     <ObjectId id="113" name="ObjUpdate_ChangeType"/>
     <ObjectId id="114" name="ObjListener_ObjMovedInList"/>
     <ObjectId id="115" name="ObjUpdate_CreateEmptyObject"/>
-    <ObjectId id="117" name="ObjListener_TypeChanged"/>
     <ObjectId id="119" name="ObjListener_RefsUpdated"/>
   </MessageIds>
   <Module name="provided">
@@ -727,14 +726,6 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" name="rev" type="provided/java/lang/Long"/>
                     <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>
                     <Response name="ObjDeletedResponse"/>
-                  </Message>
-                  <Message name="TypeChanged">
-                    <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
-                    <Field access="READ_ONLY" name="rev" type="provided/java/lang/Long"/>
-                    <Field access="READ_ONLY" name="objLoc" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjLoc"/>
-                    <Field access="READ_ONLY" name="oldId" type="provided/java/lang/Long"/>
-                    <Field access="READ_ONLY" name="newObj" type="xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj"/>
-                    <Response name="TypeChangedResponse"/>
                   </Message>
                   <Message name="ObjMovedInList">
                     <Field access="READ_ONLY" name="user" type="xapp-common-fwk/net/sf/xapp/net/common/types/UserId"/>
