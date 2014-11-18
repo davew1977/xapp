@@ -35,7 +35,7 @@ public class TestMessageHandler implements MessageHandler
     @Override
     public Object handleMessage(InMessage inMessage) {
 
-        log.info(inMessage.serialize());
+        log.debug(inMessage.serialize());
         messagesAsString.add(inMessage.serialize());
         outMessages.add(inMessage);
         return null;

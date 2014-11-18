@@ -319,6 +319,11 @@ public class StringUtils
         return (pNumber ? tPad.toString() : "") + pVal + (pNumber ? "" : tPad.toString());
     }
 
+    public static String truncate(String str, int limit) {
+
+        return str!= null && str.length() > limit? str.substring(0, limit) : str;
+    }
+
     public static String pad(String pVal) {
         return pad(pVal, false);
     }

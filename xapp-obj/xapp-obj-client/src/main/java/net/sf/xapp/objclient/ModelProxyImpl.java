@@ -32,7 +32,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     private CountDownLatch syncSignal;
     private ObjUpdate remoteServer;
     private ObjClient objClient;
-    private Map<Long, Map<Property, Object>> snapshots = new HashMap<Long, Map<Property, Object>>();
+    private Map<Long, Map<String, Object>> snapshots = new HashMap<Long, Map<String, Object>>();
 
     public ModelProxyImpl(final ObjClient objClient) {
         this.cdb = objClient.cdb;
@@ -100,13 +100,13 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     public void commit(Object... itemsToCommit) {
         for (Object obj : itemsToCommit) {
             ObjectMeta<?> objectMeta = cdb.find(obj);
-            Map<Property, Object> previous = snapshots.remove(objectMeta.getId());
-            Map<Property, Object> snapshot = objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
+            Map<String, Object> previous = snapshots.remove(objectMeta.getId());
+            Map<String, Object> snapshot = objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
             List<Property> properties = objectMeta.getProperties();
             List<PropChange> changes = new ArrayList<PropChange>();
             for (Property property : properties) {
-                Object oldVal = previous.get(property);
-                Object newVal = snapshot.get(property);
+                Object oldVal = previous.get(property.getName());
+                Object newVal = snapshot.get(property.getName());
                 if(!Property.objEquals(oldVal, newVal)) {
                     changes.add(new PropChange(property.getName(),
                             property.convert(objectMeta, oldVal),

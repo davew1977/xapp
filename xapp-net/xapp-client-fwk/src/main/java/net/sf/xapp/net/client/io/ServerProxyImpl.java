@@ -70,7 +70,7 @@ public class ServerProxyImpl implements ServerProxy {
                         final TransportObject message = Global.create(messageType);
                         message.readData(dis);
                         client.handleMessage((InMessage) message);
-                        System.out.println(StringUtils.pad(messageSize + " bytes", false, 16) + message);
+                        System.out.println(StringUtils.pad(messageSize + " bytes", false, 16) + StringUtils.truncate(String.valueOf(message), 256));
                     } catch (SocketException e) {
                         if (e.getMessage().equals("Connection reset") ||
                                 e.getMessage().equalsIgnoreCase("Socket closed")) {
