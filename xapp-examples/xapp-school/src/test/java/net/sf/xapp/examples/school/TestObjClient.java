@@ -40,7 +40,6 @@ public class TestObjClient implements ModelProxy{
             @Override
             protected void objMetaLoaded() {
                 initSignal.countDown();
-
             }
         };
 

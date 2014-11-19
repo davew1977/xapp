@@ -43,7 +43,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
             @Override
             public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
                 UserId u = (UserId) ReflectionUtils.call(inMessage, "getUser");
-                if(objClient.getClientContext().getUserId().equals(u)) {
+                if(objClient.getClientContext().getUserId().equals(u) && syncSignal !=null) {
                     syncSignal.countDown();
                 }
                 return null;
@@ -198,6 +198,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        syncSignal = null;
         return null;
     }
 

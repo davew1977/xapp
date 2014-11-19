@@ -45,7 +45,7 @@ public class GUIObjClient extends ObjClient {
         appContainer.getMainFrame().setVisible(true);
 
 
-        clientContext.wire(ObjListener.class, objId, new UIUpdater(cdb, appContainer));
+        clientContext.wire(ObjListener.class, objId, new UIUpdater(cdb, appContainer, clientContext.getUserId()));
         appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext, objId));
 
     }

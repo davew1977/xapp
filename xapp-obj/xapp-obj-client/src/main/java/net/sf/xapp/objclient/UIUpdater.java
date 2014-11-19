@@ -27,9 +27,11 @@ import net.sf.xapp.objserver.types.XmlObj;
 public class UIUpdater implements ObjListener {
     private final ClassDatabase cdb;
     private final ApplicationContainer appContainer;
+    private final UserId userId;
     private ObjCreateCallback objCreateCallback;
 
-    public UIUpdater(ClassDatabase cdb, ApplicationContainer appContainer) {
+    public UIUpdater(ClassDatabase cdb, ApplicationContainer appContainer, UserId userId) {
+        this.userId = userId;
         this.cdb = cdb;
         this.appContainer = appContainer;
     }
@@ -90,8 +92,12 @@ public class UIUpdater implements ObjListener {
     @Override
     public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
         ObjectMeta objectMeta = obj(id);
-        Node node = appContainer.getNode(id, toObjectLocation(objLoc));
-        node.updateIndex(objectMeta.index());
+        ObjectLocation objectLocation = toObjectLocation(objLoc);
+        Node node = appContainer.getNode(id, objectLocation);
+        node.updateIndex(objectLocation.indexOf(objectMeta));
+        if(userId.equals(user)) {
+            appContainer.setSelectedNode(node);
+        }
     }
 
     @Override
