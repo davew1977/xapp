@@ -84,11 +84,11 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
     }
 
     @Override
-    public boolean connect() {
+    public boolean connect(Callback onConnect) {
         if (server == null) {
             throw new RuntimeException("no server to connect to");
         }
-        return server.connect();
+        return server.connect(onConnect);
     }
 
     @Override
@@ -244,15 +244,6 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
 
     public void login(boolean bot) {
         userApi().loginWithToken(getUserId(), "foo", bot);
-    }
-
-    public void connectAndLogin() {
-        boolean connected = connect();
-        if (connected) {
-            login();
-        } else {
-            throw new RuntimeException("could not connect");
-        }
     }
 
     public void addGenericHandler(MessageHandler messageHandler) {

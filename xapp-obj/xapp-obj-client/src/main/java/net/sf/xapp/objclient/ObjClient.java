@@ -71,7 +71,10 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     public void init() {
-        clientContext.connect();
+        clientContext.connect(new Callback("onConnect", this));
+    }
+
+    public void onConnect(){
         clientContext.login();
 
         clientContext.wire(ObjManagerReply.class, objId, this);

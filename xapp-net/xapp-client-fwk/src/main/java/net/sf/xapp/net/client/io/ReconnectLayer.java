@@ -6,63 +6,51 @@
  */
 package net.sf.xapp.net.client.io;
 
+import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.framework.Logger;
 import net.sf.xapp.net.common.util.ThreadUtils;
 
 /**
  */
-public class ReconnectLayer implements Connectable, ConnectionListener
-{
+public class ReconnectLayer implements Connectable, ConnectionListener {
     private final Logger log = Logger.getLogger(getClass());
     private final ServerProxy serverProxy;
     private boolean connected;
     private boolean reconnect = true;
     private Exception lastException;
 
-    public ReconnectLayer(ServerProxy serverProxy)
-    {
+    public ReconnectLayer(ServerProxy serverProxy) {
         this.serverProxy = serverProxy;
         serverProxy.addListener(this);
     }
 
-    public boolean connect()
-    {
-        connected = serverProxy.connect();
-        if(!connected) {
-            throw new RuntimeException(lastException);
+    public boolean connect(Callback onConnect) {
+        connected = serverProxy.connect(onConnect);
+        if (!connected) {
+            connectWithRetry(onConnect);
         }
         return connected;
     }
 
-    public void disconnected()
-    {
+    public void disconnected() {
         connected = false;
-        if (reconnect)
-        {
-            connectWithRetry();
+        if (reconnect) {
+            connectWithRetry(new Callback());
         }
     }
 
     @Override
-    public void connected()
-    {
+    public void connected() {
     }
 
-    private void connectWithRetry()
-    {
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                while (!connected)
-                {
-                    connected = serverProxy.connect();
-                    if (!connected)
-                    {
+    private void connectWithRetry(final Callback callback) {
+        new Thread(new Runnable() {
+            public void run() {
+                while (!connected) {
+                    connected = serverProxy.connect(callback);
+                    if (!connected) {
                         ThreadUtils.sleep(3000);
-                    }
-                    else
-                    {
+                    } else {
                         connected = true;
                     }
                 }
@@ -72,31 +60,26 @@ public class ReconnectLayer implements Connectable, ConnectionListener
     }
 
     @Override
-    public void disconnect()
-    {
+    public void disconnect() {
         serverProxy.disconnect();
     }
 
     @Override
-    public void handleConnectException(Exception e)
-    {
+    public void handleConnectException(Exception e) {
         lastException = e;
     }
 
     @Override
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return serverProxy.isConnected();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return serverProxy.toString();
     }
 
-    public void setReconnect(boolean reconnect)
-    {
+    public void setReconnect(boolean reconnect) {
         this.reconnect = reconnect;
     }
 }

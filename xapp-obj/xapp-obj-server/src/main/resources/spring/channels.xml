@@ -29,7 +29,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
                                     <bean name="channelConnectionListener"
                                           class="net.sf.xapp.net.server.channels.ChannelConnectionListener">
                                         <constructor-arg index="0" ref="entityRepository"/>
-                                        <constructor-arg index="1" ref="playerLocator"/>
+                                        <constructor-arg index="1" ref="userLocator"/>
                                     </bean>
                                 </constructor-arg>
                                 <constructor-arg index="1" ref="systemThreadPool"/>
@@ -41,7 +41,4 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
             </bean>
         </constructor-arg>
     </bean>
-
-
-    <bean id="playerLocator" class="net.sf.xapp.net.server.channels.UserLocator"/>
 </beans>

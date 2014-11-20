@@ -6,6 +6,7 @@
  */
 package net.sf.xapp.net.client.tools.adminclient;
 
+import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.io.*;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
@@ -36,7 +37,7 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
         this.server = serverProxy;
         this.connectable = new ReconnectLayer(serverProxy);
         serverProxy.addListener(this);
-        connectable.connect();
+        connectable.connect(new Callback());
         if (this.gui !=null)
         {
             this.gui = gui;
