@@ -8,6 +8,7 @@ package net.sf.xapp.net.client.io;
 
 
 import net.sf.xapp.Global;
+import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.framework.TransportObject;
@@ -47,7 +48,7 @@ public class ServerProxyImpl implements ServerProxy {
         listeners.add(listener);
     }
 
-    public boolean connect() {
+    public boolean connect(Callback callback) {
         disconnect();
         final DataInputStream dis;
         try {
@@ -55,6 +56,7 @@ public class ServerProxyImpl implements ServerProxy {
             socket.connect(new InetSocketAddress(host, port), 5000);
             dis = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
+            callback.call();
         } catch (IOException e) {
             for (ConnectionListener listener : listeners) {
                 listener.handleConnectException(e);

@@ -6,6 +6,7 @@
  */
 package net.sf.xapp.net.client.tools.adminclient;
 
+import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.io.ConnectionListener;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxy;
@@ -92,7 +93,7 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
     }
 
     @Override
-    public boolean connect()
+    public boolean connect(Callback callback)
     {
         if (session != null && session.isConnected())
         {
@@ -114,6 +115,7 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
             {
                 listener.connected();
             }
+            callback.call();
             return true;
         }
         catch (Exception e)

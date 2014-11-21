@@ -62,7 +62,7 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
     {
         if (message.equals("connect"))
         {
-            connectable.connect();
+            connectable.connect(new Callback());
         }
         else if (message.equals("disconnect"))
         {

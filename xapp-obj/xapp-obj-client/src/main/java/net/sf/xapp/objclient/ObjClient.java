@@ -94,7 +94,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         // if deltas exist then parse them, and use the last one to get the last known rev
         if(!initialDeltas.isEmpty()) {
             InMessage message = initialDeltas.get(initialDeltas.size() - 1).getMessage();
-            return ReflectionUtils.call(message, "getRev");
+            return (Long) ReflectionUtils.call(message, "getRev");
         } else if(revFile.exists()) {
             return Long.parseLong(FileUtils.readFile(revFile).split("\n")[0]);
         } else {

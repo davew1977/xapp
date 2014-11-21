@@ -42,7 +42,7 @@ public class TestObjClient implements ModelProxy{
                 initSignal.countDown();
             }
         };
-
+        objClient.getClientContext().setReconnect(false);
     }
 
     public void waitUntilInitialized() throws InterruptedException {

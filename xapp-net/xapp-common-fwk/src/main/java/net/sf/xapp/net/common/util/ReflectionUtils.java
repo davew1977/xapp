@@ -76,7 +76,7 @@ public class ReflectionUtils
     {
         try
         {
-            return aClass.getConstructor(types).newInstance(args);
+            return (T) aClass.getConstructor(types).newInstance(args);
         }
         catch (Exception e)
         {
@@ -88,7 +88,7 @@ public class ReflectionUtils
     {
         try
         {
-            return aClass.getConstructor(typeArgs(args)).newInstance(args);
+            return (T) aClass.getConstructor(typeArgs(args)).newInstance(args);
         }
         catch (Exception e)
         {
