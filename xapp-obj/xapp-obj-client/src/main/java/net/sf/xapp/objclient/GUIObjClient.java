@@ -41,12 +41,12 @@ public class GUIObjClient extends ObjClient {
         ApplicationContainerImpl appContainer = new ApplicationContainerImpl(new DefaultGUIContext(new File("file.xml"), cdb, objMeta));
         appContainer.setSaveStrategy(this);
         appContainer.add(chatPane, "bottomLeft");
-        appContainer.setUserGUI(new SimpleApplication());
+        appContainer.setUserGUI(new OnlineApp(this));
         appContainer.getMainFrame().setVisible(true);
 
 
         clientContext.wire(ObjListener.class, objId, new UIUpdater(cdb, appContainer, clientContext.getUserId()));
-        appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, clientContext, objId));
+        appContainer.setNodeUpdateApi(new NodeUpdateApiRemote(cdb, this));
 
     }
 

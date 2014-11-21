@@ -13,6 +13,7 @@ import net.sf.xapp.net.client.io.ServerProxy;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.framework.NullMessageHandler;
+import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.net.connectionserver.mina.BytePacketCodecFactory;
 import org.apache.mina.common.*;
 import org.apache.mina.filter.LoggingFilter;
@@ -32,7 +33,6 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
     private MessageHandler client;
     private IoSession session;
 
-
     public MinaServerProxy(HostInfo hostInfo)
     {
         this(hostInfo, createSocketConnector());
@@ -48,6 +48,21 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
         ByteBuffer.setUseDirectBuffers(false);
         ByteBuffer.setAllocator(new SimpleByteBufferAllocator());
         client = new NullMessageHandler();
+    }
+
+    @Override
+    public void setConnecting() {
+        for (ConnectionListener listener : listeners) {
+            listener.connectionStateChanged(ConnectionState.CONNECTING);
+        }
+    }
+
+    @Override
+    public void setOffline() {
+        disconnect();
+        for (ConnectionListener listener : listeners) {
+            listener.connectionStateChanged(ConnectionState.OFFLINE);
+        }
     }
 
     public void setClient(MessageHandler client)
@@ -93,7 +108,7 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
     }
 
     @Override
-    public boolean connect(Callback callback)
+    public boolean connect()
     {
         if (session != null && session.isConnected())
         {
@@ -113,9 +128,8 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
             session = future.getSession();
             for (ConnectionListener listener : listeners)
             {
-                listener.connected();
+                listener.connectionStateChanged(ConnectionState.ONLINE);
             }
-            callback.call();
             return true;
         }
         catch (Exception e)
@@ -126,7 +140,7 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
 
     }
 
-    public void disconnect()
+    private void disconnect()
     {
         session.close();
     }
@@ -144,7 +158,7 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
     {
         for (ConnectionListener listener : listeners)
         {
-            listener.disconnected();
+            listener.connectionStateChanged(ConnectionState.CONNECTION_LOST);
         }
     }
 

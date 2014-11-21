@@ -19,9 +19,12 @@ import net.sf.xapp.net.api.chatapp.ChatApp;
 import net.sf.xapp.net.api.chatclient.ChatClient;
 import net.sf.xapp.net.api.chatuser.ChatUser;
 import net.sf.xapp.net.client.framework.Callback;
+import net.sf.xapp.net.client.io.ConnectionListener;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxyImpl;
 import net.sf.xapp.net.common.framework.InMessage;
+import net.sf.xapp.net.common.framework.Multicaster;
+import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objclient.ui.ChatPane;
@@ -32,6 +35,8 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.XmlObj;
@@ -43,21 +48,26 @@ import net.sf.xapp.utils.ant.AntFacade;
  * © Webatron Ltd
  * Created by dwebber
  */
-public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply {
+public abstract class ObjClient implements SaveStrategy, ObjManagerReply, ConnectionListener {
     protected final ObjClientContext clientContext;
     protected final String objId;
     protected final File revFile;
     protected final File objFile;
     protected final File deltaFile;
+    protected final File offlineFile;
     protected final List<Delta> initialDeltas;
     private OutputStreamWriter deltaWriter;
+    private OutputStreamWriter offlineWriter;
 
     protected ObjectMeta objMeta;
     protected ClassDatabase cdb;
     private ObjectMeta lastCreated;
     private ModelProxy modelProxy;
+    private ObjUpdate objUpdate;
+    private Multicaster<ObjListener> objListeners = new Multicaster<>();
+    private SimpleObjUpdater localObjUpdater;
 
-    public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, String objId) {
+    public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, final String objId) {
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
         this.objId = objId;
         File dir = new File(new File(new File(localDir, userId), appId), objId);
@@ -65,24 +75,54 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         revFile = new File(dir, "rev.txt");
         objFile = new File(dir, "obj.xml");
         deltaFile = new File(dir, "deltas.txt");
+        offlineFile = new File(dir, "offline.txt");
         initialDeltas = readDeltas();
         preInit();
         init();
     }
 
+    private boolean isOnlineMode() {
+        return clientContext.getConnectionState().isOnlineMode();
+    }
+
     public void init() {
-        clientContext.connect(new Callback("onConnect", this));
+        clientContext.addConnectionListener(this);
+
+        //if we were offline before?
+        //first, can we connect immediately
+
+        clientContext.setReconnect(false);
+        boolean connected = clientContext.connect();
+
+    }
+
+    public void enterOnlineMode() {
+
+    }
+
+    public void enterOfflineMode() {
+
     }
 
     public void onConnect(){
         clientContext.login();
 
         clientContext.wire(ObjManagerReply.class, objId, this);
+        clientContext.wire(ObjListener.class, objId, new ObjListenerAdaptor() {
+            @Override
+            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
+                return objListeners.handleMessage(inMessage);
+            }
+        });
 
         clientContext.channel(objId).join(clientContext.getUserId());
 
         ObjManager objManager = clientContext.objManager(objId);
         long rev = getLastKnownRevision();
+
+        //do we have offline work?
+
+
         if(rev != -1) {
             objManager.getDeltas(clientContext.getUserId(), rev, null);
         } else {
@@ -102,18 +142,12 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         }
     }
 
-    @Override
-    public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
-        cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
-        write(new Delta(inMessage).serialize(), getDeltaWriter());
-        return null;
-    }
-
     /**
      * replace all client state with a fresh version of the object
      */
     public void reset(XmlObj obj) {
         closeDeltaWriter();
+        closeOfflineWriter();
         new AntFacade().deleteFile(deltaFile);
         FileUtils.writeFile(obj.getData(), objFile);
         FileUtils.writeFile(obj.getLastChangeRev(), revFile);
@@ -155,6 +189,15 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             throw new RuntimeException(e);
         }
     }
+    private void closeOfflineWriter() {
+        try {
+            getOfflineWriter().flush();
+            getOfflineWriter().close();
+            offlineWriter = null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private OutputStreamWriter getDeltaWriter() {
         if (deltaWriter == null) {
@@ -165,6 +208,17 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             }
         }
         return deltaWriter;
+    }
+
+    private OutputStreamWriter getOfflineWriter() {
+        if (offlineWriter == null) {
+            try {
+                offlineWriter = new OutputStreamWriter(new FileOutputStream(offlineFile, true), "UTF-8");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return offlineWriter;
     }
 
     public ObjectMeta getObjMeta() {
@@ -193,13 +247,27 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     private void objMetaLoaded_internal() {
-        clientContext.wire(ObjListener.class, objId, this);
-        clientContext.wire(ObjListener.class, objId, new SimpleObjUpdater(objMeta, false) {
+        objUpdate = new MasterObjUpdater(objId);
+        /**
+               * receives server updates, updates official revision, and writes the deltas
+               */
+        addObjListener(new ObjListenerAdaptor() {
+            @Override
+            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
+                assert isOnlineMode(); //should not be
+                cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
+                write(new Delta(inMessage).serialize(), getDeltaWriter());
+                return null;
+            }
+        });
+        localObjUpdater = new SimpleObjUpdater(objMeta, false) {
             @Override
             protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
                 ObjClient.this.lastCreated = objectMeta;
             }
-        });
+        };
+        addObjListener(localObjUpdater);
+
         modelProxy = new ModelProxyImpl(this);
         objMetaLoaded();
     }
@@ -211,6 +279,17 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         List<Delta> deltas = new ArrayList<Delta>();
         if (deltaFile.exists()) {
             String[] lines = FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
+            for (String line : lines) {
+                deltas.add(new Delta().deserialize(line));
+            }
+        }
+        return deltas;
+    }
+
+    public List<Delta> readOffline() {
+        List<Delta> deltas = new ArrayList<Delta>();
+        if (offlineFile.exists()) {
+            String[] lines = FileUtils.readFile(offlineFile, Charset.forName("UTF-8")).split("\n");
             for (String line : lines) {
                 deltas.add(new Delta().deserialize(line));
             }
@@ -260,11 +339,83 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     public void close() {
-        clientContext.disconnect();
+        clientContext.setOffline();
         closeDeltaWriter();
+        closeOfflineWriter();
     }
 
     public ModelProxy getModelProxy() {
         return modelProxy;
+    }
+
+    public boolean isConnected() {
+        return clientContext.isConnected();
+    }
+
+    public void addConnectionListener(ConnectionListener connectionListener) {
+        clientContext.addConnectionListener(connectionListener);
+    }
+
+    @Override
+    public void connectionStateChanged(ConnectionState newState) {
+        switch (newState) {
+            case ONLINE:
+                onConnect();
+                break;
+            case OFFLINE:
+                break;
+            case CONNECTING:
+                break;
+            case CONNECTION_LOST:
+                break;
+        }
+    }
+
+    @Override
+    public void handleConnectException(Exception e) {
+
+    }
+
+    public void setOffline() {
+        clientContext.setOffline();
+    }
+
+    public void connect() {
+        clientContext.connect();
+    }
+
+    public ObjUpdate getObjUpdate() {
+        return objUpdate;
+    }
+
+    public UserId getUserId() {
+        return clientContext.getUserId();
+    }
+
+    public void addObjListener(ObjListener objListener) {
+        objListeners.addDelegate(objListener);
+    }
+
+    /**
+     * responsible for handling online (sends to server) and local (from UI, or model proxy) updates
+     */
+    private class MasterObjUpdater extends ObjUpdateAdaptor {
+        ObjUpdate remote;
+
+        public MasterObjUpdater(String objId) {
+            remote = clientContext.objUpdate(objId);
+        }
+
+        @Override
+        public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
+            if(isOnlineMode()) {
+                inMessage.visit(remote);
+            } else {
+                write(new Delta(inMessage).serialize(), getOfflineWriter());
+                //apply the change
+                inMessage.visit(localObjUpdater);
+            }
+            return null;
+        }
     }
 }

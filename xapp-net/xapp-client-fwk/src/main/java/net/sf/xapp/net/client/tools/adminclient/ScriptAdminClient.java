@@ -11,6 +11,7 @@ import net.sf.xapp.net.client.io.*;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.framework.TransportHelper;
+import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.net.common.util.StringUtils;
 
 /**
@@ -37,7 +38,7 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
         this.server = serverProxy;
         this.connectable = new ReconnectLayer(serverProxy);
         serverProxy.addListener(this);
-        connectable.connect(new Callback());
+        connectable.connect();
         if (this.gui !=null)
         {
             this.gui = gui;
@@ -46,15 +47,22 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
     }
 
     @Override
-    public void connected()
-    {
-        gui.println(this, String.format("\nconnected to %s", connectable));
-    }
+    public void connectionStateChanged(ConnectionState newState) {
 
-    public void disconnected()
-    {
-        gui.println(this, String.format("disconnected from %s", connectable));
-        gui.print(this, "\nreconnecting...");
+        switch (newState) {
+
+            case ONLINE:
+                gui.println(this, String.format("\nconnected to %s", connectable));
+                break;
+            case OFFLINE:
+                gui.println(this, String.format("disconnected from %s", connectable));
+                break;
+            case CONNECTING:
+                gui.print(this, "\nconnecting...");
+                break;
+            case CONNECTION_LOST:
+                break;
+        }
     }
 
     @Override
@@ -62,11 +70,11 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
     {
         if (message.equals("connect"))
         {
-            connectable.connect(new Callback());
+            connectable.connect();
         }
         else if (message.equals("disconnect"))
         {
-            connectable.disconnect();
+            connectable.setOffline();
         }
         else
         {

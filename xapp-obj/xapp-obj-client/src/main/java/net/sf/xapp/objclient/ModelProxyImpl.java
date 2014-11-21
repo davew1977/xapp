@@ -30,16 +30,13 @@ import net.sf.xapp.utils.Filter;
 public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     private ClassDatabase cdb;
     private CountDownLatch syncSignal;
-    private ObjUpdate remoteServer;
     private ObjClient objClient;
     private Map<Long, Map<String, Object>> snapshots = new HashMap<Long, Map<String, Object>>();
 
     public ModelProxyImpl(final ObjClient objClient) {
         this.cdb = objClient.cdb;
         this.objClient = objClient;
-        String objId = objClient.getObjId();
-        remoteServer = objClient.getClientContext().objUpdate(objId);
-        objClient.getClientContext().wire(ObjListener.class, objId, new ObjListenerAdaptor() {
+        objClient.addObjListener(new ObjListenerAdaptor() {
             @Override
             public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
                 UserId u = (UserId) ReflectionUtils.call(inMessage, "getUser");
@@ -191,7 +188,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
-        inMessage.visit(remoteServer);
+        inMessage.visit(objClient.getObjUpdate());
         syncSignal = new CountDownLatch(inMessage instanceof ChangeType ? 2 : 1); //we wait for 2 responses with change type
         try {
             syncSignal.await();

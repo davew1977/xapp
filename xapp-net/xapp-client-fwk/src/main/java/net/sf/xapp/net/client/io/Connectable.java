@@ -4,9 +4,17 @@ import net.sf.xapp.net.client.framework.Callback;
 
 public interface Connectable
 {
-    boolean connect(Callback onConnect);
+    /**
+     * application level request to go online
+     */
+    boolean connect();
 
-    void disconnect();
+    void setConnecting();
+
+    /**
+     * application level request to go offline
+     */
+    void setOffline();
 
     boolean isConnected();
 }

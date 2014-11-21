@@ -6,14 +6,14 @@
  */
 package net.sf.xapp.net.client.io;
 
+import net.sf.xapp.net.common.types.ConnectionState;
+
 /**
  * Something that connects to a server
  */
 public interface ConnectionListener
 {
-    void disconnected();
-
-    void connected();
+    void connectionStateChanged(ConnectionState newState);
 
     void handleConnectException(Exception e);
 }

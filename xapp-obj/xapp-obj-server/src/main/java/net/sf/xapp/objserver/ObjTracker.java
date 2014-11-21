@@ -43,7 +43,7 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.DELTA_IS_IN_FUTURE);
             return;
         }
-        long firstRev = !revisions.isEmpty() ? revisions.keySet().iterator().next() : Long.MAX_VALUE;
+        long firstRev = !revisions.isEmpty() ? revisions.keySet().iterator().next() : 0;
         if(revFrom < firstRev) {
             objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.DELTA_TOO_OLD);
             return;

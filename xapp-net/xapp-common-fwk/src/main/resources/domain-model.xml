@@ -230,6 +230,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                   <Field access="READ_WRITE" name="points" type="provided/java/lang/Long"/>
                   <Field access="READ_WRITE" name="enabledCharacters" optional="true" type="provided/java/lang/String"/>
                 </LobbyType>
+                <EnumType name="ConnectionState" values="ONLINE,OFFLINE,CONNECTING,CONNECTION_LOST,"/>
               </DirMeta>
             </DirMeta>
             <DirMeta name="api">

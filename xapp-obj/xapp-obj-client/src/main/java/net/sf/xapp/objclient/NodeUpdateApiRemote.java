@@ -24,36 +24,33 @@ import java.util.List;
  * Created by dwebber
  */
 public class NodeUpdateApiRemote implements NodeUpdateApi {
-    private ClassDatabase cdb;
-    private ObjUpdate remote;
-    private UserId userId;
+    private ObjClient objClient;
     private ObjCreateCallback objCreateCallback;
 
-    public NodeUpdateApiRemote(final ClassDatabase cdb, ObjClientContext clientContext, String remoteKey) {
-        this.cdb = cdb;
-        this.remote = clientContext.objUpdate(remoteKey);
-        this.userId = clientContext.getUserId();
-        clientContext.wire(ObjListener.class, remoteKey, new ObjListenerAdaptor() {
+    public NodeUpdateApiRemote(final ClassDatabase cdb, ObjClient objClient) {
+        this.objClient = objClient;
+        objClient.addObjListener(new ObjListenerAdaptor() {
             @Override
             public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-                if(userId.equals(user)){
+                if (userId().equals(user)) {
                     objCreateCallback.objCreated(cdb.findObjById(obj.getId()));
-                    objCreateCallback=null;
+                    objCreateCallback = null;
                 }
             }
         });
     }
+
     private void setObjCreateCallback(ObjCreateCallback objCreateCallback) {
         if(this.objCreateCallback != null) {
             throw new IllegalArgumentException("One create at a time!");
         }
         this.objCreateCallback = objCreateCallback;
     }
+
     @Override
     public void updateObject(ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         updateObjects(Arrays.asList(objectMeta), potentialUpdates);
     }
-
     @Override
     public void updateObjects(List<ObjectMeta> objectMetas, List<PropertyUpdate> potentialUpdates) {
         List<PropChangeSet> changeSets = new ArrayList<PropChangeSet>();
@@ -68,13 +65,13 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
             }
             changeSets.add(new PropChangeSet(objectMeta.getId(), changes));
         }
-        remote.updateObject(userId, changeSets);
+        remote().updateObject(userId(), changeSets);
     }
 
     @Override
     public void createObject(ObjectLocation homeLocation, ClassModel type, ObjCreateCallback callback) {
         setObjCreateCallback(callback);
-        remote.createEmptyObject(userId, toObjLoc(homeLocation), type.getContainedClass());
+        remote().createEmptyObject(userId(), toObjLoc(homeLocation), type.getContainedClass());
     }
 
     @Override
@@ -90,39 +87,39 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void deleteObject(ObjectMeta objectMeta) {
-        remote.deleteObject(userId, objectMeta.getId());
+        remote().deleteObject(userId(), objectMeta.getId());
     }
 
     @Override
     public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta) {
-        remote.moveInList(userId, toObjLoc(objectLocation), objectMeta.getId(), delta);
+        remote().moveInList(userId(), toObjLoc(objectLocation), objectMeta.getId(), delta);
     }
 
     @Override
     public void updateReferences(ObjectLocation objectLocation, List<ObjectMeta> refsToAdd, List<ObjectMeta> refsToRemove) {
-        remote.updateRefs(userId, toObjLoc(objectLocation), toIds(refsToAdd), toIds(refsToRemove));
+        remote().updateRefs(userId(), toObjLoc(objectLocation), toIds(refsToAdd), toIds(refsToRemove));
     }
 
     @Override
     public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
-        remote.changeType(userId, obj.getId(), targetClassModel.getContainedClass());
+        remote().changeType(userId(), obj.getId(), targetClassModel.getContainedClass());
     }
 
     @Override
     public void insertObject(ObjectLocation objectLocation, Object obj) {
-        String xml = cdb.createMarshaller(obj.getClass()).toXMLString(obj);
-        remote.createObject(userId, toObjLoc(objectLocation), obj.getClass(), xml);
+        String xml = objClient.getCdb().createMarshaller(obj.getClass()).toXMLString(obj);
+        remote().createObject(userId(), toObjLoc(objectLocation), obj.getClass(), xml);
     }
 
     @Override
     public ObjectMeta deserializeAndInsert(ObjectLocation objectLocation, ClassModel classModel, String xml, Charset charset) {
-        remote.createObject(userId, toObjLoc(objectLocation), classModel.getContainedClass(), xml);
+        remote().createObject(userId(), toObjLoc(objectLocation), classModel.getContainedClass(), xml);
         return null;
     }
 
     @Override
     public void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta) {
-        remote.moveObject(userId, objMeta.getId(), toObjLoc(objectLocation));
+        remote().moveObject(userId(), objMeta.getId(), toObjLoc(objectLocation));
     }
 
     public static ObjLoc toObjLoc(ObjectLocation objectLocation) {
@@ -135,5 +132,12 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
             result.add(objectMeta.getId());
         }
         return result;
+    }
+
+    private UserId userId() {
+        return objClient.getUserId();
+    }
+    private ObjUpdate remote() {
+        return objClient.getObjUpdate();
     }
 }

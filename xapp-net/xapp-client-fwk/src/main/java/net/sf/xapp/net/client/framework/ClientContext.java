@@ -25,6 +25,7 @@ import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.framework.NullMessageHandler;
 import net.sf.xapp.net.common.types.AppType;
+import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.common.types.UserLocation;
 
@@ -33,7 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ClientContext implements MessageHandler, Connectable, ClientControl {
+public class ClientContext implements MessageHandler, Connectable, ClientControl, ConnectionListener {
     private final Logger log = Logger.getLogger(getClass());
     private Connectable server;
     private UserId userId;
@@ -46,6 +47,7 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
     private long serverTime;
     private long initTime;
     private boolean guest;
+    private ConnectionState connectionState;
 
     public ClientContext() {
         this(null, new NullMessageHandler());
@@ -73,6 +75,8 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
             server = new ReconnectLayer(proxy);
         } else {
         }
+
+        addConnectionListener(this);
     }
 
     private <T> T create(String className) {
@@ -84,19 +88,24 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
     }
 
     @Override
-    public boolean connect(Callback onConnect) {
+    public boolean connect() {
         if (server == null) {
             throw new RuntimeException("no server to connect to");
         }
-        return server.connect(onConnect);
+        return server.connect();
     }
 
     @Override
-    public void disconnect() {
+    public void setConnecting() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setOffline() {
         if (server != null) {
             //clear all state
             messageDispatcher.clearStatefulHandlers();
-            server.disconnect();
+            server.setOffline();
         } else {
             log.info("no server to disconnect from");
         }
@@ -252,5 +261,19 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
 
     public boolean isGuest() {
         return guest;
+    }
+
+    public ConnectionState getConnectionState() {
+        return connectionState;
+    }
+
+    @Override
+    public void connectionStateChanged(ConnectionState newState) {
+        this.connectionState = newState;
+    }
+
+    @Override
+    public void handleConnectException(Exception e) {
+
     }
 }

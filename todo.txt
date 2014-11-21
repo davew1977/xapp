@@ -22,17 +22,6 @@ BUG/IMPROVEMENT: {
     unsettable refs should be pushed up the hierarchy where they can be tried again
 }
 
-
-REFACTOR: standalone node update api should not be used by the incoming changes adaptor, the jtree updates should be decoupled from the model updates
-
-BUG: create person no longer working
-
-DONE: create delta limit, max no of deltas that a client can be behind before server will choose the send the entire state instead
-
-BUG: client not notified if user disconnects
-
-DONE: BUG: create embedded object - should create an object on the server instead of locally, and
-
 implement difference in UI updates based on whether it was "me" or someone else doing the update
 
 implement prop priority, to allow simplified editor, which will expand for the advanced properties
@@ -40,15 +29,6 @@ implement prop priority, to allow simplified editor, which will expand for the a
 
 add a "package" class which can extend dirmeta, but will allow providing an alias for the package name to improve usability in the editor
 
-DONE: paste xml not working when there is a reference in the pasted object
-DONE: prevent module from being a namespace for the java files
-POSTPONE: (statically widened them instead) auto widen reference drop downs
-DONE: figure out how to specify a special path separator
-DONE: list property annotation should also apply to the generated xml
-
-DONE: create a xapp-codegen module {
-    problem here will be all the ng references
-}
 
 module structure {
     xapp-net {
@@ -79,3 +59,25 @@ first version {
     obj ids last per jvm, checked in model does not persist object ids
 
 }
+
+DONE: create delta limit, max no of deltas that a client can be behind before server will choose the send the entire state instead
+
+FIXED: BUG: client not notified if user disconnects
+
+DONE: BUG: create embedded object - should create an object on the server instead of locally, and
+
+DONE: paste xml not working when there is a reference in the pasted object
+DONE: prevent module from being a namespace for the java files
+POSTPONE: (statically widened them instead) auto widen reference drop downs
+DONE: figure out how to specify a special path separator
+DONE: list property annotation should also apply to the generated xml
+
+DONE: create a xapp-codegen module {
+    problem here will be all the ng references
+}
+
+
+DONE: REFACTOR: standalone node update api should not be used by the incoming changes adaptor, the jtree updates should be decoupled from the model updates
+
+FIXED: BUG: create person no longer working
+

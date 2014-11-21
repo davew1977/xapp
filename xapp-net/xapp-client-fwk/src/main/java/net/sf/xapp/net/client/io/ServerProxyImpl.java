@@ -7,11 +7,15 @@
 package net.sf.xapp.net.client.io;
 
 
+import javax.swing.*;
+
 import net.sf.xapp.Global;
+import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.framework.TransportObject;
+import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.utils.StringUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -32,6 +36,7 @@ public class ServerProxyImpl implements ServerProxy {
     private MessageHandler client;
     private DataOutputStream out;
     private Socket socket;
+    private boolean wasSetOffline;
 
     public ServerProxyImpl(HostInfo hostInfo) {
         host = hostInfo.host;
@@ -48,15 +53,30 @@ public class ServerProxyImpl implements ServerProxy {
         listeners.add(listener);
     }
 
-    public boolean connect(Callback callback) {
+    @Override
+    public void setConnecting() {
+        for (ConnectionListener listener : listeners) {
+            listener.connectionStateChanged(ConnectionState.CONNECTING);
+        }
+    }
+
+    @Override
+    public void setOffline() {
+        wasSetOffline = disconnect();
+        for (ConnectionListener listener : listeners) {
+            listener.connectionStateChanged(ConnectionState.OFFLINE);
+        }
+    }
+
+    public boolean connect() {
         disconnect();
+        wasSetOffline = false;
         final DataInputStream dis;
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(host, port), 5000);
             dis = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            callback.call();
         } catch (IOException e) {
             for (ConnectionListener listener : listeners) {
                 listener.handleConnectException(e);
@@ -66,7 +86,7 @@ public class ServerProxyImpl implements ServerProxy {
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
-                    try {
+                    try{
                         int messageSize = dis.readInt();
                         int messageType = dis.readInt();
                         final TransportObject message = Global.create(messageType);
@@ -74,47 +94,59 @@ public class ServerProxyImpl implements ServerProxy {
                         client.handleMessage((InMessage) message);
                         System.out.println(StringUtils.pad(messageSize + " bytes", false, 16) + StringUtils.truncate(String.valueOf(message), 256));
                     } catch (SocketException e) {
+                        socket = null;
                         if (e.getMessage().equals("Connection reset") ||
                                 e.getMessage().equalsIgnoreCase("Socket closed")) {
-                            notifyDisconnected();
+                            if (!wasSetOffline) {
+                                notifyDisconnected();
+                            }
                             return;
                         } else {
                             throw new RuntimeException(e);
                         }
                     } catch (EOFException e) {
+                        socket = null;
                         notifyDisconnected();
                         return;
                     } catch (IOException e) {
+                        socket = null;
                         throw new RuntimeException(e);
                     }
                 }
             }
         }).start();
         for (ConnectionListener listener : listeners) {
-            listener.connected();
+            listener.connectionStateChanged(ConnectionState.ONLINE);
         }
         return true;
     }
 
     private void notifyDisconnected() {
-        for (ConnectionListener listener : listeners) {
-            listener.disconnected();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for (ConnectionListener listener : listeners) {
+                    listener.connectionStateChanged(ConnectionState.CONNECTION_LOST);
+                }
+            }
+        });
     }
 
-    public void disconnect() {
-        if (socket != null && socket.isConnected()) {
+    private boolean disconnect() {
+        if (isConnected()) {
             try {
                 socket.close();
+                return true;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+        return false;
     }
 
     @Override
     public boolean isConnected() {
-        return socket != null && socket.isConnected();
+        return socket != null && !socket.isClosed() && socket.isConnected();
     }
 
     @Override

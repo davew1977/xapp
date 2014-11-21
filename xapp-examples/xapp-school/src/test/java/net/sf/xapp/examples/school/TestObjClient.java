@@ -34,7 +34,7 @@ public class TestObjClient implements ModelProxy{
             @Override
             protected void preInit() {
                 clientContext.wire(ObjManagerReply.class, objId, new ObjManagerReplyAdaptor(messageHandler));
-                clientContext.wire(ObjListener.class, objId, new ObjListenerAdaptor(messageHandler));
+                addObjListener(new ObjListenerAdaptor(messageHandler));
             }
 
             @Override

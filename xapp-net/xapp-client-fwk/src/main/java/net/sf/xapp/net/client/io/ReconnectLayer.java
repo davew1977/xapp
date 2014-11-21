@@ -6,67 +6,82 @@
  */
 package net.sf.xapp.net.client.io;
 
+import javax.swing.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.framework.Logger;
+import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.net.common.util.ThreadUtils;
 
 /**
  */
 public class ReconnectLayer implements Connectable, ConnectionListener {
-    private final Logger log = Logger.getLogger(getClass());
     private final ServerProxy serverProxy;
-    private boolean connected;
     private boolean reconnect = true;
-    private Exception lastException;
+    private ConnectionState connectionState;
 
     public ReconnectLayer(ServerProxy serverProxy) {
         this.serverProxy = serverProxy;
         serverProxy.addListener(this);
     }
 
-    public boolean connect(Callback onConnect) {
-        connected = serverProxy.connect(onConnect);
+    public boolean connect() {
+        boolean connected = serverProxy.connect();
         if (!connected) {
-            connectWithRetry(onConnect);
+            serverProxy.setConnecting();
+            connectWithRetry();
         }
         return connected;
     }
 
-    public void disconnected() {
-        connected = false;
-        if (reconnect) {
-            connectWithRetry(new Callback());
+    @Override
+    public void setConnecting() {
+        throw new UnsupportedOperationException();//only the reconnect layer itself should call this
+    }
+
+    @Override
+    public void setOffline() {
+        serverProxy.setOffline();
+    }
+
+    @Override
+    public void connectionStateChanged(ConnectionState newState) {
+        connectionState = newState;
+        switch (newState) {
+            case ONLINE:
+                break;
+            case OFFLINE:
+                break;
+            case CONNECTING:
+                break;
+            case CONNECTION_LOST:
+                connectWithRetry(); //pauses first
+                break;
         }
     }
 
-    @Override
-    public void connected() {
-    }
-
-    private void connectWithRetry(final Callback callback) {
-        new Thread(new Runnable() {
-            public void run() {
-                while (!connected) {
-                    connected = serverProxy.connect(callback);
+    private void connectWithRetry() {
+        Timer timer = new Timer(3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (reconnect && connectionState.isOnlineMode() && !serverProxy.isConnected()) {
+                    boolean connected = serverProxy.connect();
                     if (!connected) {
-                        ThreadUtils.sleep(3000);
-                    } else {
-                        connected = true;
+                        serverProxy.setConnecting();
+                        connectWithRetry();
                     }
                 }
             }
-        }).start();
-
-    }
-
-    @Override
-    public void disconnect() {
-        serverProxy.disconnect();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 
     @Override
     public void handleConnectException(Exception e) {
-        lastException = e;
     }
 
     @Override
