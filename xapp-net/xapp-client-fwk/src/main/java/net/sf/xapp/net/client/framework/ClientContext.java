@@ -276,4 +276,8 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
     public void handleConnectException(Exception e) {
 
     }
+
+    public boolean isOnlineMode() {
+        return connectionState != ConnectionState.OFFLINE;
+    }
 }

@@ -42,7 +42,7 @@ public class ConnectivityPane extends XPane {
     }
 
     public void setConnectionState(ConnectionState connectionState) {
-        setToolTipText(connectionState.isOnlineMode()? "Click to go Offline" : "Click to go Online");
+        setToolTipText(clientContext.isOnlineMode()? "Click to go Offline" : "Click to go Online");
         repaint();
     }
 

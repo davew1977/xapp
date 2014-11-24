@@ -67,7 +67,7 @@ public class ReconnectLayer implements Connectable, ConnectionListener {
         Timer timer = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (reconnect && connectionState.isOnlineMode() && !serverProxy.isConnected()) {
+                if (reconnect && connectionState!=ConnectionState.OFFLINE && !serverProxy.isConnected()) {
                     boolean connected = serverProxy.connect();
                     if (!connected) {
                         serverProxy.setConnecting();

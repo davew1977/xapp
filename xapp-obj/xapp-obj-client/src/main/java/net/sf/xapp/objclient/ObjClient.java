@@ -82,7 +82,7 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
     }
 
     private boolean isOnlineMode() {
-        return clientContext.getConnectionState().isOnlineMode();
+        return clientContext.isOnlineMode();
     }
 
     public void init() {
