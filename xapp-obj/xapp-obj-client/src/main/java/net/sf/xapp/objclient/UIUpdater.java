@@ -25,15 +25,11 @@ import net.sf.xapp.objserver.types.XmlObj;
  * We assume model is already updated and our responsibility is to update the App UI
  */
 public class UIUpdater implements ObjListener {
-    private final ClassDatabase cdb;
-    private final ApplicationContainer appContainer;
-    private final UserId userId;
+    private final GUIObjClient objClient;
     private ObjCreateCallback objCreateCallback;
 
-    public UIUpdater(ClassDatabase cdb, ApplicationContainer appContainer, UserId userId) {
-        this.userId = userId;
-        this.cdb = cdb;
-        this.appContainer = appContainer;
+    public UIUpdater(GUIObjClient objClient) {
+        this.objClient = objClient;
     }
 
     public void setObjCreateCallback(ObjCreateCallback objCreateCallback) {
@@ -47,8 +43,8 @@ public class UIUpdater implements ObjListener {
     @Override
     public void propertiesChanged(UserId user, Long rev, List<PropChangeSet> changeSets) {
         for (PropChangeSet changeSet : changeSets) {
-            ObjectMeta objectMeta = cdb.findObjById(changeSet.getObjId());
-            Node node = appContainer.getNodeBuilder().getNode(changeSet.getObjId());
+            ObjectMeta objectMeta = cdb().findObjById(changeSet.getObjId());
+            Node node = appContainer().getNodeBuilder().getNode(changeSet.getObjId());
             if (node != null) { //todo only refresh if sub-objects have changed
                 Node newNode = node.refresh();
                 Map<String, PropertyChange> changes = new HashMap<String, PropertyChange>();
@@ -58,34 +54,34 @@ public class UIUpdater implements ObjListener {
                     Object newVal = property.convert(objectMeta, propChange.getNewValue());
                     changes.put(propChange.getProperty(), new RegularPropertyChange(property, objectMeta.getInstance(), oldVal, newVal));
                 }
-                appContainer.getApplication().nodeUpdated(node, changes);
-                appContainer.expand(newNode);
+                appContainer().getApplication().nodeUpdated(node, changes);
+                appContainer().expand(newNode);
             }
         }
     }
 
     @Override
     public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-        appContainer.createNode(toObjectLocation(objLoc), obj(obj));
+        appContainer().createNode(toObjectLocation(objLoc), obj(obj));
     }
 
     @Override
     public void objMoved(UserId user, Long rev, Long id, ObjLoc newObjLoc) {
-        ObjectMeta objectMeta = cdb.findObjById(id);
-        appContainer.removeNode(id);
+        ObjectMeta objectMeta = cdb().findObjById(id);
+        appContainer().removeNode(id);
         //create new node
-        appContainer.createNode(toObjectLocation(newObjLoc), objectMeta);
+        appContainer().createNode(toObjectLocation(newObjLoc), objectMeta);
     }
 
     @Override
     public void objDeleted(UserId user, Long rev, Long id) {
         //clean up nodes
-        Collection<Node> refNodes = appContainer.getRefNodes(id);
+        Collection<Node> refNodes = appContainer().getRefNodes(id);
 
-        appContainer.removeNode(id);
+        appContainer().removeNode(id);
 
         for (Node referencingNode : refNodes) {
-            appContainer.removeNode(referencingNode);
+            appContainer().removeNode(referencingNode);
         }
     }
 
@@ -93,34 +89,42 @@ public class UIUpdater implements ObjListener {
     public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
         ObjectMeta objectMeta = obj(id);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
-        Node node = appContainer.getNode(id, objectLocation);
+        Node node = appContainer().getNode(id, objectLocation);
         node.updateIndex(objectLocation.indexOf(objectMeta));
-        if(userId.equals(user)) {
-            appContainer.setSelectedNode(node);
+        if(objClient.getUserId().equals(user)) {
+            appContainer().setSelectedNode(node);
         }
+    }
+
+    private ApplicationContainer appContainer() {
+        return objClient.getAppContainer();
     }
 
     @Override
     public void refsUpdated(UserId user, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
         ObjectLocation objectLocation = toObjectLocation(objLoc);
         for (Long id : refsRemoved) {
-            Node refNode = appContainer.getNode(id, objectLocation);
-            appContainer.removeNode(refNode);
+            Node refNode = appContainer().getNode(id, objectLocation);
+            appContainer().removeNode(refNode);
         }
         for (Long id : refsCreated) {
-            appContainer.createNode(objectLocation, obj(id));
+            appContainer().createNode(objectLocation, obj(id));
         }
     }
 
     private ObjectLocation toObjectLocation(ObjLoc objLoc) {
-        ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
+        ObjectMeta objectMeta = cdb().findObjById(objLoc.getId());
         ObjectLocation objectLocation = new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
         objectLocation.setIndex(objLoc.getIndex());
         return objectLocation;
     }
 
     private ObjectMeta obj(long id) {
-        return cdb.findObjById(id);
+        return cdb().findObjById(id);
+    }
+
+    private ClassDatabase cdb() {
+        return objClient.getCdb();
     }
 
     private ObjectMeta obj(XmlObj newObj) {

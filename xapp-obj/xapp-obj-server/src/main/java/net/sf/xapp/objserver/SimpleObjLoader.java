@@ -1,6 +1,5 @@
 package net.sf.xapp.objserver;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class SimpleObjLoader implements ObjLoader {
         for (String xmlClassPath : xmlClassPaths) {
 
             Unmarshaller unmarshaller = new Unmarshaller(type);
-            unmarshaller.getClassDatabase().setMaster();
+            unmarshaller.getClassDatabase().setMaster(0);
             unmarshaller.getClassDatabase().setRevision(0L);
             result.add(unmarshaller.unmarshal(getClass().getResourceAsStream(xmlClassPath)));
         }

@@ -1,5 +1,6 @@
 package net.sf.xapp.objclient;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,15 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.xapp.application.api.ModelProxy;
-import net.sf.xapp.application.api.SimpleApplication;
-import net.sf.xapp.application.core.ApplicationContainerImpl;
-import net.sf.xapp.application.core.DefaultGUIContext;
 import net.sf.xapp.application.strategies.SaveStrategy;
 import net.sf.xapp.marshalling.Unmarshaller;
-import net.sf.xapp.net.api.chatapp.ChatApp;
-import net.sf.xapp.net.api.chatclient.ChatClient;
-import net.sf.xapp.net.api.chatuser.ChatUser;
-import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.io.ConnectionListener;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.client.io.ServerProxyImpl;
@@ -27,7 +21,7 @@ import net.sf.xapp.net.common.framework.Multicaster;
 import net.sf.xapp.net.common.types.ConnectionState;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
-import net.sf.xapp.objclient.ui.ChatPane;
+import net.sf.xapp.objcommon.LiveObject;
 import net.sf.xapp.objcommon.SimpleObjUpdater;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
@@ -48,7 +42,7 @@ import net.sf.xapp.utils.ant.AntFacade;
  * © Webatron Ltd
  * Created by dwebber
  */
-public abstract class ObjClient implements SaveStrategy, ObjManagerReply, ConnectionListener {
+public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply, ConnectionListener {
     protected final ObjClientContext clientContext;
     protected final String objId;
     protected final File revFile;
@@ -63,11 +57,11 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
     protected ClassDatabase cdb;
     private ObjectMeta lastCreated;
     private ModelProxy modelProxy;
-    private ObjUpdate objUpdate;
-    private Multicaster<ObjListener> objListeners = new Multicaster<>();
+    private MasterObjUpdater objUpdate;
     private SimpleObjUpdater localObjUpdater;
 
     public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, final String objId) {
+        super(new Multicaster<ObjListener>());
         this.clientContext = new ObjClientContext(userId, new ServerProxyImpl(hostInfo));
         this.objId = objId;
         File dir = new File(new File(new File(localDir, userId), appId), objId);
@@ -77,6 +71,34 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
         deltaFile = new File(dir, "deltas.txt");
         offlineFile = new File(dir, "offline.txt");
         initialDeltas = readDeltas();
+
+
+        /**
+         * receives server updates, updates official revision, and writes the deltas
+         */
+        addObjListener(new ObjListenerAdaptor() {
+            @Override
+            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
+                if (isOnlineMode()) {
+                    cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
+                    write(new Delta(inMessage).serialize(), getDeltaWriter());
+                }
+                return null;
+            }
+        });
+
+        localObjUpdater = new SimpleObjUpdater(null, false) {
+            @Override
+            protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
+                ObjClient.this.lastCreated = objectMeta;
+            }
+        };
+        addObjListener(localObjUpdater);
+
+        objUpdate = new MasterObjUpdater(objId);
+
+        modelProxy = new ModelProxyImpl(this);
+
         preInit();
         init();
     }
@@ -93,6 +115,14 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
 
         clientContext.setReconnect(false);
         boolean connected = clientContext.connect();
+        if(!connected) {
+            initialConnectionFailed();
+            enterOfflineMode();
+        }
+
+    }
+
+    protected void initialConnectionFailed() {
 
     }
 
@@ -101,19 +131,15 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
     }
 
     public void enterOfflineMode() {
-
+       getCdb().setMaster(-1000000L); //start the cdb creating its own ids
     }
 
     public void onConnect(){
+        clientContext.setReconnect(true);
         clientContext.login();
 
         clientContext.wire(ObjManagerReply.class, objId, this);
-        clientContext.wire(ObjListener.class, objId, new ObjListenerAdaptor() {
-            @Override
-            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
-                return objListeners.handleMessage(inMessage);
-            }
-        });
+        clientContext.wire(ObjListener.class, objId, this);
 
         clientContext.channel(objId).join(clientContext.getUserId());
 
@@ -176,10 +202,15 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
     }
 
     @Override
+    public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
+        reset(obj);
+        objMetaLoaded_internal();
+    }
+
+    @Override
     public void save() {
         reset(SimpleObjUpdater.toXmlObj(objMeta));
     }
-
     private void closeDeltaWriter() {
         try {
             getDeltaWriter().flush();
@@ -189,6 +220,7 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
             throw new RuntimeException(e);
         }
     }
+
     private void closeOfflineWriter() {
         try {
             getOfflineWriter().flush();
@@ -196,6 +228,16 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
             offlineWriter = null;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
+        if(errorCode==null) {
+            reconstruct(type, deltas, revTo);
+            objMetaLoaded_internal();
+        } else {
+            clientContext.objManager(objId).getObject(clientContext.getUserId());
         }
     }
 
@@ -225,50 +267,14 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
         return objMeta;
     }
 
+
     public ClassDatabase getCdb() {
         return cdb;
     }
 
-    @Override
-    public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
-        reset(obj);
-        objMetaLoaded_internal();
-    }
-
-
-    @Override
-    public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
-        if(errorCode==null) {
-            reconstruct(type, deltas, revTo);
-            objMetaLoaded_internal();
-        } else {
-            clientContext.objManager(objId).getObject(clientContext.getUserId());
-        }
-    }
-
     private void objMetaLoaded_internal() {
-        objUpdate = new MasterObjUpdater(objId);
-        /**
-               * receives server updates, updates official revision, and writes the deltas
-               */
-        addObjListener(new ObjListenerAdaptor() {
-            @Override
-            public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
-                assert isOnlineMode(); //should not be
-                cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
-                write(new Delta(inMessage).serialize(), getDeltaWriter());
-                return null;
-            }
-        });
-        localObjUpdater = new SimpleObjUpdater(objMeta, false) {
-            @Override
-            protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
-                ObjClient.this.lastCreated = objectMeta;
-            }
-        };
-        addObjListener(localObjUpdater);
-
-        modelProxy = new ModelProxyImpl(this);
+        localObjUpdater.setRootObj(objMeta);
+        objUpdate.init(); //must init only when the obj-meta is loaded
         objMetaLoaded();
     }
 
@@ -306,8 +312,15 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
         }
     }
 
-    public static void main(String[] args) {
-        new GUIObjClient(System.getProperty("user.home", ".") + "/xapp-cache", args[0], HostInfo.parse(args[1]), args[2], args[3]);
+    public static void main(final String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
+                new GUIObjClient(System.getProperty("user.home", ".") + "/xapp-cache", args[0], HostInfo.parse(args[1]), args[2], args[3]);
+
+            }
+        });
     }
 
     public ObjClientContext getClientContext() {
@@ -363,10 +376,9 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
                 onConnect();
                 break;
             case OFFLINE:
-                break;
             case CONNECTING:
-                break;
             case CONNECTION_LOST:
+                enterOfflineMode();
                 break;
         }
     }
@@ -393,7 +405,7 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
     }
 
     public void addObjListener(ObjListener objListener) {
-        objListeners.addDelegate(objListener);
+        ((Multicaster<ObjListener>) delegate).addDelegate(objListener);
     }
 
     /**
@@ -401,9 +413,15 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
      */
     private class MasterObjUpdater extends ObjUpdateAdaptor {
         ObjUpdate remote;
+        LiveObject dummyServer;
 
         public MasterObjUpdater(String objId) {
             remote = clientContext.objUpdate(objId);
+        }
+
+        public void init() {
+            dummyServer = new LiveObject(objMeta);
+            dummyServer.addListener(ObjClient.this);
         }
 
         @Override
@@ -413,7 +431,7 @@ public abstract class ObjClient implements SaveStrategy, ObjManagerReply, Connec
             } else {
                 write(new Delta(inMessage).serialize(), getOfflineWriter());
                 //apply the change
-                inMessage.visit(localObjUpdater);
+                inMessage.visit(dummyServer);
             }
             return null;
         }

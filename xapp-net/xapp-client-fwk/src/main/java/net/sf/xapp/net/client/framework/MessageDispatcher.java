@@ -68,16 +68,18 @@ public class MessageDispatcher implements MessageHandler
         Map<String, List<Object>> map = keyedDelegates.get(type);
         if (map == null)
         {
-            map = new HashMap<String, List<Object>>();
+            map = new HashMap<>();
             keyedDelegates.put(type, map);
         }
         List<Object> delegates = map.get(key);
         if(delegates==null)
         {
-            delegates = new ArrayList<Object>();
+            delegates = new ArrayList<>();
             map.put(key, delegates);
         }
-        delegates.add(delegate);
+        if (!delegates.contains(delegate)) {
+            delegates.add(delegate);
+        }
     }
 
     public <A> void addHandler(Class<A> type, String key, MessageHandler<A> handler)
@@ -85,13 +87,13 @@ public class MessageDispatcher implements MessageHandler
         Map<String, List<MessageHandler>> map = keyedHandlers.get(type);
         if (map == null)
         {
-            map = new HashMap<String, List<MessageHandler>>();
+            map = new HashMap<>();
             keyedHandlers.put(type, map);
         }
         List<MessageHandler> handlers = map.get(key);
         if(handlers==null)
         {
-            handlers = new ArrayList<MessageHandler>();
+            handlers = new ArrayList<>();
             map.put(key, handlers);
         }
         handlers.add(handler);

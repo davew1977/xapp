@@ -28,13 +28,11 @@ import net.sf.xapp.utils.Filter;
  * Manages updates to the remote object model
  */
 public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
-    private ClassDatabase cdb;
     private CountDownLatch syncSignal;
     private ObjClient objClient;
     private Map<Long, Map<String, Object>> snapshots = new HashMap<Long, Map<String, Object>>();
 
     public ModelProxyImpl(final ObjClient objClient) {
-        this.cdb = objClient.cdb;
         this.objClient = objClient;
         objClient.addObjListener(new ObjListenerAdaptor() {
             @Override
@@ -54,7 +52,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
     @Override
     public <T> T add(Object parent, String property, T obj) {
-        createObject(userId(), createObjLoc(parent, property, obj.getClass(), PropertyFilter.COMPLEX_NON_REFERENCE), obj.getClass(), cdb.createMarshaller(obj.getClass()).toXMLString(obj));
+        createObject(userId(), createObjLoc(parent, property, obj.getClass(), PropertyFilter.COMPLEX_NON_REFERENCE), obj.getClass(), cdb().createMarshaller(obj.getClass()).toXMLString(obj));
         return (T) lastCreated().getInstance();
     }
 
@@ -76,19 +74,19 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public <T> T create(Long parentId, String property, Class<T> type) {
-        return create(cdb.findObjById(parentId).getInstance(), property, type);
+        return create(cdb().findObjById(parentId).getInstance(), property, type);
     }
 
     @Override
     public <T> T checkout(T obj) {
-        ObjectMeta objectMeta = cdb.find(obj);
+        ObjectMeta objectMeta = cdb().find(obj);
         snapshots.put(objectMeta.getId(), objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING));
         return obj;
     }
 
     @Override
     public <T> T checkout(Long id) {
-        ObjectMeta<T> objectMeta = cdb.findObjById(id);
+        ObjectMeta<T> objectMeta = cdb().findObjById(id);
         snapshots.put(objectMeta.getId(), objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING));
         return objectMeta.getInstance();
     }
@@ -96,7 +94,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     @Override
     public void commit(Object... itemsToCommit) {
         for (Object obj : itemsToCommit) {
-            ObjectMeta<?> objectMeta = cdb.find(obj);
+            ObjectMeta<?> objectMeta = cdb().find(obj);
             Map<String, Object> previous = snapshots.remove(objectMeta.getId());
             Map<String, Object> snapshot = objectMeta.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
             List<Property> properties = objectMeta.getProperties();
@@ -168,12 +166,12 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
 
     private <T> Long id(T obj) {
-        return cdb.find(obj).getId();
+        return cdb().find(obj).getId();
     }
 
     @Override
     public <T> T getModel() {
-        return (T) cdb.getRootInstance();
+        return (T) cdb().getRootInstance();
     }
 
     @Override
@@ -208,11 +206,15 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
 
     private ObjLoc createObjLoc(Object parent, String property, Class objType, Filter<Property> filter) {
-        ObjectMeta parentMeta = cdb.find(parent);
+        ObjectMeta parentMeta = cdb().find(parent);
         if (property == null) {
             property = parentMeta.findMatchingProperty(objType, filter);
         }
         return new ObjLoc(id(parent), property, -1);
+    }
+
+    private ClassDatabase cdb() {
+        return objClient.getCdb();
     }
 
     private List<Long> toIds(Object[] objectsToAdd) {

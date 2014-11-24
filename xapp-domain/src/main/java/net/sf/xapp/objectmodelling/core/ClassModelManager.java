@@ -144,8 +144,9 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     }
 
     @Override
-    public void setMaster() {
+    public void setMaster(long startId) {
         master=true;
+        idSequence.set(startId);
     }
 
     @Override

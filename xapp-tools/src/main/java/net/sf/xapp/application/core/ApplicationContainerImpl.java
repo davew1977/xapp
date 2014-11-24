@@ -1043,10 +1043,19 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     {
         File currentFile = m_guiContext.getCurrentFile();
         T o = m_guiContext.openFile(currentFile);
+        resetUI_internal();
+        return o;
+    }
+
+    public void resetUI(ObjectMeta objMeta) {
+        getGuiContext().setObjMeta(objMeta);
+        resetUI_internal();
+    }
+
+    private void resetUI_internal() {
         m_nodeBuilder.createTree();
         updateFrameTitle();
         EditorManager.getInstance().reset(); //editor widgets can contain stale references
-        return o;
     }
 
     private class OpenAction extends AbstractAction

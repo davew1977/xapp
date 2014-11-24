@@ -6,6 +6,7 @@ import net.sf.xapp.net.server.channels.AppAdaptor;
 import net.sf.xapp.net.server.channels.BroadcastProxy;
 import net.sf.xapp.net.server.channels.CommChannel;
 import net.sf.xapp.net.server.channels.NotifyProxy;
+import net.sf.xapp.objcommon.LiveObject;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;

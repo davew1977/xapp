@@ -7,6 +7,7 @@ import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.ErrorCode;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.util.SimpleCache;
+import net.sf.xapp.objcommon.LiveObject;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;

@@ -94,7 +94,7 @@ public interface ClassDatabase<T>
 
     boolean isMaster();
 
-    void setMaster();
+    void setMaster(long startId);
 
     void incrementRevision();
 

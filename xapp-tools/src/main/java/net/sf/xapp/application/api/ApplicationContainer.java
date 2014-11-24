@@ -144,6 +144,8 @@ public interface ApplicationContainer<T>
 
     T disposeAndReload();
 
+    void resetUI(ObjectMeta objMeta);
+
     /**
      * saves the current instance and reloads it. Used for refreshing the entrire application, if for example,
      * there is a djw-include in the master file that may have been externally refreshed

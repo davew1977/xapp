@@ -1,4 +1,4 @@
-package net.sf.xapp.objserver;
+package net.sf.xapp.objcommon;
 
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.marshalling.Unmarshaller;
@@ -35,49 +35,49 @@ public class LiveObject extends SimpleObjUpdater {
 
     @Override
     protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
-        listener.objAdded(principal, cdb.getRev(), objLoc, toXmlObj(objectMeta));
+        listener.objAdded(principal, cdb().getRev(), objLoc, toXmlObj(objectMeta));
     }
 
     @Override
     public void updateObject(UserId principal, List<PropChangeSet> changeSets) {
         super.updateObject(principal, changeSets);
-        listener.propertiesChanged(principal, cdb.getRev(), changeSets);
+        listener.propertiesChanged(principal, cdb().getRev(), changeSets);
     }
 
     @Override
     public void deleteObject(UserId principal, Long id) {
         super.deleteObject(principal, id);
-        listener.objDeleted(principal, cdb.getRev(), id);
+        listener.objDeleted(principal, cdb().getRev(), id);
     }
 
     @Override
     public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
         super.moveObject(principal, id, newObjLoc);
-        listener.objMoved(principal, cdb.getRev(), id, newObjLoc);
+        listener.objMoved(principal, cdb().getRev(), id, newObjLoc);
     }
 
     @Override
     protected void typeChanged(UserId principal, ObjLoc objLoc, Long oldId, ObjectMeta newInstance) {
         //should not be needed : objHome.setIndex(newInstance, oldIndex);
-        listener.objDeleted(principal, cdb.getRev(), oldId);
-        listener.objAdded(principal, cdb.getRev(), objLoc, toXmlObj(newInstance));
+        listener.objDeleted(principal, cdb().getRev(), oldId);
+        listener.objAdded(principal, cdb().getRev(), objLoc, toXmlObj(newInstance));
     }
 
     @Override
     public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
         super.moveInList(principal, objLoc, id, delta);
-        listener.objMovedInList(principal, cdb.getRev(), objLoc, id, delta);
+        listener.objMovedInList(principal, cdb().getRev(), objLoc, id, delta);
     }
 
     @Override
     public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
         super.updateRefs(principal, objLoc, refsToAdd, refsToRemove);
 
-        listener.refsUpdated(principal, cdb.getRev(), objLoc, refsToAdd, refsToRemove);
+        listener.refsUpdated(principal, cdb().getRev(), objLoc, refsToAdd, refsToRemove);
     }
 
     public XmlObj createXmlObj() {
-        return new XmlObj(rootObj.getType(), rootObj.toXml(), cdb.getRev(), rootObj.getId());
+        return new XmlObj(rootObj.getType(), rootObj.toXml(), cdb().getRev(), rootObj.getId());
     }
 
     public void addListener(ObjListener li) {

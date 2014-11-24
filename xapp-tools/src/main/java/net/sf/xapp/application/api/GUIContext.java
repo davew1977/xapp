@@ -23,6 +23,7 @@ public interface GUIContext<T>
     File getCurrentFile();
 
     ObjectMeta<T> getObjectMeta();
+    void setObjMeta(ObjectMeta objMeta);
     T getInstance();
 
     ClassModel<T> getRootType();

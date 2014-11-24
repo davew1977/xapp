@@ -152,6 +152,8 @@ public class XPane extends JPanel
     {
         super.setSize(width, height);
         setPreferredSize(new Dimension(width, height));
+        setMaximumSize(new Dimension(width, height));
+        setMinimumSize(new Dimension(width, height));
     }
 
     @Override

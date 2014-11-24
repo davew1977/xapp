@@ -22,7 +22,7 @@ import net.sf.xapp.net.api.chatapp.ChatApp;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objserver.LiveObject;
+import net.sf.xapp.objcommon.LiveObject;
 import net.sf.xapp.objserver.apis.objlistener.to.PropertiesChanged;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;

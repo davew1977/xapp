@@ -28,17 +28,20 @@ import net.sf.xapp.objserver.types.XmlObj;
  */
 public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, ObjListener {
     protected ObjectMeta rootObj;
-    protected ClassDatabase cdb;
     protected boolean incrementRevisions;
 
     public SimpleObjUpdater(ObjectMeta rootObject, boolean incrementRevisions) {
         this.incrementRevisions = incrementRevisions;
-        this.cdb = rootObject.getClassDatabase();
         this.rootObj = rootObject;
     }
+
+    public void setRootObj(ObjectMeta rootObj) {
+        this.rootObj = rootObj;
+    }
+
     @Override
     public final void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
-        Unmarshaller un = new Unmarshaller(cdb.getClassModel(type));
+        Unmarshaller un = new Unmarshaller(cdb().getClassModel(type));
         ObjectMeta objectMeta = un.unmarshalString(xml, Charset.forName("UTF-8"), toObjectLocation(objLoc));
         super.createObject(principal, objLoc, type, xml);
         objectMeta.updateRev(true);
@@ -47,7 +50,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public final void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        ObjectMeta objectMeta = cdb.getClassModel(type).newInstance(toObjectLocation(objLoc), true);
+        ObjectMeta objectMeta = cdb().getClassModel(type).newInstance(toObjectLocation(objLoc), true);
         super.createEmptyObject(principal, objLoc, type);
         objectMeta.updateRev();
         objAdded(principal, objLoc, objectMeta);
@@ -65,7 +68,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         List<ObjectMeta> changed = new ArrayList<ObjectMeta>();
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
-            ObjectMeta objectMeta = cdb.findObjById(objId);
+            ObjectMeta objectMeta = cdb().findObjById(objId);
             List<PropertyUpdate> updates = new ArrayList<PropertyUpdate>();
             for (PropChange propChange : changeSet.getChanges()) {
                 Property property = objectMeta.getProperty(propChange.getProperty());
@@ -84,7 +87,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public void deleteObject(UserId principal, Long id) {
-        ObjectMeta objMeta = cdb.findObjById(id);
+        ObjectMeta objMeta = cdb().findObjById(id);
         ObjectMeta parent = objMeta.getParent();
         objMeta.dispose();
         super.deleteObject(principal, id);
@@ -93,7 +96,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
-        ObjectMeta objMeta = cdb.findObjById(id);
+        ObjectMeta objMeta = cdb().findObjById(id);
         ObjectMeta oldParent = objMeta.getParent();
         ObjectLocation newHome = toObjectLocation(newObjLoc);
         objMeta.setHome(newHome, true);
@@ -105,8 +108,8 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public final void changeType(UserId principal, Long id, Class newType) {
-        ObjectMeta obj = cdb.findObjById(id);
-        ClassModel cm = cdb.getClassModel(newType);
+        ObjectMeta obj = cdb().findObjById(id);
+        ClassModel cm = cdb().getClassModel(newType);
         if (obj.hasReferences()) {
             /*
             to implement this we need to delete the references(done) and reset them where appropriate (not done)
@@ -135,7 +138,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
-        ObjectMeta obj = cdb.findObjById(id);
+        ObjectMeta obj = cdb().findObjById(id);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
         obj.updateIndex(objectLocation, delta);
         super.moveInList(principal, objLoc, id, delta);
@@ -160,56 +163,56 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     @Override
     public void propertiesChanged(UserId user, Long rev, List<PropChangeSet> changeSets) {
         updateObject(user, changeSets);
-        assert cdb.getRev().equals(rev);
+        assert cdb().getRev().equals(rev);
     }
 
     @Override
     public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
         createObject(user, objLoc, obj.getType(), obj.getData());
-        assert cdb.getRev().equals(rev);
+        assert cdb().getRev().equals(rev);
     }
 
     @Override
     public void objMoved(UserId user, Long rev, Long id, ObjLoc newObjLoc) {
         moveObject(user, id, newObjLoc);
-        assert cdb.getRev().equals(rev);
+        assert cdb().getRev().equals(rev);
     }
 
     @Override
     public void objDeleted(UserId user, Long rev, Long id) {
         deleteObject(user, id);
-        assert cdb.getRev().equals(rev);
+        assert cdb().getRev().equals(rev);
     }
 
     @Override
     public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
         moveInList(user, objLoc, id, delta);
-        assert cdb.getRev().equals(rev);
+        assert cdb().getRev().equals(rev);
     }
 
     @Override
     public void refsUpdated(UserId user, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
         updateRefs(user, objLoc, refsCreated, refsRemoved);
-        assert cdb.getRev().equals(rev);
+        assert cdb().getRev().equals(rev);
     }
 
     @Override
     public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
         if (incrementRevisions) {
-            cdb.incrementRevision();
+            cdb().incrementRevision();
         }
         return null;
     }
 
     protected ObjectLocation toObjectLocation(ObjLoc objLoc) {
-        ObjectMeta objectMeta = cdb.findObjById(objLoc.getId());
+        ObjectMeta objectMeta = cdb().findObjById(objLoc.getId());
         return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
     }
 
     protected List<ObjectMeta> lookup(List<Long> ids) {
         List<ObjectMeta> result = new ArrayList<ObjectMeta>();
         for (Long id : ids) {
-            result.add(cdb.findObjById(id));
+            result.add(cdb().findObjById(id));
         }
         return result;
     }
@@ -219,7 +222,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     public Long getLatestRev() {
-        return cdb.getRev();
+        return cdb().getRev();
     }
 
     public Class getType() {
@@ -228,5 +231,9 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     public ObjectMeta getRootObj() {
         return rootObj;
+    }
+
+    protected ClassDatabase cdb(){
+        return rootObj.getClassDatabase();
     }
 }

@@ -68,6 +68,12 @@ public class DefaultGUIContext implements GUIContext
     }
 
     @Override
+    public void setObjMeta(ObjectMeta objMeta) {
+        this.objMeta = objMeta;
+        this.m_classDatabase = objMeta.getClassDatabase();
+    }
+
+    @Override
     public Object getInstance() {
         return getObjectMeta().getInstance();
     }
