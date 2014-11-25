@@ -116,6 +116,8 @@
     <ObjectId id="113" name="ObjUpdate_ChangeType"/>
     <ObjectId id="114" name="ObjListener_ObjMovedInList"/>
     <ObjectId id="115" name="ObjUpdate_CreateEmptyObject"/>
+    <ObjectId id="116" name="ObjManager_ApplyChanges"/>
+    <ObjectId id="117" name="ObjManagerReply_ApplyChangesResponse"/>
     <ObjectId id="119" name="ObjListener_RefsUpdated"/>
   </MessageIds>
   <Module name="provided">
@@ -637,10 +639,20 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                 <Field access="READ_ONLY" name="rev" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" name="delta" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
               </ValueObject>
+              <ValueObject name="Conflict">
+                <Field access="READ_ONLY" name="mine" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
+                <Field access="READ_ONLY" name="theirs" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
+              </ValueObject>
+              <EnumType name="ConflictResolution" values="FORCE_ALL_MINE,FORCE_ALL_THEIRS,ABORT_ON_CONFLICT,"/>
+              <EnumType name="ConflictStatus" values="NO_CONFLICTS,NOTHING_COMMITTED,CONFLICTS_RESOLVED_THEIRS,CONFLICTS_RESOLVED_MINE,"/>
+              <ValueObject name="TreeConflict">
+                <Field access="READ_ONLY" name="mine" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
+                <Field access="READ_ONLY" name="missingObjId" type="provided/java/lang/Long"/>
+              </ValueObject>
             </DirMeta>
             <DirMeta name="apis">
               <DirMeta name="objmanager">
-                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="DELTA_IS_IN_FUTURE,DELTA_TOO_OLD,TOO_MANY_DELTAS," hideEntityKey="true" name="ObjManager" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId" responseEntityKeyType="provided/java/lang/String">
+                <Api apiType="ASYNC_WITH_REPLY_API" entityKeyType="provided/java/lang/String" errors="DELTA_IS_IN_FUTURE,DELTA_TOO_OLD,TOO_MANY_DELTAS,BASE_REVISION_TOO_OLD_TO_DETECT_CONFLICTS," hideEntityKey="true" name="ObjManager" principalType="xapp-common-fwk/net/sf/xapp/net/common/types/UserId" responseEntityKeyType="provided/java/lang/String">
                   <Message name="GetObject">
                     <Response name="GetObjectResponse">
                       <Field access="READ_ONLY" name="obj" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/XmlObj"/>
@@ -653,6 +665,16 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                       <Field access="READ_ONLY" list="true" name="deltas" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
                       <Field access="READ_ONLY" name="type" optional="true" type="provided/java/lang/Class"/>
                       <Field access="READ_ONLY" name="revTo" optional="true" type="provided/java/lang/Long"/>
+                    </Response>
+                  </Message>
+                  <Message name="ApplyChanges">
+                    <Field access="READ_ONLY" list="true" name="deltas" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
+                    <Field access="READ_ONLY" name="conflictResolutionStrategy" type="xapp-common-fwk/net/sf/xapp/objserver/types/ConflictResolution"/>
+                    <Field access="READ_ONLY" name="baseRevision" type="provided/java/lang/Long"/>
+                    <Response name="ApplyChangesResponse">
+                      <Field access="READ_ONLY" list="true" name="conflicts" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/Conflict"/>
+                      <Field access="READ_ONLY" name="conflictStatus" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/ConflictStatus"/>
+                      <Field access="READ_ONLY" list="true" name="treeConflicts" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/TreeConflict"/>
                     </Response>
                   </Message>
                 </Api>
@@ -774,5 +796,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2018" name="net_sf_xapp_objserver_types_PropChange"/>
     <ObjectId id="2019" name="net_sf_xapp_objserver_types_PropChangeSet"/>
     <ObjectId id="2020" name="net_sf_xapp_objserver_types_Revision"/>
+    <ObjectId id="2021" name="net_sf_xapp_objserver_types_Conflict"/>
+    <ObjectId id="2022" name="net_sf_xapp_objserver_types_TreeConflict"/>
   </ObjectIds>
 </Model>

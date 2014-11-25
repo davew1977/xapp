@@ -24,6 +24,7 @@ import net.sf.xapp.objectmodelling.api.MarshallingContext;
 import net.sf.xapp.objectmodelling.difftracking.KeyChangeDictionary;
 import net.sf.xapp.objectmodelling.difftracking.KeyChangeHistory;
 import net.sf.xapp.objectmodelling.difftracking.KeyChangeHistoryImpl;
+import net.sf.xapp.utils.ObjMetaNotFoundException;
 import net.sf.xapp.utils.XappException;
 
 import java.util.*;
@@ -130,7 +131,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     @Override
     public ObjectMeta findObjById(Long objId) {
-        return instanceMap.get(objId);
+        ObjectMeta objectMeta = instanceMap.get(objId);
+        if(objectMeta==null) {
+            throw new ObjMetaNotFoundException(objId);
+        }
+        return objectMeta;
     }
 
     @Override

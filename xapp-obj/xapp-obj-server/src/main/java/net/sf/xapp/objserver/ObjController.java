@@ -1,5 +1,7 @@
 package net.sf.xapp.objserver;
 
+import java.util.List;
+
 import net.sf.xapp.net.common.types.AppType;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.channels.AppAdaptor;
@@ -13,6 +15,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
+import net.sf.xapp.objserver.types.Delta;
 
 /**
  * This is the single threaded entry point handling requests to update and view a managed object
@@ -61,5 +64,10 @@ public class ObjController extends AppAdaptor implements ObjManager {
     @Override
     public void getDeltas(UserId principal, Long revFrom, Long revTo) {
         objTracker.getDeltas(principal, revFrom, revTo);
+    }
+
+    @Override
+    public void applyChanges(UserId principal, List<Delta> deltas) {
+
     }
 }

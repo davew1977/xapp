@@ -12,8 +12,14 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
+import net.sf.xapp.objserver.types.Conflict;
+import net.sf.xapp.objserver.types.ConflictResolution;
+import net.sf.xapp.objserver.types.ConflictStatus;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.Revision;
+import net.sf.xapp.objserver.types.TreeConflict;
+import net.sf.xapp.utils.ObjMetaNotFoundException;
 
 /**
  * © Webatron Ltd
@@ -35,6 +41,24 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
     @Override
     public void getObject(UserId principal) {
         objManagerReply.getObjectResponse(principal, liveObject.createXmlObj(), null);
+    }
+
+    @Override
+    public void applyChanges(UserId principal, List<Delta> deltas, ConflictResolution conflictResolutionStrategy, Long baseRevision) {
+        if(conflictResolutionStrategy == ConflictResolution.FORCE_ALL_MINE) {
+            List<TreeConflict> treeConflicts = new ArrayList<>();
+            //here we just play the deltas on top regardless of conflicts
+            for (Delta delta : deltas) {
+                InMessage<ObjUpdate, Void> update = delta.getMessage();
+                try {
+                    update.visit(liveObject);
+                } catch (ObjMetaNotFoundException e) {
+                    treeConflicts.add(new TreeConflict(delta, e.getObjId()));
+                }
+            }
+            List<Conflict> conflicts = new ArrayList<>();
+            objManagerReply.applyChangesResponse(principal, conflicts, ConflictStatus.CONFLICTS_RESOLVED_MINE, treeConflicts, null);
+        }
     }
 
     @Override
