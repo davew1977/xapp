@@ -2,9 +2,11 @@ package net.sf.xapp.objserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.ErrorCode;
+import net.sf.xapp.net.common.types.GenericException;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.server.util.SimpleCache;
 import net.sf.xapp.objcommon.LiveObject;
@@ -44,11 +46,12 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
     }
 
     @Override
-    public void applyChanges(UserId principal, List<Delta> deltas, ConflictResolution conflictResolutionStrategy, Long baseRevision) {
-        if(conflictResolutionStrategy == ConflictResolution.FORCE_ALL_MINE) {
-            List<TreeConflict> treeConflicts = new ArrayList<>();
+    public void applyChanges(UserId principal, List<Delta> clientDeltas, ConflictResolution strategy, Long baseRevision) {
+        List<Conflict> conflicts = new ArrayList<>();
+        List<TreeConflict> treeConflicts = new ArrayList<>();
+        if(strategy == ConflictResolution.FORCE_ALL_MINE) {
             //here we just play the deltas on top regardless of conflicts
-            for (Delta delta : deltas) {
+            for (Delta delta : clientDeltas) {
                 InMessage<ObjUpdate, Void> update = delta.getMessage();
                 try {
                     update.visit(liveObject);
@@ -56,28 +59,44 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
                     treeConflicts.add(new TreeConflict(delta, e.getObjId()));
                 }
             }
-            List<Conflict> conflicts = new ArrayList<>();
             objManagerReply.applyChangesResponse(principal, conflicts, ConflictStatus.CONFLICTS_RESOLVED_MINE, treeConflicts, null);
+        } else {
+            List<Delta> serverDeltas = null;
+            ErrorCode errorCode = null;
+            try {
+                serverDeltas = getDeltas(baseRevision, null);
+            } catch (GenericException e) {
+                objManagerReply.applyChangesResponse(principal, conflicts, ConflictStatus.NOTHING_COMMITTED, treeConflicts, e.getErrorCode());
+            }
+            //figure out which deltas we are in conflict with
+            Map<IdProp, Delta>
         }
     }
 
     @Override
     public void getDeltas(UserId principal, Long revFrom, Long revTo) {
+        List<Delta> deltas = null;
+        ErrorCode errorCode = null;
+        try {
+            deltas = getDeltas(revFrom, revTo);
+        } catch (GenericException e) {
+            errorCode = e.getErrorCode();
+        }
+        objManagerReply.getDeltasResponse(principal, deltas, liveObject.getType(), revTo, errorCode);
+    }
+
+    private List<Delta> getDeltas(Long revFrom, Long revTo) {
         Long latestRev = liveObject.getLatestRev();
         if(revFrom > latestRev) {
-            objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.DELTA_IS_IN_FUTURE);
-            return;
+            throw new GenericException(ErrorCode.DELTA_IS_IN_FUTURE);
         }
         long firstRev = !revisions.isEmpty() ? revisions.keySet().iterator().next() : 0;
         if(revFrom < firstRev) {
-            objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.DELTA_TOO_OLD);
-            return;
+            throw new GenericException(ErrorCode.DELTA_TOO_OLD);
         }
-
         long returnCount = latestRev - revFrom;
         if(returnCount > MAX_DELTAS_RETURNED) {
-            objManagerReply.getDeltasResponse(principal, null, liveObject.getType(), revTo, ErrorCode.TOO_MANY_DELTAS);
-            return;
+            throw new GenericException(ErrorCode.TOO_MANY_DELTAS);
         }
 
         List<Delta> deltas = new ArrayList<Delta>();
@@ -85,7 +104,7 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             long r = revFrom + i + 1;
             deltas.add(revisions.get(r).getDelta());
         }
-        objManagerReply.getDeltasResponse(principal, deltas, liveObject.getType(), revTo, null);
+        return deltas;
     }
 
     @Override

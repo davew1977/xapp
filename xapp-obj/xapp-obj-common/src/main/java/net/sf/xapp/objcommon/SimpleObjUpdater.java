@@ -27,16 +27,16 @@ import net.sf.xapp.objserver.types.XmlObj;
  * Handles the objupdate api and applies the changes to the class database
  */
 public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, ObjListener {
-    protected ObjectMeta rootObj;
+    protected ObjMetaWrapper rootObj;
     protected boolean incrementRevisions;
 
     public SimpleObjUpdater(ObjectMeta rootObject, boolean incrementRevisions) {
         this.incrementRevisions = incrementRevisions;
-        this.rootObj = rootObject;
+        this.rootObj = new ObjMetaWrapper(rootObject);
     }
 
     public void setRootObj(ObjectMeta rootObj) {
-        this.rootObj = rootObj;
+        this.rootObj = new ObjMetaWrapper(rootObj);
     }
 
     @Override
@@ -205,8 +205,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     protected ObjectLocation toObjectLocation(ObjLoc objLoc) {
-        ObjectMeta objectMeta = cdb().findObjById(objLoc.getId());
-        return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
+        return rootObj.toObjLocation(objLoc);
     }
 
     protected List<ObjectMeta> lookup(List<Long> ids) {
@@ -230,10 +229,10 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     public ObjectMeta getRootObj() {
-        return rootObj;
+        return rootObj.getObjMeta();
     }
 
     protected ClassDatabase cdb(){
-        return rootObj.getClassDatabase();
+        return rootObj.cdb();
     }
 }
