@@ -15,6 +15,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
+import net.sf.xapp.objserver.conflicthandling.ConflictDetector;
 import net.sf.xapp.objserver.types.Conflict;
 import net.sf.xapp.objserver.types.ConflictResolution;
 import net.sf.xapp.objserver.types.ConflictStatus;
@@ -69,7 +70,7 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
                 objManagerReply.applyChangesResponse(principal, conflicts, ConflictStatus.NOTHING_COMMITTED, treeConflicts, e.getErrorCode());
             }
             //figure out which deltas we are in conflict with
-            Map<IdProp, Delta>
+            ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj(), serverDeltas, clientDeltas);
         }
     }
 

@@ -228,8 +228,8 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         return rootObj.getType();
     }
 
-    public ObjectMeta getRootObj() {
-        return rootObj.getObjMeta();
+    public ObjMetaWrapper getRootObj() {
+        return rootObj;
     }
 
     protected ClassDatabase cdb(){
