@@ -49,8 +49,9 @@ public class ConflictDetector {
             trunkState.current = trunkRevision;
             trunkRevision.getDelta().getMessage().visit(trunkState);
         }
-        for (Delta branchDelta : branchDeltas) {
-            branchState.current = branchDelta;
+        for (int i = 0; i < branchDeltas.size(); i++) {
+            Delta branchDelta = branchDeltas.get(i);
+            branchState.current = i;
             branchDelta.getMessage().visit(branchState);
         }
     }
