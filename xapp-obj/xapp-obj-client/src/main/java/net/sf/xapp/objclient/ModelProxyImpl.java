@@ -11,6 +11,7 @@ import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.common.util.ReflectionUtils;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
+import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
@@ -23,6 +24,8 @@ import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
 import net.sf.xapp.utils.Filter;
+
+import static net.sf.xapp.objclient.NodeUpdateApiRemote.*;
 
 /**
  * Manages updates to the remote object model
@@ -124,9 +127,10 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
     @Override
     public void moveInList(Object parent, String property, Object objectToMove, int delta) {
-        Long id = id(objectToMove);
-        ObjLoc objLoc = createObjLoc(parent, property, objectToMove.getClass(), PropertyFilter.LIST);
-        moveInList(userId(), objLoc, id, delta);
+        ObjectMeta objectMeta = cdb().find(objectToMove);
+        ObjectLocation objectLocation = createObjectLocation(parent, property, objectToMove.getClass(), PropertyFilter.LIST);
+        Long id = objectMeta.getId();
+        setIndex(userId(), toObjLoc(objectLocation), id, objectMeta.index(objectLocation) + delta);
     }
 
     @Override
@@ -152,7 +156,8 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
     }
 
     public void changeType(Object obj, Class newType) {
-        changeType(userId(), id(obj), newType);
+        ObjectMeta objectMeta = cdb().find(obj);
+        changeType(userId(), toObjLoc(objectMeta.getHome()), objectMeta.getId(), newType);
     }
 
     @Override
@@ -162,7 +167,8 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public <T> void delete(T obj) {
-        deleteObject(userId(), id(obj));
+        ObjectMeta objectMeta = cdb().find(obj);
+        deleteObject(userId(), toObjLoc(objectMeta.getHome()), objectMeta.getId());
     }
 
     private <T> Long id(T obj) {
@@ -181,7 +187,9 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public void moveTo(Object parent, String property, Object objectToMove) {
-        moveObject(userId(), id(objectToMove), createObjLoc(parent, property, objectToMove.getClass(), PropertyFilter.COMPLEX_NON_REFERENCE));
+        ObjectMeta objectMeta = cdb().find(objectToMove);
+
+        moveObject(userId(), objectMeta.getId(), toObjLoc(objectMeta.getHome()), createObjLoc(parent, property, objectToMove.getClass(), PropertyFilter.COMPLEX_NON_REFERENCE));
     }
 
     @Override
@@ -205,12 +213,20 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
         return objClient.getClientContext().getUserId();
     }
 
-    private ObjLoc createObjLoc(Object parent, String property, Class objType, Filter<Property> filter) {
+    private ObjectLocation createObjectLocation(Object parent, String propName, Class objType, Filter<Property> filter) {
         ObjectMeta parentMeta = cdb().find(parent);
-        if (property == null) {
+        Property property;
+        if (propName == null) {
             property = parentMeta.findMatchingProperty(objType, filter);
+        } else {
+            property = parentMeta.getProperty(propName);
         }
-        return new ObjLoc(id(parent), property, -1);
+        return new ObjectLocation(parentMeta, property);
+    }
+
+    private ObjLoc createObjLoc(Object parent, String property, Class objType, Filter<Property> filter) {
+        ObjectLocation objLocation = createObjectLocation(parent, property, objType, filter);
+        return toObjLoc(objLocation);
     }
 
     private ClassDatabase cdb() {

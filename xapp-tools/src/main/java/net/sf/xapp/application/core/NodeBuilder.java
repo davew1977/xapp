@@ -31,15 +31,15 @@ import java.util.Map;
 public class NodeBuilder {
     private ApplicationContainerImpl appContainer;
     private ClassDatabase cdb;
-    private Map<Long, Node> nodeMap;
-    private Map<Long, List<Node>> refNodeMap;
+    private Map<Object, Node> nodeMap;
+    private Map<Object, List<Node>> refNodeMap;
 
 
     public NodeBuilder(ApplicationContainerImpl appContainer) {
         this.appContainer = appContainer;
         cdb = this.appContainer.getClassDatabase();
-        nodeMap = new HashMap<Long, Node>();
-        refNodeMap = new HashMap<Long, List<Node>>();
+        nodeMap = new HashMap<>();
+        refNodeMap = new HashMap<>();
     }
 
     public Node createTree() {
@@ -114,11 +114,11 @@ public class NodeBuilder {
     }
 
     private void registerNode(Node newNode) {
-        Long objId = newNode.objectMeta().getId();
+        Object objId = newNode.objectMeta().objId();
         if(newNode.isReference()) {
             List<Node> nodes = refNodeMap.get(objId);
             if(nodes==null) {
-                nodes = new ArrayList<Node>();
+                nodes = new ArrayList<>();
                 refNodeMap.put(objId, nodes);
             }
             nodes.add(newNode);
@@ -127,12 +127,12 @@ public class NodeBuilder {
         }
     }
 
-    public List<Node> getRefNodes(Long objId) {
+    public List<Node> getRefNodes(Object objId) {
         List<Node> nodes = refNodeMap.get(objId);
         return nodes != null ? nodes : new ArrayList<Node>();
     }
 
-    public Node getNode(Long objId) {
+    public Node getNode(Object objId) {
         return nodeMap.get(objId);
     }
 
@@ -189,7 +189,7 @@ public class NodeBuilder {
     }
 
     public void nodeRemoved(Node node) {
-        Long id = node.objectMeta().getId();
+        Object id = node.objectMeta().objId();
         if(node.isReference()) {
             List<Node> refNodes = getRefNodes(id);
             refNodes.remove(node);

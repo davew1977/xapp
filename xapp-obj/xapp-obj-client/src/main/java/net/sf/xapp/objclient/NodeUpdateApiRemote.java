@@ -6,7 +6,6 @@ import net.sf.xapp.application.api.ObjCreateCallback;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
-import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.types.ObjLoc;
@@ -87,12 +86,12 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void deleteObject(ObjectMeta objectMeta) {
-        remote().deleteObject(userId(), objectMeta.getId());
+        remote().deleteObject(userId(), toObjLoc(objectMeta.getHome()), objectMeta.getId());
     }
 
     @Override
     public void moveInList(ObjectLocation objectLocation, ObjectMeta objectMeta, int delta) {
-        remote().moveInList(userId(), toObjLoc(objectLocation), objectMeta.getId(), delta);
+        remote().setIndex(userId(), toObjLoc(objectLocation), objectMeta.getId(), objectMeta.index(objectLocation) + delta);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void changeType(ObjectMeta obj, ClassModel targetClassModel) {
-        remote().changeType(userId(), obj.getId(), targetClassModel.getContainedClass());
+        remote().changeType(userId(), toObjLoc(obj.getHome()), obj.getId(), targetClassModel.getContainedClass());
     }
 
     @Override
@@ -119,7 +118,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
 
     @Override
     public void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta) {
-        remote().moveObject(userId(), objMeta.getId(), toObjLoc(objectLocation));
+        remote().moveObject(userId(), objMeta.getId(), toObjLoc(objMeta.getHome()), toObjLoc(objectLocation));
     }
 
     public static ObjLoc toObjLoc(ObjectLocation objectLocation) {

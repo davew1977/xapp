@@ -2,7 +2,6 @@ package net.sf.xapp.objserver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.ErrorCode;
@@ -54,23 +53,23 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             //here we just play the deltas on top regardless of conflicts
             for (Delta delta : clientDeltas) {
                 InMessage<ObjUpdate, Void> update = delta.getMessage();
-                try {
+                /*try {
                     update.visit(liveObject);
                 } catch (ObjMetaNotFoundException e) {
                     treeConflicts.add(new TreeConflict(delta, e.getObjId()));
-                }
+                }*/
             }
             objManagerReply.applyChangesResponse(principal, conflicts, ConflictStatus.CONFLICTS_RESOLVED_MINE, treeConflicts, null);
         } else {
-            List<Delta> serverDeltas = null;
+            List<Revision> serverRevs = null;
             ErrorCode errorCode = null;
             try {
-                serverDeltas = getDeltas(baseRevision, null);
+                serverRevs = getRevisions(baseRevision, null);
             } catch (GenericException e) {
                 objManagerReply.applyChangesResponse(principal, conflicts, ConflictStatus.NOTHING_COMMITTED, treeConflicts, e.getErrorCode());
             }
             //figure out which deltas we are in conflict with
-            ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj(), serverDeltas, clientDeltas);
+            ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj(), serverRevs, clientDeltas);
         }
     }
 
@@ -87,6 +86,14 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
     }
 
     private List<Delta> getDeltas(Long revFrom, Long revTo) {
+        List<Revision> revs = getRevisions(revFrom, revTo);
+        List<Delta> deltas = new ArrayList<>();
+        for (Revision rev : revs) {
+            deltas.add(rev.getDelta());
+        }
+        return deltas;
+    }
+    private List<Revision> getRevisions(Long revFrom, Long revTo) {
         Long latestRev = liveObject.getLatestRev();
         if(revFrom > latestRev) {
             throw new GenericException(ErrorCode.DELTA_IS_IN_FUTURE);
@@ -100,18 +107,18 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             throw new GenericException(ErrorCode.TOO_MANY_DELTAS);
         }
 
-        List<Delta> deltas = new ArrayList<Delta>();
+        List<Revision> revs = new ArrayList<>();
         for(int i=0; i < returnCount; i++) {
             long r = revFrom + i + 1;
-            deltas.add(revisions.get(r).getDelta());
+            revs.add(revisions.get(r));
         }
-        return deltas;
+        return revs;
     }
 
     @Override
     public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
         Long rev = liveObject.getLatestRev();
-        revisions.put(rev, new Revision(rev, new Delta(inMessage)));
+        revisions.put(rev, new Revision(rev, new Delta(inMessage, System.currentTimeMillis()), (UserId) inMessage.principal()));
         return null;
     }
 }

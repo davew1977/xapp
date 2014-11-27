@@ -510,6 +510,12 @@ public class ObjectMeta<T> implements Namespace{
         return myLocation.adjustIndex(this, delta);
     }
 
+    public int setIndex(ObjectLocation location, int newIndex) {
+        //find "my" location
+        ObjectLocation myLocation = resolve(location);
+        return myLocation.setIndex(this, newIndex);
+    }
+
     private ObjectLocation resolve(ObjectLocation location) {
         if(!location.containsReferences()) {
             assert location.equals(home);
@@ -598,8 +604,12 @@ public class ObjectMeta<T> implements Namespace{
         return !references.isEmpty();
     }
 
-    public int index() {
+    public int homeIndex() {
         return getHome().indexOf(this);
+    }
+
+    public int index(ObjectLocation objectLocation) {
+        return resolve(objectLocation).indexOf(this);
     }
 
     public <A> ObjectMeta<A> findAncestor(Class<A> type) {
@@ -678,10 +688,7 @@ public class ObjectMeta<T> implements Namespace{
     /**
      * Find a property compatible with the given type. If more than one found throw exception
      */
-    public String findMatchingProperty(final Class type) {
-        return findMatchingProperty(type, PropertyFilter.ALL );
-    }
-    public String findMatchingProperty(final Class type, final Filter<Property> filter) {
+    public Property findMatchingProperty(final Class type, final Filter<Property> filter) {
         List<Property> props = classModel.getAllProperties(new Filter<Property>() {
             @Override
             public boolean matches(Property property) {
@@ -694,6 +701,10 @@ public class ObjectMeta<T> implements Namespace{
         if(props.size() > 1) {
             throw new IllegalArgumentException(format("More than 1 prop found (%s) of type %s found on %s (%s)", props.size(), type, this, props));
         }
-        return props.get(0).getName();
+        return props.get(0);
+    }
+
+    public Object objId() {
+        return getId() != null ? getId() : this;
     }
 }

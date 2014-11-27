@@ -86,28 +86,28 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     @Override
-    public void deleteObject(UserId principal, Long id) {
+    public void deleteObject(UserId principal, ObjLoc objLoc, Long id) {
         ObjectMeta objMeta = cdb().findObjById(id);
         ObjectMeta parent = objMeta.getParent();
         objMeta.dispose();
-        super.deleteObject(principal, id);
+        super.deleteObject(principal, objLoc, id);
         parent.updateRev(); //surely we can't allow deleting root here??? (hence the lack of null check)
     }
 
     @Override
-    public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
+    public void moveObject(UserId principal, Long id, ObjLoc oldObjLoc, ObjLoc newObjLoc) {
         ObjectMeta objMeta = cdb().findObjById(id);
         ObjectMeta oldParent = objMeta.getParent();
         ObjectLocation newHome = toObjectLocation(newObjLoc);
         objMeta.setHome(newHome, true);
-        super.moveObject(principal, id, newObjLoc);
+        super.moveObject(principal, id, oldObjLoc, newObjLoc);
 
         oldParent.updateRev();
         newHome.getObj().updateRev();
     }
 
     @Override
-    public final void changeType(UserId principal, Long id, Class newType) {
+    public final void changeType(UserId principal, ObjLoc oldLoc, Long id, Class newType) {
         ObjectMeta obj = cdb().findObjById(id);
         ClassModel cm = cdb().getClassModel(newType);
         if (obj.hasReferences()) {
@@ -117,7 +117,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
             throw new UnsupportedOperationException("cannot currently change type on an object which has references");
         }
         ObjectLocation objHome = obj.getHome();
-        int oldIndex = obj.index();
+        int oldIndex = obj.homeIndex();
         Map<Property, Object> snapshot = obj.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
         obj.dispose();
         objHome.setIndex(oldIndex);
@@ -126,7 +126,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         for (Property property : properties) {
             newInstance.set(property, snapshot.get(property));
         }
-        super.changeType(principal, id, newType);
+        super.changeType(principal, oldLoc, id, newType);
 
         newInstance.updateRev();
         typeChanged(principal, new ObjLoc(objHome.getObj().getId(), objHome.getProperty().getName(), oldIndex), id, newInstance);
@@ -137,11 +137,11 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     @Override
-    public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
+    public void setIndex(UserId principal, ObjLoc objLoc, Long id, Integer newIndex) {
         ObjectMeta obj = cdb().findObjById(id);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
-        obj.updateIndex(objectLocation, delta);
-        super.moveInList(principal, objLoc, id, delta);
+        obj.setIndex(objectLocation, newIndex);
+        super.setIndex(principal, objLoc, id, newIndex);
         objectLocation.getObj().updateRev();
     }
 
@@ -173,20 +173,20 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     @Override
-    public void objMoved(UserId user, Long rev, Long id, ObjLoc newObjLoc) {
-        moveObject(user, id, newObjLoc);
+    public void objMoved(UserId user, Long rev, Long id, ObjLoc oldLoc, ObjLoc newObjLoc) {
+        moveObject(user, id, oldLoc, newObjLoc);
         assert cdb().getRev().equals(rev);
     }
 
     @Override
-    public void objDeleted(UserId user, Long rev, Long id) {
-        deleteObject(user, id);
+    public void objDeleted(UserId user, Long rev, ObjLoc oldLoc, Long id) {
+        deleteObject(user, oldLoc, id);
         assert cdb().getRev().equals(rev);
     }
 
     @Override
-    public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
-        moveInList(user, objLoc, id, delta);
+    public void objIndexChanged(UserId user, Long rev, ObjLoc objLoc, Long id, Integer newIndex) {
+        setIndex(user, objLoc, id, newIndex);
         assert cdb().getRev().equals(rev);
     }
 

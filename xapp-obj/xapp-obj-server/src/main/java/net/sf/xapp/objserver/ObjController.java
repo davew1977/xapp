@@ -15,6 +15,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
+import net.sf.xapp.objserver.types.ConflictResolution;
 import net.sf.xapp.objserver.types.Delta;
 
 /**
@@ -67,7 +68,7 @@ public class ObjController extends AppAdaptor implements ObjManager {
     }
 
     @Override
-    public void applyChanges(UserId principal, List<Delta> deltas) {
-
+    public void applyChanges(UserId principal, List<Delta> deltas, ConflictResolution conflictResolutionStrategy, Long baseRevision) {
+        objTracker.applyChanges(principal, deltas, conflictResolutionStrategy, baseRevision);
     }
 }

@@ -66,7 +66,7 @@ public class UIUpdater implements ObjListener {
     }
 
     @Override
-    public void objMoved(UserId user, Long rev, Long id, ObjLoc newObjLoc) {
+    public void objMoved(UserId user, Long rev, Long id, ObjLoc oldObjLoc, ObjLoc newObjLoc) {
         ObjectMeta objectMeta = cdb().findObjById(id);
         appContainer().removeNode(id);
         //create new node
@@ -74,7 +74,7 @@ public class UIUpdater implements ObjListener {
     }
 
     @Override
-    public void objDeleted(UserId user, Long rev, Long id) {
+    public void objDeleted(UserId user, Long rev, ObjLoc objLoc,  Long id) {
         //clean up nodes
         Collection<Node> refNodes = appContainer().getRefNodes(id);
 
@@ -86,7 +86,7 @@ public class UIUpdater implements ObjListener {
     }
 
     @Override
-    public void objMovedInList(UserId user, Long rev, ObjLoc objLoc, Long id, Integer delta) {
+    public void objIndexChanged(UserId user, Long rev, ObjLoc objLoc, Long id, Integer newIndex) {
         ObjectMeta objectMeta = obj(id);
         ObjectLocation objectLocation = toObjectLocation(objLoc);
         Node node = appContainer().getNode(id, objectLocation);

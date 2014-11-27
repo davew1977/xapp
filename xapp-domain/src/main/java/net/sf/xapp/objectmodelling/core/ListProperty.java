@@ -88,7 +88,8 @@ public class ListProperty extends ContainerProperty {
         if (index == -1) {
             return ((Collection) mapOrCollection).add(instance);
         } else {
-            ((List) mapOrCollection).add(index, instance);
+            List list = (List) mapOrCollection;
+            list.add(index > list.size() ? list.size() : index, instance);
             return true;
         }
     }

@@ -506,7 +506,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     @Override
     public Node createNode(ObjectLocation parent, ObjectMeta objectMeta) {
-        Node node = getNodeBuilder().getNode(parent.getObj().getId());
+        Node node = getNodeBuilder().getNode(parent.getObj().objId());
         if (node != null) {
             node = node.find(parent.getProperty());
         }

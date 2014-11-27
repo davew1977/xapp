@@ -4,57 +4,65 @@ import java.util.List;
 
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
+import net.sf.xapp.objserver.types.IdProp;
 import net.sf.xapp.objserver.types.ObjLoc;
+import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
+import net.sf.xapp.objserver.types.Revision;
 
 /**
  */
 public class TrunkState extends ConflictDetectorState {
 
+    public Revision current;
+
     public TrunkState(ConflictDetector conflictDetector) {
         super(conflictDetector);
     }
 
-    @Override
-    public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
+    protected void createObj(ObjLoc objLoc) {
         ObjectLocation objectLocation = toObjLocation(objLoc);
         if(!objectLocation.isCollection()) { //obj creations are ok if the objloc is a collection
-            conflictDetector.deltaMap.put(idProp(objectLocation), current());
+            conflictDetector.addedObjects.put(toIdProp(objLoc), current);
         }
     }
 
     @Override
-    public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
-
-    }
-
-    @Override
     public void updateObject(UserId principal, List<PropChangeSet> changeSets) {
-
+        for (PropChangeSet changeSet : changeSets) {
+            Long objId = changeSet.getObjId();
+            for (PropChange propChange : changeSet.getChanges()) {
+                conflictDetector.propChanges.put(new IdProp(objId, propChange.getProperty()), current);
+            }
+        }
     }
 
     @Override
-    public void deleteObject(UserId principal, Long id) {
-
+    public void deleteObject(UserId principal, ObjLoc objLoc, Long id) {
+        conflictDetector.addedObjects.remove(toIdProp(objLoc));
+        conflictDetector.deletedObjects.put(id, current);
     }
 
     @Override
-    public void moveObject(UserId principal, Long id, ObjLoc newObjLoc) {
-
+    public void moveObject(UserId principal, Long id, ObjLoc oldLoc, ObjLoc newObjLoc) {
+        conflictDetector.addedObjects.remove(toIdProp(oldLoc));
+        conflictDetector.movedObjects.put(id, current);
+        createObj(newObjLoc);
     }
 
     @Override
-    public void changeType(UserId principal, Long id, Class newType) {
-
+    public void changeType(UserId principal, ObjLoc objLoc, Long id, Class newType) {
+        conflictDetector.addedObjects.remove(toIdProp(objLoc));
+        conflictDetector.deletedObjects.put(id, current);
     }
 
     @Override
-    public void moveInList(UserId principal, ObjLoc objLoc, Long id, Integer delta) {
-
+    public void setIndex(UserId principal, ObjLoc objLoc, Long id, Integer newIndex) {
+        conflictDetector.indexChanges.put(toIdProp(objLoc), current);
     }
 
     @Override
     public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
-
+        conflictDetector.refChanges.put(toIdProp(objLoc), current);
     }
 }

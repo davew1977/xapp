@@ -31,8 +31,11 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.types.Conflict;
+import net.sf.xapp.objserver.types.ConflictStatus;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.ObjLoc;
+import net.sf.xapp.objserver.types.TreeConflict;
 import net.sf.xapp.objserver.types.XmlObj;
 import net.sf.xapp.utils.FileUtils;
 import net.sf.xapp.utils.ReflectionUtils;
@@ -81,7 +84,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
                 if (isOnlineMode()) {
                     cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
-                    write(new Delta(inMessage).serialize(), getDeltaWriter());
+                    write(new Delta(inMessage, 0L).serialize(), getDeltaWriter());
                 }
                 return null;
             }
@@ -205,6 +208,11 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
         reset(obj);
         objMetaLoaded_internal();
+    }
+
+    @Override
+    public void applyChangesResponse(UserId principal, List<Conflict> conflicts, ConflictStatus conflictStatus, List<TreeConflict> treeConflicts, ErrorCode errorCode) {
+
     }
 
     @Override
@@ -429,7 +437,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             if(isOnlineMode()) {
                 inMessage.visit(remote);
             } else {
-                write(new Delta(inMessage).serialize(), getOfflineWriter());
+                write(new Delta(inMessage, System.currentTimeMillis()).serialize(), getOfflineWriter());
                 //apply the change
                 inMessage.visit(dummyServer);
             }

@@ -35,4 +35,8 @@ public class ObjMetaWrapper {
     public String toXml() {
         return objMeta.toXml();
     }
+
+    public Long getId() {
+        return objMeta.getId();
+    }
 }
