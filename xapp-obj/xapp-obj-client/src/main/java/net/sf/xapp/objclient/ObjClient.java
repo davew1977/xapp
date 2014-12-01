@@ -31,6 +31,8 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.types.ConflictResolution;
+import net.sf.xapp.objserver.types.MoveConflict;
 import net.sf.xapp.objserver.types.PropConflict;
 import net.sf.xapp.objserver.types.ConflictStatus;
 import net.sf.xapp.objserver.types.Delta;
@@ -62,6 +64,8 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     private ModelProxy modelProxy;
     private MasterObjUpdater objUpdate;
     private SimpleObjUpdater localObjUpdater;
+    protected List<Delta> offlineDeltas;
+    protected String localSnapshot; //store a version of the object before server deltas are applied
 
     public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, final String objId) {
         super(new Multicaster<ObjListener>());
@@ -142,15 +146,11 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         clientContext.login();
 
         clientContext.wire(ObjManagerReply.class, objId, this);
-        clientContext.wire(ObjListener.class, objId, this);
 
         clientContext.channel(objId).join(clientContext.getUserId());
 
         ObjManager objManager = clientContext.objManager(objId);
         long rev = getLastKnownRevision();
-
-        //do we have offline work?
-
 
         if(rev != -1) {
             objManager.getDeltas(clientContext.getUserId(), rev, null);
@@ -197,6 +197,9 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         for (Delta delta: initialDeltas) {
             delta.getMessage().visit(objUpdater);
         }
+
+        localSnapshot = objMeta.toXml();
+
         //apply server updates (since our previous session ended)
         for (Delta delta : deltas) {
             delta.getMessage().visit(objUpdater);
@@ -205,20 +208,13 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     @Override
-    public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
-        reset(obj);
-        objMetaLoaded_internal();
-    }
-
-    @Override
-    public void applyChangesResponse(UserId principal, List<PropConflict> propConflicts, ConflictStatus conflictStatus, List<DeleteConflict> deleteConflicts, ErrorCode errorCode) {
-
-    }
-
-    @Override
     public void save() {
-        reset(SimpleObjUpdater.toXmlObj(objMeta));
+        if (isOnlineMode()) {
+            reset(SimpleObjUpdater.toXmlObj(objMeta));
+        }
+        //in offline mode, every change is saved anyway
     }
+
     private void closeDeltaWriter() {
         try {
             getDeltaWriter().flush();
@@ -228,7 +224,6 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             throw new RuntimeException(e);
         }
     }
-
     private void closeOfflineWriter() {
         try {
             getOfflineWriter().flush();
@@ -240,13 +235,49 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     @Override
+    public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
+        clientContext.wire(ObjListener.class, objId, this);
+        reset(obj);
+        objMetaLoaded_internal();
+    }
+
+    @Override
     public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
         if(errorCode==null) {
+            clientContext.wire(ObjListener.class, objId, this);
             reconstruct(type, deltas, revTo);
-            objMetaLoaded_internal();
+            //are there any offline changes?
+            offlineDeltas = readOffline();
+            if(!offlineDeltas.isEmpty()) {
+                clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineDeltas,
+                        ConflictResolution.ABORT_ON_CONFLICT, objMeta.getRevision());
+            } else {
+                objMetaLoaded_internal();
+            }
         } else {
+            //TODO handle possible offline deltas in this scenario
             clientContext.objManager(objId).getObject(clientContext.getUserId());
         }
+    }
+
+    @Override
+    public final void applyChangesResponse(UserId principal, ConflictStatus conflictStatus, List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, ErrorCode errorCode) {
+         if(errorCode == null) {
+             //override to
+             if(wasResolved(conflictStatus)) {
+                 objMetaLoaded_internal();
+             } else {
+                 handleConflicts(propConflicts, deleteConflicts, moveConflicts);
+             }
+         } else {
+             //TODO stash the unsuccessful offline changes
+         }
+    }
+
+    protected abstract void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts);
+
+    public static boolean wasResolved(ConflictStatus conflictStatus) {
+        return conflictStatus != ConflictStatus.NOTHING_COMMITTED;
     }
 
     private OutputStreamWriter getDeltaWriter() {

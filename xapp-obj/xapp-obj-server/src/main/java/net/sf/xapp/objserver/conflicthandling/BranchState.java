@@ -11,12 +11,22 @@ import net.sf.xapp.objserver.types.PropConflict;
 /**
  */
 public class BranchState extends ConflictDetectorState{
-
-
-    public int current;
+    private int currentDeltaIndex;
+    private boolean deleteConflict;
+    private boolean otherConflict;
 
     protected BranchState(ConflictDetector conflictDetector) {
         super(conflictDetector);
+    }
+
+    public void pre(int deltaIndex) {
+        deleteConflict = false;
+        otherConflict = false;
+        currentDeltaIndex = deltaIndex;
+    }
+
+    public boolean accept(ConflictResolution conflictResolution) {
+        return !deleteConflict && (conflictResolution == ConflictResolution.FORCE_ALL_MINE || !otherConflict);
     }
 
     @Override
@@ -25,7 +35,7 @@ public class BranchState extends ConflictDetectorState{
             ObjectLocation objectLocation = toObjLocation(objLoc);
             Revision trunkRev = conflictDetector.filledObjLocations.get(toIdProp(objLoc));
             if(!objectLocation.isCollection() && trunkRev != null) {
-                conflictDetector.propConflicts.add(new PropConflict(current, trunkRev, null));
+                addPropConflict(trunkRev, null);
             }
         }
     }
@@ -44,7 +54,7 @@ public class BranchState extends ConflictDetectorState{
             for (PropChange propChange : changeSet.getChanges()) {
                 Revision conflictingRev = conflictDetector.propChanges.get(new IdProp(objId, propChange.getProperty()));
                 if(conflictingRev != null) {
-                    conflictDetector.propConflicts.add(new PropConflict(current, conflictingRev, new ObjPropChange(objId, propChange)));
+                    addPropConflict(conflictingRev, new ObjPropChange(objId, propChange));
                 }
             }
         }
@@ -61,7 +71,7 @@ public class BranchState extends ConflictDetectorState{
         if(!tryAddDeleteConflict(id) && !tryAddDeleteConflict(newObjLoc.getId())) {
             Revision conflictingRev = conflictDetector.movedObjects.get(id);
             if(conflictingRev != null) {
-                conflictDetector.co
+                addMoveConflict(conflictingRev);
             }
         }
     }
@@ -73,27 +83,39 @@ public class BranchState extends ConflictDetectorState{
 
     @Override
     public void setIndex(UserId principal, ObjLoc objLoc, Long id, Integer newIndex) {
-        if(!tryAddDeleteConflict(id) && !tryAddDeleteConflict(objLoc.getId())) {
-           conflictDetector.movedObjects
+        if(!tryAddDeleteConflict(id)) {
+            Revision conflictingRev = conflictDetector.movedObjects.get(id);
+            if(conflictingRev != null) {
+                addMoveConflict(conflictingRev);
+            }
         }
     }
 
     @Override
     public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
-        if(!tryAddDeleteConflict(objLoc.getId())) {
+        tryAddDeleteConflict(objLoc.getId());
+    }
 
-        }
+    private void addPropConflict(Revision conflictingRev, ObjPropChange pc) {
+        conflictDetector.propConflicts.add(new PropConflict(currentDeltaIndex, conflictingRev, pc));
+        otherConflict = true;
+    }
+
+    private void addMoveConflict(Revision conflictingRev) {
+        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev, currentDeltaIndex));
+        otherConflict = true;
     }
 
     private boolean tryAddDeleteConflict(Long id) {
         Revision revision = conflictDetector.deletedObjects.get(id);
         if(revision != null) {
-            DeleteConflict deleteConflict = conflictDetector.deleteConflicts.get(id);
-            if (deleteConflict == null) {
-                deleteConflict = new DeleteConflict(new ArrayList<Integer>(), revision, id);
-                conflictDetector.deleteConflicts.put(id, deleteConflict);
+            DeleteConflict dc = conflictDetector.deleteConflicts.get(id);
+            if (dc == null) {
+                dc = new DeleteConflict(new ArrayList<Integer>(), revision, id);
+                conflictDetector.deleteConflicts.put(id, dc);
             }
-            deleteConflict.getMyDeltaIndexes().add(current);
+            dc.getMyDeltaIndexes().add(currentDeltaIndex);
+            deleteConflict = true;
         }
         return revision != null;
     }

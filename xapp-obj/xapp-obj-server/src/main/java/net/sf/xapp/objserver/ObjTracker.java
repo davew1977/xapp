@@ -15,6 +15,7 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.conflicthandling.ConflictDetector;
+import net.sf.xapp.objserver.types.MoveConflict;
 import net.sf.xapp.objserver.types.PropConflict;
 import net.sf.xapp.objserver.types.ConflictResolution;
 import net.sf.xapp.objserver.types.ConflictStatus;
@@ -46,30 +47,29 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
 
     @Override
     public void applyChanges(UserId principal, List<Delta> clientDeltas, ConflictResolution strategy, Long baseRevision) {
-        List<PropConflict> propConflicts = new ArrayList<>();
-        List<DeleteConflict> deleteConflicts = new ArrayList<>();
-        if(strategy == ConflictResolution.FORCE_ALL_MINE) {
-            //here we just play the deltas on top regardless of conflicts
-            for (Delta delta : clientDeltas) {
-                InMessage<ObjUpdate, Void> update = delta.getMessage();
-                /*try {
-                    update.visit(liveObject);
-                } catch (ObjMetaNotFoundException e) {
-                    treeConflicts.add(new TreeConflict(delta, e.getObjId()));
-                }*/
-            }
-            objManagerReply.applyChangesResponse(principal, propConflicts, ConflictStatus.CONFLICTS_RESOLVED_MINE, deleteConflicts, null);
-        } else {
-            List<Revision> serverRevs = null;
-            ErrorCode errorCode = null;
-            try {
-                serverRevs = getRevisions(baseRevision, null);
-            } catch (GenericException e) {
-                objManagerReply.applyChangesResponse(principal, propConflicts, ConflictStatus.NOTHING_COMMITTED, deleteConflicts, e.getErrorCode());
-            }
-            //figure out which deltas we are in conflict with
-            ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj(), serverRevs, clientDeltas);
+        List<Revision> serverRevs = null;
+        try {
+            serverRevs = getRevisions(baseRevision, null);
+        } catch (GenericException e) {
+            objManagerReply.applyChangesResponse(principal,ConflictStatus.NOTHING_COMMITTED,
+                    new ArrayList<PropConflict>(), new ArrayList<DeleteConflict>(), new ArrayList<MoveConflict>(), e.getErrorCode());
         }
+        //figure out which deltas we are in conflict with
+        ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj());
+        ConflictStatus conflictStatus = conflictDetector.process(strategy, serverRevs, clientDeltas);
+
+        //maybe apply some deltas
+        if(conflictStatus != ConflictStatus.NOTHING_COMMITTED) {
+            List<Delta> deltasToApply = conflictDetector.getDeltasToApply();
+            for (Delta delta : deltasToApply) {
+                delta.getMessage().visit(liveObject);
+            }
+        }
+
+        objManagerReply.applyChangesResponse(principal, conflictStatus,
+                conflictDetector.getPropConflicts(),
+                conflictDetector.getDeleteConflicts(),
+                conflictDetector.getMoveConflicts(), null);
     }
 
     @Override
