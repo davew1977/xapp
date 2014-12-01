@@ -5,16 +5,8 @@ import java.util.List;
 
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
-import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
-import net.sf.xapp.objserver.types.Conflict;
-import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.objserver.types.IdProp;
-import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.ObjPropChange;
-import net.sf.xapp.objserver.types.PropChange;
-import net.sf.xapp.objserver.types.PropChangeSet;
-import net.sf.xapp.objserver.types.Revision;
-import net.sf.xapp.objserver.types.TreeConflict;
+import net.sf.xapp.objserver.types.*;
+import net.sf.xapp.objserver.types.PropConflict;
 
 /**
  */
@@ -29,11 +21,11 @@ public class BranchState extends ConflictDetectorState{
 
     @Override
     protected void createObj(ObjLoc objLoc) {
-        if(!tryAddTreeConflict(objLoc.getId())) {
+        if(!tryAddDeleteConflict(objLoc.getId())) {
             ObjectLocation objectLocation = toObjLocation(objLoc);
-            Revision trunkRev = conflictDetector.addedObjects.get(toIdProp(objLoc));
+            Revision trunkRev = conflictDetector.filledObjLocations.get(toIdProp(objLoc));
             if(!objectLocation.isCollection() && trunkRev != null) {
-                conflictDetector.conflicts.add(new Conflict(current, trunkRev, null));
+                conflictDetector.propConflicts.add(new PropConflict(current, trunkRev, null));
             }
         }
     }
@@ -42,7 +34,7 @@ public class BranchState extends ConflictDetectorState{
     public void updateObject(UserId principal, List<PropChangeSet> changeSets) {
         //parse twice, because we must treat the set of updates as atomic
         for (PropChangeSet changeSet : changeSets) {
-            if(tryAddTreeConflict(changeSet.getObjId())) {
+            if(tryAddDeleteConflict(changeSet.getObjId())) {
                 return;
             }
         }
@@ -52,7 +44,7 @@ public class BranchState extends ConflictDetectorState{
             for (PropChange propChange : changeSet.getChanges()) {
                 Revision conflictingRev = conflictDetector.propChanges.get(new IdProp(objId, propChange.getProperty()));
                 if(conflictingRev != null) {
-                    conflictDetector.conflicts.add(new Conflict(current, conflictingRev, new ObjPropChange(objId, propChange)));
+                    conflictDetector.propConflicts.add(new PropConflict(current, conflictingRev, new ObjPropChange(objId, propChange)));
                 }
             }
         }
@@ -61,38 +53,47 @@ public class BranchState extends ConflictDetectorState{
 
     @Override
     public void deleteObject(UserId principal, ObjLoc objLoc, Long id) {
-        tryAddTreeConflict(id);
+        tryAddDeleteConflict(id);
     }
 
     @Override
     public void moveObject(UserId principal, Long id, ObjLoc oldObjLoc, ObjLoc newObjLoc) {
-
+        if(!tryAddDeleteConflict(id) && !tryAddDeleteConflict(newObjLoc.getId())) {
+            Revision conflictingRev = conflictDetector.movedObjects.get(id);
+            if(conflictingRev != null) {
+                conflictDetector.co
+            }
+        }
     }
 
     @Override
     public void changeType(UserId principal, ObjLoc objLoc, Long id, Class newType) {
-
+        tryAddDeleteConflict(id);
     }
 
     @Override
     public void setIndex(UserId principal, ObjLoc objLoc, Long id, Integer newIndex) {
-
+        if(!tryAddDeleteConflict(id) && !tryAddDeleteConflict(objLoc.getId())) {
+           conflictDetector.movedObjects
+        }
     }
 
     @Override
     public void updateRefs(UserId principal, ObjLoc objLoc, List<Long> refsToAdd, List<Long> refsToRemove) {
+        if(!tryAddDeleteConflict(objLoc.getId())) {
 
+        }
     }
 
-    private boolean tryAddTreeConflict(Long id) {
+    private boolean tryAddDeleteConflict(Long id) {
         Revision revision = conflictDetector.deletedObjects.get(id);
         if(revision != null) {
-            TreeConflict treeConflict = conflictDetector.treeConflicts.get(id);
-            if (treeConflict == null) {
-                treeConflict = new TreeConflict(new ArrayList<Integer>(), revision, id);
-                conflictDetector.treeConflicts.put(id, treeConflict);
+            DeleteConflict deleteConflict = conflictDetector.deleteConflicts.get(id);
+            if (deleteConflict == null) {
+                deleteConflict = new DeleteConflict(new ArrayList<Integer>(), revision, id);
+                conflictDetector.deleteConflicts.put(id, deleteConflict);
             }
-            treeConflict.getMyDeltaIndexes().add(current);
+            deleteConflict.getMyDeltaIndexes().add(current);
         }
         return revision != null;
     }

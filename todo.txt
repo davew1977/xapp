@@ -3,9 +3,9 @@ Offline Mode {
     in offline mode the client should stash changes locally in a persistent cache
     if the cache has data, the client should try and post them before the UI starts
     stashed changes should include the client's current revision
-    the server can check for each change which ones should can be applied without conflict
-    if all can be applied without conflict then apply them and return ok
-    if there are some conflicting changes, ask the user if they want to abandon them/apply non-conflicts
+    the server can check for each change which ones should can be applied without propConflict
+    if all can be applied without propConflict then apply them and return ok
+    if there are some conflicting changes, ask the user if they want to abandon them/apply non-propConflicts
 }
 
 BUG/IMPROVEMENT: {

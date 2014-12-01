@@ -23,7 +23,7 @@ public class TrunkState extends ConflictDetectorState {
     protected void createObj(ObjLoc objLoc) {
         ObjectLocation objectLocation = toObjLocation(objLoc);
         if(!objectLocation.isCollection()) { //obj creations are ok if the objloc is a collection
-            conflictDetector.addedObjects.put(toIdProp(objLoc), current);
+            conflictDetector.filledObjLocations.put(toIdProp(objLoc), current);
         }
     }
 
@@ -39,26 +39,26 @@ public class TrunkState extends ConflictDetectorState {
 
     @Override
     public void deleteObject(UserId principal, ObjLoc objLoc, Long id) {
-        conflictDetector.addedObjects.remove(toIdProp(objLoc));
+        conflictDetector.filledObjLocations.remove(toIdProp(objLoc));
         conflictDetector.deletedObjects.put(id, current);
     }
 
     @Override
     public void moveObject(UserId principal, Long id, ObjLoc oldLoc, ObjLoc newObjLoc) {
-        conflictDetector.addedObjects.remove(toIdProp(oldLoc));
+        conflictDetector.filledObjLocations.remove(toIdProp(oldLoc));
         conflictDetector.movedObjects.put(id, current);
         createObj(newObjLoc);
     }
 
     @Override
     public void changeType(UserId principal, ObjLoc objLoc, Long id, Class newType) {
-        conflictDetector.addedObjects.remove(toIdProp(objLoc));
+        conflictDetector.filledObjLocations.remove(toIdProp(objLoc));
         conflictDetector.deletedObjects.put(id, current);
     }
 
     @Override
     public void setIndex(UserId principal, ObjLoc objLoc, Long id, Integer newIndex) {
-        conflictDetector.indexChanges.put(toIdProp(objLoc), current);
+        conflictDetector.movedObjects.put(id, current);
     }
 
     @Override

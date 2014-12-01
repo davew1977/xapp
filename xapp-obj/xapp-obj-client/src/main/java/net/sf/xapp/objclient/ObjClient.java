@@ -31,11 +31,11 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
-import net.sf.xapp.objserver.types.Conflict;
+import net.sf.xapp.objserver.types.PropConflict;
 import net.sf.xapp.objserver.types.ConflictStatus;
 import net.sf.xapp.objserver.types.Delta;
 import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.TreeConflict;
+import net.sf.xapp.objserver.types.DeleteConflict;
 import net.sf.xapp.objserver.types.XmlObj;
 import net.sf.xapp.utils.FileUtils;
 import net.sf.xapp.utils.ReflectionUtils;
@@ -211,7 +211,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     @Override
-    public void applyChangesResponse(UserId principal, List<Conflict> conflicts, ConflictStatus conflictStatus, List<TreeConflict> treeConflicts, ErrorCode errorCode) {
+    public void applyChangesResponse(UserId principal, List<PropConflict> propConflicts, ConflictStatus conflictStatus, List<DeleteConflict> deleteConflicts, ErrorCode errorCode) {
 
     }
 
