@@ -31,11 +31,12 @@ public class BranchState extends ConflictDetectorState{
 
     @Override
     protected void createObj(ObjLoc objLoc) {
+        long newObjId = conflictDetector.localStartId++;
         if(!tryAddDeleteConflict(objLoc.getId())) {
             ObjectLocation objectLocation = toObjLocation(objLoc);
             Revision trunkRev = conflictDetector.filledObjLocations.get(toIdProp(objLoc));
             if(!objectLocation.isCollection() && trunkRev != null) {
-                addPropConflict(trunkRev, null);
+                addAddConflict(newObjId, trunkRev);
             }
         }
     }
@@ -52,9 +53,9 @@ public class BranchState extends ConflictDetectorState{
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
             for (PropChange propChange : changeSet.getChanges()) {
-                Revision conflictingRev = conflictDetector.propChanges.get(new IdProp(objId, propChange.getProperty()));
-                if(conflictingRev != null) {
-                    addPropConflict(conflictingRev, new ObjPropChange(objId, propChange));
+                PotentialPropConflict potentialPropConflict = conflictDetector.propChanges.get(new IdProp(objId, propChange.getProperty()));
+                if(potentialPropConflict != null) {
+                    addPropConflict(potentialPropConflict, new ObjPropChange(objId, propChange));
                 }
             }
         }
@@ -96,13 +97,20 @@ public class BranchState extends ConflictDetectorState{
         tryAddDeleteConflict(objLoc.getId());
     }
 
-    private void addPropConflict(Revision conflictingRev, ObjPropChange pc) {
-        conflictDetector.propConflicts.add(new PropConflict(currentDeltaIndex, conflictingRev, pc));
+    private void addPropConflict(PotentialPropConflict potentialPropConflict, ObjPropChange pc) {
+        conflictDetector.propConflicts.add(new PropConflict(currentDeltaIndex,
+                potentialPropConflict.getRevision().getRev(), pc, potentialPropConflict.getServerChange()));
         otherConflict = true;
     }
 
     private void addMoveConflict(Revision conflictingRev) {
-        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev, currentDeltaIndex));
+        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev.getRev(), currentDeltaIndex));
+        otherConflict = true;
+    }
+
+    private void addAddConflict(Long missingObjId, Revision conflictingRev) {
+        AddConflict addConflict = new AddConflict(new ArrayList<Integer>(), conflictingRev.getRev(), missingObjId);
+        conflictDetector.addConflicts.put(missingObjId, addConflict);
         otherConflict = true;
     }
 
@@ -111,11 +119,15 @@ public class BranchState extends ConflictDetectorState{
         if(revision != null) {
             DeleteConflict dc = conflictDetector.deleteConflicts.get(id);
             if (dc == null) {
-                dc = new DeleteConflict(new ArrayList<Integer>(), revision, id);
+                dc = new DeleteConflict(new ArrayList<Integer>(), revision.getRev(), id);
                 conflictDetector.deleteConflicts.put(id, dc);
             }
             dc.getMyDeltaIndexes().add(currentDeltaIndex);
             deleteConflict = true;
+        }
+        AddConflict addConflict = conflictDetector.addConflicts.get(id);
+        if(addConflict != null) {
+            addConflict.getMyDeltaIndexes().add(currentDeltaIndex);
         }
         return revision != null;
     }

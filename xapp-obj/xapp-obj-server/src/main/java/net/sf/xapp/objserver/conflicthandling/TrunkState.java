@@ -4,11 +4,7 @@ import java.util.List;
 
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
-import net.sf.xapp.objserver.types.IdProp;
-import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.PropChange;
-import net.sf.xapp.objserver.types.PropChangeSet;
-import net.sf.xapp.objserver.types.Revision;
+import net.sf.xapp.objserver.types.*;
 
 /**
  */
@@ -32,7 +28,8 @@ public class TrunkState extends ConflictDetectorState {
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
             for (PropChange propChange : changeSet.getChanges()) {
-                conflictDetector.propChanges.put(new IdProp(objId, propChange.getProperty()), current);
+                ObjPropChange serverChange = new ObjPropChange(objId, propChange);
+                conflictDetector.propChanges.put(new IdProp(objId, propChange.getProperty()), new PotentialPropConflict(current, serverChange));
             }
         }
     }

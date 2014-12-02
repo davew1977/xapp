@@ -68,7 +68,7 @@ public class ObjController extends AppAdaptor implements ObjManager {
     }
 
     @Override
-    public void applyChanges(UserId principal, List<Delta> deltas, ConflictResolution conflictResolutionStrategy, Long baseRevision) {
-        objTracker.applyChanges(principal, deltas, conflictResolutionStrategy, baseRevision);
+    public void applyChanges(UserId principal, List<Delta> deltas, ConflictResolution conflictResolutionStrategy, Long baseRevision, Long localIdStart) {
+        objTracker.applyChanges(principal, deltas, conflictResolutionStrategy, baseRevision, localIdStart);
     }
 }

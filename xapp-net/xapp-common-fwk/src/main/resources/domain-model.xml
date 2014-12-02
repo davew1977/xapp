@@ -653,16 +653,22 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               </ValueObject>
               <ValueObject name="PropConflict">
                 <Field access="READ_ONLY" name="myDeltaIndex" type="provided/java/lang/Integer"/>
-                <Field access="READ_ONLY" name="theirs" type="xapp-common-fwk/net/sf/xapp/objserver/types/Revision"/>
-                <Field access="READ_ONLY" name="propChange" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjPropChange"/>
+                <Field access="READ_ONLY" name="theirRev" type="provided/java/lang/Long"/>
+                <Field access="READ_ONLY" name="mine" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjPropChange"/>
+                <Field access="READ_ONLY" name="theirs" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjPropChange"/>
               </ValueObject>
               <ValueObject name="MoveConflict">
-                <Field access="READ_ONLY" name="theirs" type="xapp-common-fwk/net/sf/xapp/objserver/types/Revision"/>
+                <Field access="READ_ONLY" name="theirRev" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" name="myDeltaIndex" type="provided/java/lang/Integer"/>
               </ValueObject>
               <ValueObject name="DeleteConflict">
                 <Field access="READ_ONLY" list="true" name="myDeltaIndexes" type="provided/java/lang/Integer"/>
-                <Field access="READ_ONLY" name="theirs" type="xapp-common-fwk/net/sf/xapp/objserver/types/Revision"/>
+                <Field access="READ_ONLY" name="theirRev" type="provided/java/lang/Long"/>
+                <Field access="READ_ONLY" name="missingObjId" type="provided/java/lang/Long"/>
+              </ValueObject>
+              <ValueObject name="AddConflict">
+                <Field access="READ_ONLY" list="true" name="myDeltaIndexes" type="provided/java/lang/Integer"/>
+                <Field access="READ_ONLY" name="theirRev" type="provided/java/lang/Long"/>
                 <Field access="READ_ONLY" name="missingObjId" type="provided/java/lang/Long"/>
               </ValueObject>
             </DirMeta>
@@ -687,6 +693,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
                     <Field access="READ_ONLY" list="true" name="deltas" type="xapp-common-fwk/net/sf/xapp/objserver/types/Delta"/>
                     <Field access="READ_ONLY" name="conflictResolutionStrategy" type="xapp-common-fwk/net/sf/xapp/objserver/types/ConflictResolution"/>
                     <Field access="READ_ONLY" name="baseRevision" type="provided/java/lang/Long"/>
+                    <Field access="READ_ONLY" name="localIdStart" type="provided/java/lang/Long"/>
                     <Response name="ApplyChangesResponse">
                       <Field access="READ_ONLY" name="conflictStatus" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/ConflictStatus"/>
                       <Field access="READ_ONLY" list="true" name="propConflicts" optional="true" type="xapp-common-fwk/net/sf/xapp/objserver/types/PropConflict"/>
@@ -818,6 +825,7 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
     <ObjectId id="2018" name="net_sf_xapp_objserver_types_PropChange"/>
     <ObjectId id="2019" name="net_sf_xapp_objserver_types_PropChangeSet"/>
     <ObjectId id="2020" name="net_sf_xapp_objserver_types_Revision"/>
+    <ObjectId id="2021" name="net_sf_xapp_objserver_types_AddConflict"/>
     <ObjectId id="2023" name="net_sf_xapp_objserver_types_IdProp"/>
     <ObjectId id="2024" name="net_sf_xapp_objserver_types_ObjPropChange"/>
     <ObjectId id="2025" name="net_sf_xapp_objserver_types_PropConflict"/>

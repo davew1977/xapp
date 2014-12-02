@@ -46,7 +46,7 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
     }
 
     @Override
-    public void applyChanges(UserId principal, List<Delta> clientDeltas, ConflictResolution strategy, Long baseRevision) {
+    public void applyChanges(UserId principal, List<Delta> clientDeltas, ConflictResolution strategy, Long baseRevision, Long localIdStart) {
         List<Revision> serverRevs = null;
         try {
             serverRevs = getRevisions(baseRevision, null);
@@ -55,16 +55,10 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
                     new ArrayList<PropConflict>(), new ArrayList<DeleteConflict>(), new ArrayList<MoveConflict>(), e.getErrorCode());
         }
         //figure out which deltas we are in conflict with
-        ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj());
+        ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj(), localIdStart);
         ConflictStatus conflictStatus = conflictDetector.process(strategy, serverRevs, clientDeltas);
 
-        //maybe apply some deltas
-        if(conflictStatus != ConflictStatus.NOTHING_COMMITTED) {
-            List<Delta> deltasToApply = conflictDetector.getDeltasToApply();
-            for (Delta delta : deltasToApply) {
-                delta.getMessage().visit(liveObject);
-            }
-        }
+
 
         objManagerReply.applyChangesResponse(principal, conflictStatus,
                 conflictDetector.getPropConflicts(),

@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.xapp.objcommon.LiveObject;
 import net.sf.xapp.objcommon.ObjMetaWrapper;
 import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.objserver.types.DeleteConflict;
@@ -17,27 +18,31 @@ import static net.sf.xapp.objserver.types.ConflictStatus.*;
  */
 public class ConflictDetector {
 
-    protected ObjMetaWrapper rootObj;
+    protected Long localStartId;
+    protected LiveObject liveObject;
     private TrunkState trunkState;
     private BranchState branchState;
     private boolean conflicts;
 
     protected Map<Long, Revision> deletedObjects = new HashMap<>();
+    protected Map<Long, Revision> phantomObjects = new HashMap<>();
     protected Map<Long, Revision> movedObjects = new HashMap<>();
     protected Map<IdProp, Revision> filledObjLocations = new HashMap<>();
-    protected Map<IdProp, Revision> propChanges = new HashMap<>();
+    protected Map<IdProp, PotentialPropConflict> propChanges = new HashMap<>();
     protected Map<IdProp, Revision> refChanges = new HashMap<>();
 
     protected List<PropConflict> propConflicts = new ArrayList<>();
     protected List<MoveConflict> moveConflicts = new ArrayList<>();
+    protected Map<Long, AddConflict> addConflicts = new HashMap<>();
     protected Map<Long, DeleteConflict> deleteConflicts = new LinkedHashMap<>();
 
     protected List<Delta> deltasToApply = new ArrayList<>();
 
 
 
-    public ConflictDetector(ObjMetaWrapper rootObj) {
-        this.rootObj = rootObj;
+    public ConflictDetector(LiveObject liveObject, Long localIdStart) {
+        this.liveObject = liveObject;
+        this.localStartId = localIdStart;
         trunkState = new TrunkState(this);
         branchState = new BranchState(this);
     }
@@ -58,7 +63,19 @@ public class ConflictDetector {
                 conflicts = true;
             }
         }
-        return getStatus(conflictResolution);
+
+        ConflictStatus status = getStatus(conflictResolution);
+        //maybe apply some deltas
+        if(status != ConflictStatus.NOTHING_COMMITTED) {
+            List<Delta> deltasToApply = getDeltasToApply();
+            for (Delta delta : deltasToApply) {
+                //todo, run this past the conflict detector, because only that will understand how to map local object ids to new object ids
+
+                delta.getMessage().visit(liveObject);
+            }
+        }
+
+        return status;
     }
 
     public List<Delta> getDeltasToApply() {
@@ -86,4 +103,5 @@ public class ConflictDetector {
             return NO_CONFLICTS;
         }
     }
+
 }

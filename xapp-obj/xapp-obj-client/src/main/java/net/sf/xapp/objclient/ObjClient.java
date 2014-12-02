@@ -55,6 +55,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     protected final File deltaFile;
     protected final File offlineFile;
     protected final List<Delta> initialDeltas;
+    private final long LOCAL_ID_START = -1000000L;
     private OutputStreamWriter deltaWriter;
     private OutputStreamWriter offlineWriter;
 
@@ -138,7 +139,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     public void enterOfflineMode() {
-       getCdb().setMaster(-1000000L); //start the cdb creating its own ids
+       getCdb().setMaster(LOCAL_ID_START); //start the cdb creating its own ids
     }
 
     public void onConnect(){
@@ -250,7 +251,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             offlineDeltas = readOffline();
             if(!offlineDeltas.isEmpty()) {
                 clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineDeltas,
-                        ConflictResolution.ABORT_ON_CONFLICT, objMeta.getRevision());
+                        ConflictResolution.ABORT_ON_CONFLICT, objMeta.getRevision(), LOCAL_ID_START);
             } else {
                 objMetaLoaded_internal();
             }
