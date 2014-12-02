@@ -31,6 +31,7 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.types.AddConflict;
 import net.sf.xapp.objserver.types.ConflictResolution;
 import net.sf.xapp.objserver.types.MoveConflict;
 import net.sf.xapp.objserver.types.PropConflict;
@@ -262,20 +263,20 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     @Override
-    public final void applyChangesResponse(UserId principal, ConflictStatus conflictStatus, List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, ErrorCode errorCode) {
+    public void applyChangesResponse(UserId principal, ConflictStatus conflictStatus, List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts, ErrorCode errorCode) {
          if(errorCode == null) {
              //override to
              if(wasResolved(conflictStatus)) {
                  objMetaLoaded_internal();
              } else {
-                 handleConflicts(propConflicts, deleteConflicts, moveConflicts);
+                 handleConflicts(propConflicts, deleteConflicts, moveConflicts, addConflicts);
              }
          } else {
              //TODO stash the unsuccessful offline changes
          }
     }
 
-    protected abstract void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts);
+    protected abstract void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts);
 
     public static boolean wasResolved(ConflictStatus conflictStatus) {
         return conflictStatus != ConflictStatus.NOTHING_COMMITTED;

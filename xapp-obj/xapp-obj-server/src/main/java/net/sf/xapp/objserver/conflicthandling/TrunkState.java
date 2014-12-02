@@ -28,8 +28,9 @@ public class TrunkState extends ConflictDetectorState {
         for (PropChangeSet changeSet : changeSets) {
             Long objId = changeSet.getObjId();
             for (PropChange propChange : changeSet.getChanges()) {
+                conflictDetector.liveObject.cdb().findObjById(objId);
                 ObjPropChange serverChange = new ObjPropChange(objId, propChange);
-                conflictDetector.propChanges.put(new IdProp(objId, propChange.getProperty()), new PotentialPropConflict(current, serverChange));
+                conflictDetector.propChanges.put(new IdProp(objId, propChange.getProperty()), new PotentialPropConflict(current, serverChange, objectMeta));
             }
         }
     }

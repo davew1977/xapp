@@ -45,6 +45,7 @@ public class ConflictDetector {
         this.localStartId = localIdStart;
         trunkState = new TrunkState(this);
         branchState = new BranchState(this);
+
     }
 
     public ConflictStatus process(ConflictResolution conflictResolution, List<Revision> trunkDeltas, List<Delta> branchDeltas) {
@@ -68,10 +69,11 @@ public class ConflictDetector {
         //maybe apply some deltas
         if(status != ConflictStatus.NOTHING_COMMITTED) {
             List<Delta> deltasToApply = getDeltasToApply();
+            AliasAdaptor aliasAdaptor = new AliasAdaptor(liveObject, localStartId);
             for (Delta delta : deltasToApply) {
                 //todo, run this past the conflict detector, because only that will understand how to map local object ids to new object ids
 
-                delta.getMessage().visit(liveObject);
+                delta.getMessage().visit(aliasAdaptor);
             }
         }
 
@@ -94,6 +96,10 @@ public class ConflictDetector {
         return propConflicts;
     }
 
+    public List<AddConflict> getAddConflicts() {
+        return new ArrayList<>(addConflicts.values());
+    }
+
     private ConflictStatus getStatus(ConflictResolution resolutionStrategy) {
         if(conflicts) {
             return resolutionStrategy == ABORT_ON_CONFLICT ? NOTHING_COMMITTED :
@@ -103,5 +109,4 @@ public class ConflictDetector {
             return NO_CONFLICTS;
         }
     }
-
 }

@@ -169,6 +169,11 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         this.rev = rev;
     }
 
+    @Override
+    public long peekNextId() {
+        return idSequence.get() + 1;
+    }
+
     public void setMaster(boolean master) {
         this.master = master;
     }

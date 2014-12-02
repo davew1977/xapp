@@ -15,6 +15,7 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.conflicthandling.ConflictDetector;
+import net.sf.xapp.objserver.types.AddConflict;
 import net.sf.xapp.objserver.types.MoveConflict;
 import net.sf.xapp.objserver.types.PropConflict;
 import net.sf.xapp.objserver.types.ConflictResolution;
@@ -52,10 +53,11 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             serverRevs = getRevisions(baseRevision, null);
         } catch (GenericException e) {
             objManagerReply.applyChangesResponse(principal,ConflictStatus.NOTHING_COMMITTED,
-                    new ArrayList<PropConflict>(), new ArrayList<DeleteConflict>(), new ArrayList<MoveConflict>(), e.getErrorCode());
+                    new ArrayList<PropConflict>(), new ArrayList<DeleteConflict>(), new ArrayList<MoveConflict>(),
+                    new ArrayList<AddConflict>(), e.getErrorCode());
         }
         //figure out which deltas we are in conflict with
-        ConflictDetector conflictDetector = new ConflictDetector(liveObject.getRootObj(), localIdStart);
+        ConflictDetector conflictDetector = new ConflictDetector(liveObject, localIdStart);
         ConflictStatus conflictStatus = conflictDetector.process(strategy, serverRevs, clientDeltas);
 
 
@@ -63,7 +65,8 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
         objManagerReply.applyChangesResponse(principal, conflictStatus,
                 conflictDetector.getPropConflicts(),
                 conflictDetector.getDeleteConflicts(),
-                conflictDetector.getMoveConflicts(), null);
+                conflictDetector.getMoveConflicts(),
+                conflictDetector.getAddConflicts(), null);
     }
 
     @Override

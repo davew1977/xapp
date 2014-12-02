@@ -232,7 +232,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         return rootObj;
     }
 
-    protected ClassDatabase cdb(){
+    public ClassDatabase cdb(){
         return rootObj.cdb();
     }
 }

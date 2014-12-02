@@ -102,4 +102,5 @@ public interface ClassDatabase<T>
 
     void setRevision(Long rev);
 
+    long peekNextId();
 }

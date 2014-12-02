@@ -65,6 +65,8 @@ public class BranchState extends ConflictDetectorState{
     @Override
     public void deleteObject(UserId principal, ObjLoc objLoc, Long id) {
         tryAddDeleteConflict(id);
+        //was the object modified since the base commit on the server?
+        //TODO
     }
 
     @Override
@@ -72,7 +74,7 @@ public class BranchState extends ConflictDetectorState{
         if(!tryAddDeleteConflict(id) && !tryAddDeleteConflict(newObjLoc.getId())) {
             Revision conflictingRev = conflictDetector.movedObjects.get(id);
             if(conflictingRev != null) {
-                addMoveConflict(conflictingRev);
+                addMoveConflict(id, conflictingRev);
             }
         }
     }
@@ -87,7 +89,7 @@ public class BranchState extends ConflictDetectorState{
         if(!tryAddDeleteConflict(id)) {
             Revision conflictingRev = conflictDetector.movedObjects.get(id);
             if(conflictingRev != null) {
-                addMoveConflict(conflictingRev);
+                addMoveConflict(id, conflictingRev);
             }
         }
     }
@@ -103,8 +105,8 @@ public class BranchState extends ConflictDetectorState{
         otherConflict = true;
     }
 
-    private void addMoveConflict(Revision conflictingRev) {
-        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev.getRev(), currentDeltaIndex));
+    private void addMoveConflict(Long movedObjId, Revision conflictingRev) {
+        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev.getRev(), currentDeltaIndex, movedObjId));
         otherConflict = true;
     }
 
