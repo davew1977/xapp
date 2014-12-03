@@ -95,7 +95,7 @@ public class ObjTracker extends ObjListenerAdaptor implements ObjManager {
             throw new GenericException(ErrorCode.DELTA_IS_IN_FUTURE);
         }
         long firstRev = !revisions.isEmpty() ? revisions.keySet().iterator().next() : 0;
-        if(revFrom < firstRev) {
+        if(revFrom < firstRev - 1) {
             throw new GenericException(ErrorCode.DELTA_TOO_OLD);
         }
         long returnCount = latestRev - revFrom;

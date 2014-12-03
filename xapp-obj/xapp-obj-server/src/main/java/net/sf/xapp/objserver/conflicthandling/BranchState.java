@@ -6,12 +6,13 @@ import java.util.List;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.objserver.types.PropConflict;
 
 /**
  */
-public class BranchState extends ConflictDetectorState{
+public class BranchState extends ConflictDetectorState implements ObjUpdate{
     private int currentDeltaIndex;
     private boolean deleteConflict;
     private boolean otherConflict;
@@ -31,6 +32,15 @@ public class BranchState extends ConflictDetectorState{
     }
 
     @Override
+    public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
+        createObj(objLoc);
+    }
+
+    @Override
+    public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
+        createObj(objLoc);
+    }
+
     protected void createObj(ObjLoc objLoc) {
         long newObjId = conflictDetector.localStartId++;
         if(!tryAddDeleteConflict(objLoc.getId())) {
