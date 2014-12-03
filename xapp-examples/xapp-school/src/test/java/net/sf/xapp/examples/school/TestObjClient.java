@@ -16,7 +16,7 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
-import net.sf.xapp.objserver.types.Delta;
+import net.sf.xapp.objserver.types.*;
 
 /**
  * © 2014 Webatron Ltd
@@ -40,6 +40,11 @@ public class TestObjClient implements ModelProxy{
             @Override
             protected void objMetaLoaded() {
                 initSignal.countDown();
+            }
+
+            @Override
+            protected void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts) {
+
             }
         };
         objClient.getClientContext().setReconnect(false);

@@ -55,7 +55,7 @@ public class AutoTest extends TestBase {
     @Test
     public void testScenario1() throws InterruptedException {
 
-        scenario1_internal();
+        scenario1_internal().close();
     }
 
     /**
@@ -68,8 +68,8 @@ public class AutoTest extends TestBase {
     public void testScenario2() throws InterruptedException {
         TestObjClient client = scenario1_internal();
         client.getObjClient().save();
-
         ensureNoDeltaFileAndRevAt1(client);
+        client.close();
     }
 
     /**
@@ -85,7 +85,8 @@ public class AutoTest extends TestBase {
      */
     @Test
     public void testScenario3() throws InterruptedException  {
-        scenario1_internal();
+        TestObjClient testObjClient = scenario1_internal();
+        testObjClient.close();
         TestObjClient testClient_1 = createClient("100");
 
         GetDeltasResponse getDeltasResponse = testClient_1.waitFor(MessageTypeEnum.ObjManagerReply_GetDeltasResponse);
@@ -270,7 +271,7 @@ public class AutoTest extends TestBase {
 
         assertEquals("BooBoo", objectMeta.get("Name"));
 
-        c1.close();
+
         return c1;
     }
 

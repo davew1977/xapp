@@ -662,12 +662,12 @@ OR, a list of keys to match. If the retrieveall flag is set then all will be ret
               <ValueObject name="DeleteConflict">
                 <Field access="READ_ONLY" list="true" name="myDeltaIndexes" type="provided/java/lang/Integer"/>
                 <Field access="READ_ONLY" name="theirRev" type="provided/java/lang/Long"/>
-                <Field access="READ_ONLY" name="missingObj" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjInfo"/>
+                <Field access="READ_ONLY" name="missingObjId" type="provided/java/lang/Long"/>
               </ValueObject>
               <ValueObject name="AddConflict">
                 <Field access="READ_ONLY" list="true" name="myDeltaIndexes" type="provided/java/lang/Integer"/>
                 <Field access="READ_ONLY" name="theirRev" type="provided/java/lang/Long"/>
-                <Field access="READ_ONLY" name="missingObj" type="xapp-common-fwk/net/sf/xapp/objserver/types/ObjInfo"/>
+                <Field access="READ_ONLY" name="missingObjId" type="provided/java/lang/Long"/>
               </ValueObject>
               <ValueObject name="ObjInfo">
                 <Field access="READ_ONLY" name="id" type="provided/java/lang/Long"/>

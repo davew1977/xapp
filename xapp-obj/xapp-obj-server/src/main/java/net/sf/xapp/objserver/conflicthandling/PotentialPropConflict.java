@@ -1,7 +1,6 @@
 package net.sf.xapp.objserver.conflicthandling;
 
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objserver.types.ObjPropChange;
+import net.sf.xapp.objserver.types.ObjInfo;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.Revision;
 
@@ -11,12 +10,12 @@ import net.sf.xapp.objserver.types.Revision;
 public class PotentialPropConflict {
     private final Revision revision;
     private final PropChange serverChange;
-    private final ObjectMeta objectMeta;
+    private final ObjInfo objInfo;
 
-    public PotentialPropConflict(Revision revision, PropChange serverChange, ObjectMeta objectMeta) {
+    public PotentialPropConflict(Revision revision, PropChange serverChange, ObjInfo objInfo) {
         this.revision = revision;
         this.serverChange = serverChange;
-        this.objectMeta = objectMeta;
+        this.objInfo = objInfo;
     }
 
     public Revision getRevision() {
@@ -27,7 +26,8 @@ public class PotentialPropConflict {
         return serverChange;
     }
 
-    public ObjectMeta getObjectMeta() {
-        return objectMeta;
+    public ObjInfo getObjInfo() {
+        return objInfo;
     }
+
 }

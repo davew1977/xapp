@@ -97,7 +97,7 @@ public class ServerProxyImpl implements ServerProxy {
                         socket = null;
                         if (e.getMessage().equals("Connection reset") ||
                                 e.getMessage().equalsIgnoreCase("Socket closed")) {
-                            if (!wasSetOffline) {
+                            if (!wasSetOffline) { //was it a deliberate disconnect?
                                 notifyDisconnected();
                             }
                             return;

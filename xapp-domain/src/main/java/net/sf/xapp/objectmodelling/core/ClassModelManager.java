@@ -131,11 +131,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
 
     @Override
     public ObjectMeta findObjById(Long objId) {
-        ObjectMeta objectMeta = instanceMap.get(objId);
-        if(objectMeta==null) {
-            throw new ObjMetaNotFoundException(objId);
-        }
-        return objectMeta;
+        return instanceMap.get(objId);
     }
 
     @Override

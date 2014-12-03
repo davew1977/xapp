@@ -34,7 +34,7 @@ public class ConflictHelper {
         textarea.setWrapStyleWord(true);
         textarea.setLineWrap(false);
         JScrollPane jsp = new JScrollPane(textarea);
-        int width = 500;
+        int width = 700;
         jsp.setPreferredSize(new Dimension(width,400));
 
         StringBuilder sb = new StringBuilder();
@@ -62,7 +62,7 @@ public class ConflictHelper {
         if(!deleteConflicts.isEmpty()) {
             title(sb, "Delete Conflicts (you modified an object that no longer exists on the server)");
             for (DeleteConflict deleteConflict : deleteConflicts) {
-                sb.append(format("%s\n", toString(deleteConflict.getMissingObj())));
+                sb.append(format("%s\n", deleteConflict.getMissingObjId()));
                 for (Integer deltaIndex : deleteConflict.getMyDeltaIndexes()) {
                     Delta delta = offlineDeltas.get(deltaIndex);
                     sb.append(format("\t%s\n", delta.getMessage().serialize()));
@@ -73,7 +73,7 @@ public class ConflictHelper {
         if(!addConflicts.isEmpty()) {
             title(sb, "Add Conflicts (you added an object in a slot which was taken by the server");
             for (AddConflict addConflict : addConflicts) {
-                sb.append(format("%s\n", toString(addConflict.getMissingObj())));
+                sb.append(format("%s\n", addConflict.getMissingObjId()));
                 for (Integer deltaIndex : addConflict.getMyDeltaIndexes()) {
                     Delta delta = offlineDeltas.get(deltaIndex);
                     sb.append(format("\t%s\n", delta.getMessage().serialize()));
@@ -85,8 +85,8 @@ public class ConflictHelper {
 
         XPane pane = new XPane();
         pane.setSize(width, 30);
-        XButton mineButton = new XButton("Accept Mine").size(100,20).location(50, 5);
-        XButton theirsButton = new XButton("Accept Theirs").size(100,20).location(155, 5);
+        XButton mineButton = new XButton("Accept Mine").size(100,20).location(width /2 - 100, 5);
+        XButton theirsButton = new XButton("Accept Theirs").size(100,20).location(width / 2 + 5, 5);
         pane.add(mineButton);
         pane.add(theirsButton);
 
@@ -109,9 +109,9 @@ public class ConflictHelper {
 
         List<Delta> offlineDeltas = Arrays.asList(delta(updateObj()), delta(updateObj()), delta(updateObj()), delta(updateObj()));
         List<PropConflict> propConflicts = Arrays.asList(new PropConflict(0,0L,propChange(), propChange(), objInfo()));
-        List<DeleteConflict> deleteConflicts = Arrays.asList(new DeleteConflict(Arrays.asList(1,2), 0L, objInfo()));
+        List<DeleteConflict> deleteConflicts = Arrays.asList(new DeleteConflict(Arrays.asList(1,2), 0L, 884L));
         List<MoveConflict> moveConflicts = Arrays.asList(new MoveConflict(0L, 2, objInfo()));
-        List<AddConflict> addConflicts = Arrays.asList(new AddConflict(Arrays.asList(2,3), 0L, objInfo()));
+        List<AddConflict> addConflicts = Arrays.asList(new AddConflict(Arrays.asList(2,3), 0L, 6363L));
         showConflicts(offlineDeltas, propConflicts, deleteConflicts, moveConflicts, addConflicts);
 
     }

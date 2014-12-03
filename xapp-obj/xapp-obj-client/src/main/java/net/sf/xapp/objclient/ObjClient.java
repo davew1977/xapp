@@ -336,9 +336,12 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     public List<Delta> readOffline() {
         List<Delta> deltas = new ArrayList<Delta>();
         if (offlineFile.exists()) {
-            String[] lines = FileUtils.readFile(offlineFile, Charset.forName("UTF-8")).split("\n");
-            for (String line : lines) {
-                deltas.add(new Delta().deserialize(line));
+            String offlineData = FileUtils.readFile(offlineFile, Charset.forName("UTF-8"));
+            if (!offlineData.isEmpty()) {
+                String[] lines = offlineData.split("\n");
+                for (String line : lines) {
+                    deltas.add(new Delta().deserialize(line));
+                }
             }
         }
         return deltas;

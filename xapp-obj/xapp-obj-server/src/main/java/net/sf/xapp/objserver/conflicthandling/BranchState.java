@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.objserver.types.PropConflict;
 
@@ -55,7 +56,7 @@ public class BranchState extends ConflictDetectorState{
             for (PropChange propChange : changeSet.getChanges()) {
                 PotentialPropConflict potentialPropConflict = conflictDetector.propChanges.get(new IdProp(objId, propChange.getProperty()));
                 if(potentialPropConflict != null) {
-                    addPropConflict(potentialPropConflict, new ObjPropChange(objId, propChange));
+                    addPropConflict(potentialPropConflict, propChange);
                 }
             }
         }
@@ -99,14 +100,15 @@ public class BranchState extends ConflictDetectorState{
         tryAddDeleteConflict(objLoc.getId());
     }
 
-    private void addPropConflict(PotentialPropConflict potentialPropConflict, ObjPropChange pc) {
+    private void addPropConflict(PotentialPropConflict potentialPropConflict, PropChange propChange) {
         conflictDetector.propConflicts.add(new PropConflict(currentDeltaIndex,
-                potentialPropConflict.getRevision().getRev(), pc, potentialPropConflict.getServerChange()));
+                potentialPropConflict.getRevision().getRev(), propChange, potentialPropConflict.getServerChange(), potentialPropConflict.getObjInfo()));
         otherConflict = true;
     }
 
     private void addMoveConflict(Long movedObjId, Revision conflictingRev) {
-        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev.getRev(), currentDeltaIndex, movedObjId));
+        ObjectMeta movedObj = conflictDetector.liveObject.cdb().findObjById(movedObjId);
+        conflictDetector.moveConflicts.add(new MoveConflict(conflictingRev.getRev(), currentDeltaIndex, createObjInfo(movedObj)));
         otherConflict = true;
     }
 
