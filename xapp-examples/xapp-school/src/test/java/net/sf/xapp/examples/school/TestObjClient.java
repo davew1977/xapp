@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import net.sf.xapp.application.api.ModelProxy;
+import net.sf.xapp.examples.school.model.SchoolSystem;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.types.UserId;
@@ -30,7 +31,7 @@ public class TestObjClient implements ModelProxy{
 
 
     public TestObjClient(File localDir, String userId, String appId, String objId) {
-        objClient = new ObjClient(localDir, userId, HostInfo.parse("11375"), appId, objId) {
+        objClient = new ObjClient(localDir, userId, HostInfo.parse("11375"), appId, objId, SchoolSystem.class) {
             @Override
             protected void preInit() {
                 clientContext.wire(ObjManagerReply.class, objId, new ObjManagerReplyAdaptor(messageHandler));
@@ -47,7 +48,6 @@ public class TestObjClient implements ModelProxy{
 
             }
         };
-        objClient.getClientContext().setReconnect(false);
     }
 
     public void waitUntilInitialized() throws InterruptedException {

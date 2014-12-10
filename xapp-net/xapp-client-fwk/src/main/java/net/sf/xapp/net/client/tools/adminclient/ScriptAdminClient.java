@@ -38,7 +38,7 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
         this.server = serverProxy;
         this.connectable = new ReconnectLayer(serverProxy);
         serverProxy.addListener(this);
-        connectable.connect();
+        connectable.connect(true);
         if (this.gui !=null)
         {
             this.gui = gui;
@@ -70,7 +70,7 @@ public class ScriptAdminClient implements Processor, ConnectionListener, Message
     {
         if (message.equals("connect"))
         {
-            connectable.connect();
+            connectable.connect(true);
         }
         else if (message.equals("disconnect"))
         {

@@ -88,11 +88,11 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
     }
 
     @Override
-    public boolean connect() {
+    public boolean connect(boolean keepTrying) {
         if (server == null) {
             throw new RuntimeException("no server to connect to");
         }
-        return server.connect();
+        return server.connect(keepTrying);
     }
 
     @Override
@@ -111,9 +111,6 @@ public class ClientContext implements MessageHandler, Connectable, ClientControl
         }
     }
 
-    public void setReconnect(boolean reconnect) {
-        ((ReconnectLayer) server).setReconnect(reconnect);
-    }
 
     @Override
     public boolean isConnected() {

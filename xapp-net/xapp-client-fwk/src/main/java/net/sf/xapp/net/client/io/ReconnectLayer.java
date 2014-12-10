@@ -20,7 +20,6 @@ import net.sf.xapp.net.common.util.ThreadUtils;
  */
 public class ReconnectLayer implements Connectable, ConnectionListener {
     private final ServerProxy serverProxy;
-    private boolean reconnect = true;
     private ConnectionState connectionState;
 
     public ReconnectLayer(ServerProxy serverProxy) {
@@ -28,9 +27,9 @@ public class ReconnectLayer implements Connectable, ConnectionListener {
         serverProxy.addListener(this);
     }
 
-    public boolean connect() {
-        boolean connected = serverProxy.connect();
-        if (!connected) {
+    public boolean connect(boolean keepTrying) {
+        boolean connected = serverProxy.connect(false);
+        if (!connected && keepTrying) {
             serverProxy.setConnecting();
             connectWithRetry();
         }
@@ -67,8 +66,8 @@ public class ReconnectLayer implements Connectable, ConnectionListener {
         Timer timer = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (reconnect && connectionState!=ConnectionState.OFFLINE && !serverProxy.isConnected()) {
-                    boolean connected = serverProxy.connect();
+                if (connectionState!=ConnectionState.OFFLINE && !serverProxy.isConnected()) {
+                    boolean connected = serverProxy.connect(false);
                     if (!connected) {
                         serverProxy.setConnecting();
                         connectWithRetry();
@@ -78,6 +77,7 @@ public class ReconnectLayer implements Connectable, ConnectionListener {
         });
         timer.setRepeats(false);
         timer.start();
+        System.out.println("attempting to connect");
     }
 
     @Override
@@ -94,7 +94,4 @@ public class ReconnectLayer implements Connectable, ConnectionListener {
         return serverProxy.toString();
     }
 
-    public void setReconnect(boolean reconnect) {
-        this.reconnect = reconnect;
-    }
 }

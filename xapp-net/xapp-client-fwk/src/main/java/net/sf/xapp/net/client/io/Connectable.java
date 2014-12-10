@@ -7,7 +7,7 @@ public interface Connectable
     /**
      * application level request to go online
      */
-    boolean connect();
+    boolean connect(boolean keepTrying);
 
     void setConnecting();
 

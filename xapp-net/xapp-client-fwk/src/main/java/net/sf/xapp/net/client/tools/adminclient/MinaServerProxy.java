@@ -108,7 +108,7 @@ public class MinaServerProxy extends IoHandlerAdapter implements ServerProxy
     }
 
     @Override
-    public boolean connect()
+    public boolean connect(boolean keepTrying)
     {
         if (session != null && session.isConnected())
         {

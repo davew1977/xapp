@@ -10,14 +10,7 @@ import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.to.UpdateObject;
-import net.sf.xapp.objserver.types.AddConflict;
-import net.sf.xapp.objserver.types.DeleteConflict;
-import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.objserver.types.MoveConflict;
-import net.sf.xapp.objserver.types.ObjInfo;
-import net.sf.xapp.objserver.types.PropChange;
-import net.sf.xapp.objserver.types.PropChangeSet;
-import net.sf.xapp.objserver.types.PropConflict;
+import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.uifwk.XButton;
 import net.sf.xapp.uifwk.XPane;
 import net.sf.xapp.utils.StringUtils;
@@ -27,7 +20,7 @@ import static java.lang.String.format;
 /**
  */
 public class ConflictHelper {
-    public static JFrame showConflicts(List<Delta> offlineDeltas, List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts) {
+    public static JFrame showConflicts(List<Delta> offlineDeltas, List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts, Object listener) {
         //local cdb for context on deleted objects
         JTextArea textarea = new JTextArea();
         textarea.setFont(Font.decode("monospaced-12"));
@@ -85,15 +78,23 @@ public class ConflictHelper {
 
         XPane pane = new XPane();
         pane.setSize(width, 30);
-        XButton mineButton = new XButton("Accept Mine").size(100,20).location(width /2 - 100, 5);
-        XButton theirsButton = new XButton("Accept Theirs").size(100,20).location(width / 2 + 5, 5);
+        XButton discardButton = new XButton("Cancel").size(100,20).location(width /2 - 160, 5).
+                addListener(listener, "decision", (Object) null);
+        XButton mineButton = new XButton("Accept Mine").size(100,20).location(width /2 - 50, 5).
+                addListener(listener, "decision", ConflictResolution.FORCE_ALL_MINE);
+        XButton theirsButton = new XButton("Accept Theirs").size(100,20).location(width / 2 + 60, 5).
+                addListener(listener, "decision", ConflictResolution.FORCE_ALL_THEIRS);
+        pane.add(discardButton);
         pane.add(mineButton);
         pane.add(theirsButton);
 
         Box b = new Box(BoxLayout.PAGE_AXIS);
         b.add(jsp);
         b.add(pane);
-        return SwingUtils.showInFrame(b);
+        JFrame frame = SwingUtils.createFrame(b);
+        frame.setLocationRelativeTo(JOptionPane.getRootFrame());
+        frame.setVisible(true);
+        return frame;
     }
 
     private static String toString(ObjInfo obj) {
@@ -112,7 +113,7 @@ public class ConflictHelper {
         List<DeleteConflict> deleteConflicts = Arrays.asList(new DeleteConflict(Arrays.asList(1,2), 0L, 884L));
         List<MoveConflict> moveConflicts = Arrays.asList(new MoveConflict(0L, 2, objInfo()));
         List<AddConflict> addConflicts = Arrays.asList(new AddConflict(Arrays.asList(2,3), 0L, 6363L));
-        showConflicts(offlineDeltas, propConflicts, deleteConflicts, moveConflicts, addConflicts);
+        showConflicts(offlineDeltas, propConflicts, deleteConflicts, moveConflicts, addConflicts, null);
 
     }
 

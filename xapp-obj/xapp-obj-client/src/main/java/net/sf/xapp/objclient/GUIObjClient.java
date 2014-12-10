@@ -14,13 +14,12 @@ import net.sf.xapp.net.api.chatuser.ChatUser;
 import net.sf.xapp.net.client.framework.Callback;
 import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.objclient.ui.ChatPane;
+import net.sf.xapp.objclient.ui.ConflictDecision;
 import net.sf.xapp.objclient.ui.ConflictHelper;
-import net.sf.xapp.objserver.types.AddConflict;
-import net.sf.xapp.objserver.types.DeleteConflict;
-import net.sf.xapp.objserver.types.MoveConflict;
-import net.sf.xapp.objserver.types.PropConflict;
+import net.sf.xapp.objserver.types.*;
 
 import static java.lang.String.format;
+import static net.sf.xapp.objserver.types.ConflictResolution.*;
 
 /**
  * © 2014 Webatron Ltd
@@ -35,8 +34,8 @@ public class GUIObjClient extends ObjClient {
     /**
      * must be called on the event dispatch thread!
      */
-    public GUIObjClient(String localDir, String userId, HostInfo hostInfo, String appId, String objId) {
-        super(new File(localDir), userId, hostInfo, appId, objId);
+    public GUIObjClient(String localDir, String userId, HostInfo hostInfo, String appId, String objId, Class rootObjType) {
+        super(new File(localDir), userId, hostInfo, appId, objId, rootObjType);
         uiUpdater = new UIUpdater(this);
         chatPane = new ChatPane(clientContext);
         final ChatApp chatApp = clientContext.chatApp(objId);
@@ -71,6 +70,10 @@ public class GUIObjClient extends ObjClient {
         } else {
             appContainer.resetUI(objMeta);
         }
+        if(conflictFrame != null) {
+            conflictFrame.setVisible(false);
+            conflictFrame = null;
+        }
 
     }
 
@@ -81,7 +84,16 @@ public class GUIObjClient extends ObjClient {
 
     @Override
     protected void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts) {
-        conflictFrame = ConflictHelper.showConflicts(offlineDeltas, propConflicts, deleteConflicts, moveConflicts, addConflicts);
+        conflictFrame = ConflictHelper.showConflicts(offlineMeta.getDeltas(), propConflicts, deleteConflicts, moveConflicts, addConflicts, new Object() {
+            public void decision(ConflictResolution decision) {
+                 if(decision == null) {
+                     System.exit(0);
+                 } else {
+                     clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineMeta.getDeltas(),
+                             decision, lastKnownRevision, LOCAL_ID_START);
+                 }
+            }
+        });
 
     }
 

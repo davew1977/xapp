@@ -68,7 +68,7 @@ public class ServerProxyImpl implements ServerProxy {
         }
     }
 
-    public boolean connect() {
+    public boolean connect(boolean keepTrying) {
         disconnect();
         wasSetOffline = false;
         final DataInputStream dis;
