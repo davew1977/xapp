@@ -126,8 +126,8 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
         boolean connected = clientContext.connect(false);
         if(!connected) {
-            loadObjMetaFromClientData();
             initialConnectionFailed();
+            loadObjMetaFromClientData();
             setOffline();
             objMetaLoaded_internal();
         }

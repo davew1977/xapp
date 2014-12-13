@@ -26,10 +26,10 @@ public class ReflectionUtils
     {
         try
         {
-            /*if (!method.isAccessible())
+            if (!method.isAccessible())
             {
                 method.setAccessible(true);
-            }*/
+            }
             return (T) method.invoke(target, params);
         }
         catch (Exception e)

@@ -51,7 +51,12 @@ public class GUIObjClient extends ObjClient {
 
     @Override
     protected void initialConnectionFailed() {
-        SwingUtils.warnUser(null, "Could not connect to server.\nWill proceed in offline mode");
+        if(objFile.exists()) {
+            SwingUtils.warnUser(null, "Could not connect to server.\nWill proceed in offline mode");
+        } else {
+            SwingUtils.warnUser(null, "Could not connect to server.\nNo data to work offline with. Shutting down...");
+            System.exit(0);
+        }
     }
 
     @Override

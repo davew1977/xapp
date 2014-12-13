@@ -31,7 +31,7 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
         objClient.addObjListener(new ObjListenerAdaptor() {
             @Override
             public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
-                if (userId().equals(user)) {
+                if (userId().equals(user) && objCreateCallback != null) { //obj create callback can be null if we are replaying offline changes
                     objCreateCallback.objCreated(cdb.findObjById(obj.getId()));
                     objCreateCallback = null;
                 }
