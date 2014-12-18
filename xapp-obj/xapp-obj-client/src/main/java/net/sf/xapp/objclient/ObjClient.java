@@ -31,6 +31,8 @@ import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.to.CreateEmptyObject;
+import net.sf.xapp.objserver.apis.objmanager.to.CreateObject;
 import net.sf.xapp.objserver.types.AddConflict;
 import net.sf.xapp.objserver.types.ConflictResolution;
 import net.sf.xapp.objserver.types.MoveConflict;
@@ -51,14 +53,10 @@ import net.sf.xapp.utils.ant.AntFacade;
 public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrategy, ObjManagerReply, ConnectionListener {
     protected final ObjClientContext clientContext;
     protected final String objId;
-    protected final File revFile;
     protected final File objFile;
-    protected final File deltaFile;
-    protected final File offlineFile;
-    protected final List<Delta> initialDeltas;
+    protected final DeltaFile deltaFile;
+    protected final DeltaFile offlineFile;
     protected final long LOCAL_ID_START = -1000000L;
-    private OutputStreamWriter deltaWriter;
-    private OutputStreamWriter offlineWriter;
 
     protected Class rootObjType;
     protected ObjectMeta objMeta;
@@ -68,7 +66,6 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     private MasterObjUpdater objUpdate;
     private SimpleObjUpdater localObjUpdater;
     protected long lastKnownRevision;
-    protected OfflineMeta offlineMeta;
 
     public ObjClient(File localDir, String userId, HostInfo hostInfo, String appId, final String objId, Class rootObjType) {
         super(new Multicaster<ObjListener>());
@@ -77,12 +74,9 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         this.objId = objId;
         File dir = new File(new File(new File(localDir, userId), appId), objId);
         dir.mkdirs();
-        revFile = new File(dir, "rev.txt");
         objFile = new File(dir, "obj.xml");
-        deltaFile = new File(dir, "deltas.txt");
-        offlineFile = new File(dir, "offline.txt");
-        initialDeltas = readDeltas();
-
+        deltaFile = new DeltaFile(new File(dir, "deltas.txt"));
+        offlineFile = new DeltaFile(new File(dir, "offline.txt"));
 
         /**
          * receives server updates, updates official revision, and writes the deltas
@@ -92,7 +86,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
                 if (isOnlineMode()) {
                     cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
-                    write(new Delta(inMessage, 0L).serialize(), getDeltaWriter());
+                    deltaFile.handleMessage(inMessage);
                 }
                 return null;
             }
@@ -110,7 +104,6 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
         modelProxy = new ModelProxyImpl(this);
 
-        preInit();
         init();
     }
 
@@ -127,7 +120,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         boolean connected = clientContext.connect(false);
         if(!connected) {
             initialConnectionFailed();
-            loadObjMetaFromClientData();
+            loadObjMetaFromClientData(true);
             setOffline();
             objMetaLoaded_internal();
         }
@@ -138,13 +131,20 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     }
 
-    public void enterOnlineMode() {
-
-    }
-
     public void enterOfflineMode() {
-        getCdb().setMaster(LOCAL_ID_START); //start the cdb creating its own ids
-        write(getLastKnownRevision() + "", getOfflineWriter());
+        if(offlineFile.isEmpty()) {
+            getCdb().setMaster(LOCAL_ID_START); //start the cdb creating its own ids
+            offlineFile.reset(getLastKnownRevision());
+        } else {
+            long localIdStart = LOCAL_ID_START;
+            for (Delta delta : offlineFile.getDeltas()) {
+                InMessage message = delta.getMessage();
+                if(message instanceof CreateEmptyObject || message instanceof CreateObject) {
+                    localIdStart++;          //don't use local ids twice if we are going into offline mode a second time without sync
+                }
+            }
+            getCdb().setMaster(localIdStart);
+        }
     }
 
     public void onConnect(){
@@ -168,17 +168,14 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
      * replace all client state with a fresh version of the object
      */
     public void reset(XmlObj obj) {
-        closeDeltaWriter();
-        closeOfflineWriter();
-        new AntFacade().deleteFile(deltaFile);
         FileUtils.writeFile(obj.getData(), objFile);
-        FileUtils.writeFile(obj.getLastChangeRev(), revFile);
+        deltaFile.reset(obj.getLastChangeRev());
         setObjMeta(new Unmarshaller(obj.getType()).unmarshalString(obj.getData()));
         cdb.setRevision(obj.getLastChangeRev());
     }
 
     public void reconstruct(List<Delta> deltas, Long revTo) {
-        SimpleObjUpdater objUpdater = loadObjMetaFromClientData();
+        SimpleObjUpdater objUpdater = loadObjMetaFromClientData(false);
 
 
         //apply server updates (since our previous session ended)
@@ -188,14 +185,20 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         save();
     }
 
-    private SimpleObjUpdater loadObjMetaFromClientData() {
+    private SimpleObjUpdater loadObjMetaFromClientData(boolean applyOfflineUpdates) {
         setObjMeta(new Unmarshaller(rootObjType).unmarshal(objFile));
 
         SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta, true);
 
         //apply local updates
-        for (Delta delta: initialDeltas) {
+        for (Delta delta: deltaFile.getDeltas()) {
             delta.getMessage().visit(objUpdater);
+        }
+
+        if(applyOfflineUpdates) {
+            for (Delta delta : offlineFile.getDeltas()) {
+                delta.getMessage().visit(objUpdater);
+            }
         }
         return objUpdater;
     }
@@ -215,26 +218,6 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         }
         //in offline mode, every change is saved anyway
     }
-
-    private void closeDeltaWriter() {
-        try {
-            getDeltaWriter().flush();
-            getDeltaWriter().close();
-            deltaWriter = null;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void closeOfflineWriter() {
-        try {
-            getOfflineWriter().flush();
-            getOfflineWriter().close();
-            offlineWriter = null;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
     @Override
     public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
         clientContext.wire(ObjListener.class, objId, this);
@@ -249,10 +232,9 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             assert rootObjType.equals(type); //client and server must agree on the type
             reconstruct(deltas, revTo);
             //are there any offline changes?
-            offlineMeta = new OfflineMeta(offlineFile);
-            if(!offlineMeta.isEmpty()) {
-                clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineMeta.getDeltas(),
-                        ConflictResolution.ABORT_ON_CONFLICT, offlineMeta.getBaseRevision(), LOCAL_ID_START);
+            if(!offlineFile.isEmpty()) {
+                clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineFile.getDeltas(),
+                        ConflictResolution.ABORT_ON_CONFLICT, offlineFile.getBaseRevision(), LOCAL_ID_START);
             } else {
                 objMetaLoaded_internal();
             }
@@ -283,28 +265,6 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         return conflictStatus != ConflictStatus.NOTHING_COMMITTED;
     }
 
-    private OutputStreamWriter getDeltaWriter() {
-        if (deltaWriter == null) {
-            try {
-                deltaWriter = new OutputStreamWriter(new FileOutputStream(deltaFile, true), "UTF-8");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return deltaWriter;
-    }
-
-    private OutputStreamWriter getOfflineWriter() {
-        if (offlineWriter == null) {
-            try {
-                offlineWriter = new OutputStreamWriter(new FileOutputStream(offlineFile, true), "UTF-8");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return offlineWriter;
-    }
-
     public ObjectMeta getObjMeta() {
         return objMeta;
     }
@@ -315,34 +275,14 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
 
     private void objMetaLoaded_internal() {
-        if(isOnlineMode() && offlineFile.exists()) {
-            new AntFacade().deleteFile(offlineFile);
+        if(isOnlineMode()) {
+            offlineFile.delete();
         }
         objMetaLoaded();
     }
 
     protected abstract void objMetaLoaded();
 
-    protected abstract void preInit();
-    public List<Delta> readDeltas() {
-        List<Delta> deltas = new ArrayList<Delta>();
-        if (deltaFile.exists()) {
-            String[] lines = FileUtils.readFile(deltaFile, Charset.forName("UTF-8")).split("\n");
-            for (String line : lines) {
-                deltas.add(new Delta().deserialize(line));
-            }
-        }
-        return deltas;
-    }
-
-    private void write(String line, Writer writer) {
-        try {
-            writer.write(line + "\n");
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static void main(final String[] args) throws ClassNotFoundException {
         final Class rootObjType = Class.forName(args[4]);
@@ -364,21 +304,15 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         return objId;
     }
 
-    public File getRevFile() {
-        return revFile;
-    }
 
     public File getObjFile() {
         return objFile;
     }
 
-    public File getDeltaFile() {
+    public DeltaFile getDeltaFile() {
         return deltaFile;
     }
 
-    public List<Delta> getInitialDeltas() {
-        return initialDeltas;
-    }
 
     public ObjectMeta getLastCreated() {
         return lastCreated;
@@ -386,8 +320,8 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     public void close() {
         clientContext.setOffline();
-        closeDeltaWriter();
-        closeOfflineWriter();
+        deltaFile.close();
+        offlineFile.close();
     }
 
     public ModelProxy getModelProxy() {
@@ -423,6 +357,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     public void setOffline() {
+        save(); //we may as well save a fresh file here, so we have no deltas to complicate things
         clientContext.setOffline();
     }
 
@@ -441,20 +376,17 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     /**
      * responsible for handling online (sends to server) and local (from UI, or model proxy) updates
      */
-    private long getLastKnownRevision() {
+    public long getLastKnownRevision() {
         // if deltas exist then parse them, and use the last one to get the last known rev
-        if(!initialDeltas.isEmpty()) {
-            InMessage message = initialDeltas.get(initialDeltas.size() - 1).getMessage();
-            return (Long) ReflectionUtils.call(message, "getRev");
-        } else if(revFile.exists()) {
-            return Long.parseLong(FileUtils.readFile(revFile).split("\n")[0]);
-        } else {
-            return -1;
-        }
+        return deltaFile.getLastRevision();
     }
 
     public void addObjListener(ObjListener objListener) {
         ((Multicaster<ObjListener>) delegate).addDelegate(objListener);
+    }
+
+    public DeltaFile getOfflineFile() {
+        return offlineFile;
     }
 
     private class MasterObjUpdater extends ObjUpdateAdaptor {
@@ -475,7 +407,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             if(isOnlineMode()) {
                 inMessage.visit(remote);
             } else {
-                write(new Delta(inMessage, System.currentTimeMillis()).serialize(), getOfflineWriter());
+                offlineFile.handleMessage(inMessage);
                 //apply the change
                 inMessage.visit(dummyServer);
             }

@@ -62,6 +62,7 @@ public class ServerProxyImpl implements ServerProxy {
 
     @Override
     public void setOffline() {
+        wasSetOffline = true;
         wasSetOffline = disconnect();
         for (ConnectionListener listener : listeners) {
             listener.connectionStateChanged(ConnectionState.OFFLINE);

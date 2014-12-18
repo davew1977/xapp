@@ -36,10 +36,9 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 /**
- * © Webatron Ltd
- * Created by dwebber
+ * Some basic use cases testing clients handling of deltas, saving and start up
  */
-public class AutoTest extends TestBase {
+public class NormalClientInteractionTest extends TestBase {
 
 
     /**
@@ -140,8 +139,8 @@ public class AutoTest extends TestBase {
         textFile.setText("This is a text doc about charlie");
         c2.commit(textFile);
 
-        assertEquals(4, c1.readDeltas().size()); //this client missed 2 deltas
-        assertEquals(6, c2.readDeltas().size());
+        assertEquals(4, c1.getDeltaFile().size()); //this client missed 2 deltas
+        assertEquals(6, c2.getDeltaFile().size());
 
         c1 = createClient("100");
         GetDeltasResponse response = c1.waitFor(MessageTypeEnum.ObjManagerReply_GetDeltasResponse);
@@ -152,8 +151,8 @@ public class AutoTest extends TestBase {
         TextFile charlieFile = c1.checkout(90L);
         charlieFile.setName("My Work");
         c1.commit(charlieFile);
-        assertEquals(1, c1.readDeltas().size());
-        assertEquals(7, c2.readDeltas().size());
+        assertEquals(1, c1.getDeltaFile().size());
+        assertEquals(7, c2.getDeltaFile().size());
     }
 
     /**
@@ -250,7 +249,7 @@ public class AutoTest extends TestBase {
         assertEquals("Hadwin", obj_56.get("secondName"));
 
         //check the rev file contents
-        assertEquals("0", FileUtils.readFile(c1.getRevFile()).split("\n")[0]);
+        assertEquals(0L, c1.getLastKnownRevision());
         //check object file exists and can be unmarshalled
         Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
         ObjectMeta objMeta = unmarshaller.unmarshal(c1.getObjFile());
@@ -262,7 +261,7 @@ public class AutoTest extends TestBase {
         textFile.setName("BooBoo");
         c1.commit(textFile);
 
-        List<Delta> deltas = c1.readDeltas();
+        List<Delta> deltas = c1.getDeltaFile().getDeltas();
         assertEquals(2, deltas.size());
         PropertiesChanged update = (PropertiesChanged) deltas.get(1).getMessage();
         assertEquals((Object) 87L, update.getChangeSets().get(0).getObjId());
@@ -276,19 +275,13 @@ public class AutoTest extends TestBase {
     }
 
     private void ensureNoDeltaFileAndRevAt1(TestObjClient client) {
-        assertTrue(!client.getDeltaFile().exists());
-        assertEquals("2", FileUtils.readFile(client.getRevFile()).split("\n")[0]);
+        assertTrue(client.getDeltaFile().isEmpty());
+        assertEquals(2L, client.getLastKnownRevision());
         Unmarshaller unmarshaller = new Unmarshaller(SchoolSystem.class);
         ObjectMeta objMeta = unmarshaller.unmarshal(client.getObjFile());
         //check identical to object retrieved from server
         assertEquals(client.getObjMeta().toXml(), objMeta.toXml());
 
         assertEquals("BooBoo", objMeta.getClassDatabase().findObjById(87L).get("Name"));
-    }
-
-    private TestObjClient createClient(String userId) throws InterruptedException {
-        TestObjClient testClient_1 = new TestObjClient(new File(backUpDir), userId, "school", "s1");
-        testClient_1.waitUntilInitialized();
-        return testClient_1;
     }
 }

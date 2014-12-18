@@ -83,18 +83,13 @@ public class GUIObjClient extends ObjClient {
     }
 
     @Override
-    protected void preInit() {
-
-    }
-
-    @Override
     protected void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts) {
-        conflictFrame = ConflictHelper.showConflicts(offlineMeta.getDeltas(), propConflicts, deleteConflicts, moveConflicts, addConflicts, new Object() {
+        conflictFrame = ConflictHelper.showConflicts(offlineFile.getDeltas(), propConflicts, deleteConflicts, moveConflicts, addConflicts, new Object() {
             public void decision(ConflictResolution decision) {
                  if(decision == null) {
                      System.exit(0);
                  } else {
-                     clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineMeta.getDeltas(),
+                     clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineFile.getDeltas(),
                              decision, lastKnownRevision, LOCAL_ID_START);
                  }
             }

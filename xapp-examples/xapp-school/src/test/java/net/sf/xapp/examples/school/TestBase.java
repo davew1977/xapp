@@ -51,4 +51,14 @@ public class TestBase {
     {
         node.getAppContext().destroy();
     }
+
+    protected TestObjClient createClient(String userId) throws InterruptedException {
+        return createClient(userId, "11375");
+    }
+
+    protected TestObjClient createClient(String userId, String s) throws InterruptedException {
+        TestObjClient testClient_1 = new TestObjClient(new File(backUpDir), userId, "school", "s1", s);
+        testClient_1.waitUntilInitialized();
+        return testClient_1;
+    }
 }

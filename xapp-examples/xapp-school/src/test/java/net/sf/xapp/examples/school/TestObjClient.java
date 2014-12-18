@@ -10,10 +10,10 @@ import net.sf.xapp.net.client.io.HostInfo;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.net.testharness.TestMessageHandler;
+import net.sf.xapp.objclient.DeltaFile;
 import net.sf.xapp.objclient.ObjClient;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReply;
 import net.sf.xapp.objserver.apis.objmanager.ObjManagerReplyAdaptor;
@@ -30,12 +30,13 @@ public class TestObjClient implements ModelProxy{
     private TestMessageHandler messageHandler = new TestMessageHandler();
 
 
-    public TestObjClient(File localDir, String userId, String appId, String objId) {
-        objClient = new ObjClient(localDir, userId, HostInfo.parse("11375"), appId, objId, SchoolSystem.class) {
+    public TestObjClient(File localDir, String userId, String appId, String objId, final String hostPort) {
+        objClient = new ObjClient(localDir, userId, HostInfo.parse(hostPort), appId, objId, SchoolSystem.class) {
             @Override
-            protected void preInit() {
+            public void init() {
                 clientContext.wire(ObjManagerReply.class, objId, new ObjManagerReplyAdaptor(messageHandler));
                 addObjListener(new ObjListenerAdaptor(messageHandler));
+                super.init();
             }
 
             @Override
@@ -62,21 +63,15 @@ public class TestObjClient implements ModelProxy{
         return objClient.getCdb();
     }
 
-    public File getRevFile() {
-        return objClient.getRevFile();
-    }
 
     public File getObjFile() {
         return objClient.getObjFile();
     }
 
-    public File getDeltaFile() {
+    public DeltaFile getDeltaFile() {
         return objClient.getDeltaFile();
     }
 
-    public List<Delta> readDeltas() {
-        return objClient.readDeltas();
-    }
 
     public ObjectMeta getObjMeta() {
         return objClient.getObjMeta();
@@ -205,5 +200,9 @@ public class TestObjClient implements ModelProxy{
     @Override
     public void moveTo(Object parent, Object objectToMove) {
         getModelProxy().moveTo(parent, objectToMove);
+    }
+
+    public long getLastKnownRevision() {
+        return getObjClient().getLastKnownRevision();
     }
 }

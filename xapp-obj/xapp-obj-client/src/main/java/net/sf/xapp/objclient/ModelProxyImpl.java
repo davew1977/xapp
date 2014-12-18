@@ -194,8 +194,8 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
-        inMessage.visit(objClient.getObjUpdate());
         syncSignal = new CountDownLatch(inMessage instanceof ChangeType ? 2 : 1); //we wait for 2 responses with change type
+        inMessage.visit(objClient.getObjUpdate());
         try {
             syncSignal.await();
         } catch (InterruptedException e) {
