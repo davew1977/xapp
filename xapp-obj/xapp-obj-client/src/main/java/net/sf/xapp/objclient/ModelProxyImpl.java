@@ -96,6 +96,9 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
 
     @Override
     public void commit(Object... itemsToCommit) {
+        if(itemsToCommit.length == 0) {
+            throw new IllegalArgumentException("nothing passed to commit!!");
+        }
         for (Object obj : itemsToCommit) {
             ObjectMeta<?> objectMeta = cdb().find(obj);
             Map<String, Object> previous = snapshots.remove(objectMeta.getId());

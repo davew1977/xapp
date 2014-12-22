@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.xapp.objcommon.LiveObject;
-import net.sf.xapp.objcommon.ObjMetaWrapper;
 import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.objserver.types.DeleteConflict;
 
@@ -18,7 +17,8 @@ import static net.sf.xapp.objserver.types.ConflictStatus.*;
  */
 public class ConflictDetector {
 
-    protected Long localStartId;
+    protected final Long localStartId;
+    protected Long localIdSeq;
     protected LiveObject liveObject;
     private TrunkState trunkState;
     private BranchState branchState;
@@ -42,6 +42,7 @@ public class ConflictDetector {
 
     public ConflictDetector(LiveObject liveObject, Long localIdStart) {
         this.liveObject = liveObject;
+        this.localIdSeq = localIdStart;
         this.localStartId = localIdStart;
         trunkState = new TrunkState(this);
         branchState = new BranchState(this);

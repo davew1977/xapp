@@ -1,15 +1,5 @@
 package net.sf.xapp.objclient;
 
-import javax.swing.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.xapp.application.api.ModelProxy;
 import net.sf.xapp.application.strategies.SaveStrategy;
 import net.sf.xapp.marshalling.Unmarshaller;
@@ -33,18 +23,13 @@ import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.to.CreateEmptyObject;
 import net.sf.xapp.objserver.apis.objmanager.to.CreateObject;
-import net.sf.xapp.objserver.types.AddConflict;
-import net.sf.xapp.objserver.types.ConflictResolution;
-import net.sf.xapp.objserver.types.MoveConflict;
-import net.sf.xapp.objserver.types.PropConflict;
-import net.sf.xapp.objserver.types.ConflictStatus;
-import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.objserver.types.ObjLoc;
-import net.sf.xapp.objserver.types.DeleteConflict;
-import net.sf.xapp.objserver.types.XmlObj;
+import net.sf.xapp.objserver.types.*;
 import net.sf.xapp.utils.FileUtils;
 import net.sf.xapp.utils.ReflectionUtils;
-import net.sf.xapp.utils.ant.AntFacade;
+
+import javax.swing.*;
+import java.io.File;
+import java.util.List;
 
 /**
  * © Webatron Ltd
@@ -97,6 +82,20 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
                 ObjClient.this.lastCreated = objectMeta;
             }
+
+            @Override
+            public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
+                /*
+                 * the following is a hack to make this work on offline mode. When the local model is updated
+                 * we want the cdb to behave like a client
+                 * otherwise we want it to behave like the server. A better solution would be to copy the cdb for
+                 * an offline server proxy during offline mode... debatable
+                 */
+                boolean master = cdb().isMaster();
+                cdb().setMaster(false);
+                super.objAdded(user, rev, objLoc, obj);
+                cdb().setMaster(master);
+            }
         };
         addObjListener(localObjUpdater);
 
@@ -118,7 +117,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         //first, can we connect immediately
 
         boolean connected = clientContext.connect(false);
-        if(!connected) {
+        if (!connected) {
             initialConnectionFailed();
             loadObjMetaFromClientData(true);
             setOffline();
@@ -132,14 +131,15 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     }
 
     public void enterOfflineMode() {
-        if(offlineFile.isEmpty()) {
+        if (offlineFile.isEmpty()) {
             getCdb().setMaster(LOCAL_ID_START); //start the cdb creating its own ids
             offlineFile.reset(getLastKnownRevision());
-        } else {
+        }
+        else {
             long localIdStart = LOCAL_ID_START;
             for (Delta delta : offlineFile.getDeltas()) {
                 InMessage message = delta.getMessage();
-                if(message instanceof CreateEmptyObject || message instanceof CreateObject) {
+                if (message instanceof CreateEmptyObject || message instanceof CreateObject) {
                     localIdStart++;          //don't use local ids twice if we are going into offline mode a second time without sync
                 }
             }
@@ -147,7 +147,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         }
     }
 
-    public void onConnect(){
+    public void onConnect() {
         clientContext.login();
 
         clientContext.wire(ObjManagerReply.class, objId, this);
@@ -157,9 +157,10 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         ObjManager objManager = clientContext.objManager(objId);
         lastKnownRevision = getLastKnownRevision();
 
-        if(lastKnownRevision != -1) {
+        if (lastKnownRevision != -1) {
             objManager.getDeltas(clientContext.getUserId(), lastKnownRevision, null);
-        } else {
+        }
+        else {
             objManager.getObject(clientContext.getUserId());
         }
     }
@@ -191,14 +192,16 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta, true);
 
         //apply local updates
-        for (Delta delta: deltaFile.getDeltas()) {
+        for (Delta delta : deltaFile.getDeltas()) {
             delta.getMessage().visit(objUpdater);
         }
 
-        if(applyOfflineUpdates) {
+        if (applyOfflineUpdates) {
+            objUpdater.setIncrementRevisions(false);
             for (Delta delta : offlineFile.getDeltas()) {
                 delta.getMessage().visit(objUpdater);
             }
+            objUpdater.setIncrementRevisions(true);
         }
         return objUpdater;
     }
@@ -218,6 +221,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         }
         //in offline mode, every change is saved anyway
     }
+
     @Override
     public void getObjectResponse(UserId principal, XmlObj obj, ErrorCode errorCode) {
         clientContext.wire(ObjListener.class, objId, this);
@@ -227,18 +231,20 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     @Override
     public void getDeltasResponse(UserId principal, List<Delta> deltas, Class type, Long revTo, ErrorCode errorCode) {
-        if(errorCode==null) {
+        if (errorCode == null) {
             clientContext.wire(ObjListener.class, objId, this);
             assert rootObjType.equals(type); //client and server must agree on the type
             reconstruct(deltas, revTo);
             //are there any offline changes?
-            if(!offlineFile.isEmpty()) {
+            if (!offlineFile.isEmpty()) {
                 clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineFile.getDeltas(),
                         ConflictResolution.ABORT_ON_CONFLICT, offlineFile.getBaseRevision(), LOCAL_ID_START);
-            } else {
+            }
+            else {
                 objMetaLoaded_internal();
             }
-        } else {
+        }
+        else {
             //TODO handle possible offline deltas in this scenario
             clientContext.objManager(objId).getObject(clientContext.getUserId());
         }
@@ -246,17 +252,19 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
     @Override
     public void applyChangesResponse(UserId principal, ConflictStatus conflictStatus, List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts, ErrorCode errorCode) {
-         if(errorCode == null) {
-             //override to
-             if(wasResolved(conflictStatus)) {
+        if (errorCode == null) {
+            //override to
+            if (wasResolved(conflictStatus)) {
 
-                 objMetaLoaded_internal();
-             } else {
-                 handleConflicts(propConflicts, deleteConflicts, moveConflicts, addConflicts);
-             }
-         } else {
-             //TODO stash the unsuccessful offline changes
-         }
+                objMetaLoaded_internal();
+            }
+            else {
+                handleConflicts(propConflicts, deleteConflicts, moveConflicts, addConflicts);
+            }
+        }
+        else {
+            //TODO stash the unsuccessful offline changes
+        }
     }
 
     protected abstract void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts);
@@ -275,7 +283,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
 
     private void objMetaLoaded_internal() {
-        if(isOnlineMode()) {
+        if (isOnlineMode()) {
             offlineFile.delete();
         }
         objMetaLoaded();
@@ -404,9 +412,10 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
 
         @Override
         public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
-            if(isOnlineMode()) {
+            if (isOnlineMode()) {
                 inMessage.visit(remote);
-            } else {
+            }
+            else {
                 offlineFile.handleMessage(inMessage);
                 //apply the change
                 inMessage.visit(dummyServer);

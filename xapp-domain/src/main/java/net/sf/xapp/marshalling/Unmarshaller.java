@@ -101,6 +101,7 @@ public class Unmarshaller<T> {
             if (m_root) {
                 classModel.getClassDatabase().getMarshallerContext().setInitialized(obj);
             }
+            getClassDatabase().setRevision(obj.getRevision());
             return obj;
         } catch (Exception e) {
             throw new XappException(e);

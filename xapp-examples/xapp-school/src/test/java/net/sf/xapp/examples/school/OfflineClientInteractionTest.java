@@ -69,9 +69,35 @@ public class OfflineClientInteractionTest extends TestBase {
         c1 = createClient("100", "11376"); //deliberately provide bad port so connection fails
 
         assertFalse(c1.getObjClient().isConnected());
+        //ensure previous offline changes are applied to model
         alice = c1.checkout(15L);
         assertEquals("Fruit", alice.getSecondName());
+        //make some more offline changes
+        PersonSettings personSettings = c1.create(15L, PersonSettings.class);
+        Long id = c1.lastCreated().getId();
+        Hat hat = c1.create(id, Hat.class);
+        hat.setColour(Colour.blue);
+        hat.setType(HatType.Bowler);
+        c1.commit(hat);
 
+        //ensure good offline file state (should have simply appended new offline changes)
+        File rawOfflineFile = c1.getObjClient().getOfflineFile().getFile();
+        DeltaFile deltaFile = new DeltaFile(rawOfflineFile);
+        assertEquals(2, deltaFile.getBaseRevision());
+        assertEquals(4, deltaFile.size());
+
+        c1.close();
+
+        //go online with new client
+        c1 = createClient("100");
+
+        LiveObject lo = node.getTarget(ObjUpdate.class, LiveObject.class, "s1");
+
+        //ensure serialized client obj matches serialized server obj
+        assertEquals(c1.getObjMeta().toXml(), lo.getRootObj().toXml() );
+        alice = c1.checkout(15L);
+        assertEquals(Colour.blue, alice.getPersonSettings().getFavouriteHat().getColour());
+        c1.close();
 
     }
 

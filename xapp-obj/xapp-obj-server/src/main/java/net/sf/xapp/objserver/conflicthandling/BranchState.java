@@ -42,12 +42,14 @@ public class BranchState extends ConflictDetectorState implements ObjUpdate{
     }
 
     protected void createObj(ObjLoc objLoc) {
-        long newObjId = conflictDetector.localStartId++;
+        long newObjId = conflictDetector.localIdSeq++;
         if(!tryAddDeleteConflict(objLoc.getId())) {
             ObjectLocation objectLocation = toObjLocation(objLoc);
-            Revision trunkRev = conflictDetector.filledObjLocations.get(toIdProp(objLoc));
-            if(!objectLocation.isCollection() && trunkRev != null) {
-                addAddConflict(newObjId, trunkRev);
+            if (objectLocation != null) { //objlocation can be null if we're handling a location in an object which doesn't exist in trunk
+                Revision trunkRev = conflictDetector.filledObjLocations.get(toIdProp(objLoc));
+                if(!objectLocation.isCollection() && trunkRev != null) {
+                    addAddConflict(newObjId, trunkRev);
+                }
             }
         }
     }

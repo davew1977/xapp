@@ -29,7 +29,7 @@ public class ObjMetaWrapper {
 
     public ObjectLocation toObjLocation(ObjLoc objLoc) {
         ObjectMeta objectMeta = cdb().findObjById(objLoc.getId());
-        return new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty()));
+        return objectMeta != null ? new ObjectLocation(objectMeta, objectMeta.getProperty(objLoc.getProperty())) : null;
     }
 
     public String toXml() {

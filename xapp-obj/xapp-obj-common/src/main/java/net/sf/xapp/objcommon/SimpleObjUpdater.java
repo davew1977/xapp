@@ -35,6 +35,14 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         this.rootObj = new ObjMetaWrapper(rootObject);
     }
 
+    public boolean isIncrementRevisions() {
+        return incrementRevisions;
+    }
+
+    public void setIncrementRevisions(boolean incrementRevisions) {
+        this.incrementRevisions = incrementRevisions;
+    }
+
     public void setRootObj(ObjectMeta rootObj) {
         this.rootObj = new ObjMetaWrapper(rootObj);
     }

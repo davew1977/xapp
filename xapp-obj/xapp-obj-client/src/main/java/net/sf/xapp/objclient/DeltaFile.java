@@ -118,6 +118,10 @@ public class DeltaFile implements MessageHandler {
         baseRevision = -1;
     }
 
+    public File getFile() {
+        return file;
+    }
+
     public int size() {
         return deltas.size();
     }

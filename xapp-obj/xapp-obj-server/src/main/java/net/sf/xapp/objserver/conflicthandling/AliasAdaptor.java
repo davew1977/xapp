@@ -10,7 +10,7 @@ import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChangeSet;
 
 /**
- * A specialized adaptor for applying local changes to the live object, local object ids have to be converted to global ones
+ * A specialized adaptor for applying someones offline changes to the live object, offline object ids have to be converted to global ones
  */
 public class AliasAdaptor implements ObjUpdate {
     private final LiveObject liveObject;
@@ -18,18 +18,17 @@ public class AliasAdaptor implements ObjUpdate {
 
     public AliasAdaptor(LiveObject liveObject, long clientIdStart) {
         this.liveObject = liveObject;
-        long nextId = liveObject.cdb().peekNextId();
-        offset = nextId - clientIdStart;
+        offset = liveObject.cdb().peekNextId() - clientIdStart;
     }
 
     @Override
     public void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        liveObject.createEmptyObject(principal, objLoc, type);
+        liveObject.createEmptyObject(principal, fix(objLoc), type);
     }
 
     @Override
     public void createObject(UserId principal, ObjLoc objLoc, Class type, String xml) {
-        liveObject.createObject(principal, objLoc, type, xml);
+        liveObject.createObject(principal, fix(objLoc), type, xml);
     }
 
     @Override
