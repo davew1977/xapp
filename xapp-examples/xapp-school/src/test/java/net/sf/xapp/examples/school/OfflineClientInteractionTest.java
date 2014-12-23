@@ -53,7 +53,7 @@ public class OfflineClientInteractionTest extends TestBase {
         textFile.setName("Hello Kitty");
         c1.commit(textFile);
 
-        c1.getObjClient().setOffline();
+        c1.setOffline();
         Pupil alice = c1.checkout(15L);
         assertEquals("alicew", alice.getUsername());
 
@@ -101,5 +101,51 @@ public class OfflineClientInteractionTest extends TestBase {
 
     }
 
+    /**
+     * this scenario covers when there are offline changes which conflict with server changes
+     * 1) start 2 clients
+     * 2) c1 makes a change
+     * 3) c2 goes offline
+     * 4) c1 makes a change to props a and c
+     * 5) c2 makes a change to props a and b
+     * 6) c2 goes online, no changes should be applied, check that conflict was detected
+     * 7) c1 makes a change to b
+     * 8) c2 tries to 'apply their' conflicts, make sure the new conflict is detected
+     * 9) c2 chooses to apply their conflicts
+     */
+    @Test
+    public void testScenario7() throws InterruptedException {
+        TestObjClient c1 = createClient("100");
+        TestObjClient c2 = createClient("101");
+        Pupil c1_alice = c1.checkout(15L);
+        c1_alice.setSecondName("Blom");
+        c1.commit(c1_alice);
+        c2.waitFor(MessageTypeEnum.ObjListener_PropertiesChanged);
+        Pupil c2_alice = c2.checkout(15L);
+        assertEquals("Blom", c2_alice.getSecondName());
 
+        c2.setOffline();
+        c1_alice = c1.checkout(15L);
+        c1_alice.setFirstName("Alicia");
+        c1.commit(c1_alice);
+        PersonSettings personSettings = c1.create(15L, PersonSettings.class);
+        personSettings.setFavouriteWords(new String[]{"gib", "bonnet"});
+        c1.commit(personSettings);
+
+        c2_alice = c2.checkout(15L);
+        c2_alice.setFirstName("Anastasia");
+        c2.commit(c2_alice);
+        c2_alice = c2.checkout(15L);
+        c2_alice.setSecondName("Di Canio");
+        c2.commit(c2_alice);
+
+        c2.connect();//should block until conflicts are received
+        assertEquals(1, c2.getConflicts().propConflicts.size());
+
+    }
+
+    @Test
+    public void testScenario8() {
+
+    }
 }

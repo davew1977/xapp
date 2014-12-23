@@ -28,6 +28,7 @@ public class TestObjClient implements ModelProxy{
     private ObjClient objClient;
     private CountDownLatch initSignal = new CountDownLatch(1);
     private TestMessageHandler messageHandler = new TestMessageHandler();
+    private Conflicts conflicts;
 
 
     public TestObjClient(File localDir, String userId, String appId, String objId, final String hostPort) {
@@ -46,7 +47,8 @@ public class TestObjClient implements ModelProxy{
 
             @Override
             protected void handleConflicts(List<PropConflict> propConflicts, List<DeleteConflict> deleteConflicts, List<MoveConflict> moveConflicts, List<AddConflict> addConflicts) {
-
+                conflicts = new Conflicts(propConflicts, deleteConflicts, moveConflicts, addConflicts);
+                initSignal.countDown();
             }
         };
     }
@@ -204,5 +206,19 @@ public class TestObjClient implements ModelProxy{
 
     public long getLastKnownRevision() {
         return getObjClient().getLastKnownRevision();
+    }
+
+    public void setOffline() {
+        getObjClient().setOffline();
+    }
+
+    public void connect() throws InterruptedException {
+        initSignal = new CountDownLatch(1);
+        getObjClient().connect();
+        waitUntilInitialized();
+    }
+
+    public Conflicts getConflicts() {
+        return conflicts;
     }
 }
