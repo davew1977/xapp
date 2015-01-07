@@ -28,19 +28,9 @@ import net.sf.xapp.objserver.types.XmlObj;
  */
 public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, ObjListener {
     protected ObjMetaWrapper rootObj;
-    protected boolean incrementRevisions;
 
-    public SimpleObjUpdater(ObjectMeta rootObject, boolean incrementRevisions) {
-        this.incrementRevisions = incrementRevisions;
+    public SimpleObjUpdater(ObjectMeta rootObject) {
         this.rootObj = new ObjMetaWrapper(rootObject);
-    }
-
-    public boolean isIncrementRevisions() {
-        return incrementRevisions;
-    }
-
-    public void setIncrementRevisions(boolean incrementRevisions) {
-        this.incrementRevisions = incrementRevisions;
     }
 
     public void setRootObj(ObjectMeta rootObj) {
@@ -115,7 +105,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
     }
 
     @Override
-    public final void changeType(UserId principal, ObjLoc oldLoc, Long id, Class newType) {
+    public void changeType(UserId principal, ObjLoc oldLoc, Long id, Class newType) {
         ObjectMeta obj = cdb().findObjById(id);
         ClassModel cm = cdb().getClassModel(newType);
         if (obj.hasReferences()) {
@@ -170,46 +160,51 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public void propertiesChanged(UserId user, Long rev, List<PropChangeSet> changeSets) {
+        cdb().setRev(rev);
         updateObject(user, changeSets);
-        assert cdb().getRev().equals(rev);
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
     }
 
     @Override
     public void objAdded(UserId user, Long rev, ObjLoc objLoc, XmlObj obj) {
+        cdb().setRev(rev);
         createObject(user, objLoc, obj.getType(), obj.getData());
-        assert cdb().getRev().equals(rev);
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
     }
 
     @Override
     public void objMoved(UserId user, Long rev, Long id, ObjLoc oldLoc, ObjLoc newObjLoc) {
+        cdb().setRev(rev);
         moveObject(user, id, oldLoc, newObjLoc);
-        assert cdb().getRev().equals(rev);
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
     }
 
     @Override
     public void objDeleted(UserId user, Long rev, ObjLoc oldLoc, Long id) {
+        cdb().setRev(rev);
         deleteObject(user, oldLoc, id);
-        assert cdb().getRev().equals(rev);
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
+    }
+
+    @Override
+    public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long id, Class newType, Long newObjId) {
+        cdb().setRev(rev);
+        changeType(user, objLoc, id, newType);
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
     }
 
     @Override
     public void objIndexChanged(UserId user, Long rev, ObjLoc objLoc, Long id, Integer newIndex) {
+        cdb().setRev(rev);
         setIndex(user, objLoc, id, newIndex);
-        assert cdb().getRev().equals(rev);
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
     }
 
     @Override
     public void refsUpdated(UserId user, Long rev, ObjLoc objLoc, List<Long> refsCreated, List<Long> refsRemoved) {
+        cdb().setRev(rev);
         updateRefs(user, objLoc, refsCreated, refsRemoved);
-        assert cdb().getRev().equals(rev);
-    }
-
-    @Override
-    public <T> T handleMessage(InMessage<ObjUpdate, T> inMessage) {
-        if (incrementRevisions) {
-            cdb().incrementRevision();
-        }
-        return null;
+        assert cdb().getRev().equals(rev) : String.format("%s != %s", cdb().getRev(), rev);
     }
 
     protected ObjectLocation toObjectLocation(ObjLoc objLoc) {

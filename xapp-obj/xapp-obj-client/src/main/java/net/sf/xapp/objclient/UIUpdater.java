@@ -74,6 +74,13 @@ public class UIUpdater implements ObjListener {
     }
 
     @Override
+    public void typeChanged(UserId user, Long rev, ObjLoc objLoc,  Long deletedObjId, Class newType, Long newObjId) {
+        ObjectMeta objectMeta = cdb().findObjById(newObjId);
+        appContainer().removeNode(deletedObjId);
+        appContainer().createNode(toObjectLocation(objLoc), objectMeta);
+    }
+
+    @Override
     public void objDeleted(UserId user, Long rev, ObjLoc objLoc,  Long id) {
         //clean up nodes
         Collection<Node> refNodes = appContainer().getRefNodes(id);

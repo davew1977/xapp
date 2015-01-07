@@ -9,6 +9,7 @@ import net.sf.xapp.net.server.channels.BroadcastProxy;
 import net.sf.xapp.net.server.channels.CommChannel;
 import net.sf.xapp.net.server.channels.NotifyProxy;
 import net.sf.xapp.objcommon.LiveObject;
+import net.sf.xapp.objcommon.MasterObject;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
@@ -24,12 +25,12 @@ import net.sf.xapp.objserver.types.Delta;
 public class ObjController extends AppAdaptor implements ObjManager {
 
     private final String key;
-    private final LiveObject liveObject;
+    private final MasterObject liveObject;
     private ObjTracker objTracker;
 
     public ObjController(String key, ObjectMeta rootObj) {
         this.key = key;
-        liveObject = new LiveObject(rootObj);
+        liveObject = new MasterObject(rootObj);
     }
 
     public LiveObject getLiveObject() {

@@ -70,14 +70,13 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
             @Override
             public <T> T handleMessage(InMessage<ObjListener, T> inMessage) {
                 if (isOnlineMode()) {
-                    cdb.setRevision(ReflectionUtils.<Long>call(inMessage, "getRev"));
                     deltaFile.handleMessage(inMessage);
                 }
                 return null;
             }
         });
 
-        localObjUpdater = new SimpleObjUpdater(null, false) {
+        localObjUpdater = new SimpleObjUpdater(null) {
             @Override
             protected void objAdded(UserId principal, ObjLoc objLoc, ObjectMeta objectMeta) {
                 ObjClient.this.lastCreated = objectMeta;
@@ -172,7 +171,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         FileUtils.writeFile(obj.getData(), objFile);
         deltaFile.reset(obj.getLastChangeRev());
         setObjMeta(new Unmarshaller(obj.getType()).unmarshalString(obj.getData()));
-        cdb.setRevision(obj.getLastChangeRev());
+        //cdb.setRevision(obj.getLastChangeRev());
     }
 
     public void reconstruct(List<Delta> deltas, Long revTo) {
@@ -189,7 +188,7 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     private SimpleObjUpdater loadObjMetaFromClientData(boolean applyOfflineUpdates) {
         setObjMeta(new Unmarshaller(rootObjType).unmarshal(objFile));
 
-        SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta, true);
+        SimpleObjUpdater objUpdater = new SimpleObjUpdater(objMeta);
 
         //apply local updates
         for (Delta delta : deltaFile.getDeltas()) {
@@ -197,11 +196,9 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
         }
 
         if (applyOfflineUpdates) {
-            objUpdater.setIncrementRevisions(false);
             for (Delta delta : offlineFile.getDeltas()) {
                 delta.getMessage().visit(objUpdater);
             }
-            objUpdater.setIncrementRevisions(true);
         }
         return objUpdater;
     }
@@ -362,6 +359,11 @@ public abstract class ObjClient extends ObjListenerAdaptor implements SaveStrate
     @Override
     public void handleConnectException(Exception e) {
 
+    }
+
+    public void applyChanges(ConflictResolution decision) {
+        clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineFile.getDeltas(),
+                decision, lastKnownRevision, LOCAL_ID_START);
     }
 
     public void setOffline() {

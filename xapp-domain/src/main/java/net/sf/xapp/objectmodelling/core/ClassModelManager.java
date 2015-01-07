@@ -58,9 +58,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private ObjectMeta<T> rootObjMeta;
     private InspectionType m_inspectionType;
     private boolean master;
-    private ObjectMeta lastCreated;
-    private ObjectMeta lastDeleted;
-    private long rev;
 
     public ClassModelManager(Class<T> rootType)
     {
@@ -104,7 +101,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void registerInstance(ObjectMeta objectMeta) {
         instanceMap.put(objectMeta.getId(), objectMeta);
-        lastCreated = objectMeta;
     }
 
     @Override
@@ -126,7 +122,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void removeInstance(ObjectMeta objectMeta) {
         instanceMap.remove(objectMeta.getId());
-        lastDeleted = objectMeta;
     }
 
     @Override
@@ -151,23 +146,18 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     }
 
     @Override
-    public void incrementRevision() {
-        rev++;
+    public long peekNextId() {
+        return idSequence.get();
     }
 
     @Override
     public Long getRev() {
-        return rev;
+        return getRootObjMeta().getRevision();
     }
 
     @Override
-    public void setRevision(Long rev) {
-        this.rev = rev;
-    }
-
-    @Override
-    public long peekNextId() {
-        return idSequence.get();
+    public void setRev(Long rev) {
+        getRootObjMeta().setRev(rev);
     }
 
     public void setMaster(boolean master) {

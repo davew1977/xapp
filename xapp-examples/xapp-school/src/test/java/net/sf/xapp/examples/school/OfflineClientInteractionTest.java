@@ -1,25 +1,14 @@
 package net.sf.xapp.examples.school;
 
 import net.sf.xapp.examples.school.model.*;
-import net.sf.xapp.marshalling.Unmarshaller;
-import net.sf.xapp.net.api.channel.Channel;
-import net.sf.xapp.net.api.chatapp.ChatApp;
 import net.sf.xapp.net.common.types.MessageTypeEnum;
-import net.sf.xapp.net.server.repos.EntityRepository;
 import net.sf.xapp.objclient.DeltaFile;
-import net.sf.xapp.objclient.OfflineMeta;
 import net.sf.xapp.objcommon.LiveObject;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objserver.apis.objlistener.to.PropertiesChanged;
-import net.sf.xapp.objserver.apis.objmanager.ObjManager;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
-import net.sf.xapp.objserver.apis.objmanager.to.GetDeltasResponse;
-import net.sf.xapp.objserver.types.Delta;
-import net.sf.xapp.utils.FileUtils;
+import net.sf.xapp.objserver.types.ConflictResolution;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -141,7 +130,19 @@ public class OfflineClientInteractionTest extends TestBase {
 
         c2.connect();//should block until conflicts are received
         assertEquals(1, c2.getConflicts().propConflicts.size());
+        assertEquals("Anastasia", c2.getConflicts().propConflicts.get(0).getMine().getNewValue());
+        assertEquals("Alicia", c2.getConflicts().propConflicts.get(0).getTheirs().getNewValue());
 
+
+        c1_alice = c1.checkout(15L);
+        c1_alice.setSecondName("Philips");
+        c1.commit(c1_alice);
+
+        c2.applyChanges(ConflictResolution.FORCE_ALL_MINE);
+        c2.waitFor(MessageTypeEnum.ObjManagerReply_ApplyChangesResponse);
+
+        c1.close();
+        c2.close();
     }
 
     @Test

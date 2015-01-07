@@ -97,11 +97,9 @@ public interface ClassDatabase<T>
     void setMaster(long startId);
     void setMaster(boolean master);
 
-    void incrementRevision();
-
-    Long getRev(); //TODO why does the class database track the rev, this is just a copy of the rev of the root object
-
-    void setRevision(Long rev);
-
     long peekNextId();
+
+    Long getRev();
+
+    void setRev(Long rev);
 }

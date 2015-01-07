@@ -1,10 +1,12 @@
 package net.sf.xapp.objcommon;
 
+import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.Multicaster;
 import net.sf.xapp.net.common.types.UserId;
 import net.sf.xapp.objectmodelling.core.*;
 import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
+import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChangeSet;
 import net.sf.xapp.objserver.types.XmlObj;
@@ -18,9 +20,15 @@ import java.util.List;
 public class LiveObject extends SimpleObjUpdater {
     private ObjListener listener;
 
+
     public LiveObject(ObjectMeta rootObject) {
-        super(rootObject, true);
+        super(rootObject);
         listener = new ObjListenerAdaptor(null, new Multicaster<ObjListener>());
+    }
+
+    @Override
+    protected void typeChanged(UserId principal, ObjLoc objLoc, Long oldId, ObjectMeta newInstance) {
+        listener.typeChanged(principal, cdb().getRev(), objLoc, oldId, newInstance.getType(), newInstance.getId());
     }
 
     @Override
@@ -44,13 +52,6 @@ public class LiveObject extends SimpleObjUpdater {
     public void moveObject(UserId principal, Long id, ObjLoc oldLoc, ObjLoc newObjLoc) {
         super.moveObject(principal, id, oldLoc, newObjLoc);
         listener.objMoved(principal, cdb().getRev(), id, oldLoc, newObjLoc);
-    }
-
-    @Override
-    protected void typeChanged(UserId principal, ObjLoc objLoc, Long oldId, ObjectMeta newInstance) {
-        //should not be needed : objHome.setIndex(newInstance, oldIndex);
-        listener.objDeleted(principal, cdb().getRev(), objLoc, oldId);
-        listener.objAdded(principal, cdb().getRev(), objLoc, toXmlObj(newInstance));
     }
 
     @Override

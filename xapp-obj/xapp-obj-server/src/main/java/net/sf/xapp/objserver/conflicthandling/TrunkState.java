@@ -47,6 +47,11 @@ public class TrunkState extends ConflictDetectorState implements ObjListener{
     }
 
     @Override
+    public void typeChanged(UserId user, Long rev, ObjLoc objLoc, Long deletedObjId, Class newType, Long newObjId) {
+        //todo
+    }
+
+    @Override
     public void objMoved(UserId user, Long rev, Long id, ObjLoc oldObjLoc, ObjLoc newObjLoc) {
         conflictDetector.filledObjLocations.remove(toIdProp(oldObjLoc));
         conflictDetector.movedObjects.put(id, current);

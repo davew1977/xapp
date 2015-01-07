@@ -26,7 +26,6 @@ public class SimpleObjLoader implements ObjLoader {
 
             Unmarshaller unmarshaller = new Unmarshaller(type);
             unmarshaller.getClassDatabase().setMaster(0);
-            unmarshaller.getClassDatabase().setRevision(0L);
             result.add(unmarshaller.unmarshal(getClass().getResourceAsStream(xmlClassPath)));
         }
 

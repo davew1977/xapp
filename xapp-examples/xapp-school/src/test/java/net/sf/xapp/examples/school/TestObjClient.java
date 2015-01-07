@@ -35,7 +35,6 @@ public class TestObjClient implements ModelProxy{
         objClient = new ObjClient(localDir, userId, HostInfo.parse(hostPort), appId, objId, SchoolSystem.class) {
             @Override
             public void init() {
-                clientContext.wire(ObjManagerReply.class, objId, new ObjManagerReplyAdaptor(messageHandler));
                 addObjListener(new ObjListenerAdaptor(messageHandler));
                 super.init();
             }
@@ -213,6 +212,7 @@ public class TestObjClient implements ModelProxy{
     }
 
     public void connect() throws InterruptedException {
+        getObjClient().getClientContext().wire(ObjManagerReply.class, getObjClient().getObjId(), new ObjManagerReplyAdaptor(messageHandler));
         initSignal = new CountDownLatch(1);
         getObjClient().connect();
         waitUntilInitialized();
@@ -220,5 +220,9 @@ public class TestObjClient implements ModelProxy{
 
     public Conflicts getConflicts() {
         return conflicts;
+    }
+
+    public void applyChanges(ConflictResolution decision) {
+        getObjClient().applyChanges(decision);
     }
 }

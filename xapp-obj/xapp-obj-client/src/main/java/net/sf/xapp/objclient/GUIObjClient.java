@@ -89,8 +89,7 @@ public class GUIObjClient extends ObjClient {
                  if(decision == null) {
                      System.exit(0);
                  } else {
-                     clientContext.objManager(objId).applyChanges(clientContext.getUserId(), offlineFile.getDeltas(),
-                             decision, lastKnownRevision, LOCAL_ID_START);
+                     applyChanges(decision);
                  }
             }
         });

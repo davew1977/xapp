@@ -17,7 +17,6 @@ public class ObjInfo {
     private String className;
     private String key;
     private String fileName;
-    private long revision;
     private ObjectMeta objectMeta;
 
     public String getKey() {
@@ -36,14 +35,6 @@ public class ObjInfo {
         this.className = className;
     }
 
-    public long getRevision() {
-        return revision;
-    }
-
-    public void setRevision(long revision) {
-        this.revision = revision;
-    }
-
     public String getFileName() {
         return fileName;
     }
@@ -56,7 +47,6 @@ public class ObjInfo {
         Class aClass = Class.forName(className);
         Unmarshaller unmarshaller = new Unmarshaller(aClass);
         unmarshaller.getClassDatabase().setMaster(0);
-        unmarshaller.getClassDatabase().setRevision(revision);
         objectMeta = unmarshaller.unmarshal(new File(dir, fileName()));
     }
 

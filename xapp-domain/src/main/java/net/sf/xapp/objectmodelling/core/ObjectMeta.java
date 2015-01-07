@@ -661,8 +661,8 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public void updateRev(boolean includeComplexChildren) {
-        rev = getClassDatabase().getRev();
-        if (getParent() != null) {
+        if (!isRoot()) {
+            rev = getClassDatabase().getRev();
             getParent().updateRev();
             if (includeComplexChildren) {
                 List<ObjectMeta> children = allChildren();
@@ -706,5 +706,10 @@ public class ObjectMeta<T> implements Namespace{
 
     public Object objId() {
         return getId() != null ? getId() : this;
+    }
+
+    public void incrementRev() {
+        assert isRoot();
+        rev++;
     }
 }
