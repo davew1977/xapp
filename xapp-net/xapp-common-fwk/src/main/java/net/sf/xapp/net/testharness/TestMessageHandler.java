@@ -28,8 +28,8 @@ public class TestMessageHandler implements MessageHandler
 
     public TestMessageHandler()
     {
-        outMessages = new LinkedBlockingQueue<InMessage>();
-        messagesAsString = new ArrayList<String>();
+        outMessages = new LinkedBlockingQueue<>();
+        messagesAsString = new ArrayList<>();
     }
 
     @Override

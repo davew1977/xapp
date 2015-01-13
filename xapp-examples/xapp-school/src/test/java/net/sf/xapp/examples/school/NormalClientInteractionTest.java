@@ -77,7 +77,7 @@ public class NormalClientInteractionTest extends TestBase {
      * 2) kill client
      * 3) restart client
      * 4) ensure client queries for deltas since 1
-     * 5) ensure server send succes response with no deltas
+     * 5) ensure server send success response with no deltas
      * 6) ensure client applies the locally saved deltas
      * 7) ensure client resets the state (rev.txt at 1 and no deltas file)
      * @throws InterruptedException
