@@ -75,6 +75,10 @@ public class Property<T> implements Comparable {
         m_listeners = new ArrayList<PropertyChangeListener>();
     }
 
+    public PropertyAccess getPropertyAccess() {
+        return m_propertyAccess;
+    }
+
     public void addChangeListener(PropertyChangeListener listener) {
         m_listeners.add(listener);
     }
@@ -441,5 +445,9 @@ public class Property<T> implements Comparable {
 
     public ClassModel getMainTypeClassModel() {
         return getClassDatabase().getClassModel(getMainType());
+    }
+
+    public void setKey(boolean b) {
+        key = true;
     }
 }

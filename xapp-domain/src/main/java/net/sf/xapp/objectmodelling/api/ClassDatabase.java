@@ -102,4 +102,12 @@ public interface ClassDatabase<T>
     Long getRev();
 
     void setRev(Long rev);
+
+    <E> void registerSubType(Class<E> parent, Class<? extends E>... childTypes);
+
+    List<Class> getValidSubtypes(Class parent);
+
+    String getKeyProperty(Class aClass);
+
+    void setKeyProperty(Class aClass, String propName);
 }

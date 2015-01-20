@@ -254,13 +254,13 @@ public class ObjectMeta<T> implements Namespace{
                 }
             } else {
                 if (property.isKey()) {
-                    String oldVal = (String) change.oldVal;
+                    Object oldVal = change.oldVal;
                     assert Property.objEquals(oldVal, key);
-                    String newVal = (String) change.newVal;
+                    Object newVal = change.newVal;
                     if(home != null) {
-                        updateMetaHierarchy(newVal);
+                        updateMetaHierarchy(valueOf(newVal));
                         if(home.isMap()) {
-                            home.keyChanged(oldVal, newVal);
+                            home.keyChanged(valueOf(oldVal), valueOf(newVal));
                         }
                     }
                 }
@@ -294,7 +294,7 @@ public class ObjectMeta<T> implements Namespace{
         return namespacePath(classModel.getContainedClass());
     }
     public String getKey() {
-        return key != null ? key : (String) get(classModel.getKeyProperty());
+        return key != null ? key : valueOf(get(classModel.getKeyProperty()));
     }
 
     public Map<String, ObjectMeta> getAll(final Class containedClass) {

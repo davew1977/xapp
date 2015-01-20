@@ -26,10 +26,7 @@ import net.sf.xapp.utils.XappException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ClassModelFactory {
     private static PropertyFactory m_propFactory = new PropertyFactoryImpl();
@@ -81,6 +78,11 @@ public class ClassModelFactory {
                 validImplementations.add(classModelManager.getClassModel(vi));
             }
         }
+        List<Class> validSubtypes = classModelManager.getValidSubtypes(aClass);
+        for (Class validSubtype : validSubtypes) {
+
+            validImplementations.add(classModelManager.getClassModel(validSubtype));
+        }
         return validImplementations;
     }
 
@@ -109,6 +111,7 @@ public class ClassModelFactory {
                 createProperty(classModelManager, aClass, inspectionTuple, propertyAccess);
             }
         }
+        inspectionTuple.sort();
         return inspectionTuple;
     }
 
@@ -139,6 +142,7 @@ public class ClassModelFactory {
     }
 
     public static class InspectionTuple {
+        Map<String, Property> propertyMap = new HashMap<>();
         List<Property> properties = new ArrayList<Property>();
         List<ListProperty> listProperties = new ArrayList<ListProperty>();
         List<ContainerProperty> mapProperties = new ArrayList<ContainerProperty>();
@@ -146,12 +150,28 @@ public class ClassModelFactory {
         Method preInitMethod;
 
         public void addProperty(Property property) {
-            if (property instanceof ListProperty) {
-                listProperties.add((ListProperty) property);
-            } else if (property instanceof ContainerProperty) {
-                mapProperties.add((ContainerProperty) property);
-            } else {
-                properties.add(property);
+            Property existing = propertyMap.get(property.getName());
+            if(existing != null) {
+                // when there's a duplicate property, we want the lowest class in the heirarchy to win
+                Class decExisting = existing.getPropertyAccess().getType();
+                Class decNew = property.getPropertyAccess().getType();
+                if(decNew.isAssignableFrom(decExisting)) {
+                    return;
+                }
+            }
+
+            propertyMap.put(property.getName(), property);
+        }
+
+        public void sort() {
+            for (Property property : propertyMap.values()) {
+                if (property instanceof ListProperty) {
+                    listProperties.add((ListProperty) property);
+                } else if (property instanceof ContainerProperty) {
+                    mapProperties.add((ContainerProperty) property);
+                } else {
+                    properties.add(property);
+                }
             }
         }
     }

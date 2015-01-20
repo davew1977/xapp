@@ -81,6 +81,11 @@ public class FieldProperty extends AbstractPropertyAccess
         return getAnnotation(Transient.class)!=null && getAnnotation(Transient.class).displayNodes();
     }
 
+    @Override
+    public Class getDeclaringClass() {
+        return m_field.getDeclaringClass();
+    }
+
     public String toString()
     {
         return m_field.toString();

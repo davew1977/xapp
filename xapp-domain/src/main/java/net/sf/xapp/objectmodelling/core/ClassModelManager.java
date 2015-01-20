@@ -48,6 +48,8 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private HashMap<Class, StringSerializer> ssMap;
     private HashMap<Object, String> resourceMap;
     private HashMap<PropertyObjectPair, String> resourceMapByReference;
+    private Map<Class, List<Class>> validSubTypes;  //config when model can't be annotated
+    private Map<Class,String> keyProperties;
     private HashSet<Class> simpleTypes;
     private KeyChangeHistory keyChangeHistory;
 
@@ -73,6 +75,8 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         ssMap = new HashMap<Class, StringSerializer>();
         resourceMap = new HashMap<Object, String>();
         resourceMapByReference = new HashMap<PropertyObjectPair, String>();
+        validSubTypes = new HashMap<>();
+        keyProperties = new HashMap<>();
         simpleTypes = new HashSet<Class>();
         simpleTypes.add(Integer.class);
         simpleTypes.add(Long.class);
@@ -158,6 +162,35 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void setRev(Long rev) {
         getRootObjMeta().setRev(rev);
+    }
+
+    @Override
+    public <E> void registerSubType(Class<E> parent, Class<? extends E>... childTypes) {
+        List<Class> classes = validSubTypes.get(parent);
+        if(classes == null) {
+            classes = new ArrayList<>();
+            validSubTypes.put(parent, classes);
+        }
+        for (Class childType : childTypes) {
+
+            classes.add(childType);
+        }
+    }
+
+    @Override
+    public List<Class> getValidSubtypes(Class parent) {
+        List<Class> classes = validSubTypes.get(parent);
+        return classes != null ? classes : new ArrayList<Class>();
+    }
+
+    @Override
+    public void setKeyProperty(Class aClass, String propName) {
+        keyProperties.put(aClass, propName);
+    }
+
+    @Override
+    public String getKeyProperty(Class aClass) {
+        return keyProperties.get(aClass);
     }
 
     public void setMaster(boolean master) {

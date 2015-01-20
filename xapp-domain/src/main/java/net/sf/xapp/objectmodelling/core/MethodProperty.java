@@ -91,6 +91,11 @@ public class MethodProperty extends AbstractPropertyAccess
         return getAnnotation(Transient.class).displayNodes();
     }
 
+    @Override
+    public Class getDeclaringClass() {
+        return m_accessor.getDeclaringClass();
+    }
+
     public String toString()
     {
         return m_accessor.toString();

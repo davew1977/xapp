@@ -58,7 +58,7 @@ public class ClassModel<T> {
     private List<ObjectMeta<T>> instances;
     private Method postInitMethod;
     private Method preInitMethod;
-    private ListProperty m_containerListProperty;
+    private ContainerProperty m_containerListProperty;
     private Set<Rights> m_restrictedRights;
     private TrackKeyChanges m_trackKeyChanges;
     private NamespaceFor namespaceFor;
@@ -103,7 +103,7 @@ public class ClassModel<T> {
             this.keyProperty.addChangeListener(new PrimaryKeyChangedListener());
         }
         if (containerListProp != null) {
-            m_containerListProperty = (ListProperty) getProperty(containerListProp);
+            m_containerListProperty = (ContainerProperty) getProperty(containerListProp);
         }
 
         m_restrictedRights = new HashSet<Rights>();
@@ -154,6 +154,10 @@ public class ClassModel<T> {
         for (ClassModel validImpl : m_validImplementations) {
             m_validImplementationMap.put(validImpl.getSimpleName(), validImpl);
         }
+    }
+
+    public void setContainerListProperty(String propertyName) {
+        m_containerListProperty = (ContainerProperty) getProperty(propertyName);
     }
 
     public BoundObjectType getBoundObjectType() {
@@ -281,7 +285,7 @@ public class ClassModel<T> {
     }
 
     public String getKey(T obj) {
-        return String.valueOf(keyProperty.get(obj));
+        return String.valueOf(getKeyProperty().get(obj));
     }
 
     public void dispose(T instance) {
@@ -508,6 +512,13 @@ public class ClassModel<T> {
     }
 
     public Property getKeyProperty() {
+        if(keyProperty == null) {
+            String keyPropName = getClassDatabase().getKeyProperty(m_class);
+            if(keyPropName!=null) {
+                keyProperty = getProperty(keyPropName);
+                keyProperty.setKey(true);
+            }
+        }
         return keyProperty;
     }
 
