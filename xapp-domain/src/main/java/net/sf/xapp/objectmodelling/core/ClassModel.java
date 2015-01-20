@@ -295,7 +295,7 @@ public class ClassModel<T> {
         instances.remove(objectMeta);
         m_classDatabase.removeInstance(objectMeta);
         if (keyProperty != null) {
-            String oldKeyVal = (String) objectMeta.get(keyProperty);
+            Object oldKeyVal = objectMeta.get(keyProperty);
             m_classDatabase.getClassModelContext().getKeyChangeDictionary().objectRemoved(
                     getSimpleName(), oldKeyVal != null ? String.valueOf(oldKeyVal) : null, isTrackNewAndRemoved());
         }
