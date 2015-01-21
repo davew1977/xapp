@@ -134,4 +134,10 @@ public interface Node
      * find the node for this property. Could be "this" could be an immediate child
      */
     Node find(Property property);
+
+    /**
+     * traverse ancestors until we find an object of the given type
+     */
+    Node closest(Class filter);
+
 }

@@ -23,7 +23,7 @@ public class ObjectMeta<T> implements Namespace{
     private final Map<Class<?>, Set<ObjectMeta>> lookupSets = new HashMap<Class<?>, Set<ObjectMeta>>();
     private Long id;
     private Long rev = 0L;
-    private String key; //can change
+    private Object key; //can change
     private ObjectLocation home; //the parent obj and the property where this is stored
     private Object attachment;//an arbitrary object to associate with this object meta
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
@@ -41,7 +41,7 @@ public class ObjectMeta<T> implements Namespace{
             }
         }
         setId(id);
-        key = (String) get(classModel.getKeyProperty());
+        key = get(classModel.getKeyProperty());
         setHome(home, updateModelHomeRef);
 
         //add metas for children of this object
@@ -269,7 +269,7 @@ public class ObjectMeta<T> implements Namespace{
         return change;
     }
 
-    public void updateMetaHierarchy(String newKeyVal) {
+    public void updateMetaHierarchy(Object newKeyVal) {
         assert home != null;
         NamespacePath namespacePath = namespacePath(classModel.getContainedClass());
         ObjectMeta closestNamespace = namespacePath.removeLast();
@@ -294,7 +294,7 @@ public class ObjectMeta<T> implements Namespace{
         return namespacePath(classModel.getContainedClass());
     }
     public String getKey() {
-        return key != null ? key : valueOf(get(classModel.getKeyProperty()));
+        return key != null ? valueOf(key) : valueOf(get(classModel.getKeyProperty()));
     }
 
     public Map<String, ObjectMeta> getAll(final Class containedClass) {
@@ -354,7 +354,7 @@ public class ObjectMeta<T> implements Namespace{
 
     @Override
     public String toString() {
-        return key != null ? key : "";
+        return key != null ? valueOf(key) : "";
     }
 
     public String meta() {

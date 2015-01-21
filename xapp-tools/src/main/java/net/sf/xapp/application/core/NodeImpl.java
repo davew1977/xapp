@@ -189,6 +189,15 @@ public class NodeImpl implements Node {
         return this;
     }
 
+    @Override
+    public Node closest(Class filter) {
+        if(isA(filter)) {
+            return this;
+        } else {
+            return parentObjectNode().closest(filter);
+        }
+    }
+
     public ApplicationContainer getAppContainer() {
         return appContainer;
     }
