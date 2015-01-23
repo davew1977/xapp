@@ -187,6 +187,9 @@ public class NodeImpl implements Node {
             if(objectLocation != null && objectLocation.getProperty().equals(property)) {
                 return node;
             }
+            if(node.getListNodeContext() != null && node.getListNodeContext().getContainerProperty().equals(property)) {
+                return node;
+            }
         }
         return null;
     }
