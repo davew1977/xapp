@@ -44,16 +44,16 @@ public class NodeBuilder {
 
     public Node createTree() {
         ObjectMeta objectMeta = appContainer.getGuiContext().getObjectMeta();
-        Node node = createNode(null, objectMeta, 0);
+        Node node = createNode(null, objectMeta, null, 0);
         appContainer.getMainTree().setModel(new DefaultTreeModel(node.getJtreeNode()));
         return node;
     }
 
-    public Node createNode(Node parentNode, ObjectMeta objMeta) {
-        return createNode(parentNode, objMeta, parentNode.numChildren());
+    public Node createNode(Node parentNode, ObjectMeta objMeta, Property locProperty) {
+        return createNode(parentNode, objMeta, locProperty, parentNode.numChildren());
     }
 
-    public Node createNode(Node parentNode, ObjectMeta objMeta, int insertIndex) {
+    public Node createNode(Node parentNode, ObjectMeta objMeta, Property locProperty, int insertIndex) {
         if (!appContainer.getNodeFilter().accept(objMeta)) {
             return null;
         }
@@ -62,7 +62,7 @@ public class NodeBuilder {
         // 2) a list node containing references
         // 3) an object node containing a set of objects (if it is a "container" class)
         // 4) an object node containing one or more complex objects (ones important enough to have their own nodes)
-        Node newNode = new NodeImpl(appContainer, parentNode, insertIndex, objMeta);
+        Node newNode = new NodeImpl(appContainer, parentNode, insertIndex, objMeta, locProperty);
         registerNode(newNode);
         //if node is not a reference then populate the chilren
         if (!newNode.isReference()) {
@@ -105,7 +105,7 @@ public class NodeBuilder {
                     propValueObjMeta = cdb.findOrCreateObjMeta(new ObjectLocation(objMeta, property), value);
                 }
                 if (value != null && propValueObjMeta != null) {
-                    createNode(newNode, propValueObjMeta);
+                    createNode(newNode, propValueObjMeta, property);
                 }
             }
         }
@@ -148,7 +148,7 @@ public class NodeBuilder {
         ListNodeContext listNodeContext = parentNode.getListNodeContext();
         Collection list = listNodeContext.getCollection();
         for (Object o : list) {
-            createNode(parentNode, cdb.find(o));
+            createNode(parentNode, cdb.find(o), null);
             //createNode(parentNode, cdb.findOrCreateObjMeta(parentNode.toObjLocation(), o));
         }
     }
@@ -162,7 +162,7 @@ public class NodeBuilder {
             int oldIndex = parent.indexOf(node);
             appContainer.removeNode(node, false, false);
             if (node.isObjectNode()) {
-                newNode = createNode(parent, node.objectMeta(), oldIndex);
+                newNode = createNode(parent, node.objectMeta(), node.getLocProperty(), oldIndex);
             } else {
                 newNode = createListNode(parent, node.getListNodeContext().getContainerProperty(), oldIndex);
             }

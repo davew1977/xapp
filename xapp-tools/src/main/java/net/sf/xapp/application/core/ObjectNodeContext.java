@@ -33,10 +33,12 @@ import java.util.Set;
 public class ObjectNodeContext {
     private Node node;
     private ObjectMeta objectMeta;
+    private Property locProperty;
 
-    public ObjectNodeContext(NodeImpl node, ObjectMeta objMeta) {
+    public ObjectNodeContext(NodeImpl node, ObjectMeta objMeta, Property locProperty) {
         this.node = node;
         objectMeta = objMeta;
+        this.locProperty = locProperty;
     }
 
     public boolean hasToStringMethod() {
@@ -94,6 +96,7 @@ public class ObjectNodeContext {
                 }
             }
             commands.add(new CopyXMLCommand());
+            commands.add(new PasteXMLCommand());
             //add commands that are only allowed when the surrounding list does NOT contain references
             if (parentNode == null || !parentNode.containsReferences()) {
                 //COPY and COPY_XML
@@ -120,6 +123,10 @@ public class ObjectNodeContext {
 
     public boolean canEdit() {
         return classModel().isAllowed(EDIT);
+    }
+
+    public Property getLocProperty() {
+        return locProperty;
     }
 
     private class PrintInfoCommand extends NodeCommand {

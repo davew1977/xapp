@@ -112,7 +112,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         objHome.setIndex(newInstance, oldIndex);
         //refresh so a new Node will be created, then we must select that node
         //so that the whole operation is more transparent to the user
-        Node newNode = appContainer.getNodeBuilder().createNode(parent, newInstance, oldIndex);
+        Node newNode = appContainer.getNodeBuilder().createNode(parent, newInstance, null, oldIndex);
         appContainer.setSelectedNode(newNode);
     }
 

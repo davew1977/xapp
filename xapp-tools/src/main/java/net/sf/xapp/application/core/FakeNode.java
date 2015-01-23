@@ -12,6 +12,8 @@
  */
 package net.sf.xapp.application.core;
 
+import net.sf.xapp.objectmodelling.core.Property;
+
 public class FakeNode extends NodeImpl
 {
     private Object m_obj;
@@ -32,6 +34,11 @@ public class FakeNode extends NodeImpl
     public boolean isReference()
     {
         return false;
+    }
+
+    @Override
+    public Property getLocProperty() {
+        return null;
     }
 
     @Override

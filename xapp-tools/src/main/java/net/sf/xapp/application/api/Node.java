@@ -140,4 +140,5 @@ public interface Node
      */
     Node closest(Class filter);
 
+    Property getLocProperty();
 }

@@ -163,4 +163,12 @@ public class ObjectLocation {
     public int getIndex() {
         return index;
     }
+
+    /**
+     *
+     * @return true is this is a collection type AND the class is annotated as a container for this property
+     */
+    public boolean isContainer() {
+        return isCollection() && property.equals(obj.getContainerProperty());
+    }
 }

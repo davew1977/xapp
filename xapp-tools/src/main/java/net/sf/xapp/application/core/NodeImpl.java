@@ -43,9 +43,9 @@ public class NodeImpl implements Node {
         addToJTree(parent, insertIndex);
     }
 
-    public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectMeta objectMeta) {
+    public NodeImpl(ApplicationContainer appContainer, Node parent, int insertIndex, ObjectMeta objectMeta, Property locProperty) {
         this(appContainer);
-        objectNodeContext = new ObjectNodeContext(this, objectMeta);
+        objectNodeContext = new ObjectNodeContext(this, objectMeta, locProperty);
         if (objectMeta.isContainer()) {
             listNodeContext = new ListNodeContext(new ObjectLocation(objectMeta, objectMeta.getContainerProperty()));
         }
@@ -148,7 +148,9 @@ public class NodeImpl implements Node {
 
     @Override
     public ObjectLocation myObjLocation() {
-        assert objectNodeContext != null;
+        if(objectNodeContext != null && objectNodeContext.getLocProperty() != null) {
+            return new ObjectLocation(getParent().objectMeta(), objectNodeContext.getLocProperty());
+        }
         return getParent().toObjLocation();
     }
 
@@ -181,12 +183,12 @@ public class NodeImpl implements Node {
     public Node find(Property property) {
         for(int i=0; i<numChildren(); i++) {
             Node node = getChildAt(i);
-            ObjectLocation objectLocation = node.toObjLocation();
+            ObjectLocation objectLocation = node.myObjLocation();
             if(objectLocation != null && objectLocation.getProperty().equals(property)) {
                 return node;
             }
         }
-        return this;
+        return null;
     }
 
     @Override
@@ -197,6 +199,12 @@ public class NodeImpl implements Node {
             return parentObjectNode().closest(filter);
         }
     }
+
+    @Override
+    public Property getLocProperty() {
+        return getObjectNodeContext().getLocProperty();
+    }
+
 
     public ApplicationContainer getAppContainer() {
         return appContainer;
