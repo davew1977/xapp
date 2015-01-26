@@ -47,7 +47,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
     public void initObject(Node parentNode, ObjectMeta objectMeta, List<PropertyUpdate> potentialUpdates) {
         PropertyChange propertyChange = initObject(objectMeta, potentialUpdates);
         if (propertyChange.succeeded()) { //could fail if we're added an identical object to a set
-            appContainer.createNode(parentNode, objectMeta);
+            appContainer.createNode(parentNode, objectMeta, -1);
         }
     }
 

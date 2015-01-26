@@ -151,7 +151,11 @@ public class NodeImpl implements Node {
         if(objectNodeContext != null && objectNodeContext.getLocProperty() != null) {
             return new ObjectLocation(getParent().objectMeta(), objectNodeContext.getLocProperty());
         }
-        return getParent().toObjLocation();
+        ObjectLocation objectLocation = getParent().toObjLocation();
+        if (objectLocation != null) {
+            objectLocation.setIndex(index());
+        }
+        return objectLocation;
     }
 
     @Override

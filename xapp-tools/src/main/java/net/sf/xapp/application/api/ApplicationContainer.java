@@ -243,7 +243,7 @@ public interface ApplicationContainer<T>
     NodeUpdateApi getNodeUpdateApi();
 
     Node createNode(ObjectLocation parent, ObjectMeta objectMeta);
-    Node createNode(Node parent, ObjectMeta objectMeta);
+    Node createNode(Node parent, ObjectMeta objectMeta, int index);
 
     Node getNode(Long id, ObjectLocation objectLocation);
 

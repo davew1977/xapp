@@ -511,11 +511,11 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if(parent.isCollection() && !parent.isContainer()) {
             parentNode = parentNode.find(parent.getProperty());
         }
-        return createNode(parentNode, objectMeta);
+        return createNode(parentNode, objectMeta, parent.getIndex());
     }
 
-    public Node createNode(Node parent, ObjectMeta objectMeta) {
-        Node newNode = getNodeBuilder().createNode(parent, objectMeta, null);
+    public Node createNode(Node parent, ObjectMeta objectMeta, int index) {
+        Node newNode = getNodeBuilder().createNode(parent, objectMeta, null, index);
         getApplication().nodeAdded(newNode);
         getMainPanel().repaint();
         return newNode;
