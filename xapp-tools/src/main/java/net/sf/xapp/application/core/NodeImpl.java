@@ -62,6 +62,9 @@ public class NodeImpl implements Node {
         jTreeNode.setUserObject(this);
         DefaultTreeModel treeModel = (DefaultTreeModel) appContainer.getMainTree().getModel();
         if (parent!=null) {
+            if(insertIndex == -1) {
+                insertIndex =  parent.numChildren();
+            }
             treeModel.insertNodeInto(jTreeNode, parent.getJtreeNode(), insertIndex);
         }
     }

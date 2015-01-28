@@ -257,7 +257,7 @@ public class DefaultEditor implements Editor
         Class boundCompType = BOUND_COMPONENT_TYPES.get(property.getPropertyClass());
         if (property.hasSpecialBoundComponent())
         {
-            return EditorUtils.createBoundProperty(property);
+            return (PropertyWidget) property.createEditorWidget();
         }
         else if (boundCompType != null)
         {

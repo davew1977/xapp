@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 public @interface EditorWidget
 {
-    Class value() default Object.class;
+    Class value();
 
     /**
      * Specify this as an alternative to "Class" if you need to decouple the domain from the UI framework

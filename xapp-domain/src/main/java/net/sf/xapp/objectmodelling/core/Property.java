@@ -15,10 +15,12 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.application.Hide;
 import net.sf.xapp.annotations.application.Validate;
-import net.sf.xapp.annotations.objectmodelling.*;
 import net.sf.xapp.annotations.marshalling.MarshalAsAttribute;
 import net.sf.xapp.annotations.marshalling.MarshalAsElement;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
+import net.sf.xapp.annotations.objectmodelling.Key;
+import net.sf.xapp.annotations.objectmodelling.Reference;
+import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
@@ -34,21 +36,21 @@ import static net.sf.xapp.objectmodelling.core.NamespacePath.fullPath;
  * accessible through a getter and optionally modifiable through a setter
  */
 public class Property<T> implements Comparable {
-    protected final PropertyAccess m_propertyAccess;
+    protected final PropertyAccess propertyAccess;
     protected Class m_class;//class of return type of accessor
-    private Reference m_reference;//true if this should point to another object in the datamodel
-    private String m_filterOnProperty;
+    private Reference reference;//true if this should point to another object in the datamodel
+    private String filterOnProperty;
     private boolean key;
-    private EditorWidget m_editorWidget; //override the default bound component
-    protected ClassDatabase m_classDatabase;
-    private boolean m_formattedText;
-    private Class m_parentClass;
-    private String m_query = "";
-    private boolean m_editable;
-    private boolean m_editableOnCreation;
-    private List<PropertyChangeListener> m_listeners;
-    private boolean m_mandatory;
-    private boolean m_visibilityRestricted = true; //defaults to visible in dynamic GUI
+    private EditorWidgetFactory editorWidgetFactory; //override the default bound component
+    protected ClassDatabase classDatabase;
+    private boolean formattedText;
+    private Class parentClass;
+    private String query = "";
+    private boolean editable;
+    private boolean editableOnCreation;
+    private List<PropertyChangeListener> listeners;
+    private boolean mandatory;
+    private boolean visibilityRestricted = true; //defaults to visible in dynamic GUI
 
     public Property(ClassModelManager classDatabase, PropertyAccess propertyAccess, Class aClass, Reference ref,
                     String filterOnProperty, Key key,
@@ -59,52 +61,58 @@ public class Property<T> implements Comparable {
                     boolean editable,
                     TreeMeta treeMeta,
                     boolean mandatory) {
-        m_classDatabase = classDatabase;
-        m_mandatory = mandatory;
-        m_propertyAccess = propertyAccess;
+        this.classDatabase = classDatabase;
+        this.mandatory = mandatory;
+        this.propertyAccess = propertyAccess;
         m_class = aClass;
-        m_reference = ref;
-        m_filterOnProperty = filterOnProperty;
+        reference = ref;
+        this.filterOnProperty = filterOnProperty;
         this.key = key != null;
-        m_editorWidget = editorWidget;
-        m_formattedText = isformattedText;
-        m_parentClass = parentClass;
-        m_query = query;
-        m_editable = editable;
-        m_editableOnCreation = editable;
-        m_listeners = new ArrayList<PropertyChangeListener>();
+        if(editorWidget != null) {
+            this.editorWidgetFactory = new EditorWidgetFactory(editorWidget);
+        }
+        formattedText = isformattedText;
+        this.parentClass = parentClass;
+        this.query = query;
+        this.editable = editable;
+        editableOnCreation = editable;
+        listeners = new ArrayList<PropertyChangeListener>();
+    }
+
+    public void setEditorWidgetType(Class type, Object... args) {
+        this.editorWidgetFactory = new EditorWidgetFactory(type, args);
     }
 
     public PropertyAccess getPropertyAccess() {
-        return m_propertyAccess;
+        return propertyAccess;
     }
 
     public void addChangeListener(PropertyChangeListener listener) {
-        m_listeners.add(listener);
+        listeners.add(listener);
     }
 
     public void setVisibilityRestricted(boolean visibilityRestricted) {
-        m_visibilityRestricted = visibilityRestricted;
+        this.visibilityRestricted = visibilityRestricted;
     }
 
     public void setEditable(boolean editable) {
-        m_editable = editable;
+        this.editable = editable;
     }
 
     public void setEditableOnCreation(boolean editableOnCreation) {
-        m_editableOnCreation = editableOnCreation;
+        this.editableOnCreation = editableOnCreation;
     }
 
     public boolean isEditableOnCreation() {
-        return m_editableOnCreation;
+        return editableOnCreation;
     }
 
     public Object get(Object target) {
         try {
-            return m_propertyAccess.get(target);
+            return propertyAccess.get(target);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("WARNING: property " + this + " in " + m_parentClass.getSimpleName() + " cannot be retrieved on " + target + " of class " + target.getClass().getSimpleName());
+            System.out.println("WARNING: property " + this + " in " + parentClass.getSimpleName() + " cannot be retrieved on " + target + " of class " + target.getClass().getSimpleName());
             return null;
         }
     }
@@ -113,15 +121,15 @@ public class Property<T> implements Comparable {
         try {
             Object oldVal = get(target);
             if (!objEquals(oldVal, newVal)) {
-                m_propertyAccess.set(target, newVal);
-                for (PropertyChangeListener listener : m_listeners) {
+                propertyAccess.set(target, newVal);
+                for (PropertyChangeListener listener : listeners) {
                     listener.propertyChanged(this, target, oldVal, newVal);
                 }
                 return new RegularPropertyChange(this, target, oldVal, newVal);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("WARNING: property " + this + " in " + m_parentClass.getSimpleName() + " cannot be set on " + target + " of class " + target.getClass().getSimpleName());
+            System.out.println("WARNING: property " + this + " in " + parentClass.getSimpleName() + " cannot be set on " + target + " of class " + target.getClass().getSimpleName());
         }
         return null;
     }
@@ -216,7 +224,7 @@ public class Property<T> implements Comparable {
             return String.valueOf(val);
         } else if (StringSerializable.class.isAssignableFrom(getPropertyClass())) {
             return ((StringSerializable) val).writeString();
-        } else if ((ss = m_classDatabase.getStringSerializer(getPropertyClass())) != null) {
+        } else if ((ss = classDatabase.getStringSerializer(getPropertyClass())) != null) {
             return ss.write(val);
         }
         return val.toString();
@@ -225,7 +233,7 @@ public class Property<T> implements Comparable {
 
     public boolean isImmutable() {
         return isStringPrimitiveOrEnum() || StringSerializable.class.isAssignableFrom(getMainType())
-                || m_classDatabase.getStringSerializer(getMainType()) != null;
+                || classDatabase.getStringSerializer(getMainType()) != null;
     }
 
 
@@ -238,19 +246,19 @@ public class Property<T> implements Comparable {
     }
 
     public String getName() {
-        return m_propertyAccess.getName();
+        return propertyAccess.getName();
     }
 
     public boolean isReadOnly() {
-        return m_propertyAccess.isReadOnly();
+        return propertyAccess.isReadOnly();
     }
 
     public boolean isReference() {
-        return m_reference != null;
+        return reference != null;
     }
 
     public Reference getReference() {
-        return m_reference;
+        return reference;
     }
 
     public boolean isStringOrPrimitive() {
@@ -283,8 +291,8 @@ public class Property<T> implements Comparable {
 
     public int compareTo(Object o) {
         Property other = (Property) o;
-        Integer order1 = m_propertyAccess.getOrdering();
-        Integer order2 = other.m_propertyAccess.getOrdering();
+        Integer order1 = propertyAccess.getOrdering();
+        Integer order2 = other.propertyAccess.getOrdering();
 
         if (order1 == 0 && order2 == 0) //default to alphabetical
         {
@@ -295,7 +303,7 @@ public class Property<T> implements Comparable {
     }
 
     public boolean isMarshalAsAttribute() {
-        return m_propertyAccess.getAnnotation(MarshalAsAttribute.class) != null;
+        return propertyAccess.getAnnotation(MarshalAsAttribute.class) != null;
     }
 
     public String toString() {
@@ -303,21 +311,21 @@ public class Property<T> implements Comparable {
     }
 
     public ClassModel<T> getPropertyClassModel() {
-        return m_classDatabase.getClassModel(m_class);
+        return classDatabase.getClassModel(m_class);
     }
 
     public ClassModel getPropertyClassModel(Object instance) {
         Class aClass = instance.getClass();
         assert m_class.isAssignableFrom(aClass) : aClass.getSimpleName() + " not compatable with " + m_class.getSimpleName();
-        return m_classDatabase.getClassModel(aClass);
+        return classDatabase.getClassModel(aClass);
     }
 
     public String getFilterOnProperty() {
-        return m_filterOnProperty;
+        return filterOnProperty;
     }
 
     public boolean isSimpleType() {
-        return m_classDatabase.isSimpleType(m_class);
+        return classDatabase.isSimpleType(m_class);
     }
 
     public boolean isKey() {
@@ -325,30 +333,30 @@ public class Property<T> implements Comparable {
     }
 
     public boolean hasSpecialBoundComponent() {
-        return m_editorWidget != null;
+        return editorWidgetFactory != null;
     }
 
     public String getBoundPropertyArgs() {
-        return hasSpecialBoundComponent() ? m_editorWidget.args() : null;
+        return hasSpecialBoundComponent() ? editorWidgetFactory.args() : null;
     }
 
     public boolean isTransient() {
-        return m_propertyAccess.isTransient();
+        return propertyAccess.isTransient();
     }
 
     /**
      * @return true if not transient OR transient AND displayNodes is set to true
      */
     public boolean isDisplayNodes() {
-        return !m_propertyAccess.isTransient() || m_propertyAccess.displayNodes();
+        return !propertyAccess.isTransient() || propertyAccess.displayNodes();
     }
 
     public ClassDatabase getClassDatabase() {
-        return m_classDatabase;
+        return classDatabase;
     }
 
     public boolean isMarshalAsElement() {
-        return m_propertyAccess.getAnnotation(MarshalAsElement.class) != null;
+        return propertyAccess.getAnnotation(MarshalAsElement.class) != null;
     }
 
     public boolean isBoolean() {
@@ -360,31 +368,31 @@ public class Property<T> implements Comparable {
     }
 
     public boolean isFormattedText() {
-        return m_formattedText;
+        return formattedText;
     }
 
     public Class getParentClass() {
-        return m_parentClass;
+        return parentClass;
     }
 
     public String getQuery() {
-        return m_query;
+        return query;
     }
 
     public boolean isEditable() {
-        return m_editable && !isReadOnly();
+        return editable && !isReadOnly();
     }
 
     public boolean isMandatory() {
-        return m_mandatory;
+        return mandatory;
     }
 
     public void setMandatory(boolean mandatory) {
-        m_mandatory = mandatory;
+        this.mandatory = mandatory;
     }
 
     public boolean isVisibilityRestricted() {
-        return m_visibilityRestricted && !isHidden();
+        return visibilityRestricted && !isHidden();
     }
 
     public boolean isDouble() {
@@ -404,7 +412,7 @@ public class Property<T> implements Comparable {
     }
 
     public String getXMLMapping() {
-        XMLMapping xmlMapping = m_propertyAccess.getAnnotation(XMLMapping.class);
+        XMLMapping xmlMapping = propertyAccess.getAnnotation(XMLMapping.class);
         return xmlMapping != null ? xmlMapping.value() : getName();
     }
 
@@ -413,15 +421,11 @@ public class Property<T> implements Comparable {
     }
 
     public boolean isHidden() {
-        return m_propertyAccess.getAnnotation(Hide.class) != null;
-    }
-
-    public EditorWidget getEditorWidget() {
-        return m_editorWidget;
+        return propertyAccess.getAnnotation(Hide.class) != null;
     }
 
     public Validate getValidate() {
-        return m_propertyAccess.getAnnotation(Validate.class);
+        return propertyAccess.getAnnotation(Validate.class);
     }
 
     public boolean isComplexNonReference() {
@@ -449,5 +453,10 @@ public class Property<T> implements Comparable {
 
     public void setKey(boolean b) {
         key = true;
+    }
+
+
+    public Object createEditorWidget() {
+        return editorWidgetFactory.create();
     }
 }

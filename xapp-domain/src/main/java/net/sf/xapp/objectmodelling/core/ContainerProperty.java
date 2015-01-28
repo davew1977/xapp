@@ -56,7 +56,7 @@ public class ContainerProperty extends Property
 
     public ClassModel getContainedTypeClassModel()
     {
-        return m_classDatabase.getClassModel(m_containedType);
+        return classDatabase.getClassModel(m_containedType);
     }
 
     public Object get(Object target)
@@ -65,7 +65,7 @@ public class ContainerProperty extends Property
         if(map==null) {
             map = createCollection();
             try {
-                m_propertyAccess.set(target, map);
+                propertyAccess.set(target, map);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -103,7 +103,7 @@ public class ContainerProperty extends Property
 
     protected ContainsReferences getContainsRefsAnnotation()
     {
-        return m_propertyAccess.getAnnotation(ContainsReferences.class);
+        return propertyAccess.getAnnotation(ContainsReferences.class);
     }
 
     public boolean contains(Object container, ObjectMeta objMeta) {

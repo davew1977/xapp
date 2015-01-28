@@ -21,7 +21,7 @@ public class FreeTextPropertyWidget extends AbstractPropertyWidget
 {
     private JScrollPane m_scrollPane;
     private JTextArea m_textArea;
-    private float m_fontSize;
+    private Font font;
 
     public void setEditable(boolean editable)
     {
@@ -35,7 +35,6 @@ public class FreeTextPropertyWidget extends AbstractPropertyWidget
             m_scrollPane = new JScrollPane(getTextArea(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             m_scrollPane.setPreferredSize(new Dimension(160,160));
             String args = m_widgetContext.getArgs();
-            m_fontSize = getTextArea().getFont().getSize2D();
             if(args !=null && !args.equals(""))
             {
                 String[] s = args.split(",");
@@ -44,7 +43,7 @@ public class FreeTextPropertyWidget extends AbstractPropertyWidget
                 m_scrollPane.setPreferredSize(new Dimension(w,h));
                 if (s.length == 3)
                 {
-                    m_fontSize = Float.parseFloat(s[2]);
+                    font = Font.decode(s[2]);
                 }
             }
             m_scrollPane.setMaximumSize(new Dimension(Short.MAX_VALUE,
@@ -60,6 +59,7 @@ public class FreeTextPropertyWidget extends AbstractPropertyWidget
             m_textArea = new JTextArea();
             m_textArea.setWrapStyleWord(true);
             m_textArea.setLineWrap(true);
+
         }
         return m_textArea;
     }
@@ -71,7 +71,9 @@ public class FreeTextPropertyWidget extends AbstractPropertyWidget
 
     public void setValue(Object value, ObjectMeta target)
     {
-        getTextArea().setFont(getTextArea().getFont().deriveFont(m_fontSize));
+        if(font != null) {
+            m_textArea.setFont(font);
+        }
         getTextArea().setText((String) value);
     }
 }
