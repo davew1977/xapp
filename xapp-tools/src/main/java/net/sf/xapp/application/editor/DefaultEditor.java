@@ -173,6 +173,7 @@ public class DefaultEditor implements Editor
             int maxComponentWidth = 0;
             int totalHeight = 0;
             List<Property> allProperties = m_editableContext.getVisibleProperties();
+            Collections.sort(allProperties);
             for (Property property : allProperties)
             {
                 JLabel label = new JLabel(property.getName());

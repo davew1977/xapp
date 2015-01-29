@@ -387,8 +387,9 @@ public class Property<T> implements Comparable {
         return mandatory;
     }
 
-    public void setMandatory(boolean mandatory) {
+    public Property setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+        return this;
     }
 
     public boolean isVisibilityRestricted() {
@@ -451,8 +452,9 @@ public class Property<T> implements Comparable {
         return getClassDatabase().getClassModel(getMainType());
     }
 
-    public void setKey(boolean b) {
-        key = true;
+    public Property setKey(boolean b) {
+        key = b;
+        return this;
     }
 
 
@@ -460,7 +462,8 @@ public class Property<T> implements Comparable {
         return editorWidgetFactory.create();
     }
 
-    public void setPropOrder(int order) {
+    public Property setPropOrder(int order) {
         propertyAccess.setOrdering(order);
+        return this;
     }
 }
