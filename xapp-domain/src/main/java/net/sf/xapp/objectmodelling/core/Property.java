@@ -459,4 +459,8 @@ public class Property<T> implements Comparable {
     public Object createEditorWidget() {
         return editorWidgetFactory.create();
     }
+
+    public void setPropOrder(int order) {
+        propertyAccess.setOrdering(order);
+    }
 }

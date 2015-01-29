@@ -40,6 +40,7 @@ public interface PropertyAccess
     boolean displayNodes();
 
     int getOrdering();
+    void setOrdering(int i);
 
     Class getDeclaringClass();
 }

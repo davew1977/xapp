@@ -8,15 +8,43 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.marshalling.PropertyOrder;
 
-public abstract class AbstractPropertyAccess implements PropertyAccess
-{
-    public final int getOrdering()
-    {
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+
+public abstract class AbstractPropertyAccess<T extends AccessibleObject> implements PropertyAccess {
+    private T prop;
+    private int order = 0;
+
+    public AbstractPropertyAccess(T prop) {
+        this.prop = prop;
+        prop.setAccessible(true);
         PropertyOrder propOrder = getAnnotation(PropertyOrder.class);
         if(propOrder !=null)
         {
-            return propOrder.value();
+            order =  propOrder.value();
         }
-        return 0;
     }
+
+    public final int getOrdering() {
+        return order;
+    }
+
+    @Override
+    public void setOrdering(int i) {
+        this.order = i;
+    }
+
+    public T getProp() {
+        return prop;
+    }
+
+    public final <E extends Annotation> E getAnnotation(Class<E> annotationClass)
+    {
+        return prop.getAnnotation(annotationClass);
+    }
+    public final String toString()
+    {
+        return prop.toString();
+    }
+
 }

@@ -20,15 +20,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 
-public class MethodProperty extends AbstractPropertyAccess
+public class MethodProperty extends AbstractPropertyAccess<Method>
 {
     private final String m_name;
-    private final Method m_accessor;
     private final Method m_modifier;
 
     public MethodProperty(Method accessor)
     {
-        m_accessor = accessor;
+        super(accessor);
         String name = accessor.getName();
         name = name.startsWith("is") ? name.substring(2) : name.substring(3);
         m_name = name;
@@ -53,7 +52,7 @@ public class MethodProperty extends AbstractPropertyAccess
 
     public Object get(Object target) throws InvocationTargetException, IllegalAccessException
     {
-        return m_accessor.invoke(target);
+        return getProp().invoke(target);
     }
 
     public boolean isReadOnly()
@@ -61,14 +60,11 @@ public class MethodProperty extends AbstractPropertyAccess
         return m_modifier==null;
     }
 
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass)
-    {
-        return m_accessor.getAnnotation(annotationClass);
-    }
+
 
     public Type getGenericType()
     {
-        return m_accessor.getGenericReturnType();
+        return getProp().getGenericReturnType();
     }
 
     public String getName()
@@ -78,7 +74,7 @@ public class MethodProperty extends AbstractPropertyAccess
 
     public Class getType()
     {
-        return m_accessor.getReturnType();
+        return getProp().getReturnType();
     }
 
     public boolean isTransient()
@@ -93,11 +89,7 @@ public class MethodProperty extends AbstractPropertyAccess
 
     @Override
     public Class getDeclaringClass() {
-        return m_accessor.getDeclaringClass();
+        return getProp().getDeclaringClass();
     }
 
-    public String toString()
-    {
-        return m_accessor.toString();
-    }
 }

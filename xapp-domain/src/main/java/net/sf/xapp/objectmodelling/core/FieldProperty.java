@@ -15,21 +15,18 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.utils.StringUtils;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
 
-public class FieldProperty extends AbstractPropertyAccess
+public class FieldProperty extends AbstractPropertyAccess<Field>
 {
-    private final Field m_field;
     private String m_name;
 
     public FieldProperty(Field field)
     {
-        m_field = field;
-        m_field.setAccessible(true);
+        super(field);
         String name = field.getName();
         name = name.startsWith("m_") ? name.substring(2) : name;
         name = StringUtils.capitalizeFirst(name);
@@ -38,12 +35,12 @@ public class FieldProperty extends AbstractPropertyAccess
 
     public void set(Object target, Object value) throws InvocationTargetException, IllegalAccessException
     {
-        m_field.set(target, value);
+        getProp().set(target, value);
     }
 
     public Object get(Object target) throws InvocationTargetException, IllegalAccessException
     {
-        return m_field.get(target);
+        return getProp().get(target);
     }
 
     public boolean isReadOnly()
@@ -51,14 +48,9 @@ public class FieldProperty extends AbstractPropertyAccess
         return false;
     }
 
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass)
-    {
-        return m_field.getAnnotation(annotationClass);
-    }
-
     public Type getGenericType()
     {
-        return m_field.getGenericType();
+        return getProp().getGenericType();
     }
 
     public String getName()
@@ -68,7 +60,7 @@ public class FieldProperty extends AbstractPropertyAccess
 
     public Class getType()
     {
-        return m_field.getType();
+        return getProp().getType();
     }
 
     public boolean isTransient()
@@ -83,11 +75,7 @@ public class FieldProperty extends AbstractPropertyAccess
 
     @Override
     public Class getDeclaringClass() {
-        return m_field.getDeclaringClass();
+        return getProp().getDeclaringClass();
     }
 
-    public String toString()
-    {
-        return m_field.toString();
-    }
 }
