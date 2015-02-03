@@ -84,4 +84,12 @@ public class CollectionsUtils
         }
         return result;
     }
+
+    public static <T> List<T> select(List<T> src, List<Integer> indexes) {
+        List<T> result = new ArrayList<T>();
+        for (Integer index : indexes) {
+            result.add(src.get(index));
+        }
+        return result;
+    }
 }
