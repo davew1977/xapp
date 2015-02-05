@@ -407,12 +407,15 @@ public class ObjectMeta<T> implements Namespace{
     }
 
     public Collection<Object> dispose() {
+        return dispose(true);
+    }
+    private Collection<Object> dispose(boolean disconnectFromHome) {
 
         Collection<Object> attachments = attachments(); //store for returning later
         //delete all child objects
         List<ObjectMeta> children = allChildren();
         for (ObjectMeta child : children) {
-            attachments.addAll(child.dispose());
+            attachments.addAll(child.dispose(false));
         }
 
         ArrayList<ObjectLocation> refs = new ArrayList<ObjectLocation>(references.keySet());//copy to prevent concurrent modification
@@ -425,7 +428,7 @@ public class ObjectMeta<T> implements Namespace{
 
 
         classModel.dispose(this);
-        if (home!=null) {
+        if (home!=null && disconnectFromHome) {
             home.unset(this);
         }
         return attachments;
