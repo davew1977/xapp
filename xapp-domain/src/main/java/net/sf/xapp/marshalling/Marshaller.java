@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.marshalling;
 
+import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.marshalling.api.XMLWriter;
@@ -21,6 +22,7 @@ import net.sf.xapp.marshalling.namevaluepair.SimpleNameValuePair;
 import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
 import net.sf.xapp.marshalling.stringserializers.IntegerListSerializer;
 import net.sf.xapp.marshalling.stringserializers.LongListSerializer;
+import net.sf.xapp.marshalling.stringserializers.StringMapSerializer;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.objectmodelling.core.*;
@@ -177,6 +179,9 @@ public class Marshaller<T> {
                         } else if (value != null && !((Collection) value).isEmpty()) {
                             writeAsElements.add(new PropertyValuePair(property, value));
                         }
+                    }
+                    else if (property instanceof ContainerProperty && ((ContainerProperty) property).getContainedType() == String.class) {
+                        writeAsElements.add(new PropertyValuePair(property, StringMapSerializer._write((Map<String, String>) value)));
                     }
                     //defaults to marshal as attribute for strings, enums and primitives
                     else if (!property.isFormattedText() &&

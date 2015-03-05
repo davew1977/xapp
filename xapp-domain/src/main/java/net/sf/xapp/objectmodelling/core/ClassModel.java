@@ -203,9 +203,18 @@ public class ClassModel<T> {
         return results;
     }
 
-    public List<ListProperty> getNonTransientPrimitiveLists() {
-        List<ListProperty> list = new ArrayList<ListProperty>();
+    public List<ContainerProperty> getNonTransientPrimitiveLists() {
+        List<ContainerProperty> list = new ArrayList<ContainerProperty>();
         for (ListProperty property : listProperties) {
+            if (!property.isTransient() && !property.hasSpecialBoundComponent() && (
+                    property.getContainedType() == String.class ||
+                            property.getContainedType() == Integer.class ||
+                            property.getContainedType() == Long.class ||
+                            property.getContainedType().isEnum())) {
+                list.add(property);
+            }
+        }
+        for (ContainerProperty property : mapProperties) {
             if (!property.isTransient() && !property.hasSpecialBoundComponent() && (
                     property.getContainedType() == String.class ||
                             property.getContainedType() == Integer.class ||

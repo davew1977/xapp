@@ -15,10 +15,7 @@ package net.sf.xapp.application.core;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.ToolTipHandler;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
-import net.sf.xapp.objectmodelling.core.ClassModel;
-import net.sf.xapp.objectmodelling.core.ListProperty;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.objectmodelling.core.Property;
+import net.sf.xapp.objectmodelling.core.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,7 +55,7 @@ public class DefaultToolTipHandler implements ToolTipHandler
         str.append("<html><table><font size=2>");
         str.append("<tr><td><font size=2 COLOR=\"#000000\">Class</b></td><td><font size=2>").append(classModel).append("</td></tr>");
         List<Property> properties = classModel.getNonTransientProperties();
-        List<ListProperty> listProperties = classModel.getNonTransientPrimitiveLists();
+        List<ContainerProperty> listProperties = classModel.getNonTransientPrimitiveLists();
         for (Property property : properties)
         {
             String name = property.getName();
@@ -69,10 +66,10 @@ public class DefaultToolTipHandler implements ToolTipHandler
             }
             str.append("<tr><td><font size=2 COLOR=\"#000000\"><b>").append(name).append("</td><td><font size=2>").append(propvalue).append("</td></tr>");
         }
-        for (ListProperty listProperty : listProperties)
+        for (ContainerProperty listProperty : listProperties)
         {
             String name = listProperty.getName();
-            Collection list = listProperty.get(instance);
+            Collection list = listProperty.getCollection(instance);
             if (list!=null)
             {
                 String info = "size="+list.size();

@@ -285,6 +285,12 @@ public class DefaultEditor implements Editor
             }
             return new NullPropertyWidget(property);
         }
+        else if(property instanceof ContainerProperty) {
+            ContainerProperty cp = (ContainerProperty) property;
+            if(cp.getContainedType().equals(String.class)) {
+                return new PropsEditorWidget();
+            }
+        }
         else if (property.getPropertyClass().equals(String.class))
         {
             return new StringPropertyWidget();

@@ -14,8 +14,10 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
+import net.sf.xapp.marshalling.stringserializers.StringMapSerializer;
 import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.utils.StringUtils;
+import net.sf.xapp.utils.XappException;
 
 import java.util.*;
 
@@ -73,6 +75,21 @@ public class ContainerProperty extends Property
         return map;
     }
 
+    @Override
+    public Object convert(ObjectMeta objectMeta, String value) {
+        if(m_containedType == String.class) {
+            return StringMapSerializer._read(value);
+        }
+        throw new XappException(getName() + " map property is not string serializable");
+    }
+
+    @Override
+    public String convert(ObjectMeta objectMeta, Object obj) {
+        if(m_containedType == String.class) {
+            return StringMapSerializer._write((Map<String, String>) obj);
+        }
+        throw new XappException(getName() + " map property is not string serializable");
+    }
 
     @Override
     public Class getMainType() {
@@ -92,7 +109,7 @@ public class ContainerProperty extends Property
     public Object createCollection() {
         return new LinkedHashMap();
     }
-    private Map map(Object container) {
+    public Map map(Object container) {
         return (Map) get(container);
     }
 
