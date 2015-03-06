@@ -37,6 +37,11 @@ public class ListProperty extends ContainerProperty {
         return (Collection) super.get(target);
     }
 
+    @Override
+    protected boolean isEmpty(Object map) {
+        return ((Collection)map).isEmpty();
+    }
+
     public List castToList(Object target) {
         return (List) super.get(target); //note! will blow up if collection is set
     }

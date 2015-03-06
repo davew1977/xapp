@@ -64,7 +64,7 @@ public class ContainerProperty extends Property
     public Object get(Object target)
     {
         Object map = super.get(target);
-        if(map==null) {
+        if(map==null || isEmpty(map)) {
             map = createCollection();
             try {
                 propertyAccess.set(target, map);
@@ -73,6 +73,10 @@ public class ContainerProperty extends Property
             }
         }
         return map;
+    }
+
+    protected boolean isEmpty(Object map) {
+        return ((Map)map).isEmpty();
     }
 
     @Override
