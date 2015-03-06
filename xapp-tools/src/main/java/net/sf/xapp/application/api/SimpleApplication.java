@@ -169,9 +169,11 @@ public class SimpleApplication<T> implements Application<T> {
         if (lastEdited != null) {
             String[] s = lastEdited.split(":");
             ClassModel cm = classDatabase().getClassModelBySimpleName(s[0]);
-            Object o = cm.getClassDatabase().getInstanceNoCheck(cm.getContainedClass(), s[1]);
-            if (o != null) {
-                appContainer.expand(o);
+            if (cm != null) { //cm could be null if no instances of the type implied have been created, we can't lazily create because we only have the simple name
+                Object o = cm.getClassDatabase().getInstanceNoCheck(cm.getContainedClass(), s[1]);
+                if (o != null) {
+                    appContainer.expand(o);
+                }
             }
         }
     }
