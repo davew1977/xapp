@@ -17,6 +17,7 @@ import net.sf.xapp.utils.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 
@@ -65,7 +66,7 @@ public class FieldProperty extends AbstractPropertyAccess<Field>
 
     public boolean isTransient()
     {
-        return getAnnotation(Transient.class)!=null;
+        return getAnnotation(Transient.class)!=null || Modifier.isTransient(getProp().getModifiers());
     }
 
     public boolean displayNodes()
