@@ -380,7 +380,8 @@ public abstract class TextEditor extends JTextPane
 
     public Point getPointAtIndex(int i)
     {
-        return getBoundsAtIndex(i).getLocation();
+        Rectangle boundsAtIndex = getBoundsAtIndex(i);
+        return boundsAtIndex != null ? boundsAtIndex.getLocation() : null;
     }
 
     public Rectangle getBoundsAtIndex(int i)
