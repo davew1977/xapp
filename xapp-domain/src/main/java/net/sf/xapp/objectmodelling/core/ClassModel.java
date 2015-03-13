@@ -293,8 +293,8 @@ public class ClassModel<T> {
         return objectMeta;
     }
 
-    public String getKey(T obj) {
-        return String.valueOf(getKeyProperty().get(obj));
+    public Object getKey(T obj) {
+        return getKeyProperty().get(obj);
     }
 
     public void dispose(T instance) {

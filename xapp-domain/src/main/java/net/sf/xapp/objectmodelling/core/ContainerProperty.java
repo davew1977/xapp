@@ -132,11 +132,11 @@ public class ContainerProperty extends Property
     }
 
     public Object addToMapOrCollection(Object mapOrCollection, int index, Object instance) {
-        String key = getContainedTypeClassModel().getKey(instance);
+        Object key = getContainedTypeClassModel().getKey(instance);
         return ((Map) mapOrCollection).put(key, instance);
     }
     public boolean removeFromMapOrCollection(Object mapOrCollection, Object instance) {
-        String key = getContainedTypeClassModel().getKey(instance);
+        Object key = getContainedTypeClassModel().getKey(instance);
         return ((Map) mapOrCollection).remove(key) != null;
     }
 

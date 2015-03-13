@@ -128,12 +128,12 @@ public class ObjectLocation {
         return property.isMap();
     }
 
-    public void keyChanged(String oldVal, String newVal) {
+    public void keyChanged(Object oldVal, Object newVal) {
         assert isMap();
         ContainerProperty cp = (ContainerProperty) property;
         Map map = (Map) cp.get(obj.getInstance());
-        Object item = map.remove(String.valueOf(oldVal));
-        map.put(String.valueOf(newVal), item);
+        Object item = map.remove(oldVal);
+        map.put(newVal, item);
     }
 
     public boolean isReference() {

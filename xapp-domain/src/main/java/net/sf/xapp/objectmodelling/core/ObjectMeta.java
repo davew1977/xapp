@@ -260,7 +260,7 @@ public class ObjectMeta<T> implements Namespace{
                     if(home != null) {
                         updateMetaHierarchy(valueOf(newVal));
                         if(home.isMap()) {
-                            home.keyChanged(valueOf(oldVal), valueOf(newVal));
+                            home.keyChanged(oldVal, newVal);
                         }
                     }
                 }
