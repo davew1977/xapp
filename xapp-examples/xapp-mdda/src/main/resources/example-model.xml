@@ -1,0 +1,23 @@
+<Model baseModule="pl-core" corePackageName="net.sf.xapp.net.common.types" generalErrors="ENTITY_ALREADY_EXISTS,NODE_IS_SHUTTING_DOWN,ENTITY_DOES_NOT_EXIST_IN_CLUSTER,PRINCIPAL_ALREADY_HAS_PENDING_REQUEST," messageIdStart="0" objectIdStart="2000" version="4">
+  <Module name="provided">
+    <DirMeta name="java">
+      <DirMeta name="lang">
+        <PrimitiveType name="String"/>
+        <PrimitiveType javaMapping="int" name="Integer"/>
+        <PrimitiveType javaMapping="long" name="Long"/>
+        <PrimitiveType javaMapping="boolean" name="Boolean"/>
+        <PrimitiveType name="Object"/>
+        <PrimitiveType javaMapping="float" name="Float"/>
+        <PrimitiveType javaMapping="byte" name="Byte"/>
+        <PrimitiveType name="Class"/>
+      </DirMeta>
+    </DirMeta>
+  </Module>
+  <Module name="pl-core" outDir="xapp-examples/xapp-mdda/target/generated-sources/xapp-codegen-plugin">
+    <DirMeta name="com">
+      <DirMeta name="pl">
+        <DirMeta name="core"/>
+      </DirMeta>
+    </DirMeta>
+  </Module>
+</Model>
