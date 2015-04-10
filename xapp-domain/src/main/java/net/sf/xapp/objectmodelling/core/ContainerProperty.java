@@ -25,14 +25,16 @@ import java.util.*;
 public class ContainerProperty extends Property
 {
     protected Class m_containedType;
+    protected Class mapKeyType;
     private List<Rights> m_restrictedRights;
 
     public ContainerProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
-                             Class containedType, EditorWidget editorWidget,
+                             Class containedType, Class<?> keyType, EditorWidget editorWidget,
                              Class parentClass)
     {
         super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, editorWidget, false, parentClass, "", true,null, false);
         m_containedType = containedType;
+        this.mapKeyType = keyType;
         m_restrictedRights = new ArrayList<Rights>();
     }
 
@@ -82,7 +84,7 @@ public class ContainerProperty extends Property
     @Override
     public Object convert(ObjectMeta objectMeta, String value) {
         if(m_containedType == String.class) {
-            return StringMapSerializer._read(value);
+            return StringMapSerializer._read(mapKeyType, value);
         }
         throw new XappException(getName() + " map property is not string serializable");
     }
@@ -90,7 +92,7 @@ public class ContainerProperty extends Property
     @Override
     public String convert(ObjectMeta objectMeta, Object obj) {
         if(m_containedType == String.class) {
-            return StringMapSerializer._write((Map<String, String>) obj);
+            return StringMapSerializer._write((Map<?, String>) obj);
         }
         throw new XappException(getName() + " map property is not string serializable");
     }
@@ -179,5 +181,9 @@ public class ContainerProperty extends Property
 
     public boolean isContainerListProperty() {
         return getClassDatabase().getClassModel(getParentClass()).getContainerProperty() == this;
+    }
+
+    public Class getMapKeyType() {
+        return mapKeyType;
     }
 }

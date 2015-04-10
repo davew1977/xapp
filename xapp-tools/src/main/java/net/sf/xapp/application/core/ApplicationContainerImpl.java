@@ -145,6 +145,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     public void setUserGUI(Application application)
     {
+        getSplitPane();
         m_application = application;
         m_application.init(this);
         m_specialTreeGraphics = application.createSpecialTreeGraphics();

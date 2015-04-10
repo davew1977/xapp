@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,8 +28,13 @@ public class ReflectionUtils
             method.setAccessible(true);
             return (T) method.invoke(null, params);
         }
-        catch (Exception e)
-        {
+        catch (InvocationTargetException e) {
+            if(e.getCause() instanceof RuntimeException) {
+                throw (RuntimeException) e.getCause();
+            }
+            throw new RuntimeException(e);
+        }
+        catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

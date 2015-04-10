@@ -13,6 +13,7 @@
 package net.sf.xapp.marshalling.stringserializers;
 
 import net.sf.xapp.marshalling.api.StringSerializer;
+import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.XappException;
 
 import java.lang.reflect.Method;
@@ -22,43 +23,35 @@ import java.util.List;
 
 public class EnumListSerializer implements StringSerializer<List<? extends Enum>>
 {
-    private List<Enum> m_enumValues;
+    private Class enumClass;
 
     public EnumListSerializer(Class enumClass)
     {
-        Enum[] values = getEnumValues(enumClass);
-        m_enumValues = Arrays.asList(values);
+        this.enumClass = enumClass;
     }
 
     public List<? extends Enum> read(String str)
     {
-        return doRead(str, m_enumValues);
+        return doRead(str, enumClass);
     }
 
     public static List<? extends Enum> doRead(String str, Class enumClass)
     {
-        Enum[] values = getEnumValues(enumClass);
-        return doRead(str, Arrays.asList(values));
-    }
-    private static List<? extends Enum> doRead(String str, List<Enum> m_enumValues)
-    {
         ArrayList<Enum> e = new ArrayList<Enum>();
-        if(str==null)
+        if(str==null || str.isEmpty())
         {
             return e;
         }
         String[] items = str.split(",");
         for (String item : items)
         {
-            for (Enum enumValue : m_enumValues)
-            {
-                if(enumValue.toString().equals(item))
-                {
-                    e.add(enumValue);
-                }
-            }
+            e.add(readSingleValue(item, enumClass));
         }
         return e;
+    }
+
+    public static Enum readSingleValue(String item, Class enumClass) {
+        return ReflectionUtils.call(enumClass, "valueOf", item);
     }
 
     public String write(List<? extends Enum> obj)

@@ -140,5 +140,10 @@ public interface Node
      */
     Node closest(Class filter);
 
+    /**
+     * traverse ancestors until we find an object with the given method
+     */
+    Node closest(String method, Class... parameterTypes);
+
     Property getLocProperty();
 }

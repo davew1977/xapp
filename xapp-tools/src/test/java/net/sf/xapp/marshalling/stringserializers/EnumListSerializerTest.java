@@ -1,14 +1,14 @@
 package net.sf.xapp.marshalling.stringserializers;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.framework.TestCase;
+import net.sf.xapp.marshalling.TestEnum;
+import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import net.sf.xapp.marshalling.TestEnum;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * EnumListSerializer Tester.
@@ -17,18 +17,13 @@ import net.sf.xapp.marshalling.TestEnum;
  * @since <pre>06/09/2009</pre>
  * @version 1.0
  */
-public class EnumListSerializerTest extends TestCase 
+public class EnumListSerializerTest
 {
-    public EnumListSerializerTest(String name) 
-    {
-        super(name);
-    }
-
-
+    @Test()
     public void testSerialize()
     {
         EnumListSerializer e = new EnumListSerializer(TestEnum.class);
-        assertEquals("",e.write(null));
+        assertEquals("", e.write(null));
         assertEquals("one,two,three,", e.write(Arrays.asList(TestEnum.one, TestEnum.two, TestEnum.three)));
         assertEquals("",e.write(new ArrayList<Enum>()));
 
@@ -41,6 +36,13 @@ public class EnumListSerializerTest extends TestCase
 
         assertTrue(e.read(null).isEmpty());
         assertTrue(e.read("").isEmpty());
-        assertTrue(e.read("bogus").isEmpty());
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBadEnumValue() {
+        EnumListSerializer e = new EnumListSerializer(TestEnum.class);
+        e.read("bogus"); //should throw exception
+
     }
 }

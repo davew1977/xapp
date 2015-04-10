@@ -1,6 +1,7 @@
 package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.marshalling.stringserializers.StringMapSerializer;
+import net.sf.xapp.objectmodelling.core.ContainerProperty;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * Created by oldDave on 05/03/2015.
  */
-public class PropsEditorWidget extends AbstractPropertyWidget<Map<String, String>> {
+public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, String>> {
 
     private PropsEditor textEditor;
     private JScrollPane scrollPane;
@@ -27,12 +28,12 @@ public class PropsEditorWidget extends AbstractPropertyWidget<Map<String, String
     }
 
     @Override
-    public Map<String, String> getValue() {
-        return StringMapSerializer._read(textEditor.getText());
+    public Map<?, String> getValue() {
+        return StringMapSerializer._read(((ContainerProperty) getProperty()).getMapKeyType(), textEditor.getText());
     }
 
     @Override
-    public void setValue(Map<String, String> value, ObjectMeta target) {
+    public void setValue(Map<?, String> value, ObjectMeta target) {
         textEditor.setText(StringMapSerializer._write(value));
         textEditor.setFont(Font.decode("Courier-12"));
     }

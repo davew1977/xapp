@@ -72,9 +72,16 @@ public class PropertyFactoryImpl implements PropertyFactory
         } else if(Map.class.isAssignableFrom(aclass)) {
             ParameterizedType parameterizedType = (ParameterizedType) propertyAccess.getGenericType();
             //support only string as key
-            assert parameterizedType.getActualTypeArguments()[0].equals(String.class);
+            Class<?> keyType = (Class) parameterizedType.getActualTypeArguments()[0];
             Class varType = (Class) parameterizedType.getActualTypeArguments()[1];
-            return new ContainerProperty(classModelManager, propertyAccess, aclass, varType, editorWidgetAnnotation, parentClass);
+
+            //support only Strings, or enums as keys
+            if(!propertyAccess.isTransient() && !keyType.equals(String.class) && !keyType.isEnum()) {
+                throw new IllegalArgumentException(String.format("map properties must have string/enum keys %s", propertyAccess));
+            }
+
+
+            return new ContainerProperty(classModelManager, propertyAccess, aclass, varType, keyType, editorWidgetAnnotation, parentClass);
         }
         else
         {

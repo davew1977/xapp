@@ -18,6 +18,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
+import net.sf.xapp.utils.ReflectionUtils;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -207,6 +208,16 @@ public class NodeImpl implements Node {
             return this;
         } else {
             return parentObjectNode().closest(filter);
+        }
+    }
+
+    @Override
+    public Node closest(String method, Class... parameterTypes) {
+        if(ReflectionUtils.hasMethodInHierarchy(wrappedObjectClass(), method, parameterTypes)){
+            return this;
+        } else {
+            Node parent = parentObjectNode();
+            return parent != null ? parent.closest(method) : null;
         }
     }
 

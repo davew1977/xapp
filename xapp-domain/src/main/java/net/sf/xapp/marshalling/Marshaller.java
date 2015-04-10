@@ -181,7 +181,7 @@ public class Marshaller<T> {
                         }
                     }
                     else if (property instanceof ContainerProperty && ((ContainerProperty) property).getContainedType() == String.class) {
-                        writeAsElements.add(new PropertyValuePair(property, StringMapSerializer._write((Map<String, String>) value)));
+                        writeAsElements.add(new PropertyValuePair(property, StringMapSerializer._write((Map<?, String>) value)));
                     }
                     //defaults to marshal as attribute for strings, enums and primitives
                     else if (!property.isFormattedText() &&

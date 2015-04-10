@@ -30,7 +30,7 @@ public class ListProperty extends ContainerProperty {
     public ListProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
                         Class containedType, EditorWidget editorWidget,
                         Class parentClass) {
-        super(classModelManager, propertyAccess, aClass, containedType, editorWidget, parentClass);
+        super(classModelManager, propertyAccess, aClass, containedType, null, editorWidget, parentClass);
     }
 
     public Collection get(Object target) {
