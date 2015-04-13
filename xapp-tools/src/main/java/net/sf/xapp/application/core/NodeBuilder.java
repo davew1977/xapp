@@ -75,7 +75,7 @@ public class NodeBuilder {
             for (ContainerProperty listProperty : list) {
                 if (!listProperty.isDisplayNodes()) continue;
                 if (!listProperty.isVisibilityRestricted()) continue;
-                if (listProperty.getContainedType() == String.class) continue; //skip string lists
+                if (listProperty.isStringSerializable()) continue; //skip string lists
                 if (listProperty.equals(objMeta.getContainerProperty())) continue;
 
                 createListNode(newNode, listProperty, newNode.numChildren());

@@ -73,7 +73,7 @@ public class PropertyFactoryImpl implements PropertyFactory
             ParameterizedType parameterizedType = (ParameterizedType) propertyAccess.getGenericType();
             //support only string as key
             Class<?> keyType = (Class) parameterizedType.getActualTypeArguments()[0];
-            Class varType = (Class) parameterizedType.getActualTypeArguments()[1];
+            Type varType = parameterizedType.getActualTypeArguments()[1];
 
             //support only Strings, or enums as keys
             if(!propertyAccess.isTransient() && !keyType.equals(String.class) && !keyType.isEnum()) {

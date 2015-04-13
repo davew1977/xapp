@@ -19,21 +19,23 @@ import net.sf.xapp.objectmodelling.api.Rights;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 
 public class ContainerProperty extends Property
 {
-    protected Class m_containedType;
+    protected Type mapValueType;
     protected Class mapKeyType;
     private List<Rights> m_restrictedRights;
 
     public ContainerProperty(ClassModelManager classModelManager, PropertyAccess propertyAccess, Class aClass,
-                             Class containedType, Class<?> keyType, EditorWidget editorWidget,
+                             Type mapValueType, Class<?> keyType, EditorWidget editorWidget,
                              Class parentClass)
     {
         super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, editorWidget, false, parentClass, "", true,null, false);
-        m_containedType = containedType;
+        this.mapValueType = mapValueType;
         this.mapKeyType = keyType;
         m_restrictedRights = new ArrayList<Rights>();
     }
@@ -55,12 +57,17 @@ public class ContainerProperty extends Property
 
     public Class getContainedType()
     {
-        return m_containedType;
+        if(mapValueType instanceof Class) {
+            return (Class) mapValueType;
+        } else   {
+            ParameterizedType parameterizedType = (ParameterizedType) this.mapValueType;
+            return (Class) parameterizedType.getRawType();
+        }
     }
 
     public ClassModel getContainedTypeClassModel()
     {
-        return classDatabase.getClassModel(m_containedType);
+        return classDatabase.getClassModel(getContainedType());
     }
 
     public Object get(Object target)
@@ -83,16 +90,16 @@ public class ContainerProperty extends Property
 
     @Override
     public Object convert(ObjectMeta objectMeta, String value) {
-        if(m_containedType == String.class) {
-            return StringMapSerializer._read(mapKeyType, value);
+        if(isStringSerializable()) {
+            return StringMapSerializer._read(mapKeyType, mapValueType, value);
         }
         throw new XappException(getName() + " map property is not string serializable");
     }
 
     @Override
     public String convert(ObjectMeta objectMeta, Object obj) {
-        if(m_containedType == String.class) {
-            return StringMapSerializer._write((Map<?, String>) obj);
+        if(isStringSerializable()) {
+            return StringMapSerializer._write((Map<?, ?>) obj);
         }
         throw new XappException(getName() + " map property is not string serializable");
     }
@@ -185,5 +192,22 @@ public class ContainerProperty extends Property
 
     public Class getMapKeyType() {
         return mapKeyType;
+    }
+
+    @Override
+    public boolean isStringSerializable() {
+        Class containedType = getContainedType();
+        return containedType.equals(String.class) || containedType.isPrimitive() || containedType.isEnum() ||
+                Number.class.isAssignableFrom(containedType) || containedType.equals(Boolean.class) ||
+                containedType.equals(Character.class) ||
+                Collection.class.isAssignableFrom(containedType);
+    }
+
+    public Type getMapValueType() {
+        return mapValueType;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Integer.class.isPrimitive());
     }
 }

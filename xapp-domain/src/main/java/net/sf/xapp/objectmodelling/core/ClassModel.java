@@ -216,10 +216,7 @@ public class ClassModel<T> {
         }
         for (ContainerProperty property : mapProperties) {
             if (!property.isTransient() && !property.hasSpecialBoundComponent() && (
-                    property.getContainedType() == String.class ||
-                            property.getContainedType() == Integer.class ||
-                            property.getContainedType() == Long.class ||
-                            property.getContainedType().isEnum())) {
+                    property.isStringSerializable())) {
                 list.add(property);
             }
         }

@@ -287,7 +287,7 @@ public class DefaultEditor implements Editor
         }
         else if(property instanceof ContainerProperty) {
             ContainerProperty cp = (ContainerProperty) property;
-            if(cp.getContainedType().equals(String.class)) {
+            if(cp.isStringSerializable()) {
                 return new PropsEditorWidget();
             }
         }

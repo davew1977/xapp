@@ -177,8 +177,7 @@ public class Unmarshaller<T> {
             }
             ObjectLocation objLocation = new ObjectLocation(objectMeta, property);
             Class propertyClass = property.getPropertyClass();
-            StringSerializer ss = cdb.getStringSerializer(propertyClass);
-            if (property.isStringOrPrimitive() || ss != null || StringSerializable.class.isAssignableFrom(propertyClass)) {
+            if (property.isStringOrPrimitive() || property.isStringSerializable()) {
                 Node firstChild = node.getFirstChild();
                 if (firstChild != null) {
                     String nodeValue = firstChild.getNodeValue();

@@ -49,27 +49,29 @@ public class ListProperty extends ContainerProperty {
 
     @Override
     public Object convert(ObjectMeta target, String value) {
-        if (m_containedType == Integer.class) {
+        Class containedType = getContainedType();
+        if (containedType == Integer.class) {
             return IntegerListSerializer.doRead(value);
-        } else if (m_containedType == Long.class) {
+        } else if (containedType == Long.class) {
             return LongListSerializer.doRead(value);
-        } else if (m_containedType == String.class) {
+        } else if (containedType == String.class) {
             return StringUtils.appendToCollection(createCollection(), value);
-        } else if (Enum.class.isAssignableFrom(m_containedType)) {
-            return EnumListSerializer.doRead(value, m_containedType);
+        } else if (Enum.class.isAssignableFrom(containedType)) {
+            return EnumListSerializer.doRead(value, containedType);
         }
         throw new XappException(getName() + " list property is not string serializable");
     }
 
     @Override
     public String convert(ObjectMeta objectMeta, Object obj) {
-        if (m_containedType == Integer.class) {
+        Class containedType = getContainedType();
+        if (containedType == Integer.class) {
             return IntegerListSerializer.doWrite((List<Integer>) obj);
-        } else if (m_containedType == Long.class) {
+        } else if (containedType == Long.class) {
             return LongListSerializer.doWrite((List<Long>) obj);
-        } else if (m_containedType == String.class) {
+        } else if (containedType == String.class) {
             return StringUtils.join((Collection<? extends Object>) obj, ",");
-        } else if (Enum.class.isAssignableFrom(m_containedType)) {
+        } else if (Enum.class.isAssignableFrom(containedType)) {
             return EnumListSerializer.doWrite((List<? extends Enum>) obj);
         }
         throw new XappException(getName() + " list property is not string serializable");

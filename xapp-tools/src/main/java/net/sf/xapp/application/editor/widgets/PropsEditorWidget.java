@@ -7,13 +7,14 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by oldDave on 05/03/2015.
  */
-public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, String>> {
+public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, ?>> {
 
     private PropsEditor textEditor;
     private JComponent rootPane;
@@ -48,8 +49,12 @@ public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, String>> {
     }
 
     @Override
-    public Map<?, String> getValue() {
-        return StringMapSerializer._read(getMapKeyType(), textEditor.getText());
+    public Map<?, ?> getValue() {
+        return StringMapSerializer._read(getMapKeyType(), getMapValueType(), textEditor.getText());
+    }
+
+    private Type getMapValueType() {
+        return ((ContainerProperty) getProperty()).getMapValueType();
     }
 
     private Class getMapKeyType() {
@@ -57,7 +62,7 @@ public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, String>> {
     }
 
     @Override
-    public void setValue(Map<?, String> value, ObjectMeta target) {
+    public void setValue(Map<?, ?> value, ObjectMeta target) {
         textEditor.setText(StringMapSerializer._write(value));
         textEditor.setFont(Font.decode("Courier-12"));
     }

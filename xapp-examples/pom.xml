@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>xapp-school</module>
-        <module>xapp-mdda</module>
+        <!--<module>xapp-mdda</module>-->
     </modules>
 
 </project>
