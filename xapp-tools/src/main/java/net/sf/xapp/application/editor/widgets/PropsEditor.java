@@ -1,12 +1,19 @@
 package net.sf.xapp.application.editor.widgets;
 
 import net.sf.xapp.application.editor.text.TextEditor;
+import net.sf.xapp.application.editor.text.Word;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.marshalling.stringserializers.StringMapSerializer;
+import net.sf.xapp.utils.CollectionsUtils;
+import net.sf.xapp.utils.Filter;
 
-import java.awt.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.regex.Matcher;
+import java.awt.*;
 
 /**
 * Created by oldDave on 05/02/2015.
@@ -14,6 +21,39 @@ import java.util.regex.Matcher;
 public class PropsEditor extends TextEditor {
     private Color nameColor = new Color(5,32,144);
     private Color valueColor = new Color(0, 128, 0);
+    private List<String> keysEnum = new ArrayList<>();
+
+    public PropsEditor() {
+        addAction("control SPACE", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Line currentLine = getCurrentLine();
+                int eqIndex = currentLine.m_text.indexOf('=');
+                final Word word = currentLine.wordAtCaret();
+                if(eqIndex == -1 || word.start< eqIndex) {
+                    final String stem = word.wordToCaret();
+                    List<String> suggestions = CollectionsUtils.filter(keysEnum, new Filter<String>() {
+                        @Override
+                        public boolean matches(String s) {
+                            return s.startsWith(stem);
+                        }
+                    });
+                    if(!suggestions.isEmpty()) {
+                        JPopupMenu popUp = newPopUp();
+                        for (final String suggestion : suggestions) {
+                            popUp.add(new JMenuItem(new AbstractAction(suggestion) {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    replaceWordAtCaret(word, suggestion);
+                                }
+                            }));
+                        }
+                        showPopUp();
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void handleNewText(int i, String s, Line l, java.util.List<Line> lines) {
@@ -25,6 +65,10 @@ public class PropsEditor extends TextEditor {
             }
         }
 
+    }
+
+    public void setKeysEnum(List<String> keysEnum) {
+        this.keysEnum = keysEnum;
     }
 
     @Override
@@ -39,6 +83,8 @@ public class PropsEditor extends TextEditor {
 
     public static void main(String[] args) {
         PropsEditor p = new PropsEditor();
+        p.setKeysEnum(Arrays.asList("choose","between","this","and","joober","bush","brown","clegg","arnold"));
+        p.setPreferredSize(new Dimension(400,400));
         SwingUtils.showInFrame(p);
     }
 }
