@@ -232,8 +232,7 @@ public class Property<T> implements Comparable {
 
 
     public boolean isImmutable() {
-        return isStringPrimitiveOrEnum() || StringSerializable.class.isAssignableFrom(getMainType())
-                || classDatabase.getStringSerializer(getMainType()) != null;
+        return isStringPrimitiveOrEnum() || isStringSerializable();
     }
 
 
