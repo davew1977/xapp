@@ -25,23 +25,23 @@ public class JavaFile extends AbstractCodeFile
         super(outPath, writeToFile);
     }
 
-    MethodImpl createMethod()
+    protected MethodImpl createMethod()
     {
         return new JavaMethod();
     }
 
-    Field createField()
+    protected Field createField()
     {
         return new JavaField();
     }
 
-    void doEndClass(StringBuilder sb)
+    protected void doEndClass(StringBuilder sb)
     {
         deIndent();
         sb.append(currentIndent).append("}\n");
     }
 
-    void doPackageDeclaration(StringBuilder sb)
+    protected void doPackageDeclaration(StringBuilder sb)
     {
         if (mPackage !=null)
         {

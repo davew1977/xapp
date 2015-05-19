@@ -17,10 +17,10 @@ import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.SysOutXappLogger;
 import net.sf.xapp.utils.XappLogger;
 
-import java.util.*;
 import java.io.File;
+import java.util.*;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 /**
  *
@@ -319,9 +319,9 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         return result;
     }
 
-    abstract MethodImpl createMethod();
+    protected abstract MethodImpl createMethod();
 
-    abstract Field createField();
+    protected abstract Field createField();
 
     public CodeFile line(String code, Object... args) {
         currentMethodContext.line(code, args);
@@ -458,9 +458,9 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         }
     }
 
-    abstract void doEndClass(StringBuilder sb);
+    protected abstract void doEndClass(StringBuilder sb);
 
-    abstract void doPackageDeclaration(StringBuilder sb);
+    protected abstract void doPackageDeclaration(StringBuilder sb);
 
     private void doClassDeclaration(StringBuilder sb) {
         //class comment
@@ -721,5 +721,5 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         return currentIndent.length();
     }
 
-    abstract String getFileSuffix();
+    protected abstract String getFileSuffix();
 }
