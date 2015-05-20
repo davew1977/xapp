@@ -57,7 +57,7 @@ public class ListProperty extends ContainerProperty {
         } else if (containedType == String.class) {
             return StringUtils.appendToCollection(createCollection(), value);
         } else if (Enum.class.isAssignableFrom(containedType)) {
-            return EnumListSerializer.doRead(value, containedType);
+            return EnumListSerializer.doRead(value, containedType, createCollection());
         }
         throw new XappException(getName() + " list property is not string serializable");
     }
@@ -72,7 +72,7 @@ public class ListProperty extends ContainerProperty {
         } else if (containedType == String.class) {
             return StringUtils.join((Collection<? extends Object>) obj, ",");
         } else if (Enum.class.isAssignableFrom(containedType)) {
-            return EnumListSerializer.doWrite((List<? extends Enum>) obj);
+            return EnumListSerializer.doWrite((Collection<? extends Enum>) obj);
         }
         throw new XappException(getName() + " list property is not string serializable");
     }

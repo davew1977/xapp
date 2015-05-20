@@ -17,17 +17,16 @@ import net.sf.xapp.marshalling.stringserializers.EnumListSerializer;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-public class EnumListPropertyWidget<T extends Enum> extends AbstractPropertyWidget<List<T>>
+public class EnumListPropertyWidget<T extends Enum> extends AbstractPropertyWidget<Collection<T>>
 {
     private Class enumClass;
     private JList listComp;
     private JScrollPane jsp;
+    private boolean list; //or set
 
-    public EnumListPropertyWidget(Class<T> enumClass)
+    public EnumListPropertyWidget(Class<T> enumClass, boolean list)
     {
         this.enumClass = enumClass;
         listComp = new JList(EnumListSerializer.getEnumValues(enumClass));
@@ -45,22 +44,23 @@ public class EnumListPropertyWidget<T extends Enum> extends AbstractPropertyWidg
     }
 
     @Override
-    public List<T> getValue()
+    public Collection<T> getValue()
     {
-        return new ArrayList(Arrays.asList(listComp.getSelectedValues()));
+        Collection c = list ? new ArrayList() : new LinkedHashSet();
+        c.addAll(listComp.getSelectedValuesList());
+        return c;
     }
 
     @Override
-    public void setValue(List<T> values, ObjectMeta target)
+    public void setValue(Collection<T> values, ObjectMeta target)
     {
         List<Enum> enumValues = Arrays.asList(EnumListSerializer.getEnumValues(enumClass));
         if (values!=null)
         {
             int[] indexes = new int[values.size()];
-            for (int i = 0; i < values.size(); i++)
-            {
-                Enum anEnum = values.get(i);
-                indexes[i] = enumValues.indexOf(anEnum);
+            int i=0;
+            for (T value : values) {
+               indexes[i++] = enumValues.indexOf(value);
             }
 
             listComp.setSelectedIndices(indexes);
@@ -77,11 +77,11 @@ public class EnumListPropertyWidget<T extends Enum> extends AbstractPropertyWidg
 
     public static void main(String[] args)
     {
-        EnumListPropertyWidget e = new EnumListPropertyWidget(Color.class);
+        EnumListPropertyWidget e = new EnumListPropertyWidget(Color.class, true);
         e.init(null);
         e.setValue(Arrays.asList(Color.red,Color.blue), null);
         SwingUtils.showInFrame(e.getComponent());
-        List<? extends Enum> value = e.getValue();
+        Collection<? extends Enum> value = e.getValue();
         System.out.println(value);
     }
 }

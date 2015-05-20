@@ -175,7 +175,7 @@ public class Marshaller<T> {
                         } else if (((ListProperty) property).getContainedType() == Long.class) {
                             writeAsAttr.add(new PropertyValuePair(property, LongListSerializer.doWrite((List<Long>) value)));
                         } else if (((ListProperty) property).getContainedTypeClassModel().isEnum()) {
-                            writeAsAttr.add(new PropertyValuePair(property, EnumListSerializer.doWrite((List<Enum>) value)));
+                            writeAsAttr.add(new PropertyValuePair(property, EnumListSerializer.doWrite((Collection<Enum>) value)));
                         } else if (value != null && !((Collection) value).isEmpty()) {
                             writeAsElements.add(new PropertyValuePair(property, value));
                         }

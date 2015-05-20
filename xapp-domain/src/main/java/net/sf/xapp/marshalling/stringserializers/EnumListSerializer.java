@@ -19,6 +19,7 @@ import net.sf.xapp.utils.XappException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class EnumListSerializer implements StringSerializer<List<? extends Enum>>
@@ -32,12 +33,11 @@ public class EnumListSerializer implements StringSerializer<List<? extends Enum>
 
     public List<? extends Enum> read(String str)
     {
-        return doRead(str, enumClass);
+        return (List<? extends Enum>) doRead(str, enumClass, new ArrayList<Enum>());
     }
 
-    public static List<? extends Enum> doRead(String str, Class enumClass)
+    public static Collection<? extends Enum> doRead(String str, Class enumClass, Collection<Enum> e)
     {
-        ArrayList<Enum> e = new ArrayList<Enum>();
         if(str==null || str.isEmpty())
         {
             return e;
@@ -59,7 +59,7 @@ public class EnumListSerializer implements StringSerializer<List<? extends Enum>
         return doWrite(obj);
     }
 
-    public static String doWrite(List<? extends Enum> obj)
+    public static String doWrite(Collection<? extends Enum> obj)
     {
         if(obj==null || obj.isEmpty())
         {
