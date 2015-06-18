@@ -281,7 +281,7 @@ public class DefaultEditor implements Editor
             }
             if(lp.getContainedType().isEnum())
             {
-                return new EnumListPropertyWidget(lp.getContainedType(), List.class.isAssignableFrom(lp.getMainType()));
+                return new EnumListPropertyWidget(lp.getContainedType(), lp.isList());
             }
             return new NullPropertyWidget(property);
         }
