@@ -28,6 +28,7 @@ public class EnumListPropertyWidget<T extends Enum> extends AbstractPropertyWidg
 
     public EnumListPropertyWidget(Class<T> enumClass, boolean list)
     {
+        this.list = list;
         this.enumClass = enumClass;
         listComp = new JList(EnumListSerializer.getEnumValues(enumClass));
     }
