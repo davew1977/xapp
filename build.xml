@@ -1,6 +1,6 @@
 <project name="requiem_project" basedir="." default="all">
 
-    <!--  Basic properties are read from property files -->
+    <!-- Basic properties are read from property files -->
     <property file="version.properties"/>
     <property file="local.properties"/>  <!-- This file is not meant to be in Version Control, it's for local developer properties -->
     <property file="build.properties"/>
