@@ -101,6 +101,11 @@ public class SimpleApplication<T> implements Application<T> {
 
     }
 
+    @Override
+    public void nodesSelected(List<Node> nodes, Class commonClass) {
+
+    }
+
     public void init(final ApplicationContainer<T> applicationContainer) {
         appContainer = applicationContainer;
 
