@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.utils;
 
+
 import java.util.*;
 
 public class CollectionsUtils
@@ -66,6 +67,28 @@ public class CollectionsUtils
             if(filter.matches(item)) {
                 result.add(item);
             }
+        }
+        return result;
+    }
+
+    public static <K, V> Map<K, List<V>> groupBy(Collection<? extends V> items, Grouping<K,V> grouping) {
+        Map<K, List<V>> result = new java.util.LinkedHashMap<K, List<V>>();
+        for (V item : items) {
+            K group = grouping.getGroup(item);
+            List<V> g = result.get(group);
+            if(g==null) {
+                g = new ArrayList<V>();
+                result.put(group, g);
+            }
+            g.add(item);
+        }
+        return result;
+    }
+
+    public static <T> List<T> select(List<T> src, List<Integer> indexes) {
+        List<T> result = new ArrayList<T>();
+        for (Integer index : indexes) {
+            result.add(src.get(index));
         }
         return result;
     }

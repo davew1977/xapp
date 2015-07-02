@@ -342,4 +342,12 @@ public class StringUtils
     public static String join(Collection<? extends Object> items, String delim) {
         return org.apache.commons.lang.StringUtils.join(items.toArray(), delim);
     }
+
+    public static String mask(String h, char c) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<h.length(); i++) {
+            sb.append(c);
+        }
+        return sb.toString();
+    }
 }

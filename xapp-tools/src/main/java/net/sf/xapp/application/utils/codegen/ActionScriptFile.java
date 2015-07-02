@@ -22,17 +22,17 @@ public class ActionScriptFile extends AbstractCodeFile
         super(outPath, true);
     }
 
-    MethodImpl createMethod()
+    protected MethodImpl createMethod()
     {
         return new ActionScriptMethod();
     }
 
-    Field createField()
+    protected Field createField()
     {
         return new ActionScriptField();
     }
 
-    void doEndClass(StringBuilder sb)
+    protected void doEndClass(StringBuilder sb)
     {
         deIndent();
         sb.append(currentIndent).append("}\n");
@@ -40,13 +40,13 @@ public class ActionScriptFile extends AbstractCodeFile
         sb.append(currentIndent).append("}\n");
     }
 
-    void doPackageDeclaration(StringBuilder sb)
+    protected void doPackageDeclaration(StringBuilder sb)
     {
         sb.append("package ").append(mPackage).append("\n{\n");
         indent();
     }
 
-    String getFileSuffix()
+    public String getFileSuffix()
     {
         return "as";
     }

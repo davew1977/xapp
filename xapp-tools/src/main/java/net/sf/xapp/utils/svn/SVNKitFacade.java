@@ -12,7 +12,6 @@
  */
 package net.sf.xapp.utils.svn;
 
-import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.wc.*;
@@ -32,7 +31,8 @@ public class SVNKitFacade implements SVNFacade
 
 	private String m_username;
     private String m_password;
-    private SVNClientManager m_svnManager;
+    private SVNClientManager svnManager;
+    private ConflictHandler conflictHandler = new DoNothingConflictHandler();
 
     /**
 	 * Creates a facade and sets up authentication for subversion.
@@ -49,7 +49,7 @@ public class SVNKitFacade implements SVNFacade
 
 		DefaultSVNOptions options = new DefaultSVNOptions();
         options.setAuthStorageEnabled(false);
-		m_svnManager = SVNClientManager.newInstance(options, user, pwd);
+		svnManager = SVNClientManager.newInstance(options, user, pwd);
 	}
 
 	public SVNKitFacade() //SVNauth exception?
@@ -57,7 +57,7 @@ public class SVNKitFacade implements SVNFacade
 		DAVRepositoryFactory.setup();
 		DefaultSVNOptions options = new DefaultSVNOptions();
         options.setAuthStorageEnabled(false);
-		m_svnManager = SVNClientManager.newInstance(options);
+		svnManager = SVNClientManager.newInstance(options);
 	}
 
     public SVNKitFacade(SvnConfig svnConfig)
@@ -65,25 +65,40 @@ public class SVNKitFacade implements SVNFacade
         this(svnConfig.getUsername(), svnConfig.getPassword());
     }
 
+    @Override
+    public void setConflictHandler(ConflictHandler conflictHandler) {
+        this.conflictHandler = conflictHandler;
+
+    }
+
+    @Override
+    public void setAutoResolveConflicts(SVNConflictChoice choice) {
+        conflictHandler = new AutoResolveConflictHandler(this, choice);
+    }
+
     /**
 	 * Updates to head
 	 *
-	 * @param filepath the local filepath to update
+	 * @param files the local filepath to update
 	 */
-	public UpdateResult update(String filepath)
+	public UpdateResult update(File... files)
 	{
-		File file = new File(filepath);
-
 		try
 		{
 
             UpdateResult result = new UpdateResult();
             UpdateEventHandler eventHandler = new UpdateEventHandler(result);
-            m_svnManager.setEventHandler(eventHandler);
+            svnManager.setEventHandler(eventHandler);
             //update file, to revision, recursively, don't allow files not under version control to obstruct update, depth is not sticky
-            long rev = m_svnManager.getUpdateClient().doUpdate(file, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
-            result.setRev(rev);
-            m_svnManager.setEventHandler(null);
+            long[] rev = svnManager.getUpdateClient().doUpdate(files, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+
+            result.setRev(rev[0]);
+            svnManager.setEventHandler(null);
+            if(result.isConflict()) {
+                for (Conflict conflict : result.getConflicts()) {
+                    conflict.handle(conflictHandler);
+                }
+            }
             return result;
 		}
 		catch(SVNException svne)
@@ -98,11 +113,11 @@ public class SVNKitFacade implements SVNFacade
 
 		try
 		{
-			SVNInfo info = m_svnManager.getWCClient().doInfo(file[0], SVNRevision.HEAD);
+			SVNInfo info = svnManager.getWCClient().doInfo(file[0], SVNRevision.HEAD);
 			LogHandler handler = new LogHandler();
 			String relativePath = info.getURL().toString().replace(info.getRepositoryRootURL().toString(), "");
 			//take out a log for the repository, specified path, 1 peg revision, 1 start revision, head revision, don't stop on copy, don't discover changed paths, limit to 1 result only, and send to handler
-			m_svnManager.getLogClient().doLog(info.getRepositoryRootURL(),new String[]{relativePath}, SVNRevision.create(1), SVNRevision.HEAD, SVNRevision.create(1), false, false, 1, handler);
+			svnManager.getLogClient().doLog(info.getRepositoryRootURL(),new String[]{relativePath}, SVNRevision.create(1), SVNRevision.HEAD, SVNRevision.create(1), false, false, 1, handler);
 			List<Date> timestamps = handler.getTimeStamps();
 			if(timestamps.size()>1)
 			{
@@ -139,7 +154,7 @@ public class SVNKitFacade implements SVNFacade
 
 		try
 		{
-			m_svnManager.getWCClient().doLock(path, false, lockmsg);
+			svnManager.getWCClient().doLock(path, false, lockmsg);
 
 			return hasOwnershipOfLock(filepath);
 		}
@@ -174,7 +189,7 @@ public class SVNKitFacade implements SVNFacade
 
 		try
 		{
-			m_svnManager.getWCClient().doUnlock(path, force);
+			svnManager.getWCClient().doUnlock(path, force);
 		}
 		catch(Exception svne)
 		{
@@ -193,7 +208,7 @@ public class SVNKitFacade implements SVNFacade
 		try
 		{
 						//check remote status for this file, same as "svn status -u"
-			SVNStatus status = m_svnManager.getStatusClient().doStatus(file, true);
+			SVNStatus status = svnManager.getStatusClient().doStatus(file, true);
 
 			return status.getRemoteLock() != null; // lock exists remotely
 		}
@@ -220,7 +235,7 @@ public class SVNKitFacade implements SVNFacade
 		try
 		{
 			//check remote status for this file, same as "svn status -u"
-			SVNStatus status = m_svnManager.getStatusClient().doStatus(file, true);
+			SVNStatus status = svnManager.getStatusClient().doStatus(file, true);
 
 			return status.getLocalLock() != null // lock exists locally
 				    && status.getRemoteLock() != null // lock exists remotely
@@ -234,14 +249,13 @@ public class SVNKitFacade implements SVNFacade
 		}
 	}
 
-	public void revert(String filepath)
+	public void revert(File... files)
 	{
-		File[] path = new File[]{new File(filepath)};
 
 		try
 		{
 			//revert the path, recursively, without changelist
-			m_svnManager.getWCClient().doRevert(path, SVNDepth.INFINITY, null);
+			svnManager.getWCClient().doRevert(files, SVNDepth.INFINITY, null);
 		}
 		catch(SVNException svne)
 		{
@@ -254,7 +268,7 @@ public class SVNKitFacade implements SVNFacade
         try
         {
             SVNURL url = (encodedURL ? SVNURL.parseURIEncoded(svnpath) : SVNURL.parseURIDecoded(svnpath));
-            m_svnManager.getCommitClient().doImport(new File(localDirToAdd), url, commitMessage, null, false, false, SVNDepth.INFINITY);
+            svnManager.getCommitClient().doImport(new File(localDirToAdd), url, commitMessage, null, false, false, SVNDepth.INFINITY);
         }
         catch (SVNException e)
         {
@@ -271,7 +285,7 @@ public class SVNKitFacade implements SVNFacade
     {
         try
         {
-            return m_svnManager.getWCClient().doInfo(new File(path), SVNRevision.HEAD).getRevision().getNumber();
+            return svnManager.getWCClient().doInfo(new File(path), SVNRevision.HEAD).getRevision().getNumber();
 
         }
         catch (SVNException e)
@@ -314,7 +328,7 @@ public class SVNKitFacade implements SVNFacade
 		try
 		{
 			LogHandler logHandler = new LogHandler();
-			m_svnManager.getLogClient().doLog(new File[]{new File(workingDirectory)},
+			svnManager.getLogClient().doLog(new File[]{new File(workingDirectory)},
 					SVNRevision.create(startRevision), endRevision,
 					SVNRevision.UNDEFINED, //undefined peg revision
 					false, //DO NOT stopOnCopy!
@@ -326,7 +340,7 @@ public class SVNKitFacade implements SVNFacade
 			// tidy up among all the returned files that don't match our path of interest... The log command will return
 			// all files changed for every revision it gets a hit on, even if only one file matches the path, that's why
 			// we need to check for ourselves
-			SVNInfo info = m_svnManager.getWCClient().doInfo(new File(workingDirectory), SVNRevision.HEAD);
+			SVNInfo info = svnManager.getWCClient().doInfo(new File(workingDirectory), SVNRevision.HEAD);
 			String pathOfInterest = info.getURL().getPath().replace(info.getRepositoryRootURL().getPath(), "");
 
 			for(String s : files)
@@ -353,7 +367,7 @@ public class SVNKitFacade implements SVNFacade
 		try
 		{
 			LogHandler logHandler = new LogHandler();
-			m_svnManager.getLogClient().doLog(new File[]{new File(workingPath)},
+			svnManager.getLogClient().doLog(new File[]{new File(workingPath)},
 					SVNRevision.create(1), SVNRevision.HEAD,
 					SVNRevision.UNDEFINED, //undefined peg revision
 					true, //stopOnCopy
@@ -368,12 +382,12 @@ public class SVNKitFacade implements SVNFacade
 		}
 	}
 
-	public boolean hasLocalChanges(String dir)
+	public boolean hasLocalChanges(File dir)
 	{
 		try
 		{
 			SimpleStatusHandler handler = new SimpleStatusHandler();
-			m_svnManager.getStatusClient().doStatus(new File(dir), null, SVNDepth.INFINITY, false, false, false, false, handler, null);
+			svnManager.getStatusClient().doStatus(dir, null, SVNDepth.INFINITY, false, false, false, false, handler, null);
 			return handler.isModified();
 		}
 		catch(Exception e)
@@ -388,7 +402,7 @@ public class SVNKitFacade implements SVNFacade
         try
         {
             SVNURL url = (encodedURL ? SVNURL.parseURIEncoded(svnPath) : SVNURL.parseURIDecoded(svnPath));
-            m_svnManager.getUpdateClient().doExport(url, new File(targetPath), SVNRevision.HEAD, SVNRevision.HEAD, null, false, SVNDepth.INFINITY);
+            svnManager.getUpdateClient().doExport(url, new File(targetPath), SVNRevision.HEAD, SVNRevision.HEAD, null, false, SVNDepth.INFINITY);
         }
         catch (SVNException e)
         {
@@ -400,32 +414,46 @@ public class SVNKitFacade implements SVNFacade
 
     /**
 	 * Commits to svn
-	 * @param filepath local filepath
      * @param message commit message to svn
+     * @param files
      */
-	public long commit(String filepath, String message)
+	public boolean commit(String message, File... files)
     {
-        return commit(filepath, message, true);
+        return commit(true, message, files);
     }
 
-    public long commit(String filepath, String message, boolean keepLocks)
+    public boolean commit(boolean keepLocks, String message, File... files)
 	{
-		File[] path = new File[]{new File(filepath)};
-
 		try
 		{
 			//commit path, keep locks, assign message, don't force it, no revision properties, no changelist, don't keep changelist, don't force, commit recursively
-            SVNCommitInfo commitInfo = m_svnManager.getCommitClient().doCommit(path, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
-            return commitInfo.getNewRevision();
+            SVNCommitInfo commitInfo = svnManager.getCommitClient().doCommit(files, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
+            //commitInfo.getNewRevision();
+            return false;
         }
 		catch(SVNException svne)
 		{
-			throw new RuntimeException(svne);
+            System.out.println(svne.getMessage());
+            System.out.println("trying update...");
+            //automatically try an update first
+            //todo check exception is commit failed due to update required
+            UpdateResult update = update(files);
+            if(update.isConflict() && !update.isConflictsHandled()) {
+               throw new RuntimeException("commit failed, tried to update, but that failed due to unresolved conflicts");
+            }
+            try {
+                SVNCommitInfo commitInfo = svnManager.getCommitClient().doCommit(files, keepLocks, message, null, null, false, false, SVNDepth.INFINITY);
+                return true;
+            }
+            catch (SVNException e) {
+                throw new RuntimeException(e);
+            }
 		}
     }
 
 
-	/**
+
+    /**
 	 * Checks out head from svn
 	 *
 	 * @param svnpath where to check out from
@@ -459,9 +487,9 @@ public class SVNKitFacade implements SVNFacade
 			File target = new File(targetpath);
 			SVNDepth depth = empty ? SVNDepth.EMPTY : SVNDepth.INFINITY;
 			//checkout svn, to target, peg revision, wanted revision, recursively, don't allow unversioned obstructions
-            m_svnManager.getUpdateClient().setEventHandler(new BasicEventHandler());
-			m_svnManager.getUpdateClient().doCheckout(url, target, SVNRevision.HEAD, SVNRevision.HEAD, depth, false);
-            m_svnManager.getUpdateClient().setEventHandler(null);
+            svnManager.getUpdateClient().setEventHandler(new BasicEventHandler());
+			svnManager.getUpdateClient().doCheckout(url, target, SVNRevision.HEAD, SVNRevision.HEAD, depth, false);
+            svnManager.getUpdateClient().setEventHandler(null);
 		}
 		catch(SVNException svne)
 		{
@@ -478,7 +506,7 @@ public class SVNKitFacade implements SVNFacade
 
 		try
 		{
-			m_svnManager.getCopyClient().doCopy(sourcePath, newCopy, false, false, true);
+			svnManager.getCopyClient().doCopy(sourcePath, newCopy, false, false, true);
 		}
 		catch (SVNException e)
 		{
@@ -490,9 +518,9 @@ public class SVNKitFacade implements SVNFacade
         File workingCopy = new File(workingPath);
         File targetFile = new File(newPath);
         try {
-            m_svnManager.getMoveClient().setEventHandler(new BasicEventHandler());
-            m_svnManager.getMoveClient().doMove(workingCopy, targetFile);
-            m_svnManager.getMoveClient().setEventHandler(null);
+            svnManager.getMoveClient().setEventHandler(new BasicEventHandler());
+            svnManager.getMoveClient().doMove(workingCopy, targetFile);
+            svnManager.getMoveClient().setEventHandler(null);
         } catch (SVNException e) {
             throw new RuntimeException(e);
         }
@@ -504,7 +532,7 @@ public class SVNKitFacade implements SVNFacade
 
 		try
 		{
-			m_svnManager.getWCClient().doDelete(workingCopy, false, false);
+			svnManager.getWCClient().doDelete(workingCopy, false, false);
         }
 		catch (SVNException e)
 		{
@@ -517,7 +545,7 @@ public class SVNKitFacade implements SVNFacade
         try
         {
             SVNURL url = (encodedURL ? SVNURL.parseURIEncoded(svnpath) : SVNURL.parseURIDecoded(svnpath));
-            m_svnManager.getCommitClient().doDelete(new SVNURL[]{url}, "deleted");
+            svnManager.getCommitClient().doDelete(new SVNURL[]{url}, "deleted");
         }
         catch (SVNException e)
         {
@@ -532,7 +560,7 @@ public class SVNKitFacade implements SVNFacade
 		File location = new File(path);
 		try
 		{
-			m_svnManager.getWCClient().doAdd(location, false, false, true, SVNDepth.INFINITY, false, false);
+			svnManager.getWCClient().doAdd(location, false, false, true, SVNDepth.INFINITY, false, false);
 		}
 		catch(Exception e)
 		{
@@ -547,7 +575,7 @@ public class SVNKitFacade implements SVNFacade
 		{
 			SVNURL svnurl = url.contains("https") ? SVNURL.parseURIEncoded(url) : SVNURL.parseURIDecoded(url);
 			ListHandler listHandler = new ListHandler(url);
-			m_svnManager.getLogClient().doList(svnurl, SVNRevision.HEAD, SVNRevision.HEAD, false, false, listHandler);
+			svnManager.getLogClient().doList(svnurl, SVNRevision.HEAD, SVNRevision.HEAD, false, false, listHandler);
 			return listHandler.getList();
 		}
 		catch(Exception e)
@@ -560,7 +588,7 @@ public class SVNKitFacade implements SVNFacade
     {
         try
         {
-            SVNInfo svnInfo = m_svnManager.getWCClient().doInfo(new File(workingcopy), SVNRevision.WORKING);
+            SVNInfo svnInfo = svnManager.getWCClient().doInfo(new File(workingcopy), SVNRevision.WORKING);
             String uri = svnInfo.getURL().toDecodedString();
             String[] chunks = uri.split("branches/");
             if(chunks.length==1)
@@ -578,6 +606,15 @@ public class SVNKitFacade implements SVNFacade
         }
         catch (SVNException e)
         {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void resolve(File file, SVNConflictChoice conflictChoice) {
+        try {
+            svnManager.getWCClient().doResolve(file, SVNDepth.IMMEDIATES, conflictChoice);
+        }
+        catch (SVNException e) {
             throw new RuntimeException(e);
         }
     }
@@ -714,4 +751,5 @@ public class SVNKitFacade implements SVNFacade
 			return m_modified;
 		}
 	}
+
 }
