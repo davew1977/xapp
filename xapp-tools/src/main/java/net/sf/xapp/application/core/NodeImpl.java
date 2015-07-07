@@ -127,7 +127,8 @@ public class NodeImpl implements Node {
     }
 
     public Node parentObjectNode() {
-        return getParent().getObjectNodeContext() != null ? getParent() : getParent().parentObjectNode();
+        Node parent = getParent();
+        return parent == null || parent.getObjectNodeContext() != null ? parent : parent.parentObjectNode();
     }
 
     public ObjectMeta parentObjectMeta() {
@@ -207,7 +208,8 @@ public class NodeImpl implements Node {
         if(isA(filter)) {
             return this;
         } else {
-            return parentObjectNode().closest(filter);
+            Node parent = parentObjectNode();
+            return parent != null ? parent.closest(filter) : null;
         }
     }
 
