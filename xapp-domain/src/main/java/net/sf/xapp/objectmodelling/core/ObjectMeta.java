@@ -413,7 +413,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
         Collection<Object> attachments = attachments(); //store for returning later
         //delete all child objects
-        List<ObjectMeta> children = allChildren();
+        List<ObjectMeta> children = descendents(false);
         for (ObjectMeta child : children) {
             attachments.addAll(child.dispose(false));
         }
@@ -444,29 +444,17 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         return result;
     }
 
-    private List<ObjectMeta> allChildren() {
+    private List<ObjectMeta> descendents(final boolean recursive) {
         final List<ObjectMeta> result = new ArrayList<ObjectMeta>();
         List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
         for (Property property : properties) {
             property.eachValue(this, new PropertyValueIterator() {
                 @Override
                 public void exec(ObjectLocation objectLocation, int index, Object value) {
-                    result.add(objectLocation.getPropClassModel().find(value));
-                }
-            });
-        }
-        return result;
-    }
-
-    private <X> List<X> allChildInstances(final Filter<Object> instanceFilter) {
-        final List<X> result = new ArrayList<>();
-        List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
-        for (Property property : properties) {
-            property.eachValue(this, new PropertyValueIterator() {
-                @Override
-                public void exec(ObjectLocation objectLocation, int index, Object value) {
-                    if (instanceFilter.matches(value)) {
-                        result.add((X)value);
+                    ObjectMeta child = objectLocation.getPropClassModel().find(value);
+                    result.add(child);
+                    if(recursive) {
+                        result.addAll(child.descendents(recursive));
                     }
                 }
             });
@@ -685,7 +673,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
             rev = getClassDatabase().getRev();
             getParent().updateRev();
             if (includeComplexChildren) {
-                List<ObjectMeta> children = allChildren();
+                List<ObjectMeta> children = descendents(true);
                 for (ObjectMeta child : children) {
                     child.setRev(rev);
                 }
@@ -739,21 +727,26 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     @Override
     public <X> List<X> children(final Class<X> matchingType) {
-        return allChildInstances(new Filter<Object>() {
-            @Override
-            public boolean matches(Object o) {
-                return matchingType.isInstance(o);
-            }
-        });
+        return toInstances(matchingType, descendents(false));
     }
 
     @Override
     public <X> List<X> enumerate(Class<X> filterClass) {
-        return null;
+        return toInstances(filterClass, descendents(true));
     }
 
     @Override
     public ObjectMeta objMeta() {
         return this;
+    }
+
+    public static <X> List<X> toInstances(Class<X> filter, List<ObjectMeta> objectMetas) {
+        List<X> result = new ArrayList<>();
+        for (ObjectMeta objectMeta : objectMetas) {
+            if (objectMeta.isA(filter)) {
+                result.add(filter.cast(objectMeta.getInstance()));
+            }
+        }
+        return result;
     }
 }
