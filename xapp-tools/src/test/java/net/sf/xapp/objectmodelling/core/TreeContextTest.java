@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.junit.Assert.*;
 
 /**
@@ -50,15 +52,15 @@ public class TreeContextTest {
         Category shortCat = offer.parent();
         Category trousers = trousersObjMeta.getInstance();
         Category clothes = trousers.parent();
-        List<Category> offerPath = Arrays.asList(clothes, trousers, shortCat, offer);
+        List<Category> offerPath = asList(clothes, trousers, shortCat, offer);
         assertEquals(offerPath, offer.path());
         assertEquals(trousers.children(), trousers.getSubCategories());
 
         Category longCat = cat("clothes/trousers/long");
         Category leggings = cat("clothes/leggings");
         Category shirts = cat("clothes/shirts");
-        assertEquals(Arrays.asList(trousers, shortCat, offer, longCat, leggings, shirts), clothes.enumerate(Category.class));
-        assertEquals(Collections.singletonList(offer), clothes.enumerate(SpecialCategory.class));
+        assertEquals(asList(trousers, shortCat, offer, longCat, leggings, shirts), clothes.enumerate(Category.class));
+        assertEquals(singletonList(offer), clothes.enumerate(SpecialCategory.class));
     }
 
     private ObjectMeta<Category> catOM(String path) {
