@@ -14,6 +14,7 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.BoundObjectType;
 import net.sf.xapp.annotations.application.EditorWidget;
+import net.sf.xapp.annotations.objectmodelling.Children;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.annotations.marshalling.XMLMapping;
@@ -32,6 +33,8 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static java.lang.String.format;
+
 /**
  * Class Model wraps a {@link Class} and also encapsulates the extra djwastor meta data.
  * <p/>
@@ -49,6 +52,7 @@ public class ClassModel<T> {
     private Map<String, Property> m_propertyMap;
     private Map<String, Property> m_propertyMapByXMLMapping;
     private List<ListProperty> listProperties;
+    private ContainerProperty childrenProperty;
     private List<ClassModel> m_validImplementations;
     private Map<String, ClassModel> m_validImplementationMap;
     private int m_nextId;
@@ -646,6 +650,30 @@ public class ClassModel<T> {
         }
     }
 
+    public Property findOneProperty(final Class type, final Filter<Property> filter) {
+        return findOneProperty(new Filter<Property>() {
+            @Override
+            public boolean matches(Property property) {
+                return property.getMainType().isAssignableFrom(type) && filter.matches(property);
+            }
+
+            @Override
+            public String toString() {
+                return format("%s %s", type, filter);
+            }
+        });
+    }
+    public Property findOneProperty(final Filter<Property> filter) {
+        List<Property> props = getAllProperties(filter);
+        if(props.isEmpty()) {
+            throw new IllegalArgumentException(format("No property found on %s:%s with filter %s", getContainedClass().getSimpleName(), this, filter));
+        }
+        if(props.size() > 1) {
+            throw new IllegalArgumentException(format("More than 1 prop found (%s) found on %s (%s) with filter %s", props.size(), this, props, filter));
+        }
+        return props.get(0);
+    }
+
     private class PrimaryKeyChangedListener implements PropertyChangeListener {
 
         public void propertyChanged(Property property, Object target, Object oldVal, Object newVal) {
@@ -1036,5 +1064,17 @@ public class ClassModel<T> {
             }
             list.remove(index);
         }
+    }
+
+    public ContainerProperty getChildrenProperty() {
+        if(childrenProperty == null) {
+            childrenProperty = (ContainerProperty) findOneProperty(new Filter<Property>() {
+                @Override
+                public boolean matches(Property property) {
+                    return property.getPropertyAccess().getAnnotation(Children.class) != null;
+                }
+            });
+        }
+        return childrenProperty;
     }
 }

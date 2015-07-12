@@ -2,7 +2,9 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +22,17 @@ public class NamespacePath extends LinkedList<ObjectMeta> {
 
     public String getPathFrom(Namespace namespace, String pathSeparator) {
         return StringUtils.join(subList(indexOf(namespace) + 1, size()), pathSeparator);
+    }
+
+    public <T> List<T> instancePath(Class<T> filter) {
+        List<T> result = new ArrayList<>();
+        for (ObjectMeta objectMeta : this) {
+            Object instance = objectMeta.getInstance();
+            if(filter.isInstance(instance)) {
+                result.add(filter.cast(instance));
+            }
+        }
+        return result;
     }
 
     @Override

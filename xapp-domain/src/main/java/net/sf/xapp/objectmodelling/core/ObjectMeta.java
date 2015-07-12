@@ -16,7 +16,7 @@ import static net.sf.xapp.utils.ReflectionUtils.*;
 /**
  * additional data per instance
  */
-public class ObjectMeta<T> implements Namespace{
+public class ObjectMeta<T> implements Namespace, TreeContext{
     private final ClassModel<T> classModel;
     private final T instance;
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
@@ -457,6 +457,23 @@ public class ObjectMeta<T> implements Namespace{
         }
         return result;
     }
+
+    private <X> List<X> allChildInstances(final Filter<Object> instanceFilter) {
+        final List<X> result = new ArrayList<>();
+        List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
+        for (Property property : properties) {
+            property.eachValue(this, new PropertyValueIterator() {
+                @Override
+                public void exec(ObjectLocation objectLocation, int index, Object value) {
+                    if (instanceFilter.matches(value)) {
+                        result.add((X)value);
+                    }
+                }
+            });
+        }
+        return result;
+    }
+
     public PropertyChange setHomeRef() {
         return this.home.set(this);
     }
@@ -691,20 +708,8 @@ public class ObjectMeta<T> implements Namespace{
     /**
      * Find a property compatible with the given type. If more than one found throw exception
      */
-    public Property findMatchingProperty(final Class type, final Filter<Property> filter) {
-        List<Property> props = classModel.getAllProperties(new Filter<Property>() {
-            @Override
-            public boolean matches(Property property) {
-                return property.getMainType().isAssignableFrom(type) && filter.matches(property);
-            }
-        });
-        if(props.isEmpty()) {
-            throw new IllegalArgumentException(format("No property of type %s found on %s:%s", type.getSimpleName(), getClassModel().getContainedClass().getSimpleName(), this));
-        }
-        if(props.size() > 1) {
-            throw new IllegalArgumentException(format("More than 1 prop found (%s) of type %s found on %s (%s)", props.size(), type, this, props));
-        }
-        return props.get(0);
+    public Property findOneProperty(final Class type, final Filter<Property> filter) {
+        return classModel.findOneProperty(type, filter);
     }
 
     public Object objId() {
@@ -714,5 +719,41 @@ public class ObjectMeta<T> implements Namespace{
     public void incrementRev() {
         assert isRoot();
         rev++;
+    }
+
+    //tree context  contract
+
+
+    @Override
+    public <X> X parent(Class<X> matchingType) {
+        ObjectMeta<?> parent = getParent();
+        return parent.isA(matchingType) ? matchingType.cast(parent.getInstance()) : null;
+    }
+
+    @Override
+    public <X> List<X> path(Class<X> matchingType) {
+        NamespacePath namespacePath = getPath();
+        namespacePath.add(this);
+        return namespacePath.instancePath(matchingType);
+    }
+
+    @Override
+    public <X> List<X> children(final Class<X> matchingType) {
+        return allChildInstances(new Filter<Object>() {
+            @Override
+            public boolean matches(Object o) {
+                return matchingType.isInstance(o);
+            }
+        });
+    }
+
+    @Override
+    public <X> List<X> enumerate(Class<X> filterClass) {
+        return null;
+    }
+
+    @Override
+    public ObjectMeta objMeta() {
+        return this;
     }
 }

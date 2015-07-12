@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * simple facade for managed object to query its position in a tree
  */
-public interface TreeContext<T> {
-    T parent();
-    List<T> path();
-    List<T> children();
-    String pathId();
+public interface TreeContext {
+    <X> X parent(Class<X> matchingType);
+    <X> List<X> path(Class<X> matchingType);
+    <X> List<X> children(Class<X> matchingType);
+    <X> List<X> enumerate(Class<X> filterClass);
 
-    <E> List<E> enumerate(Class<E> filterClass);
+    ObjectMeta objMeta();
 }

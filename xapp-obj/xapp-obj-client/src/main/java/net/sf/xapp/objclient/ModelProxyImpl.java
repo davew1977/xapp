@@ -19,7 +19,6 @@ import net.sf.xapp.objserver.apis.objlistener.ObjListener;
 import net.sf.xapp.objserver.apis.objlistener.ObjListenerAdaptor;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdate;
 import net.sf.xapp.objserver.apis.objmanager.ObjUpdateAdaptor;
-import net.sf.xapp.objserver.apis.objmanager.to.ChangeType;
 import net.sf.xapp.objserver.types.ObjLoc;
 import net.sf.xapp.objserver.types.PropChange;
 import net.sf.xapp.objserver.types.PropChangeSet;
@@ -220,7 +219,7 @@ public class ModelProxyImpl extends ObjUpdateAdaptor implements ModelProxy{
         ObjectMeta parentMeta = cdb().find(parent);
         Property property;
         if (propName == null) {
-            property = parentMeta.findMatchingProperty(objType, filter);
+            property = parentMeta.findOneProperty(objType, filter);
         } else {
             property = parentMeta.getProperty(propName);
         }

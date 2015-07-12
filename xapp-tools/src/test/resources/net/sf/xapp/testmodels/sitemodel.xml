@@ -1,0 +1,26 @@
+<SiteModel>
+  <Sites>
+    <Site name="pokatron">
+      <Categories>
+        <Category name="games">
+          <Category name="poker"/>
+        </Category>
+        <Category name="users"/>
+      </Categories>
+    </Site>
+    <Site name="peppa-k">
+      <Categories>
+        <Category name="clothes">
+          <Category name="trousers">
+            <Category name="short">
+              <SpecialCategory name="on offer!"/>
+            </Category>
+            <Category name="long"/>
+          </Category>
+          <Category name="leggings"/>
+          <Category name="shirts"/>
+        </Category>
+      </Categories>
+    </Site>
+  </Sites>
+</SiteModel>
