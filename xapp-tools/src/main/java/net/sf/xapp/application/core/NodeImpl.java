@@ -148,7 +148,7 @@ public class NodeImpl implements Node {
     @Override
     public ObjectLocation toObjLocation() {
         //todo would really like to return a location even if we have no list context, but...
-        return listNodeContext != null ? listNodeContext.getObjectLocation() : null;
+        return listNodeContext != null ? new ObjectLocation(listNodeContext.getObjectLocation()) : null;
     }
 
     @Override

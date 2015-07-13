@@ -11,6 +11,11 @@ public class ObjectLocation {
     private final Property property;
     private int index = -1;
 
+    public ObjectLocation(ObjectLocation objectLocation) {
+        obj = objectLocation.obj;
+        property = objectLocation.property;
+    }
+
     public ObjectLocation(ObjectMeta obj, Property property) {
         this.obj = obj;
         this.property = property;

@@ -7,13 +7,11 @@ import net.sf.xapp.testmodels.SiteModel;
 import net.sf.xapp.testmodels.SpecialCategory;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.*;
-import static java.util.Collections.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.*;
 
 /**
@@ -48,7 +46,6 @@ public class TreeContextTest {
 
 
         //test tree functions
-        //todo
         Category shortCat = offer.parent();
         Category trousers = trousersObjMeta.getInstance();
         Category clothes = trousers.parent();
