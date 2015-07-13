@@ -2,6 +2,7 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.PreInit;
+import net.sf.xapp.annotations.objectmodelling.Transient;
 import net.sf.xapp.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -37,6 +38,10 @@ public class AbstractNode<T extends AbstractNode> {
         return treeContext.children(type);
     }
 
+    public List<T> enumerate() {
+        return enumerate(type);
+    }
+
     public <E> List<E> enumerate(Class<E> filterClass) {
         return treeContext.enumerate(filterClass);
     }
@@ -51,6 +56,16 @@ public class AbstractNode<T extends AbstractNode> {
            objectMetas.add(t.treeContext.objMeta());
         }
         return StringUtils.join(objectMetas, ".");
+    }
+
+    @Transient
+    public boolean isRoot() {
+        return parent() == null;
+    }
+
+    @Transient
+    public boolean isLeaf() {
+        return children().isEmpty();
     }
 
     @Key
