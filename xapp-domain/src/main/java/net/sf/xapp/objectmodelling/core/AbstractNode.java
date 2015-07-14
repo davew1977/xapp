@@ -21,6 +21,12 @@ public class AbstractNode<T extends AbstractNode> {
         this.type = type;
     }
 
+    public AbstractNode(Class<T> type, String name) {
+        this(type);
+        this.name = name;
+
+    }
+
     @PreInit
     public void preInit(TreeContext treeContext) {
         this.treeContext = treeContext;
@@ -56,6 +62,11 @@ public class AbstractNode<T extends AbstractNode> {
            objectMetas.add(t.treeContext.objMeta());
         }
         return StringUtils.join(objectMetas, ".");
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Transient

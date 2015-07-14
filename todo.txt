@@ -1,3 +1,5 @@
+BUG: change type produces null pointer when node has children
+
 Offline Mode {
     in offline mode the client should be able to reliably detect if it is connected or not
     in offline mode the client should stash changes locally in a persistent cache

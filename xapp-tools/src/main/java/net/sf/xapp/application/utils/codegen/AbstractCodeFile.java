@@ -143,7 +143,10 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
     }
 
     public CodeFile addImport(String i) {
-        imports.add(i);
+        String pName = StringUtils.nodePath(i, ".");
+        if(!mPackage.equals(pName) && !pName.equals("java.util")) {
+            imports.add(i);
+        }
         return this;
     }
 

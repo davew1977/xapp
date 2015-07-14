@@ -20,11 +20,6 @@ public class Category extends AbstractNode<Category> {
         super(Category.class);
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
     public List<Category> getSubCategories() {
         return subCategories;
     }
