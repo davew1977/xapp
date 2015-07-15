@@ -144,7 +144,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
 
     public CodeFile addImport(String i) {
         String pName = StringUtils.nodePath(i, ".");
-        if(!mPackage.equals(pName) && !pName.equals("java.util")) {
+        if(!mPackage.equals(pName) && !pName.equals("java.lang") && !pName.equals("")) {
             imports.add(i);
         }
         return this;
@@ -436,7 +436,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
 
     private void doEnum(StringBuilder sb) {
         if (isEnum()) {
-            String valueEndChar = !methods.isEmpty() ? ";" : "";
+            String valueEndChar = !methods.isEmpty() || !fields.isEmpty() ? ";" : "";
             if (enumContexts.isEmpty()) {
                 List<String> enumValues = new ArrayList<String>(this.enumValues);
                 for (int i = 0; i < enumValues.size(); i++) {
@@ -619,14 +619,13 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
     }
 
     private void doFields(StringBuilder sb) {
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
+        for (Field field : fields) {
             appendDoc(currentIndent, field.m_docLines, sb);
             for (String annotation : field.annotations) {
                 sb.append(currentIndent).append(annotation).append("\n");
             }
             sb.append(currentIndent).append(field.generateDeclaration()).append("\n");
-            sb.append("\n");
+            //sb.append("\n");
         }
     }
 

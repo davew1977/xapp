@@ -9,6 +9,7 @@ public interface TreeContext {
     <X> X parent(Class<X> matchingType);
     <X> List<X> path(Class<X> matchingType);
     <X> List<X> children(Class<X> matchingType);
+    <X> X child(Class<X> matchingType, String name);
     <X> List<X> enumerate(Class<X> filterClass);
 
     ObjectMeta objMeta();

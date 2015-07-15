@@ -715,7 +715,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     @Override
     public <X> X parent(Class<X> matchingType) {
         ObjectMeta<?> parent = getParent();
-        return parent.isA(matchingType) ? matchingType.cast(parent.getInstance()) : null;
+        return parent != null && parent.isA(matchingType) ? matchingType.cast(parent.getInstance()) : null;
     }
 
     @Override
@@ -728,6 +728,11 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     @Override
     public <X> List<X> children(final Class<X> matchingType) {
         return toInstances(matchingType, descendents(false));
+    }
+
+    @Override
+    public <X> X child(Class<X> matchingType, String name) {
+        return find(matchingType, name).getInstance();
     }
 
     @Override

@@ -52,10 +52,18 @@ public class AbstractNode<T extends AbstractNode> {
         return treeContext.enumerate(filterClass);
     }
 
+    public T getChild(String name) {
+        return getChild(type, name);
+    }
+
+    public <E> E getChild(Class<E> filterClass, String name) {
+        return treeContext.child(filterClass, name);
+    }
+
     /**
      * the path of this node in the notional tree
      */
-    public String pathName() {
+    public String pathKey() {
         List<? extends T> path = path();
         List<ObjectMeta> objectMetas = new ArrayList<>();
         for (T t : path) {

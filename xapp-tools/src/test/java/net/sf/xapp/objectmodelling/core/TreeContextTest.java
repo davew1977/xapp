@@ -59,8 +59,11 @@ public class TreeContextTest {
         assertEquals(asList(trousers, shortCat, offer, longCat, leggings, shirts), clothes.enumerate(Category.class));
         assertEquals(singletonList(offer), clothes.enumerate(SpecialCategory.class));
 
-        assertEquals("clothes.shirts", shirts.pathName());
-        assertEquals("clothes.trousers.short.on offer!", offer.pathName());
+        assertEquals("clothes.shirts", shirts.pathKey());
+        assertEquals("clothes.trousers.short.on offer!", offer.pathKey());
+
+        assertEquals(leggings, clothes.getChild("leggings"));
+        assertEquals(offer, shortCat.getChild("on offer!"));
 
         assertTrue(clothes.isRoot());
         assertFalse(clothes.isLeaf());
