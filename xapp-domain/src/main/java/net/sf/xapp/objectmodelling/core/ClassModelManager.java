@@ -92,6 +92,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         ssMap.put(int[].class, new IntegerArraySerializer());
         ssMap.put(long[].class, new LongListSerializer());
         ssMap.put(Date.class, new DateStringSerializer());
+        ssMap.put(Class.class, new ClassStringSerializer());
 
         keyChangeHistory = new KeyChangeHistoryImpl();
 

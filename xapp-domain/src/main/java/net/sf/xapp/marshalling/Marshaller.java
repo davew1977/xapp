@@ -245,7 +245,8 @@ public class Marshaller<T> {
         String tagName = propertyValuePair.getName();
         Property property = propertyValuePair.getProperty();
         assert value != null;
-        if (isPrimitive(value) || value.getClass().equals(String.class) || value.getClass().isEnum()) {
+        Class<?> valueType = value.getClass();
+        if (isPrimitive(value) || valueType.equals(String.class)|| valueType.isEnum()) {
             out.writeSimpleTag(tagName, String.valueOf(value), property);
         } else if (property instanceof ContainerProperty) {
             ContainerProperty containerProperty = (ContainerProperty) property;
@@ -290,9 +291,9 @@ public class Marshaller<T> {
             String resource = getResourceURL(parentObject, property);
             List<ComparableNameValuePair> attrTags = new ArrayList<ComparableNameValuePair>();
             attrTags.add(new SimpleNameValuePair(Unmarshaller.DJW_INCLUDE_TAG, resource));
-            out.writeOpeningTag(value.getClass().getSimpleName(), attrTags, false);
+            out.writeOpeningTag(valueType.getSimpleName(), attrTags, false);
         } else {
-            Class aClass = value.getClass();
+            Class aClass = valueType;
             getMarshaller(aClass).marshalInternal(out, value, tagName, !aClass.equals(property.getPropertyClass()));
         }
     }
