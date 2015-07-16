@@ -56,7 +56,7 @@ public class TreeContextTest {
         Category longCat = cat("clothes/trousers/long");
         Category leggings = cat("clothes/leggings");
         Category shirts = cat("clothes/shirts");
-        assertEquals(asList(trousers, shortCat, offer, longCat, leggings, shirts), clothes.enumerate(Category.class));
+        assertEquals(asList(clothes, trousers, shortCat, offer, longCat, leggings, shirts), clothes.enumerate(Category.class));
         assertEquals(singletonList(offer), clothes.enumerate(SpecialCategory.class));
 
         assertEquals("clothes.shirts", shirts.pathKey());

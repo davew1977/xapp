@@ -51,6 +51,7 @@ public class Property<T> implements Comparable {
     private List<PropertyChangeListener> listeners;
     private boolean mandatory;
     private boolean visibilityRestricted = true; //defaults to visible in dynamic GUI
+    private boolean _transient;
 
     public Property(ClassModelManager classDatabase, PropertyAccess propertyAccess, Class aClass, Reference ref,
                     String filterOnProperty, Key key,
@@ -77,6 +78,7 @@ public class Property<T> implements Comparable {
         this.editable = editable;
         editableOnCreation = editable;
         listeners = new ArrayList<PropertyChangeListener>();
+        _transient = propertyAccess.isTransient();
     }
 
     public void setEditorWidgetType(Class type, Object... args) {
@@ -340,7 +342,11 @@ public class Property<T> implements Comparable {
     }
 
     public boolean isTransient() {
-        return propertyAccess.isTransient();
+        return _transient;
+    }
+
+    public void setTransient(boolean _transient) {
+        this._transient = _transient;
     }
 
     /**

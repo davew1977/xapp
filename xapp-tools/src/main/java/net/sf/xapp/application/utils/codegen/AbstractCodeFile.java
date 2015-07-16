@@ -424,6 +424,7 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         doClassDeclaration(sb);
         doEnum(sb);
         doFields(sb);
+        sb.append("\n");
         doConstructors(sb);
         doMethods(currentIndent, m_interface, sb, new ArrayList<Method>(getMethods()));
         doInnerClasses(sb);

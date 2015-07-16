@@ -413,7 +413,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
         Collection<Object> attachments = attachments(); //store for returning later
         //delete all child objects
-        List<ObjectMeta> children = descendents(false);
+        List<ObjectMeta> children = descendents(false, false);
         for (ObjectMeta child : children) {
             attachments.addAll(child.dispose(false));
         }
@@ -444,8 +444,11 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         return result;
     }
 
-    private List<ObjectMeta> descendents(final boolean recursive) {
+    private List<ObjectMeta> descendents(boolean includeSelf, final boolean recursive) {
         final List<ObjectMeta> result = new ArrayList<ObjectMeta>();
+        if(includeSelf) {
+            result.add(this);
+        }
         List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
         for (Property property : properties) {
             property.eachValue(this, new PropertyValueIterator() {
@@ -454,7 +457,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
                     ObjectMeta child = objectLocation.getPropClassModel().find(value);
                     result.add(child);
                     if(recursive) {
-                        result.addAll(child.descendents(recursive));
+                        result.addAll(child.descendents(false, recursive));
                     }
                 }
             });
@@ -673,7 +676,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
             rev = getClassDatabase().getRev();
             getParent().updateRev();
             if (includeComplexChildren) {
-                List<ObjectMeta> children = descendents(true);
+                List<ObjectMeta> children = descendents(false, true);
                 for (ObjectMeta child : children) {
                     child.setRev(rev);
                 }
@@ -727,7 +730,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     @Override
     public <X> List<X> children(final Class<X> matchingType) {
-        return toInstances(matchingType, descendents(false));
+        return toInstances(matchingType, descendents(false, false));
     }
 
     @Override
@@ -737,7 +740,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     @Override
     public <X> List<X> enumerate(Class<X> filterClass) {
-        return toInstances(filterClass, descendents(true));
+        return toInstances(filterClass, descendents(true, true));
     }
 
     @Override
