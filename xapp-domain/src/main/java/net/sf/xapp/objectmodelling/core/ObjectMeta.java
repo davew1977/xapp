@@ -4,6 +4,7 @@ import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
+import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.XappException;
 
@@ -741,6 +742,11 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     @Override
     public <X> List<X> enumerate(Class<X> filterClass) {
         return toInstances(filterClass, descendents(true, true));
+    }
+
+    @Override
+    public <X> List<X> enumerate(Class<X> filterClass, Filter<? super X> filter) {
+        return CollectionsUtils.filter(enumerate(filterClass), filter);
     }
 
     @Override

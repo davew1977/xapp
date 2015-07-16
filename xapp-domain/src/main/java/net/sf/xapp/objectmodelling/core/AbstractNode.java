@@ -3,6 +3,7 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.Transient;
+import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -50,6 +51,10 @@ public class AbstractNode<T extends AbstractNode> {
 
     public <E> List<E> enumerate(Class<E> filterClass) {
         return treeContext.enumerate(filterClass);
+    }
+
+    public <E> List<E> enumerate(Class<E> filterClass, Filter<? super E> filter) {
+        return treeContext.enumerate(filterClass, filter);
     }
 
     public T getChild(String name) {

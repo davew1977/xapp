@@ -258,10 +258,12 @@ public class Marshaller<T> {
 
             if (elementsExist) {
                 for (Object listItem : col) {
+                    if(listItem == null) {
+                        continue;
+                    }
                     Class aClass = listItem.getClass();
                     if (aClass.isEnum()) {
                         out.writeSimpleTag(aClass.getSimpleName(), String.valueOf(listItem), null);
-                        continue;
                     } else if (containerProperty.containsReferences()) {
                         List<ComparableNameValuePair> anAttr = new ArrayList<ComparableNameValuePair>();
                         ClassModel classModel = containerProperty.getContainedTypeClassModel();

@@ -1,5 +1,7 @@
 package net.sf.xapp.objectmodelling.core;
 
+import net.sf.xapp.utils.Filter;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,7 @@ public interface TreeContext {
     <X> List<X> children(Class<X> matchingType);
     <X> X child(Class<X> matchingType, String name);
     <X> List<X> enumerate(Class<X> filterClass);
+    <X> List<X> enumerate(Class<X> filterClass, Filter<? super X> filter);
 
     ObjectMeta objMeta();
 }
