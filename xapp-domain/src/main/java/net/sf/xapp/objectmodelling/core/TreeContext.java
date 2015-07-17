@@ -15,5 +15,5 @@ public interface TreeContext {
     <X> List<X> enumerate(Class<X> filterClass);
     <X> List<X> enumerate(Class<X> filterClass, Filter<? super X> filter);
 
-    ObjectMeta objMeta();
+    <X> ObjectMeta<X> objMeta();
 }

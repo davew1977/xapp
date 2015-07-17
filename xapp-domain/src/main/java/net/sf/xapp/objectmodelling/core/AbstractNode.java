@@ -100,4 +100,9 @@ public class AbstractNode<T extends AbstractNode> {
     public void setName(String name) {
         this.name = name;
     }
+
+    public <X> ObjectMeta<X> objMeta() {
+        return treeContext.objMeta();
+    }
+
 }
