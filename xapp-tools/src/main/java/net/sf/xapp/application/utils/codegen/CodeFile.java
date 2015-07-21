@@ -23,6 +23,7 @@ public interface CodeFile extends ClassContext, DocContext {
     CodeFile addSimpleEnumValue(String name);
     CodeFile setPackage(String p);
     CodeFile addImport(String i);
+    CodeFile addImports(List<String> imports);
 
     void generate();
 

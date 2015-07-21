@@ -150,6 +150,14 @@ public abstract class AbstractCodeFile implements CodeFile, EnumContext {
         return this;
     }
 
+    @Override
+    public CodeFile addImports(List<String> imports) {
+        for (String s : imports) {
+            addImport(s);
+        }
+        return this;
+    }
+
     public CodeFile setSuper(String s) {
         superClass = s;
         return this;

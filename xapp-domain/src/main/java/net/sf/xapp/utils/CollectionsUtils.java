@@ -13,6 +13,8 @@
 package net.sf.xapp.utils;
 
 
+import net.sf.xapp.objectmodelling.core.filters.ClassFilter;
+
 import java.util.*;
 
 public class CollectionsUtils
@@ -66,6 +68,29 @@ public class CollectionsUtils
         for (T item : items) {
             if(filter.matches(item)) {
                 result.add(item);
+            }
+        }
+        return result;
+    }
+
+
+    public static <T> List<T> filter(Collection<? super T> items, Class<T> filterClass) {
+        return filter(items, filterClass, new Filter<T>() {
+            @Override
+            public boolean matches(T t) {
+                return true;
+            }
+        });
+
+    }
+    public static <T> List<T> filter(Collection<? super T> items, Class<T> filterClass, Filter<? super T> filter) {
+        List<T> result = new ArrayList<T>();
+        for (Object item : items) {
+            if(filterClass.isInstance(item) ) {
+                T t = filterClass.cast(item);
+                if (filter.matches(t)) {
+                    result.add(t);
+                }
             }
         }
         return result;

@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  * Marks a {@link net.sf.xapp.objectmodelling.core.Property} as being mandatory. Can get special attention in the editor
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface Mandatory
 {
 }
