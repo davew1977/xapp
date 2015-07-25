@@ -286,6 +286,7 @@ public class ClassModel<T> {
         if(getClassDatabase().isMaster()) {
             id = getClassDatabase().nextId();
         }
+        //TODO call a method on object notifying it is about to be added to the class DB
         ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef, id);
         if(hasPreInit()) {
             tryAndInvoke(obj, preInitMethod, objectMeta);

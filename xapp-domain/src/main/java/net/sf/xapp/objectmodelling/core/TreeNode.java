@@ -3,7 +3,6 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.Transient;
-import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -12,17 +11,17 @@ import java.util.List;
 /**
  * provides some useful tree related functionality
  */
-public class AbstractNode<T extends AbstractNode> {
+public class TreeNode<T extends TreeNode> {
     @Key
     protected String name;
     protected transient TreeContext treeContext;
     protected transient Class<T> type;
 
-    public AbstractNode(Class<T> type) {
+    public TreeNode(Class<T> type) {
         this.type = type;
     }
 
-    public AbstractNode(Class<T> type, String name) {
+    public TreeNode(Class<T> type, String name) {
         this(type);
         this.name = name;
 
@@ -39,30 +38,6 @@ public class AbstractNode<T extends AbstractNode> {
 
     public List<? extends T> path() {
         return treeContext.path(type);
-    }
-
-    public List<T> children() {
-        return treeContext.children(type);
-    }
-
-    public List<T> enumerate() {
-        return enumerate(type);
-    }
-
-    public <E> List<E> enumerate(Class<E> filterClass) {
-        return treeContext.enumerate(filterClass);
-    }
-
-    public <E> List<E> enumerate(Class<E> filterClass, Filter<? super E> filter) {
-        return treeContext.enumerate(filterClass, filter);
-    }
-
-    public T getChild(String name) {
-        return getChild(type, name);
-    }
-
-    public <E> E getChild(Class<E> filterClass, String name) {
-        return treeContext.child(filterClass, name);
     }
 
     /**
@@ -89,7 +64,7 @@ public class AbstractNode<T extends AbstractNode> {
 
     @Transient
     public boolean isLeaf() {
-        return children().isEmpty();
+        return true;
     }
 
     @Key

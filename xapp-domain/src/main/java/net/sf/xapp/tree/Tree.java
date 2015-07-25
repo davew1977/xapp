@@ -17,6 +17,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * @deprecated use net.sf.xapp.objectmodelling.core.Tree instead
+ */
+@Deprecated
 public class Tree extends TreeNode
 {
     public static final int INCLUDE_LEAVES = 0x01;

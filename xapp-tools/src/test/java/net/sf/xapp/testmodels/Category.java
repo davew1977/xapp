@@ -3,7 +3,7 @@ package net.sf.xapp.testmodels;
 import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
-import net.sf.xapp.objectmodelling.core.AbstractNode;
+import net.sf.xapp.objectmodelling.core.Tree;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @NamespaceFor(Category.class)
 @Container(listProperty = "subCategories")
 @ValidImplementations({SpecialCategory.class})
-public class Category extends AbstractNode<Category> {
+public class Category extends Tree<Category> {
 
     private List<Category> subCategories;
 

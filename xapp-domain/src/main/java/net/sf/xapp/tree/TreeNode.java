@@ -23,7 +23,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @deprecated use net.sf.xapp.objectmodelling.core.TreeNode instead
+ */
 @ValidImplementations(Tree.class)
+@Deprecated
 public abstract class TreeNode implements Comparable, Cloneable
 {
     private String m_key = "";
