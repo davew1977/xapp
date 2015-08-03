@@ -22,7 +22,7 @@ public interface WidgetContext<T>
 {
     EditMode getEditMode();
     ClassDatabase getClassDatabase();
-    Property<T> getProperty();
+    Property getProperty();
     String getArgs();
 
     Editor getEditor();

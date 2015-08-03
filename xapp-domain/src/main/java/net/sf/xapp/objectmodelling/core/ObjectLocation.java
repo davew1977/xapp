@@ -1,5 +1,6 @@
 package net.sf.xapp.objectmodelling.core;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 
@@ -100,6 +101,10 @@ public class ObjectLocation {
         return ((ContainerProperty) property).getCollection(obj.getInstance());
     }
 
+    public Object getContainer() {
+        return ((ContainerProperty) property).get(obj.getInstance());
+    }
+
     public boolean isList() {
         return property.isList();
     }
@@ -175,5 +180,14 @@ public class ObjectLocation {
      */
     public boolean isContainer() {
         return isCollection() && property.equals(obj.getContainerProperty());
+    }
+
+    public <X extends Annotation> X findAncestorAnnotation(Class<X> type) {
+        X an = getAnnotation(type);
+        return an != null ? an : (X)getObj().findAncestorAnnotation(type);
+    }
+
+    public <X extends Annotation> X getAnnotation(Class<X> type) {
+        return getProperty().getAnnotation(type);
     }
 }

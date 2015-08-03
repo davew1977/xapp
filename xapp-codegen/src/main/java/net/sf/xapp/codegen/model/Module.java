@@ -1,15 +1,7 @@
 package net.sf.xapp.codegen.model;
 
-import net.sf.xapp.annotations.objectmodelling.Key;
-import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
-import net.sf.xapp.annotations.objectmodelling.PreInit;
-import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.application.utils.codegen.CodeFile;
 import net.sf.xapp.application.utils.codegen.JavaFile;
-import net.sf.xapp.objectmodelling.core.Namespace;
-import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.tree.Tree;
-import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.codegen.mixins.GenericMixIn;
 import net.sf.xapp.codegen.mixins.ObserverAPIMixin;

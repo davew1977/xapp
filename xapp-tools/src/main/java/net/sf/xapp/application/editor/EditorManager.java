@@ -18,6 +18,7 @@ import net.sf.xapp.objectmodelling.api.InspectionType;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objectmodelling.core.PropertyUpdate;
 import net.sf.xapp.utils.XappException;
 
 import java.awt.*;
@@ -112,7 +113,7 @@ public class EditorManager
     public void edit(Frame comp, Object p, EditorListener editorListener)
     {
         ClassModel rootClassModel = new ClassModelManager(p.getClass(), InspectionType.FIELD).getRootClassModel();
-        ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false);
+        ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false, true);
         Editor editor = getEditor(new SingleTargetEditableContext(
                 objectMeta,
                 SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), editorListener);
@@ -128,9 +129,14 @@ public class EditorManager
      */
     public boolean edit(Frame comp, ClassModel classModel, Object p)
     {
-        ObjectMeta objectMeta = classModel.createObjMeta(null, p, false);
+        final ObjectMeta objectMeta = classModel.createObjMeta(null, p, false, true);
         Editor editor = getEditor(new SingleTargetEditableContext(objectMeta, SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()),
-                new EditorListener.NullEditorListener());
+                new EditorAdaptor() {
+                    @Override
+                    public void save(List<PropertyUpdate> changes, boolean closing) {
+                        objectMeta.update(changes);
+                    }
+                });
         editor.getMainDialog(comp, true).setVisible(true);
         return !editor.wasCancelled();
     }

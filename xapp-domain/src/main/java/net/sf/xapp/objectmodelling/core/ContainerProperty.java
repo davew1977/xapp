@@ -34,7 +34,7 @@ public class ContainerProperty extends Property
                              Type mapValueType, Class<?> keyType, EditorWidget editorWidget,
                              Class parentClass)
     {
-        super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, editorWidget, false, parentClass, "", true,null, false);
+        super(classModelManager, propertyAccess, aClass, null, null, null/*map cannot be primary key*/, editorWidget, false, parentClass, "", true,false);
         this.mapValueType = mapValueType;
         this.mapKeyType = keyType;
         m_restrictedRights = new ArrayList<Rights>();

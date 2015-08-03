@@ -21,8 +21,6 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.difftracking.ChangeModel;
 import net.sf.xapp.objectmodelling.difftracking.ChangeSet;
-import net.sf.xapp.tree.Tree;
-import net.sf.xapp.tree.TreeNode;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.StringUtils;
 
@@ -56,8 +54,6 @@ public class SearchFormControl
         List<ClassModel> classModelList = classDatabase.enumerateClassModels();
         classModelList.remove(classDatabase.getClassModel(ChangeSet.class));
         classModelList.remove(classDatabase.getClassModel(ChangeModel.class));
-        classModelList.remove(classDatabase.getClassModel(TreeNode.class));
-        classModelList.remove(classDatabase.getClassModel(Tree.class));
         Collections.sort(classModelList, new ClassModelComparator());
         m_searchForm.getTypeCombo().setRenderer(new DefaultListCellRenderer()
         {

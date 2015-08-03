@@ -140,7 +140,7 @@ public class ObjectPropertyWidget extends AbstractPropertyWidget
         if (m_popUp == null)
         {
             m_popUp = new JPopupMenu();
-            java.util.List<ClassModel> validImpls = propertyClassModel.getValidImplementations();
+            java.util.Collection<ClassModel> validImpls = propertyClassModel.getValidImplementations().values();
             for (final ClassModel validImpl : validImpls)
             {
                 JMenuItem menuItem = new JMenuItem(validImpl.getSimpleName());

@@ -33,7 +33,7 @@ public class TreeContextTest {
         ObjectMeta<Category> trousersObjMeta = catOM("clothes/trousers");
         assertEquals("trousers", trousersObjMeta.getKey());
         assertEquals("peppa-k/clothes/trousers", trousersObjMeta.getGlobalKey());
-        assertEquals("peppa-k.clothes.trousers", trousersObjMeta.getGlobalKey("."));
+        assertEquals("peppa-k.clothes.trousers", trousersObjMeta.getGlobalKey(PathSeparator.DOT));
         ObjectMeta<Category> offerObjMeta = catOM("clothes/trousers/short/on offer!");
         Category offer = offerObjMeta.getInstance();
         assertEquals("peppa-k/clothes/trousers/short/on offer!", offerObjMeta.getGlobalKey());

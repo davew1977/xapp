@@ -209,4 +209,8 @@ public class SimpleApplication<T> implements Application<T> {
             }
         });
     }
+
+    public JFrame getAppFrame() {
+        return getAppContainer().getMainFrame();
+    }
 }

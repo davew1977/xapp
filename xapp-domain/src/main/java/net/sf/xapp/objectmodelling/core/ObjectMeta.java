@@ -1,6 +1,7 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
+import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
@@ -8,6 +9,7 @@ import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.XappException;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 import static java.lang.String.*;
@@ -32,6 +34,9 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, Long id) {
         final ClassDatabase cdb = classModel.getClassDatabase();
+        if (home==null) {
+            ((ClassModelManager)cdb).setRootObjMeta(this);
+        }
         this.classModel = classModel;
         this.instance = obj;
         NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
@@ -106,7 +111,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     }
 
     public <E> ObjectMeta<E> find(Class<E> aClass, String path) {
-        String[] p = path.split(NamespacePath.PATH_SEPARATOR, 2);
+        String[] p = path.split(NamespacePath.PATH_SEPARATOR.regExp(), 2);
         if(p.length==1) {
             ObjectMeta<E> obj;
             Map<String, ObjectMeta> lookup;
@@ -366,7 +371,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         return getGlobalKey(NamespacePath.PATH_SEPARATOR);
     }
 
-    public String getGlobalKey(String pathSeparator){
+    public String getGlobalKey(PathSeparator pathSeparator){
         return fullPath(root(), this, pathSeparator);
     }
 
@@ -485,7 +490,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         return null;
     }
 
-    public ClassDatabase getClassDatabase() {
+    public ClassDatabase<?> getClassDatabase() {
         return classModel.getClassDatabase();
     }
 
@@ -547,7 +552,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     public ObjectMeta copy() {
         Object clone = getClassModel().createClone(instance);
-        return getClassModel().createObjMeta(null, (T) clone, false);
+        return getClassModel().createObjMeta(null, (T) clone, false, true);
     }
 
     public String getSimpleClassName() {
@@ -577,9 +582,9 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         Set<ClassModel> result = new HashSet<ClassModel>();
         if (!isRoot()) {
             result.add(classModel);
-            ClassModel propertyClassModel = getHome().getProperty().getMainTypeClassModel();
+            ClassModel<?> propertyClassModel = getHome().getProperty().getMainTypeClassModel();
             result.add(propertyClassModel);
-            result.addAll(propertyClassModel.getValidImplementations());
+            result.addAll(propertyClassModel.getValidImplementations().values());
         }
         return result;
     }
@@ -723,6 +728,12 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     }
 
     @Override
+    public <X> X ancestor(Class<X> matchingType) {
+        ObjectMeta<?> parent = getParent();
+        return parent != null ? parent.isA(matchingType) ? matchingType.cast(parent.getInstance()) : parent.ancestor(matchingType) : null;
+    }
+
+    @Override
     public <X> List<X> path(Class<X> matchingType) {
         NamespacePath namespacePath = getPath();
         namespacePath.add(this);
@@ -762,5 +773,13 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
             }
         }
         return result;
+    }
+
+    public <X extends Annotation> X findAncestorAnnotation(Class<X> type) {
+        return !isRoot() ? home.findAncestorAnnotation(type) : null;
+    }
+
+    public <X> X rootInstance() {
+        return (X) getClassDatabase().getRootObjMeta().getInstance();
     }
 }

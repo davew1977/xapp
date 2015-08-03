@@ -27,8 +27,6 @@ public interface MarshallingContext<T>
 
     String getIncludedResourceURLByReference(PropertyObjectPair propertyObjectPair);
 
-    ClassModelManager createChildCMM(Class[] retainList);
-
     KeyChangeHistory getKeyChangeHistory();
 
     /**

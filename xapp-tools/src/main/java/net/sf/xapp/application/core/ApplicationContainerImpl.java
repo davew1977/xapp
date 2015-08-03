@@ -292,7 +292,15 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
     private Node find(DefaultMutableTreeNode dmtn, Object obj)
     {
         Node node = (Node) dmtn.getUserObject();
-        if (!node.isReference() && node.wrappedObject() == obj) return node;
+        if (!node.isReference() && node.wrappedObject() == obj){
+            return node;
+        }
+        ListNodeContext listNodeContext = node.getListNodeContext();
+        if(obj instanceof Collection && listNodeContext != null) {
+            if(listNodeContext.getContainer() == obj) {
+                return node;
+            }
+        }
         int childCount = dmtn.getChildCount();
         for (int n = 0; n < childCount; n++)
         {
@@ -584,7 +592,9 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
         if (node != null) {
             throw new XappException("object " + obj + " is already added");
         }
-        getNodeUpdateApi().insertObject(parentNode.toObjLocation(), obj);
+        ObjectLocation objectLocation = parentNode.toObjLocation();
+        objectLocation.setIndex(index);
+        getNodeUpdateApi().insertObject(objectLocation, obj);
     }
 
     @Override

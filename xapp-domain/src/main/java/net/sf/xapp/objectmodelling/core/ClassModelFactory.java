@@ -19,7 +19,6 @@ import net.sf.xapp.annotations.objectmodelling.PostInit;
 import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 import net.sf.xapp.objectmodelling.api.InspectionType;
-import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.ClassUtils;
 import net.sf.xapp.utils.XappException;
 
@@ -36,9 +35,6 @@ public class ClassModelFactory {
         //is this a container?
         Container containerAnnotation = (Container) ClassUtils.getAnnotationInHeirarchy(Container.class, aClass);
         String containerListProp = containerAnnotation != null ? containerAnnotation.listProperty() : null;
-        if (Tree.class.isAssignableFrom(aClass)) {
-            containerListProp = "children"; //hard code the container property for subtypes of Tree
-        }
         ValidImplementations annotation = (ValidImplementations) aClass.getAnnotation(ValidImplementations.class);
         List<ClassModel> validImplementations = getValidSubClasses(classModelManager, aClass, annotation);
         EditorWidget bcAnnotation = (EditorWidget) aClass.getAnnotation(EditorWidget.class);

@@ -50,7 +50,7 @@ public interface PropertyWidget<T>
      * Get the property object currently associated with 
      * @return
      */
-    Property<T> getProperty();
+    Property getProperty();
 
     /**
      * Called by the container before the a new property value is set into the component.

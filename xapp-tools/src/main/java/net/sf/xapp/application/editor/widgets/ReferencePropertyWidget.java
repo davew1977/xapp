@@ -16,8 +16,7 @@ import net.sf.xapp.application.api.WidgetContext;
 import net.sf.xapp.application.utils.SwingUtils;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
-import net.sf.xapp.tree.Tree;
-import net.sf.xapp.tree.TreeNode;
+import net.sf.xapp.objectmodelling.core.TreeNode;
 import net.sf.xapp.utils.XappException;
 
 import javax.swing.*;
@@ -31,7 +30,6 @@ import static net.sf.xapp.utils.StringUtils.leaf;
 
 public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
     protected JComboBox m_comboBox;
-    protected Tree m_root; //has a value if contained type is tree
 
     public final String NULL = "null";
     private ObjectMeta m_parentObject;
@@ -228,8 +226,8 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
             final String text = tf.getText();
             final int caretIndex = tf.getCaretPosition();
             String pre = text.substring(0, caretIndex);
-            java.util.List<TreeNode> nodes = m_root.search(pre);
-            Collections.sort(nodes);
+            java.util.List<TreeNode> nodes = null; //m_root.search(pre);
+            //Collections.sort(nodes);
             if (nodes.isEmpty()) {
                 return;
             }
@@ -239,7 +237,7 @@ public class ReferencePropertyWidget<T> extends AbstractPropertyWidget<T> {
             JMenuItem lastItem = null;
             for (TreeNode node : nodes) {
                 String nodeName = node.toString();
-                String insertion = nodeName.substring(leaf(pre, m_root.pathSeparator()).length());
+                String insertion = nodeName.substring(leaf(pre, ".").length());
                 lastItem = createInsertAction(nodeName, caretIndex, insertion);
                 jp.add(lastItem);
             }

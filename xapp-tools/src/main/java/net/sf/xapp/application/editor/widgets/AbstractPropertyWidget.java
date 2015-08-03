@@ -25,7 +25,7 @@ public abstract class AbstractPropertyWidget<T> implements PropertyWidget<T>
         m_widgetContext = context;
     }
 
-    public final Property<T> getProperty()
+    public final Property getProperty()
     {
         return m_widgetContext!=null ? m_widgetContext.getProperty() : null;
     }

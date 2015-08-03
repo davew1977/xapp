@@ -3,6 +3,7 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.Transient;
+import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -35,6 +36,12 @@ public class TreeNode<T extends TreeNode> {
     public T parent() {
         return treeContext.parent(type);
     }
+    public <X> X parent(Class<X> type) {
+        return treeContext.parent(type);
+    }
+    public <X> X ancestor(Class<X> type) {
+        return treeContext.ancestor(type);
+    }
 
     public List<? extends T> path() {
         return treeContext.path(type);
@@ -52,6 +59,35 @@ public class TreeNode<T extends TreeNode> {
         return StringUtils.join(objectMetas, ".");
     }
 
+
+    public List<T> children() {
+        return treeContext.children(type);
+    }
+
+    public List<T> enumerate() {
+        return enumerate(type);
+    }
+
+    public <E> List<E> enumerate(Class<E> filterClass) {
+        return treeContext.enumerate(filterClass);
+    }
+
+    public <E> List<E> enumerate(Class<E> filterClass, Filter<? super E> filter) {
+        return treeContext.enumerate(filterClass, filter);
+    }
+
+    public T getChild(String name) {
+        return getChild(type, name);
+    }
+
+    public <E> E getChild(Class<E> filterClass, String name) {
+        return treeContext.child(filterClass, name);
+    }
+
+    @Transient
+    public boolean isLeaf() {
+        return children().isEmpty();
+    }
     @Override
     public String toString() {
         return name;
@@ -62,10 +98,6 @@ public class TreeNode<T extends TreeNode> {
         return parent() == null;
     }
 
-    @Transient
-    public boolean isLeaf() {
-        return true;
-    }
 
     @Key
     public String getName() {

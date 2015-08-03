@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.marshalling;
 
+import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
@@ -103,7 +104,7 @@ public class Unmarshaller<T> {
             }
             return obj;
         } catch (Exception e) {
-            throw new XappException(e);
+            throw new XappException(e.getMessage(), e);
         }
     }
 
@@ -114,7 +115,7 @@ public class Unmarshaller<T> {
             }
             return unmarshal(new FileInputStream(file));
         } catch (Exception e) {
-            throw new XappException(e);
+            throw new XappException(e.getMessage(), e);
         }
     }
 
@@ -140,10 +141,10 @@ public class Unmarshaller<T> {
      * help of various annotations
      */
     private ObjectMeta<T> unmarshal(Element element, ObjectLocation parent) throws Exception {
-        ClassDatabase cdb = classModel.getClassDatabase();
+        ClassModelManager<?> cdb = (ClassModelManager<?>) classModel.getClassDatabase();
 
         //if an element exists we should create an empty object instead of setting to null
-        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true);
+        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true, false);
 
         if (!getClassDatabase().isMaster()) {
             Attr attributeNode = element.getAttributeNode(ATTR_ID);
@@ -155,6 +156,13 @@ public class Unmarshaller<T> {
         Attr attributeNode = element.getAttributeNode(ATTR_REV);
         if(attributeNode != null) {
             objectMeta.setRev(Long.parseLong(attributeNode.getNodeValue()));
+        }
+
+        if(parent != null && parent.getProperty().getTreeMeta() != null) {
+            TreeMeta treeMeta = parent.getProperty().getTreeMeta();
+            List<ClassModel> classModels = cdb.getClassModels(treeMeta.leafTypes());
+            ClassModel<TreeNode> treeNodeClassModel = cdb.getClassModel(TreeNode.class);
+            treeNodeClassModel.addValidImplementations(classModels);
         }
 
         NodeList nodeList = element.getChildNodes();
@@ -198,6 +206,11 @@ public class Unmarshaller<T> {
         unmarshalAttributes(element, objectMeta);
 
         objectMeta.postInit();
+
+        if(parent != null && parent.getProperty().getTreeMeta() != null) {
+            ClassModel<TreeNode> treeNodeClassModel = cdb.getClassModel(TreeNode.class);
+            treeNodeClassModel.clearValidImplementations();
+        }
 
         if (m_verbose) {
             System.out.println("unmarshalled " + objectMeta);

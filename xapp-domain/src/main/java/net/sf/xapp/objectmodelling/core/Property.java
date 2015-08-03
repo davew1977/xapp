@@ -27,6 +27,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 import static net.sf.xapp.objectmodelling.core.NamespacePath.fullPath;
@@ -35,7 +36,7 @@ import static net.sf.xapp.objectmodelling.core.NamespacePath.fullPath;
  * A property encapsulates meta data about a class's property. A property is an attribute of a class that is
  * accessible through a getter and optionally modifiable through a setter
  */
-public class Property<T> implements Comparable {
+public class Property implements Comparable {
     protected final PropertyAccess propertyAccess;
     protected Class m_class;//class of return type of accessor
     private Reference reference;//true if this should point to another object in the datamodel
@@ -52,6 +53,7 @@ public class Property<T> implements Comparable {
     private boolean mandatory;
     private boolean visibilityRestricted = true; //defaults to visible in dynamic GUI
     private boolean _transient;
+    private TreeMeta treeMeta;
 
     public Property(ClassModelManager classDatabase, PropertyAccess propertyAccess, Class aClass, Reference ref,
                     String filterOnProperty, Key key,
@@ -60,7 +62,6 @@ public class Property<T> implements Comparable {
                     Class parentClass,
                     String query,
                     boolean editable,
-                    TreeMeta treeMeta,
                     boolean mandatory) {
         this.classDatabase = classDatabase;
         this.mandatory = mandatory;
@@ -79,6 +80,7 @@ public class Property<T> implements Comparable {
         editableOnCreation = editable;
         listeners = new ArrayList<PropertyChangeListener>();
         _transient = propertyAccess.isTransient();
+        treeMeta = propertyAccess.getAnnotation(TreeMeta.class);
     }
 
     public void setEditorWidgetType(Class type, Object... args) {
@@ -119,7 +121,7 @@ public class Property<T> implements Comparable {
         }
     }
 
-    public RegularPropertyChange set(T target, Object newVal) {
+    public RegularPropertyChange set(Object target, Object newVal) {
         try {
             Object oldVal = get(target);
             if (!objEquals(oldVal, newVal)) {
@@ -142,7 +144,7 @@ public class Property<T> implements Comparable {
      * @param target
      * @param value
      */
-    public void setSpecial(ObjectMeta<T> target, String value) {
+    public void setSpecial(ObjectMeta target, String value) {
         Object obj = convert(target, value);
 
         target.set(this, obj);
@@ -311,7 +313,7 @@ public class Property<T> implements Comparable {
         return m_class.getSimpleName() + " " + StringUtils.decapitaliseFirst(getName());
     }
 
-    public ClassModel<T> getPropertyClassModel() {
+    public ClassModel getPropertyClassModel() {
         return classDatabase.getClassModel(m_class);
     }
 
@@ -447,7 +449,7 @@ public class Property<T> implements Comparable {
     }
 
     public void eachValue(ObjectMeta target, PropertyValueIterator propertyValueIterator) {
-        T val = (T) target.get(this);
+        Object val = target.get(this);
         if (val != null) {
             propertyValueIterator.exec(new ObjectLocation(target, this), 0, val);
         }
@@ -470,5 +472,12 @@ public class Property<T> implements Comparable {
     public Property setPropOrder(int order) {
         propertyAccess.setOrdering(order);
         return this;
+    }
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return propertyAccess.getAnnotation(annotationClass);
+    }
+
+    public TreeMeta getTreeMeta() {
+        return treeMeta;
     }
 }

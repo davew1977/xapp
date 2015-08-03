@@ -56,8 +56,8 @@ public class NullNodeUpdateApi implements NodeUpdateApi {
     }
 
     @Override
-    public void insertObject(ObjectLocation objectLocation, Object obj) {
-
+    public ObjectMeta insertObject(ObjectLocation objectLocation, Object obj) {
+        return null;
     }
 
     @Override

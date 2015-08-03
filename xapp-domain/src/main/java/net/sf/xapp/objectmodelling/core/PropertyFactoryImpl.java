@@ -20,8 +20,10 @@ import net.sf.xapp.annotations.marshalling.FormattedText;
 import net.sf.xapp.annotations.objectmodelling.*;
 import net.sf.xapp.utils.XappException;
 
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -34,7 +36,6 @@ public class PropertyFactoryImpl implements PropertyFactory
         EditorWidget editorWidgetAnnotation = propertyAccess.getAnnotation(EditorWidget.class);
         //transient?
         boolean editable = propertyAccess.getAnnotation(NotEditable.class) == null;
-        TreeMeta treeMeta = propertyAccess.getAnnotation(TreeMeta.class);
 
         Class aclass = propertyAccess.getType();
         if (Collection.class.isAssignableFrom(aclass))
@@ -53,6 +54,11 @@ public class PropertyFactoryImpl implements PropertyFactory
                 {
                     ParameterizedType pt = (ParameterizedType) type;
                     listType = (Class) pt.getRawType();
+                }
+                else if(type instanceof TypeVariable) {
+                    TypeVariable typeVariable = (TypeVariable) type;
+                    Type[] bounds = typeVariable.getBounds();
+                    listType = (Class) bounds[0];
                 }
                 else
                 {
@@ -101,7 +107,7 @@ public class PropertyFactoryImpl implements PropertyFactory
             return new Property(classModelManager, propertyAccess, aclass,
                     referenceAnno, filterOn != null ? filterOn.value() : null,
                     key, editorWidgetAnnotation, formattedText,
-                    parentClass, referenceAnno != null ? referenceAnno.select() : null, editable, treeMeta, mandatory);
+                    parentClass, referenceAnno != null ? referenceAnno.select() : null, editable, mandatory);
         }
     }
 }

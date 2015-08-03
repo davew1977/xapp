@@ -14,14 +14,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class NamespacePath extends LinkedList<ObjectMeta> {
-    public static final String PATH_SEPARATOR = "/";
+    public static PathSeparator PATH_SEPARATOR = PathSeparator.FORWARD_SLASH;
 
     public String getPathFrom(Namespace namespace) {
         return getPathFrom(namespace, PATH_SEPARATOR);
     }
 
-    public String getPathFrom(Namespace namespace, String pathSeparator) {
-        return StringUtils.join(subList(indexOf(namespace) + 1, size()), pathSeparator);
+    public String getPathFrom(Namespace namespace, PathSeparator pathSeparator) {
+        return StringUtils.join(subList(indexOf(namespace) + 1, size()), pathSeparator.toString());
     }
 
     public <T> List<T> instancePath(Class<T> filter) {
@@ -37,7 +37,7 @@ public class NamespacePath extends LinkedList<ObjectMeta> {
         return asString(PATH_SEPARATOR);
     }
 
-    public String asString(String pathSeparator) {
+    public String asString(PathSeparator pathSeparator) {
         return getPathFrom(getFirst(), pathSeparator);
     }
 
@@ -45,7 +45,7 @@ public class NamespacePath extends LinkedList<ObjectMeta> {
         return fullPath(namespace, obj, PATH_SEPARATOR);
     }
 
-    public static String fullPath(Namespace namespace, ObjectMeta obj, String pathSeparator) {
+    public static String fullPath(Namespace namespace, ObjectMeta obj, PathSeparator pathSeparator) {
         NamespacePath path = obj.getPath();
         String pathString = path.getPathFrom(namespace, pathSeparator);
         String key = obj.getKey();

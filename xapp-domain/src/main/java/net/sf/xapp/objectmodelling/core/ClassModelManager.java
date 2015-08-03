@@ -223,6 +223,12 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         return rootObjMeta;
     }
 
+    public void setRootObjMeta(ObjectMeta<T> rootObjMeta) {
+        if (this.rootObjMeta==null) {
+            this.rootObjMeta = rootObjMeta;
+        }
+    }
+
     /**
      * Retrieves a ClassModel for a class. If it does not exist it is created. If the client tries to register
      * 2 classes with the same simple name, then the previously created ClassModel (and its managed instances)
@@ -360,7 +366,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
      *                   of the same datamodel is allowed to share certain data between all of them, such as reference data.
      * @return
      */
-    public ClassModelManager createChildCMM(Class[] retainList)
+    /*public ClassModelManager createChildCMM(Class[] retainList)
     {
         ClassModelManager cmm = new ClassModelManager(rootType, m_inspectionType);
         cmm.ssMap = (HashMap<Class, StringSerializer>) ssMap.clone();
@@ -368,7 +374,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         for (Class cl : retainList)
         {
             ClassModel retainCM = getClassModel(cl);
-            List<ClassModel> list = retainCM.getClassModelHeirarchy();
+            Collection<ClassModel> list = retainCM.getClassModelHeirarchy();
             for (ClassModel classModel : list)
             {
                 cmm.classModelMap.put(classModel.getContainedClass(), classModel);
@@ -376,7 +382,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         }
         return cmm;
 
-    }
+    }*/
 
     public KeyChangeHistory getKeyChangeHistory()
     {
@@ -386,9 +392,6 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     public void setInitialized(ObjectMeta<T> obj)
     {
         m_initializing = false;
-        if (rootObjMeta == null) { //maybe we're unmarshalling another object with this class database
-            rootObjMeta = obj;
-        }
     }
 
     /**

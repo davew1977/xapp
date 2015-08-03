@@ -12,6 +12,7 @@
  */
 package net.sf.xapp.application.core;
 
+import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.application.api.Command;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.commands.*;
@@ -23,9 +24,7 @@ import net.sf.xapp.objectmodelling.core.ObjectLocation;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -45,6 +44,10 @@ public class ListNodeContext {
         return objectLocation.getCollection();
     }
 
+    public Object getContainer() {
+        return objectLocation.getContainer();
+    }
+
     public List getList() {
         return (List) getCollection();
     }
@@ -57,8 +60,13 @@ public class ListNodeContext {
         return objectLocation.getObj();
     }
 
-    public List<ClassModel> getValidImplementations() {
-        return getContainerProperty().getContainedTypeClassModel().getValidImplementations();
+    public Collection<ClassModel> getValidImplementations() {
+        Set<ClassModel> validImplementations = new LinkedHashSet<ClassModel>(getContainerProperty().getContainedTypeClassModel().getValidImplementations().values());
+        TreeMeta treeMeta = objectLocation.findAncestorAnnotation(TreeMeta.class);
+        if(treeMeta != null) {
+            validImplementations.addAll(objectLocation.getPropClassModel().getClassDatabase().getClassModels(treeMeta.leafTypes()));
+        }
+        return validImplementations;
     }
 
     public List<Command> createCommands(Node node, CommandContext commandContext) {
@@ -70,7 +78,7 @@ public class ListNodeContext {
             commands.add(new GetReferencesCommand());
         } else if (!prop.containsReferences()) {
             if (prop.isAllowed(Rights.CREATE) && classModel.isAbstract()) {
-                List<ClassModel> validImplementations = getValidImplementations();
+                Collection<ClassModel> validImplementations = getValidImplementations();
                 List<CreateCommand> createCommands = new ArrayList<CreateCommand>();
                 if (!Modifier.isAbstract(classModel.getContainedClass().getModifiers())) {
                     createCommands.add(new CreateCommand(classModel));

@@ -7,11 +7,9 @@
 package net.sf.xapp.codegen.model;
 
 import net.sf.xapp.annotations.application.Container;
-import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.PostInit;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.objectmodelling.Transient;
-import net.sf.xapp.tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

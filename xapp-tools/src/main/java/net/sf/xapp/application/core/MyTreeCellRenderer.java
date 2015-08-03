@@ -16,7 +16,6 @@ import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.SpecialTreeGraphics;
 import net.sf.xapp.application.api.ToolTipHandler;
-import net.sf.xapp.tree.Tree;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -87,11 +86,6 @@ public class MyTreeCellRenderer extends DefaultTreeCellRenderer
         else if(node.isReference())
         {
             return ApplicationContainer.ASTERISK_ICON;
-        }
-        else if(node.wrappedObject() instanceof Tree)
-        {
-            Tree t = (Tree) node.wrappedObject();
-            return ApplicationContainer.FOLDER_ICON;
         }
         else if(node.getListNodeContext()!=null)
             return ApplicationContainer.FOLDER_ICON;

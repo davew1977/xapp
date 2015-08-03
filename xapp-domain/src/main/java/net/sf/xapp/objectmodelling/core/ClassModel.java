@@ -22,13 +22,12 @@ import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.Rights;
-import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.objectmodelling.difftracking.*;
-import net.sf.xapp.tree.Tree;
 import net.sf.xapp.utils.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -45,6 +44,7 @@ import static java.lang.String.format;
  * tries to "inject" through reflection an instance of itself.
  */
 public class ClassModel<T> {
+    private static final Logger log = LoggerFactory.getLogger(ClassModel.class);
     private final List<ContainerProperty> mapProperties;
     private Class<T> m_class;
     private ClassDatabase m_classDatabase;
@@ -53,8 +53,7 @@ public class ClassModel<T> {
     private Map<String, Property> m_propertyMapByXMLMapping;
     private List<ListProperty> listProperties;
     private ContainerProperty childrenProperty;
-    private List<ClassModel> m_validImplementations;
-    private Map<String, ClassModel> m_validImplementationMap;
+    private Map<String, ClassModel> validImplementations;
     private int m_nextId;
     private BoundObjectType boundObjectType;
     private EditorWidget editorWidget;
@@ -89,7 +88,6 @@ public class ClassModel<T> {
         properties = inspectionTuple.properties;
         listProperties = inspectionTuple.listProperties;
         mapProperties = inspectionTuple.mapProperties;
-        m_validImplementations = expand(validImplementations);
         m_propertyMap = new HashMap<String, Property>();
         m_propertyMapByXMLMapping = new HashMap<String, Property>();
         addProperties(properties);
@@ -98,9 +96,9 @@ public class ClassModel<T> {
         instances = new ArrayList<ObjectMeta<T>>();
         this.boundObjectType = boundObjectType;
         this.editorWidget = editorWidget;
-        m_validImplementationMap = new HashMap<String, ClassModel>();
-        if (m_validImplementations != null) {
-            putAllValidImpls();
+        this.validImplementations = new LinkedHashMap<>();
+        if (validImplementations != null) {
+            addValidImplementations(validImplementations);
         }
         this.keyProperty = keyProperty;
         if (this.keyProperty != null) {
@@ -119,12 +117,16 @@ public class ClassModel<T> {
         namespaceFor = m_class.getAnnotation(NamespaceFor.class);
     }
 
-    private static List<ClassModel> expand(List<ClassModel> validImplementations) {
+    public Map<String, ClassModel> getValidImplementations() {
+        return validImplementations;
+    }
+
+    private static Collection<ClassModel> expand(Collection<ClassModel> validImplementations) {
 
         List<ClassModel> result = new ArrayList<ClassModel>();
         for (ClassModel subClass : validImplementations) {
             if(!subClass.getValidImplementations().isEmpty()) {
-                result.addAll(expand(subClass.getValidImplementations()));
+                result.addAll(expand(subClass.getValidImplementations().values()));
             } else {
                 result.add(subClass);
             }
@@ -154,9 +156,10 @@ public class ClassModel<T> {
         }
     }
 
-    private void putAllValidImpls() {
-        for (ClassModel validImpl : m_validImplementations) {
-            m_validImplementationMap.put(validImpl.getSimpleName(), validImpl);
+    public void addValidImplementations(List<ClassModel> classModels) {
+        Collection<ClassModel> expanded = expand(classModels);
+        for (ClassModel validImpl : expanded) {
+            validImplementations.put(validImpl.getSimpleName(), validImpl);
         }
     }
 
@@ -243,8 +246,8 @@ public class ClassModel<T> {
         return m_class.getSimpleName();
     }
 
-    public List<ClassModel> getValidImplementations() {
-        return m_validImplementations;
+    public void clearValidImplementations() {
+        validImplementations.clear();
     }
 
     public String getName(Object target) {
@@ -258,7 +261,7 @@ public class ClassModel<T> {
     }
 
     public boolean isAbstract() {
-        return !m_validImplementations.isEmpty();
+        return !validImplementations.isEmpty();
     }
 
     public int getNoOfProperties() {
@@ -268,20 +271,20 @@ public class ClassModel<T> {
     /**
      * Create a new instance of the class.
      */
-    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, boolean updateModelHomeRef) {
+    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, boolean updateModelHomeRef, boolean callPostInit) {
         try {
             T obj = m_class.newInstance();
-            return createObjMeta(objectLocation, obj, updateModelHomeRef);
+            return createObjMeta(objectLocation, obj, updateModelHomeRef, callPostInit);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
-            throw new XappException(e);
+            throw new XappException(e.getMessage(), e);
         }
     }
 
     /**
      * adds a previously unknown object to the model
      */
-    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef) {
+    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef, boolean callPostInit) {
         Long id = null;
         if(getClassDatabase().isMaster()) {
             id = getClassDatabase().nextId();
@@ -292,6 +295,9 @@ public class ClassModel<T> {
             tryAndInvoke(obj, preInitMethod, objectMeta);
         }
         instances.add(objectMeta);
+        if(callPostInit) {
+            tryAndCallPostInit(objectMeta);
+        }
         return objectMeta;
     }
 
@@ -369,7 +375,7 @@ public class ClassModel<T> {
 
     public Vector<ObjectMeta> getAllInstancesInHierarchy() {
         Vector<ObjectMeta> result = new Vector<ObjectMeta>();
-        for (ClassModel validImpl : m_validImplementations) {
+        for (ClassModel<?> validImpl : validImplementations.values()) {
             if (!validImpl.equals(this)) {
                 result.addAll(validImpl.getAllInstancesInHierarchy());
             }
@@ -386,7 +392,7 @@ public class ClassModel<T> {
         return result;
     }
 
-    public Set<Object> search(Object instance, Class resultType, boolean regexp, String matchPattern, boolean matchCase, Map<String, String> propMatch) {
+    public Set<Object> search(Object instance, Class<?> resultType, boolean regexp, String matchPattern, boolean matchCase, Map<String, String> propMatch) {
         assert m_class.isAssignableFrom(instance.getClass());
         Set<Object> results = new HashSet<Object>();
 
@@ -404,7 +410,8 @@ public class ClassModel<T> {
             if (propValue != null) {
                 Class propValueClass = propValue.getClass();
                 if (!property.isImmutable()) {
-                    results.addAll(m_classDatabase.getClassModel(propValueClass).search(propValue, resultType, regexp, matchPattern, matchCase, propMatch));
+                    ClassModel<?> classModel = m_classDatabase.getClassModel(propValueClass);
+                    results.addAll(classModel.search(propValue, resultType, regexp, matchPattern, matchCase, propMatch));
                     continue;
                 }
                 if (matchPattern != null) {
@@ -437,7 +444,7 @@ public class ClassModel<T> {
             Collection list = listProperty.get(instance);
             if (list != null) {
                 for (Object item : list) {
-                    ClassModel itemClassModel = m_classDatabase.getClassModel(item.getClass());
+                    ClassModel<?> itemClassModel = m_classDatabase.getClassModel(item.getClass());
                     //System.out.println(item.getClass());
                     results.addAll(itemClassModel.search(item, resultType, regexp, matchPattern, matchCase, propMatch));
                 }
@@ -446,22 +453,22 @@ public class ClassModel<T> {
         return results;
     }
 
-    public Vector search(Object instance, Class type, Set instancesSearched) {
-        if (instancesSearched.contains(instance)) return new Vector();
+    public <X> Vector<X> search(Object instance, Class<X> type, Set<Object> instancesSearched) {
+        if (instancesSearched.contains(instance)) return new Vector<>();
         instancesSearched.add(instance);
-        HashSet results = new HashSet();
+        HashSet<X> results = new HashSet<>();
         //search for properties with target type
         for (ListProperty listProperty : listProperties) {
-            Collection list = listProperty.get(instance);
+            Collection<?> list = listProperty.get(instance);
             if (listProperty.getContainedType().isAssignableFrom(type)) {
-                results.addAll(list);
+                results.addAll((Collection<? extends X>) list);
             } else {
                 for (Object o : list) {
                     if (type.isInstance(o)) {
-                        results.add(o);
+                        results.add(type.cast(o));
                     } else {
-                        ClassModel propertyClassModel = listProperty.getPropertyClassModel();
-                        Vector vector = propertyClassModel.search(o, type, instancesSearched);
+                        ClassModel<?> propertyClassModel = listProperty.getPropertyClassModel();
+                        Vector<X> vector = propertyClassModel.search(o, type, instancesSearched);
                         results.addAll(vector);
                     }
                 }
@@ -471,24 +478,22 @@ public class ClassModel<T> {
             Object o = property.get(instance);
             if (o == null) continue;
             if (property.getPropertyClass().isAssignableFrom(type)) {
-                results.add(o);
+                results.add(type.cast(o));
             } else {
-                Vector vector = property.getPropertyClassModel().search(o, type, instancesSearched);
+                ClassModel<?> propertyClassModel = property.getPropertyClassModel();
+                Vector<X> vector = propertyClassModel.search(o, type, instancesSearched);
                 results.addAll(vector);
             }
         }
 
-        return new Vector(results);
+        return new Vector<>(results);
     }
 
     /**
      * finds a property whose name matches the given regular expression
-     *
-     * @param regexp
-     * @return
      */
     public Set<Property> filterProperties(String regexp) {
-        Set<Property> matches = new HashSet<Property>();
+        Set<Property> matches = new HashSet<>();
         for (Property property : properties) {
             if (property.getName().toLowerCase().matches(regexp.toLowerCase())) matches.add(property);
         }
@@ -496,7 +501,7 @@ public class ClassModel<T> {
     }
 
     public List<Property> getAllProperties() {
-        return new ArrayList<Property>(m_propertyMap.values());
+        return new ArrayList<>(m_propertyMap.values());
     }
 
     public List<Property> getAllProperties(Filter<Property> filter) {
@@ -505,8 +510,10 @@ public class ClassModel<T> {
 
     public ClassModel getValidImplementation(String className) {
         if (getSimpleName().equals(className)) return this;
-        ClassModel classModel = m_validImplementationMap.get(className);
-        if (classModel == null) throw new XappException(className + " is not a valid implementation of " + this);
+        ClassModel classModel = validImplementations.get(className);
+        if (classModel == null) {
+            throw new XappException(className + " is not a valid implementation of " + this);
+        }
         return classModel;
     }
 
@@ -561,9 +568,8 @@ public class ClassModel<T> {
         try {
             method.setAccessible(true);
             return method.invoke(target, args);
-        } catch (IllegalAccessException e) {
-            throw new XappException(e);
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
+            log.info(format("error calling method %s on %s of type %s with %s", method.getName(), target, target.getClass(), Arrays.toString(args)));
             throw new XappException(e);
         }
     }
@@ -586,16 +592,11 @@ public class ClassModel<T> {
         }
     }
 
-    public List<ClassModel> getClassModelHeirarchy() {
+    /*public List<ClassModel> getClassModelHeirarchy() {
         List<ClassModel> l = new ArrayList<ClassModel>(m_validImplementations);
         l.add(this);
         return l;
-    }
-
-    public void addValidImplementations(List<ClassModel<? extends T>> extraTypes) {
-        m_validImplementations.addAll(extraTypes);
-        putAllValidImpls();
-    }
+    }*/
 
     public Method getPostInitMethod() {
         return postInitMethod;
@@ -611,10 +612,6 @@ public class ClassModel<T> {
 
     public boolean hasPreInit() {
         return preInitMethod != null;
-    }
-
-    public boolean isTreeType() {
-        return Tree.class.isAssignableFrom(getContainedClass());
     }
 
 
@@ -647,7 +644,7 @@ public class ClassModel<T> {
 
     public void tryAndCallPostInit(ObjectMeta objectMeta) {
         if(hasPostInit()) {
-            tryAndInvoke(objectMeta.getInstance(), postInitMethod);
+            tryAndInvoke(objectMeta.getInstance(), postInitMethod, objectMeta);
         }
     }
 
@@ -706,7 +703,7 @@ public class ClassModel<T> {
             throw new XappException("to restrict creation restrict the list property");
         }
         m_restrictedRights.addAll(r);
-        for (ClassModel validImplementation : m_validImplementations) //and so on down the heirarchy
+        for (ClassModel validImplementation : validImplementations.values()) //and so on down the heirarchy
         {
             validImplementation.restrict(rights);
         }
@@ -718,7 +715,7 @@ public class ClassModel<T> {
             throw new XappException("prop " + propName + " does not exist in " + this);
         }
         List<Rights> r = Arrays.asList(rights);
-        for (ClassModel validImplementation : m_validImplementations) {
+        for (ClassModel validImplementation : validImplementations.values()) {
             validImplementation.restrictProperty(propName, rights);
         }
         if (prop instanceof ListProperty) {
@@ -899,7 +896,7 @@ public class ClassModel<T> {
     public ObjectMeta<T> findOrCreate(ObjectLocation objectLocation, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = createObjMeta(objectLocation, (T) o1, false);
+            objectMeta = createObjMeta(objectLocation, (T) o1, false, true);
         } else {
             //update the parent
             objectMeta.setHome(objectLocation, false);
@@ -915,7 +912,7 @@ public class ClassModel<T> {
                 return instance;
             }
         }
-        for (ClassModel classModel : m_validImplementationMap.values()) {
+        for (ClassModel classModel : validImplementations.values()) {
             ObjectMeta objectMeta = classModel.find(o1);
             if(objectMeta != null) {
                 return objectMeta;

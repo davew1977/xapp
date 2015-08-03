@@ -20,11 +20,10 @@ import java.lang.annotation.Target;
 /**
  * Means that the property encapsulates a hierarchical data structure.
  *
- * Implementations should use {@link net.sf.xapp.tree.TreeNode} and {@link net.sf.xapp.tree.Tree} as base classes for the contents of the tree.
+ * allows specifying of additional types allowable as nodes of the tree
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Deprecated
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface TreeMeta
 {
     Class[] leafTypes();

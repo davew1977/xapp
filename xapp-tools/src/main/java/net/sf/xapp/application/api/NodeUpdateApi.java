@@ -32,7 +32,7 @@ public interface NodeUpdateApi {
      * the first time
      */
     void moveOrInsertObjMeta(ObjectLocation objectLocation, ObjectMeta objMeta);
-    void insertObject(ObjectLocation objectLocation, Object obj);
+    ObjectMeta insertObject(ObjectLocation objectLocation, Object obj);
 
     /**
      * initialize a recently created object with properties entered by the user
