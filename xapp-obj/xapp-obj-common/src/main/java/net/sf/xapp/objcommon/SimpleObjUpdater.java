@@ -48,7 +48,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public final void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        ObjectMeta objectMeta = cdb().getClassModel(type).newInstance(toObjectLocation(objLoc), true);
+        ObjectMeta objectMeta = cdb().getClassModel(type).newInstance(toObjectLocation(objLoc), true, true);
         super.createEmptyObject(principal, objLoc, type);
         objectMeta.updateRev();
         objAdded(principal, objLoc, objectMeta);
@@ -119,11 +119,12 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
         Map<Property, Object> snapshot = obj.snapshot(PropertyFilter.CONVERTIBLE_TO_STRING);
         obj.dispose();
         objHome.setIndex(oldIndex);
-        ObjectMeta newInstance = cm.newInstance(objHome, true);
+        ObjectMeta newInstance = cm.newInstance(objHome, true, false);
         List<Property> properties = cm.getAllProperties(PropertyFilter.CONVERTIBLE_TO_STRING);
         for (Property property : properties) {
             newInstance.set(property, snapshot.get(property));
         }
+        newInstance.postInit();
         super.changeType(principal, oldLoc, id, newType);
 
         newInstance.updateRev();

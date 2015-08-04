@@ -10,6 +10,7 @@ import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.annotations.objectmodelling.PostInit;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.annotations.objectmodelling.Transient;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -34,7 +35,7 @@ public class Api extends AbstractArtifact implements Artifact {
     }
 
     @PostInit
-    public void init() {
+    public void init(ObjectMeta<Api> objectMeta) {
         for (Message message : messages) {
             message.setApi(this);
         }

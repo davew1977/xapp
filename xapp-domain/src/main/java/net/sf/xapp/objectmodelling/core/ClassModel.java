@@ -905,20 +905,7 @@ public class ClassModel<T> {
     }
 
     public ObjectMeta<T> find(T o1) {
-        //todo try retrieve obj meta from object itself, otherwise resort to search
-        //todo map objects without equals/hashcode methods
-        for (ObjectMeta<T> instance : instances) {
-            if(instance.getInstance() == o1) {
-                return instance;
-            }
-        }
-        for (ClassModel classModel : validImplementations.values()) {
-            ObjectMeta objectMeta = classModel.find(o1);
-            if(objectMeta != null) {
-                return objectMeta;
-            }
-        }
-        return null;
+        return getClassDatabase().find(o1);
     }
 
     public List<ObjectMeta<T>> findAll(Collection<T> objs) {

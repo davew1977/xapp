@@ -13,6 +13,7 @@ import net.sf.xapp.annotations.objectmodelling.PostInit;
 import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
+import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
 import net.sf.xapp.codegen.GeneratorContext;
@@ -104,7 +105,7 @@ public class Model {
     }
 
     @PostInit
-    public void init() {
+    public void init(ObjectMeta<Model> objectMeta) {
         for (ComplexType complexType : complexTypes()) {
             if (complexType.getSuperType() != null) {
                 complexType.getSuperType().addSubType(complexType);

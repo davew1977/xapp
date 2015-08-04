@@ -76,8 +76,8 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     public void setId(Long id) {
         if (id != null) {
             this.id = id;
-            classModel.registerWithClassDatabase(this);
         }
+        classModel.registerWithClassDatabase(this);
     }
 
     public void mapByKey(ObjectMeta obj) {

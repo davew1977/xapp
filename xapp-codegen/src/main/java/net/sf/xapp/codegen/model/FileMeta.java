@@ -4,6 +4,7 @@ import net.sf.xapp.annotations.objectmodelling.Key;
 import net.sf.xapp.annotations.objectmodelling.PreInit;
 import net.sf.xapp.annotations.objectmodelling.ValidImplementations;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
+import net.sf.xapp.objectmodelling.core.PathSeparator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,6 +57,6 @@ public class FileMeta implements Cloneable {
     }
 
     protected String packageName() {
-        return objMeta != null ? objMeta.getPath().getPathFrom(module().objMeta, ".") : null;
+        return objMeta != null ? objMeta.getPath().getPathFrom(module().objMeta, PathSeparator.DOT) : null;
     }
 }

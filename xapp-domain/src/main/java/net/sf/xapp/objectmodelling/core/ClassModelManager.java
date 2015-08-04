@@ -43,6 +43,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private Class rootType;
     private AtomicLong idSequence = new AtomicLong(0); //only used if the objects don't have an id already
     private Map<Long, ObjectMeta> instanceMap;
+    private Map<ObjKey, ObjectMeta> instanceMapByKey;
     private HashMap<Class, ClassModel> classModelMap;
     private HashMap<String, ClassModel> classModelBySimpleClassNameMap;//e.g. "Config" -> Config Class Model
     private HashMap<Class, StringSerializer> ssMap;
@@ -69,6 +70,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     {
         m_inspectionType = inspectionType;
         instanceMap = new LinkedHashMap<Long, ObjectMeta>();
+        instanceMapByKey = new HashMap<>();
         this.rootType = rootType;
         classModelMap = new HashMap<Class, ClassModel>();
         classModelBySimpleClassNameMap = new HashMap<String, ClassModel>();
@@ -106,6 +108,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void registerInstance(ObjectMeta objectMeta) {
         instanceMap.put(objectMeta.getId(), objectMeta);
+        instanceMapByKey.put(new ObjKey(objectMeta.getInstance()), objectMeta);
     }
 
     @Override
@@ -120,8 +123,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     }
 
     public ObjectMeta find(Object value) {
-        ClassModel classModel = getClassModel(value.getClass());
-        return classModel.find(value);
+        return instanceMapByKey.get(new ObjKey(value));
     }
 
     @Override

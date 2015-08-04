@@ -105,9 +105,10 @@ public class NodeUpdateApiRemote implements NodeUpdateApi {
     }
 
     @Override
-    public void insertObject(ObjectLocation objectLocation, Object obj) {
+    public ObjectMeta insertObject(ObjectLocation objectLocation, Object obj) {
         String xml = objClient.getCdb().createMarshaller(obj.getClass()).toXMLString(obj);
         remote().createObject(userId(), toObjLoc(objectLocation), obj.getClass(), xml);
+        return null;
     }
 
     @Override
