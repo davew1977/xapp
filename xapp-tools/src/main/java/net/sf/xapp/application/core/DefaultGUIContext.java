@@ -85,7 +85,7 @@ public class DefaultGUIContext implements GUIContext
 
     public void newObjectInstance()
     {
-        objMeta = m_rootType.newInstance(null, true, true);
+        objMeta = m_rootType.newInstance(null, true, false);
         m_currentFile = null;
     }
 

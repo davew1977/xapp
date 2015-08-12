@@ -48,7 +48,7 @@ public class SimpleObjUpdater extends ObjUpdateAdaptor implements ObjUpdate, Obj
 
     @Override
     public final void createEmptyObject(UserId principal, ObjLoc objLoc, Class type) {
-        ObjectMeta objectMeta = cdb().getClassModel(type).newInstance(toObjectLocation(objLoc), true, true);
+        ObjectMeta objectMeta = cdb().getClassModel(type).newInstance(toObjectLocation(objLoc), true, false);
         super.createEmptyObject(principal, objLoc, type);
         objectMeta.updateRev();
         objAdded(principal, objLoc, objectMeta);

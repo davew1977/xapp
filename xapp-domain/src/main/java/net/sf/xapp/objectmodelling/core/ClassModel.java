@@ -271,10 +271,10 @@ public class ClassModel<T> {
     /**
      * Create a new instance of the class.
      */
-    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, boolean updateModelHomeRef, boolean callPostInit) {
+    public synchronized ObjectMeta<T> newInstance(ObjectLocation objectLocation, boolean updateModelHomeRef, boolean unmarshalling) {
         try {
             T obj = m_class.newInstance();
-            return createObjMeta(objectLocation, obj, updateModelHomeRef, callPostInit);
+            return createObjMeta(objectLocation, obj, updateModelHomeRef, unmarshalling);
         } catch (Exception e) {
             System.out.println("cannot create instance of " + m_class);
             throw new XappException(e.getMessage(), e);
@@ -284,18 +284,18 @@ public class ClassModel<T> {
     /**
      * adds a previously unknown object to the model
      */
-    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef, boolean callPostInit) {
+    public ObjectMeta<T> createObjMeta(ObjectLocation objectLocation, T obj, boolean updateModelHomeRef, boolean unmarshalling) {
         Long id = null;
         if(getClassDatabase().isMaster()) {
             id = getClassDatabase().nextId();
         }
         //TODO call a method on object notifying it is about to be added to the class DB
-        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef, id);
+        ObjectMeta<T> objectMeta = new ObjectMeta<T>(this, obj, objectLocation, updateModelHomeRef, id, unmarshalling);
         if(hasPreInit()) {
             tryAndInvoke(obj, preInitMethod, objectMeta);
         }
         instances.add(objectMeta);
-        if(callPostInit) {
+        if(!unmarshalling) {
             tryAndCallPostInit(objectMeta);
         }
         return objectMeta;
@@ -896,7 +896,7 @@ public class ClassModel<T> {
     public ObjectMeta<T> findOrCreate(ObjectLocation objectLocation, Object o1) {
         ObjectMeta<T> objectMeta = find((T) o1);
         if(objectMeta==null) {
-            objectMeta = createObjMeta(objectLocation, (T) o1, false, true);
+            objectMeta = createObjMeta(objectLocation, (T) o1, false, false);
         } else {
             //update the parent
             objectMeta.setHome(objectLocation, false);

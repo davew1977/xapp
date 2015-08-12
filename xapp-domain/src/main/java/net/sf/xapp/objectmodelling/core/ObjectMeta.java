@@ -1,7 +1,6 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
-import net.sf.xapp.annotations.objectmodelling.TreeMeta;
 import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
@@ -32,7 +31,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
     private Map<ObjectLocation, Object> references = new HashMap<ObjectLocation, Object>();
     private List<PendingObjectReference> pendingRefsToSet = new ArrayList<PendingObjectReference>();
 
-    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, Long id) {
+    public ObjectMeta(ClassModel classModel, T obj, ObjectLocation home, boolean updateModelHomeRef, Long id, boolean unmarshalling) {
         final ClassDatabase cdb = classModel.getClassDatabase();
         if (home==null) {
             ((ClassModelManager)cdb).setRootObjMeta(this);
@@ -50,26 +49,28 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         key = get(classModel.getKeyProperty());
         setHome(home, updateModelHomeRef);
 
-        //add metas for children of this object
-        List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
-        for (Property property : properties) {
-            property.eachValue(this, new PropertyValueIterator() {
-                @Override
-                public void exec(ObjectLocation objLocation, int index, Object val) {
-                    cdb.findOrCreateObjMeta(objLocation, val);
-                }
-            });
-        }
-        //add references for all reference properties
-        List<Property> refProps = classModel.getAllProperties(PropertyFilter.REFERENCE);
-        for (Property refProp : refProps) {
-            refProp.eachValue(this, new PropertyValueIterator() {
-                @Override
-                public void exec(ObjectLocation objectLocation, int index, Object value) {
-                    ObjectMeta referee = objectLocation.getPropClassModel().find(value);
-                    referee.createReference(objectLocation);
-                }
-            });
+        if (!unmarshalling) {
+            //add metas for children of this object
+            List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
+            for (Property property : properties) {
+                property.eachValue(this, new PropertyValueIterator() {
+                    @Override
+                    public void exec(ObjectLocation objLocation, int index, Object val) {
+                        cdb.findOrCreateObjMeta(objLocation, val);
+                    }
+                });
+            }
+            //add references for all reference properties
+            List<Property> refProps = classModel.getAllProperties(PropertyFilter.REFERENCE);
+            for (Property refProp : refProps) {
+                refProp.eachValue(this, new PropertyValueIterator() {
+                    @Override
+                    public void exec(ObjectLocation objectLocation, int index, Object value) {
+                        ObjectMeta referee = objectLocation.getPropClassModel().find(value);
+                        referee.createReference(objectLocation);
+                    }
+                });
+            }
         }
     }
 
@@ -552,7 +553,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     public ObjectMeta copy() {
         Object clone = getClassModel().createClone(instance);
-        return getClassModel().createObjMeta(null, (T) clone, false, true);
+        return getClassModel().createObjMeta(null, (T) clone, false, false);
     }
 
     public String getSimpleClassName() {
@@ -752,7 +753,12 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     @Override
     public <X> List<X> enumerate(Class<X> filterClass) {
-        return toInstances(filterClass, descendents(true, true));
+        return enumerate(filterClass, true);
+    }
+
+    @Override
+    public <X> List<X> enumerate(Class<X> filterClass, boolean includeSelf) {
+        return toInstances(filterClass, descendents(includeSelf, true));
     }
 
     @Override

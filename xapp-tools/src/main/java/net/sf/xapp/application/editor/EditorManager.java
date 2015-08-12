@@ -113,7 +113,7 @@ public class EditorManager
     public void edit(Frame comp, Object p, EditorListener editorListener)
     {
         ClassModel rootClassModel = new ClassModelManager(p.getClass(), InspectionType.FIELD).getRootClassModel();
-        ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false, true);
+        ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false, false);
         Editor editor = getEditor(new SingleTargetEditableContext(
                 objectMeta,
                 SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), editorListener);
@@ -129,7 +129,7 @@ public class EditorManager
      */
     public boolean edit(Frame comp, ClassModel classModel, Object p)
     {
-        final ObjectMeta objectMeta = classModel.createObjMeta(null, p, false, true);
+        final ObjectMeta objectMeta = classModel.createObjMeta(null, p, false, false);
         Editor editor = getEditor(new SingleTargetEditableContext(objectMeta, SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()),
                 new EditorAdaptor() {
                     @Override

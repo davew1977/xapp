@@ -12,7 +12,6 @@
  */
 package net.sf.xapp.marshalling;
 
-import net.sf.xapp.annotations.application.Container;
 import net.sf.xapp.marshalling.api.StringSerializable;
 import net.sf.xapp.marshalling.api.StringSerializer;
 import net.sf.xapp.marshalling.api.XMLWriter;
@@ -340,7 +339,7 @@ public class Marshaller<T> {
 
     public static String toXML(Object obj) {
         Marshaller marshaller = new Marshaller(obj.getClass());
-        marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false, true);
+        marshaller.getClassDatabase().getRootClassModel().createObjMeta(null, obj, false, false);
         return marshaller.toXMLString(obj);
     }
 

@@ -144,7 +144,7 @@ public class Unmarshaller<T> {
         ClassModelManager<?> cdb = (ClassModelManager<?>) classModel.getClassDatabase();
 
         //if an element exists we should create an empty object instead of setting to null
-        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true, false);
+        ObjectMeta<T> objectMeta = classModel.newInstance(parent, true, true);
 
         if (!getClassDatabase().isMaster()) {
             Attr attributeNode = element.getAttributeNode(ATTR_ID);

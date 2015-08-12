@@ -14,6 +14,7 @@ public interface TreeContext {
     <X> List<X> children(Class<X> matchingType);
     <X> X child(Class<X> matchingType, String name);
     <X> List<X> enumerate(Class<X> filterClass);
+    <X> List<X> enumerate(Class<X> filterClass, boolean includeSelf);
     <X> List<X> enumerate(Class<X> filterClass, Filter<? super X> filter);
 
     <X> ObjectMeta<X> objMeta();
