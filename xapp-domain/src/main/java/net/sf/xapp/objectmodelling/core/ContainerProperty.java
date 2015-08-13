@@ -16,9 +16,11 @@ import net.sf.xapp.annotations.application.EditorWidget;
 import net.sf.xapp.annotations.objectmodelling.ContainsReferences;
 import net.sf.xapp.marshalling.stringserializers.StringMapSerializer;
 import net.sf.xapp.objectmodelling.api.Rights;
+import net.sf.xapp.utils.ReflectionUtils;
 import net.sf.xapp.utils.StringUtils;
 import net.sf.xapp.utils.XappException;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -119,7 +121,14 @@ public class ContainerProperty extends Property
         return !isTransient() && !isImmutable() && !containsReferences();
     }
 
-    public Object createCollection() {
+    public final Object createCollection() {
+        if(m_class.isInterface() || Modifier.isAbstract(m_class.getModifiers())) {
+            return createDefaultCollection();
+        }
+        else return ReflectionUtils.newInstance(m_class);
+    }
+
+    public Object createDefaultCollection() {
         return new LinkedHashMap();
     }
     public Map map(Object container) {

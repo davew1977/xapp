@@ -55,9 +55,9 @@ public class ListProperty extends ContainerProperty {
         } else if (containedType == Long.class) {
             return LongListSerializer.doRead(value);
         } else if (containedType == String.class) {
-            return StringUtils.appendToCollection(createCollection(), value);
+            return StringUtils.appendToCollection((Collection<String>) createCollection(), value);
         } else if (Enum.class.isAssignableFrom(containedType)) {
-            return EnumListSerializer.doRead(value, containedType, createCollection());
+            return EnumListSerializer.doRead(value, containedType, (Collection<Enum>) createCollection());
         }
         throw new XappException(getName() + " list property is not string serializable");
     }
@@ -77,7 +77,8 @@ public class ListProperty extends ContainerProperty {
         throw new XappException(getName() + " list property is not string serializable");
     }
 
-    public Collection createCollection() {
+    @Override
+    public Collection createDefaultCollection() {
         if (isList()) {
             return new ArrayList();
         } else if (isSetCollection()) {
