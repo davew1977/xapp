@@ -122,7 +122,7 @@ public class SimpleApplication<T> implements Application<T> {
         SwingUtils.setFont(metaMenu);
         applicationContainer.getMenuBar().add(metaMenu);
         initAppData();
-        selectLastEditedContent();
+        //selectLastEditedContent();
     }
 
     public ApplicationContainer<T> getAppContainer() {

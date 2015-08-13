@@ -552,7 +552,7 @@ public class ClassModel<T> {
         return m_class.isInstance(obj);
     }
 
-    public Collection getInstances() {
+    public Collection<ObjectMeta> getInstances() {
         return allInstances();
     }
 
