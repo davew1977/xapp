@@ -19,6 +19,6 @@ public class ObjKey {
 
     @Override
     public int hashCode() {
-        return obj.hashCode();
+        return System.identityHashCode(obj);
     }
 }
