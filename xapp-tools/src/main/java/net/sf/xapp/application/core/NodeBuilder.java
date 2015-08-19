@@ -17,6 +17,8 @@ import net.sf.xapp.application.api.Node;
 
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.tree.DefaultTreeModel;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.Map;
  * Creates the JTree nodes according to the model
  */
 public class NodeBuilder {
+    private static Logger log = LoggerFactory.getLogger(NodeBuilder.class);
     private ApplicationContainerImpl appContainer;
     private ClassDatabase cdb;
     private Map<Object, Node> nodeMap;
@@ -148,7 +151,12 @@ public class NodeBuilder {
         ListNodeContext listNodeContext = parentNode.getListNodeContext();
         Collection list = listNodeContext.getCollection();
         for (Object o : list) {
-            createNode(parentNode, cdb.find(o), null);
+            ObjectMeta objMeta = cdb.find(o);
+            if (objMeta != null) {
+                createNode(parentNode, objMeta, null);
+            } else {
+                log.debug("object not registered with CDB: " + o);
+            }
             //createNode(parentNode, cdb.findOrCreateObjMeta(parentNode.toObjLocation(), o));
         }
     }
