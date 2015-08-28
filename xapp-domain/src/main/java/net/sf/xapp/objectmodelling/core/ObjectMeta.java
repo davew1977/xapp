@@ -7,6 +7,8 @@ import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
 import net.sf.xapp.utils.XappException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -19,6 +21,7 @@ import static net.sf.xapp.utils.ReflectionUtils.*;
  * additional data per instance
  */
 public class ObjectMeta<T> implements Namespace, TreeContext{
+    private static final Logger log = LoggerFactory.getLogger(ObjectMeta.class);
     private final ClassModel<T> classModel;
     private final T instance;
     private final Map<Class<?>, Map<String, ObjectMeta>> lookupMap = new HashMap<Class<?>, Map<String, ObjectMeta>>();
@@ -462,9 +465,13 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
                 @Override
                 public void exec(ObjectLocation objectLocation, int index, Object value) {
                     ObjectMeta child = objectLocation.getPropClassModel().find(value);
-                    result.add(child);
-                    if(recursive) {
-                        result.addAll(child.descendents(false, recursive));
+                    if (child != null) {
+                        result.add(child);
+                        if(recursive) {
+                            result.addAll(child.descendents(false, recursive));
+                        }
+                    } else {
+                        log.info("no object meta found for {}", value);
                     }
                 }
             });
