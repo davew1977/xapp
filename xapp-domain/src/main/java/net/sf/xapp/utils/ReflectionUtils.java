@@ -52,6 +52,9 @@ public class ReflectionUtils {
         }
     }
 
+    public static void modifyField(String fieldName, Object target, Object valueToSet) {
+        modifyField(target.getClass(), fieldName, target, valueToSet);
+    }
     public static void modifyField(Class entityType, String fieldName, Object target, Object valueToSet) {
         Method method = findSetterMethod(entityType, fieldName);
         if (method != null) {
