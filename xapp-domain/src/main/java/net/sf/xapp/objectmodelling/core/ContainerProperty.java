@@ -75,7 +75,7 @@ public class ContainerProperty extends Property
     public Object get(Object target)
     {
         Object map = super.get(target);
-        if(map==null || isEmpty(map)) {
+        if(map==null || (isEmpty(map) && !propertyAccess.isReadOnly())) {
             map = createCollection();
             try {
                 propertyAccess.set(target, map);

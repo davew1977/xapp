@@ -46,7 +46,7 @@ public class FieldProperty extends AbstractPropertyAccess<Field>
 
     public boolean isReadOnly()
     {
-        return false;
+        return Modifier.isFinal(getProp().getModifiers());
     }
 
     public Type getGenericType()
