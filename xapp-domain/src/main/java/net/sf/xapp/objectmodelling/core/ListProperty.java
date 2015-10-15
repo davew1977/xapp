@@ -22,6 +22,7 @@ import net.sf.xapp.utils.XappException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.TreeSet;
 import java.util.List;
 
 
@@ -81,7 +82,11 @@ public class ListProperty extends ContainerProperty {
     public Collection createDefaultCollection() {
         if (isList()) {
             return new ArrayList();
-        } else if (isSetCollection()) {
+        }
+	else if (isSortedSetCollection()) {
+		return new TreeSet();
+	}
+	else if (isSetCollection()) {
             return new LinkedHashSet();
         } else throw new IllegalArgumentException("Collection of type " + m_class + " not supported");
     }

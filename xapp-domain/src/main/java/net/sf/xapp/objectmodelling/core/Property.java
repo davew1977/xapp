@@ -288,6 +288,10 @@ public class Property implements Comparable {
         return Set.class.isAssignableFrom(m_class);
     }
 
+	public boolean isSortedSetCollection() {
+		return SortedSet.class.isAssignableFrom(m_class);
+}
+
     public boolean isCollection() {
         return m_class.isAssignableFrom(Collection.class);
     }
