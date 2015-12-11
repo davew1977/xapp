@@ -78,15 +78,17 @@ public class StringMapSerializer implements StringSerializer<Map<?,?>> {
             ParameterizedType parameterizedType = (ParameterizedType) propertyType;
             Class rawType = (Class) parameterizedType.getRawType();
             if(Collection.class.isAssignableFrom(rawType)) {
-                String[] args = value.split(",");
                 Collection col;
                 if(Set.class.isAssignableFrom(rawType)) {
                     col = new HashSet();
                 } else {
                     col = new ArrayList();
                 }
-                for (String arg : args) {
-                    col.add(convert(parameterizedType.getActualTypeArguments()[0], arg));
+                if (value!=null) {
+                    String[] args = value.split(",");
+                    for (String arg : args) {
+                        col.add(convert(parameterizedType.getActualTypeArguments()[0], arg));
+                    }
                 }
                 return col;
             }
