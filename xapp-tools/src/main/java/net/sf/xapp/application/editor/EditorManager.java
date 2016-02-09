@@ -110,7 +110,7 @@ public class EditorManager
     }
 
 
-    public void edit(Frame comp, Object p, EditorListener editorListener)
+    public Editor edit(Frame comp, Object p, EditorListener editorListener)
     {
         ClassModel rootClassModel = new ClassModelManager(p.getClass(), InspectionType.FIELD).getRootClassModel();
         ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false, false);
@@ -118,6 +118,7 @@ public class EditorManager
                 objectMeta,
                 SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), editorListener);
         editor.getMainFrame().setVisible(true);
+        return editor;
     }
 
     /**

@@ -13,9 +13,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-import static java.lang.String.*;
-import static net.sf.xapp.objectmodelling.core.NamespacePath.*;
-import static net.sf.xapp.utils.ReflectionUtils.*;
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static net.sf.xapp.objectmodelling.core.NamespacePath.fullPath;
+import static net.sf.xapp.utils.ReflectionUtils.mostGenericClass;
 
 /**
  * additional data per instance
@@ -364,7 +365,7 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     @Override
     public String toString() {
-        return key != null ? valueOf(key) : "";
+        return key != null ? valueOf(key) : valueOf(instance);
     }
 
     public String meta() {

@@ -8,9 +8,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="xapp-tools" />
+    <orderEntry type="module" module-name="xapp-tools (1)" />
     <orderEntry type="library" name="Maven: org.tmatesoft.svnkit:svnkit:1.7.11" level="project" />
     <orderEntry type="library" name="Maven: org.tmatesoft.sqljet:sqljet:1.1.8" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.4" level="project" />
@@ -26,8 +26,10 @@
     <orderEntry type="library" name="Maven: com.jcraft:jsch.agentproxy.sshagent:0.0.6" level="project" />
     <orderEntry type="library" name="Maven: com.jcraft:jsch.agentproxy.pageant:0.0.6" level="project" />
     <orderEntry type="library" name="Maven: com.toedter:jcalendar:1.3.2" level="project" />
-    <orderEntry type="module" module-name="xapp-domain" />
+    <orderEntry type="module" module-name="xapp-domain (1)" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant:1.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />
