@@ -110,13 +110,24 @@ public class EditorManager
     }
 
 
-    public Editor edit(Frame comp, Object p, EditorListener editorListener)
+    public Editor edit(Frame comp, Object p, final EditorListener editorListener)
     {
         ClassModel rootClassModel = new ClassModelManager(p.getClass(), InspectionType.FIELD).getRootClassModel();
-        ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false, false);
+        final ObjectMeta objectMeta = rootClassModel.createObjMeta(null, p, false, false);
         Editor editor = getEditor(new SingleTargetEditableContext(
                 objectMeta,
-                SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), editorListener);
+                SingleTargetEditableContext.Mode.EDIT, new NullNodeUpdateApi()), new EditorListener() {
+            @Override
+            public void save(List<PropertyUpdate> changes, boolean closeOnSave) {
+                objectMeta.update(changes);
+                editorListener.save(changes, closeOnSave);
+            }
+
+            @Override
+            public void close() {
+               editorListener.close();
+            }
+        });
         editor.getMainFrame().setVisible(true);
         return editor;
     }
