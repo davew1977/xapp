@@ -4,7 +4,9 @@ import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.core.*;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -22,7 +24,7 @@ public class StandaloneNodeUpdate implements NodeUpdateApi {
         Node node = (Node) objectMeta.getAttachment();
         if (node != null) { //todo only refresh if sub-objects have changed
             Node newNode = node.refresh();
-            appContainer.getApplication().nodeUpdated(node, changes);
+            appContainer.getApplication().nodeUpdated(newNode, changes);
             appContainer.expand(newNode);
         }
     }
