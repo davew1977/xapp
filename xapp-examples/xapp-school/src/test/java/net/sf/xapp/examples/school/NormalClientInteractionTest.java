@@ -120,22 +120,22 @@ public class NormalClientInteractionTest extends TestBase {
     public void testScenario4() throws InterruptedException {
         TestObjClient c1 = createClient("100");
         TestObjClient c2 = createClient("101");
-        School school = (School) c1.getCdb().findObjById(45L).getInstance();
+        School school = (School) c1.getCdb().findObjById(37L).getInstance();
         Pupil charlie = c1.create(school, "People", Pupil.class);
         charlie.setUsername("Chocky");
         charlie.setFirstName("Chocky");
         charlie.setSecondName("Chimp");
         c1.commit(charlie);
-        charlie = c2.checkout(87L);
+        charlie = c2.checkout(72L);
         PersonSettings personSettings = c2.create(charlie, "PersonSettings", PersonSettings.class);
         personSettings.setFavouriteWords(new String[] {"Nice", "Pork Chop", "Dance"});
         c2.commit(personSettings);
         c2.waitFor(MessageTypeEnum.ObjListener_PropertiesChanged, "Rev", 4L);
-        personSettings = (PersonSettings) c2.getCdb().findObjById(89L).getInstance();
+        personSettings = (PersonSettings) c2.getCdb().findObjById(74L).getInstance();
         assertEquals("Pork Chop", personSettings.getFavouriteWords()[1]);
 
         c1.close();
-        TextFile textFile = c2.create(88L, "Files", TextFile.class);
+        TextFile textFile = c2.create(73L, "Files", TextFile.class);
         textFile.setText("This is a text doc about charlie");
         c2.commit(textFile);
 
@@ -148,7 +148,7 @@ public class NormalClientInteractionTest extends TestBase {
         assertEquals(c1.getObjMeta().toXml(), c2.getObjMeta().toXml());
 
         //make one last change
-        TextFile charlieFile = c1.checkout(90L);
+        TextFile charlieFile = c1.checkout(75L);
         charlieFile.setName("My Work");
         c1.commit(charlieFile);
         assertEquals(1, c1.getDeltaFile().size());
@@ -243,10 +243,10 @@ public class NormalClientInteractionTest extends TestBase {
         TestObjClient c1 = createClient("100");
 
         //check a few facts about the school
-        ObjectMeta obj_56 = c1.getCdb().findObjById(56L);
-        assertTrue(obj_56.isA(Pupil.class));
-        assertEquals("Berwick School", obj_56.getParent().get("name"));
-        assertEquals("Hadwin", obj_56.get("secondName"));
+        ObjectMeta obj_45 = c1.getCdb().findObjById(45L);
+        assertTrue(obj_45.isA(Pupil.class));
+        assertEquals("Berwick School", obj_45.getParent().get("name"));
+        assertEquals("Hadwin", obj_45.get("secondName"));
 
         //check the rev file contents
         assertEquals(0L, c1.getLastKnownRevision());
@@ -255,7 +255,7 @@ public class NormalClientInteractionTest extends TestBase {
         ObjectMeta objMeta = unmarshaller.unmarshal(c1.getObjFile());
         //check identical to object retrieved from server
         assertEquals(c1.getObjMeta().toXml(), objMeta.toXml());
-        TextFile textFile = c1.create(59L, "Files", TextFile.class);
+        TextFile textFile = c1.create(46L, "Files", TextFile.class);
         ObjectMeta objectMeta = c1.lastCreated();
         assertTrue(objectMeta.isA(TextFile.class));
         textFile.setName("BooBoo");
@@ -264,7 +264,7 @@ public class NormalClientInteractionTest extends TestBase {
         List<Delta> deltas = c1.getDeltaFile().getDeltas();
         assertEquals(2, deltas.size());
         PropertiesChanged update = (PropertiesChanged) deltas.get(1).getMessage();
-        assertEquals((Object) 87L, update.getChangeSets().get(0).getObjId());
+        assertEquals((Object) 72L, update.getChangeSets().get(0).getObjId());
         assertEquals("Name", update.getChangeSets().get(0).getChanges().get(0).getProperty());
         assertEquals("BooBoo", update.getChangeSets().get(0).getChanges().get(0).getNewValue());
 
@@ -282,6 +282,6 @@ public class NormalClientInteractionTest extends TestBase {
         //check identical to object retrieved from server
         assertEquals(client.getObjMeta().toXml(), objMeta.toXml());
 
-        assertEquals("BooBoo", objMeta.getClassDatabase().findObjById(87L).get("Name"));
+        assertEquals("BooBoo", objMeta.getClassDatabase().findObjById(72L).get("Name"));
     }
 }

@@ -38,12 +38,12 @@ public class OfflineClientInteractionTest extends TestBase {
     @Test
     public void testScenario6() throws InterruptedException {
         TestObjClient c1 = createClient("100");
-        TextFile textFile = c1.create(59L, "Files", TextFile.class);
+        TextFile textFile = c1.create(60L, "Files", TextFile.class);
         textFile.setName("Hello Kitty");
         c1.commit(textFile);
 
         c1.setOffline();
-        Pupil alice = c1.checkout(15L);
+        Pupil alice = c1.checkout(13L);
         assertEquals("alicew", alice.getUsername());
 
         alice.setSecondName("Fruit");
@@ -59,10 +59,10 @@ public class OfflineClientInteractionTest extends TestBase {
 
         assertFalse(c1.getObjClient().isConnected());
         //ensure previous offline changes are applied to model
-        alice = c1.checkout(15L);
+        alice = c1.checkout(13L);
         assertEquals("Fruit", alice.getSecondName());
         //make some more offline changes
-        PersonSettings personSettings = c1.create(15L, PersonSettings.class);
+        PersonSettings personSettings = c1.create(13L, PersonSettings.class);
         Long id = c1.lastCreated().getId();
         Hat hat = c1.create(id, Hat.class);
         hat.setColour(Colour.blue);
@@ -84,7 +84,7 @@ public class OfflineClientInteractionTest extends TestBase {
 
         //ensure serialized client obj matches serialized server obj
         assertEquals(c1.getObjMeta().toXml(), lo.getRootObj().toXml() );
-        alice = c1.checkout(15L);
+        alice = c1.checkout(13L);
         assertEquals(Colour.blue, alice.getPersonSettings().getFavouriteHat().getColour());
         c1.close();
 
