@@ -14,11 +14,11 @@ package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.BoundObjectType;
 import net.sf.xapp.annotations.application.EditorWidget;
+import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.annotations.objectmodelling.Children;
 import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
-import net.sf.xapp.marshalling.Marshaller;
-import net.sf.xapp.annotations.marshalling.XMLMapping;
 import net.sf.xapp.annotations.objectmodelling.TrackKeyChanges;
+import net.sf.xapp.marshalling.Marshaller;
 import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.api.Rights;

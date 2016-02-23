@@ -8,8 +8,9 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by oldDave on 05/03/2015.

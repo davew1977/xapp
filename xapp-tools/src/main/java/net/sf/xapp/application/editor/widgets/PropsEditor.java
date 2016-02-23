@@ -8,12 +8,11 @@ import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
 
 /**
 * Created by oldDave on 05/02/2015.
