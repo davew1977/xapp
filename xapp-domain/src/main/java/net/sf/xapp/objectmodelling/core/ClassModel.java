@@ -195,6 +195,11 @@ public class ClassModel<T> {
                 list.add(listProperty);
             }
         }
+        for (ContainerProperty mapProperty : mapProperties) {
+            if (mapProperty.hasSpecialBoundComponent()) {
+                list.add(mapProperty);
+            }
+        }
         return list;
     }
 

@@ -256,7 +256,13 @@ public class DefaultEditor implements Editor
     private PropertyWidget createComponent(Property property)
     {
         Class boundCompType = BOUND_COMPONENT_TYPES.get(property.getPropertyClass());
-        if (property.hasSpecialBoundComponent())
+        //now see if there is a specialized bound component
+        ClassModel classModel = property.getPropertyClassModel();
+        PropertyWidget propertyWidget = EditorUtils.createBoundProperty(classModel, property, this);
+        if (propertyWidget != null) {
+            return propertyWidget;
+        }
+        else if (property.hasSpecialBoundComponent())
         {
             return (PropertyWidget) property.createEditorWidget();
         }
@@ -335,10 +341,6 @@ public class DefaultEditor implements Editor
         {
             return new StringSerializablePropertyWidget(property);
         }
-        //now see if there is a specialized bound component
-        ClassModel classModel = property.getPropertyClassModel();
-        PropertyWidget propertyWidget = EditorUtils.createBoundProperty(classModel, property, this);
-        if (propertyWidget != null) return propertyWidget;
 
         //now create a bound component
         return new ObjectPropertyWidget(m_editableContext.getNodeUpdateApi());
@@ -355,6 +357,9 @@ public class DefaultEditor implements Editor
                 propertyWidget.getComponent().setBackground(Color.WHITE);
             }
         }
+    }
+    public PropertyWidget getWidget(String propName) {
+        return m_components.get(propName);
     }
 
     private static class NullPropertyWidget implements PropertyWidget

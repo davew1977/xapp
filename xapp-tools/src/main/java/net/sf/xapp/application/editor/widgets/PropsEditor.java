@@ -21,7 +21,7 @@ import java.awt.*;
 public class PropsEditor extends TextEditor {
     private Color nameColor = new Color(5,32,144);
     private Color valueColor = new Color(0, 128, 0);
-    private List<String> keysEnum = new ArrayList<>();
+    private PropsProvider propsProvider;
 
     public PropsEditor() {
         addAction("control SPACE", new AbstractAction() {
@@ -32,7 +32,7 @@ public class PropsEditor extends TextEditor {
                 final Word word = currentLine.wordAtCaret();
                 if(eqIndex == -1 || word.start< eqIndex) {
                     final String stem = word.wordToCaret();
-                    List<String> suggestions = CollectionsUtils.filter(keysEnum, new Filter<String>() {
+                    List<String> suggestions = CollectionsUtils.filter(propsProvider.getKeys(), new Filter<String>() {
                         @Override
                         public boolean matches(String s) {
                             return s.startsWith(stem);
@@ -68,7 +68,11 @@ public class PropsEditor extends TextEditor {
     }
 
     public void setKeysEnum(List<String> keysEnum) {
-        this.keysEnum = keysEnum;
+        this.propsProvider = new StaticPropsProvider(keysEnum);
+    }
+
+    public void setPropsProvider(PropsProvider propsProvider) {
+        this.propsProvider = propsProvider;
     }
 
     @Override

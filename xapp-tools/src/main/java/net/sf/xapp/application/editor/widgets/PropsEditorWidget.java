@@ -8,13 +8,13 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by oldDave on 05/03/2015.
  */
-public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, ?>> {
+public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, ?>> implements PropsProvider {
 
     private PropsEditor textEditor;
     private JComponent rootPane;
@@ -27,12 +27,8 @@ public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, ?>> {
             JScrollPane scrollPane = new JScrollPane(textEditor);
             scrollPane.setPreferredSize(new Dimension(200, 200));
             if(getMapKeyType().isEnum()) {
-                Enum[] enumValues = EnumListSerializer.getEnumValues(getMapKeyType());
-                java.util.List<String> options = new ArrayList<>();
-                for (Enum enumValue : enumValues) {
-                    options.add(enumValue.name());
-                }
-                textEditor.setKeysEnum(options);
+
+                textEditor.setPropsProvider(this);
                 rootPane = new Box(BoxLayout.PAGE_AXIS);
                 rootPane.add(scrollPane);
                 JLabel h = new JLabel("control-SPACE for key help");
@@ -70,5 +66,15 @@ public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, ?>> {
     @Override
     public void setEditable(boolean editable) {
 
+    }
+
+    @Override
+    public List<String> getKeys() {
+        Enum[] enumValues = EnumListSerializer.getEnumValues(getMapKeyType());
+        java.util.List<String> options = new ArrayList<>();
+        for (Enum enumValue : enumValues) {
+            options.add(enumValue.name());
+        }
+        return options;
     }
 }
