@@ -156,6 +156,13 @@ public class ClassModel<T> {
         }
     }
 
+    public void addValidImplementations(Class... classes) {
+        List<ClassModel> classModels = new ArrayList<>();
+        for (Class aClass : classes) {
+            classModels.add(m_classDatabase.getClassModel(aClass));
+        }
+        addValidImplementations(classModels);
+    }
     public void addValidImplementations(List<ClassModel> classModels) {
         Collection<ClassModel> expanded = expand(classModels);
         for (ClassModel validImpl : expanded) {

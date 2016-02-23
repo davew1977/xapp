@@ -30,26 +30,25 @@ public class PropsEditor extends TextEditor {
                 Line currentLine = getCurrentLine();
                 int eqIndex = currentLine.m_text.indexOf('=');
                 final Word word = currentLine.wordAtCaret();
-                if(eqIndex == -1 || word.start< eqIndex) {
-                    final String stem = word.wordToCaret();
-                    List<String> suggestions = CollectionsUtils.filter(propsProvider.getKeys(), new Filter<String>() {
-                        @Override
-                        public boolean matches(String s) {
-                            return s.startsWith(stem);
-                        }
-                    });
-                    if(!suggestions.isEmpty()) {
-                        JPopupMenu popUp = newPopUp();
-                        for (final String suggestion : suggestions) {
-                            popUp.add(new JMenuItem(new AbstractAction(suggestion) {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    replaceWordAtCaret(word, suggestion);
-                                }
-                            }));
-                        }
-                        showPopUp();
+                List<String> fullSet = word.start < eqIndex ? propsProvider.getKeys() : propsProvider.getValues(currentLine.m_text.substring(0, eqIndex));
+                final String stem = word.wordToCaret();
+                List<String> suggestions = CollectionsUtils.filter(fullSet, new Filter<String>() {
+                    @Override
+                    public boolean matches(String s) {
+                        return s.startsWith(stem);
                     }
+                });
+                if (!suggestions.isEmpty()) {
+                    JPopupMenu popUp = newPopUp();
+                    for (final String suggestion : suggestions) {
+                        popUp.add(new JMenuItem(new AbstractAction(suggestion) {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                replaceWordAtCaret(word, suggestion);
+                            }
+                        }));
+                    }
+                    showPopUp();
                 }
             }
         });

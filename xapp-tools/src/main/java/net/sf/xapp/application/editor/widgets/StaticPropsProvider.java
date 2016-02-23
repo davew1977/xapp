@@ -15,4 +15,9 @@ public class StaticPropsProvider extends ArrayList<String> implements PropsProvi
     public List<String> getKeys() {
         return this;
     }
+
+    @Override
+    public List<String> getValues(String key) {
+        return new ArrayList<>();
+    }
 }

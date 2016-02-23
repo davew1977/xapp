@@ -77,4 +77,9 @@ public class PropsEditorWidget extends AbstractPropertyWidget<Map<?, ?>> impleme
         }
         return options;
     }
+
+    @Override
+    public List<String> getValues(String key) {
+        return new ArrayList<>();
+    }
 }
