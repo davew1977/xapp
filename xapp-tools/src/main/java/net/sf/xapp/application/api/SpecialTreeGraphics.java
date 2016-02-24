@@ -47,7 +47,7 @@ public interface SpecialTreeGraphics<T>
      * @param node the node
      * @param g g
      */
-    void decorateCell(Node node, Graphics g);
+    void decorateCell(Node node, Graphics2D g);
 
     /**
      * override the default tootip (which is print the values of all non transient properties)

@@ -96,7 +96,9 @@ public class MyTreeCellRenderer extends DefaultTreeCellRenderer
     public void paint(Graphics g)
     {
         super.paint(g);
-        if(m_treeGraphics!=null) m_treeGraphics.decorateCell(m_currentNode, g);
+        if(m_treeGraphics!=null) {
+            m_treeGraphics.decorateCell(m_currentNode, (Graphics2D) g);
+        }
     }
 
     public int getRowHeight()

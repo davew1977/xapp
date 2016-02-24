@@ -27,7 +27,7 @@ public class SimpleTreeGraphics implements SpecialTreeGraphics
         return null;
     }
 
-    public void decorateCell(Node node, Graphics g)
+    public void decorateCell(Node node, Graphics2D g)
     {
 
     }

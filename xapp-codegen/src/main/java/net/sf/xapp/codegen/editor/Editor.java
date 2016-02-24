@@ -261,7 +261,7 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
         return null;
     }
 
-    public void decorateCell(Node node, Graphics gr) {
+    public void decorateCell(Node node, Graphics2D gr) {
         if (changedNodes.contains(node)) {
             highlight(gr, Color.red);
         }
@@ -270,8 +270,7 @@ public class Editor extends SimpleApplication<Model> implements SpecialTreeGraph
         }
     }
 
-    private void highlight(Graphics gr, Color color) {
-        Graphics2D g = (Graphics2D) gr;
+    private void highlight(Graphics2D g, Color color) {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
         g.setColor(color);
         g.fill(g.getClipBounds());
