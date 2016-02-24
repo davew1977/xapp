@@ -6,6 +6,7 @@ import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.filters.PropertyFilter;
 import net.sf.xapp.utils.CollectionsUtils;
 import net.sf.xapp.utils.Filter;
+import net.sf.xapp.utils.NoOpFilter;
 import net.sf.xapp.utils.XappException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -738,8 +739,23 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     @Override
     public <X> X ancestor(Class<X> matchingType) {
+        return ancestor(matchingType, new NoOpFilter<X>());
+    }
+
+    @Override
+    public <X> X ancestor(Class<X> matchingType, Filter<? super X> filter) {
         ObjectMeta<?> parent = getParent();
-        return parent != null ? parent.isA(matchingType) ? matchingType.cast(parent.getInstance()) : parent.ancestor(matchingType) : null;
+        if (parent != null) {
+            if (parent.isA(matchingType) && filter.matches((X)parent.getInstance())) {
+                return matchingType.cast(parent.getInstance());
+            }
+            else {
+                return parent.ancestor(matchingType);
+            }
+        }
+        else {
+            return null;
+        }
     }
 
     @Override

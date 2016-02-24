@@ -179,7 +179,23 @@ public class ClassModel<T> {
     }
 
     public EditorWidget getEditorWidget() {
-        return editorWidget;
+        if(editorWidget != null) {
+            return editorWidget;
+        } else {
+            ClassModel parent = getParent();
+            if(parent != null) {
+                return parent.getEditorWidget();
+            }
+        }
+        return null;
+    }
+
+    public ClassModel getParent() {
+        Class<? super T> superclass = m_class.getSuperclass();
+        if(superclass != null && !superclass.equals(Object.class)) {
+            return m_classDatabase.getClassModel(superclass);
+        }
+        return null;
     }
 
     public Class<T> getContainedClass() {

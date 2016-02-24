@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * provides some useful tree related functionality
  */
-@NamespaceFor(TreeNode.class)
+//@NamespaceFor(TreeNode.class)
 @Container(listProperty = "children")
 public class Tree<T extends TreeNode> extends TreeNode<T> {
     protected List<T> children;

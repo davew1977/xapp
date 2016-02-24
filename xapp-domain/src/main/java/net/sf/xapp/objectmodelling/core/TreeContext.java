@@ -10,6 +10,7 @@ import java.util.List;
 public interface TreeContext {
     <X> X parent(Class<X> matchingType);
     <X> X ancestor(Class<X> matchingType);
+    <X> X ancestor(Class<X> matchingType, Filter<? super X> filter);
     <X> List<X> path(Class<X> matchingType);
     <X> List<X> children(Class<X> matchingType);
     <X> X child(Class<X> matchingType, String name);

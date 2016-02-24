@@ -42,6 +42,9 @@ public class TreeNode<T extends TreeNode> {
     public <X> X ancestor(Class<X> type) {
         return treeContext.ancestor(type);
     }
+    public <X> X ancestor(Class<X> type, Filter<? super X> filter) {
+        return treeContext.ancestor(type, filter);
+    }
 
     public List<? extends T> path() {
         return treeContext.path(type);
