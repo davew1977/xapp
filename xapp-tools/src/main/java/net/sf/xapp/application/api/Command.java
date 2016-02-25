@@ -20,7 +20,7 @@ public interface Command<T>
 {
     String getName();
 
-    void execute(T params);
+    void execute(T params) throws Exception;
 
     String getDescription();
 

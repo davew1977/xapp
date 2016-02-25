@@ -568,7 +568,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
                         command.execute(arg);
                         getMainFrame().repaint();
                     }
-                    catch (RuntimeException ex)
+                    catch (Exception ex)
                     {
                         m_application.handleUncaughtException(ex);
                     }
@@ -1232,7 +1232,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
                             command.execute(arg);
                             getMainFrame().repaint();
                         }
-                        catch (RuntimeException e1)
+                        catch (Exception e1)
                         {
                             m_application.handleUncaughtException(e1);
                         }

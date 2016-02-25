@@ -249,7 +249,12 @@ public class SearchFormControl
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        command.execute(arg);
+                        try {
+                            command.execute(arg);
+                        }
+                        catch (Exception e1) {
+                            throw new RuntimeException(e1);
+                        }
                         m_searchContext.update();
                         m_searchForm.repaint();
                     }
@@ -300,7 +305,12 @@ public class SearchFormControl
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        command.execute(arg);
+                        try {
+                            command.execute(arg);
+                        }
+                        catch (Exception e1) {
+                            throw new RuntimeException(e1);
+                        }
                         m_searchContext.update();
                         m_searchForm.repaint();
                     }

@@ -48,7 +48,12 @@ public class PopUpCreateCommand extends NodeCommand
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    command.execute(node);
+                    try {
+                        command.execute(node);
+                    }
+                    catch (Exception e1) {
+                        throw new RuntimeException(e1);
+                    }
                     node.getAppContainer().getMainFrame().repaint();
                 }
             });
