@@ -320,6 +320,7 @@ public class ApplicationContainerImpl<T> implements ApplicationContainer<T>, Sea
 
     public Node refreshNode(Node node)
     {
+        node.objectMeta().refresh();
         Node newNode = getNodeBuilder().refresh(node);
         m_mainTree.repaint();
         return newNode;

@@ -15,7 +15,7 @@ import java.util.List;
 //@NamespaceFor(TreeNode.class)
 @Container(listProperty = "children")
 public class Tree<T extends TreeNode> extends TreeNode<T> {
-    protected List<T> children;
+    protected List<T> children = new ArrayList<>();
 
     public Tree() {
         super((Class<T>) Tree.class);

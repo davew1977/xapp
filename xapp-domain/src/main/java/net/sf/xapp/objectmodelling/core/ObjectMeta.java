@@ -55,27 +55,32 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         setHome(home, updateModelHomeRef);
 
         if (!unmarshalling) {
-            //add metas for children of this object
-            List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
-            for (Property property : properties) {
-                property.eachValue(this, new PropertyValueIterator() {
-                    @Override
-                    public void exec(ObjectLocation objLocation, int index, Object val) {
-                        cdb.findOrCreateObjMeta(objLocation, val);
-                    }
-                });
-            }
-            //add references for all reference properties
-            List<Property> refProps = classModel.getAllProperties(PropertyFilter.REFERENCE);
-            for (Property refProp : refProps) {
-                refProp.eachValue(this, new PropertyValueIterator() {
-                    @Override
-                    public void exec(ObjectLocation objectLocation, int index, Object value) {
-                        ObjectMeta referee = objectLocation.getPropClassModel().find(value);
-                        referee.createReference(objectLocation);
-                    }
-                });
-            }
+            refresh();
+        }
+    }
+
+    public void refresh() {
+        final ClassDatabase cdb = classModel.getClassDatabase();
+        //add metas for children of this object
+        List<Property> properties = classModel.getAllProperties(PropertyFilter.COMPLEX_NON_REFERENCE);
+        for (Property property : properties) {
+            property.eachValue(this, new PropertyValueIterator() {
+                @Override
+                public void exec(ObjectLocation objLocation, int index, Object val) {
+                    cdb.findOrCreateObjMeta(objLocation, val);
+                }
+            });
+        }
+        //add references for all reference properties
+        List<Property> refProps = classModel.getAllProperties(PropertyFilter.REFERENCE);
+        for (Property refProp : refProps) {
+            refProp.eachValue(this, new PropertyValueIterator() {
+                @Override
+                public void exec(ObjectLocation objectLocation, int index, Object value) {
+                    ObjectMeta referee = objectLocation.getPropClassModel().find(value);
+                    referee.createReference(objectLocation);
+                }
+            });
         }
     }
 
@@ -811,5 +816,13 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
 
     public <X> X rootInstance() {
         return (X) getClassDatabase().getRootObjMeta().getInstance();
+    }
+
+    /**
+     *  insert a new object into the model
+     */
+    public ObjectMeta insert(String property, Object obj) {
+        ClassModel classModel = getClassDatabase().getClassModel(obj.getClass());
+        return classModel.createObjMeta(new ObjectLocation(this, getProperty(property)), obj, true, false);
     }
 }
