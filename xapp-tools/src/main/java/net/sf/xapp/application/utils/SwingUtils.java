@@ -15,6 +15,10 @@ package net.sf.xapp.application.utils;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 public class SwingUtils
 {
@@ -142,5 +146,23 @@ public class SwingUtils
         KeyStroke ks = KeyStroke.getKeyStroke(kstr);
         component.getInputMap().put(ks, ks);
         component.getActionMap().put(ks, action);
+    }
+
+    public static String getClipboardText() {
+        Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+
+        return getTextFromClipboard(t);
+    }
+
+    public static  String getTextFromClipboard(Transferable t) {
+        try {
+            return (String) t.getTransferData(DataFlavor.stringFlavor);
+        }
+        catch (UnsupportedFlavorException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

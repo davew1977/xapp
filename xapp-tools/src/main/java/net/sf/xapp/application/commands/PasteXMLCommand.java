@@ -17,7 +17,6 @@ import net.sf.xapp.application.api.Node;
 import net.sf.xapp.application.api.NodeCommand;
 import net.sf.xapp.application.core.ListNodeContext;
 import net.sf.xapp.application.utils.SwingUtils;
-import net.sf.xapp.marshalling.Unmarshaller;
 import net.sf.xapp.objectmodelling.api.ClassDatabase;
 import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ObjectLocation;
@@ -25,13 +24,7 @@ import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.objectmodelling.core.Property;
 import net.sf.xapp.utils.Filter;
 
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,9 +40,7 @@ public class PasteXMLCommand extends NodeCommand
     public void execute(Node node)
     {
         ApplicationContainer applicationContainer = node.getAppContainer();
-        Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-
-        String xml = getTextFromClipboard(t);
+        String xml = SwingUtils.getClipboardText();
         //read opening tag
         Matcher matcher = XML_ROOT_TAG_PATTERN.matcher(xml);
         if (matcher.find()) {
@@ -88,15 +79,4 @@ public class PasteXMLCommand extends NodeCommand
 
     }
 
-    private String getTextFromClipboard(Transferable t) {
-        try {
-            return (String) t.getTransferData(DataFlavor.stringFlavor);
-        }
-        catch (UnsupportedFlavorException e) {
-            throw new RuntimeException(e);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

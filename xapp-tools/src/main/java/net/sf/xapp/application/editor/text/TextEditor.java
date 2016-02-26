@@ -35,12 +35,13 @@ public abstract class TextEditor extends JTextPane
     private Map<String, LiveTemplate> m_liveTemplateMap = new HashMap<String, LiveTemplate>();
     private JPopupMenu m_currentPopUp;
     private LiveTemplate m_currentLiveTemplate;
-    private TextEditorListener listener = new TextEditorListener() {
+    private static TextEditorListener NULL_LISTENER = new TextEditorListener() {
         @Override
         public void textChanged(String txt) {
 
         }
     };
+    private TextEditorListener listener = NULL_LISTENER;
 
     public TextEditor()
     {
@@ -148,7 +149,7 @@ public abstract class TextEditor extends JTextPane
     }
 
     public void setListener(TextEditorListener listener) {
-        this.listener = listener;
+        this.listener = listener != null ? listener : NULL_LISTENER;
     }
 
     protected void paintComponent(Graphics g)
