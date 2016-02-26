@@ -1,10 +1,6 @@
 package net.sf.xapp.objectmodelling.core;
 
 import net.sf.xapp.annotations.application.Container;
-import net.sf.xapp.annotations.objectmodelling.NamespaceFor;
-import net.sf.xapp.annotations.objectmodelling.Transient;
-import net.sf.xapp.utils.Filter;
-import net.sf.xapp.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
