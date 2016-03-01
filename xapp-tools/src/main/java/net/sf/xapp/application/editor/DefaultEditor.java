@@ -549,7 +549,7 @@ public class DefaultEditor implements Editor
         @Override
         public String tooltipMethod()
         {
-            return getProperty().getReference().tooltipMethod();
+            return "";// : getProperty().getReference().tooltipMethod();
     }
     }
 

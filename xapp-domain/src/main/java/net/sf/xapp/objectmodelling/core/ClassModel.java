@@ -64,7 +64,7 @@ public class ClassModel<T> {
     private ContainerProperty m_containerListProperty;
     private Set<Rights> m_restrictedRights;
     private TrackKeyChanges m_trackKeyChanges;
-    private NamespaceFor namespaceFor;
+    private Class[] namespaceFor;
 
     public final String NESTED_CDATA_START = "]ATADC]!>";
     public final String NESTED_CDATA_END = ">]]";
@@ -114,7 +114,8 @@ public class ClassModel<T> {
         if (m_trackKeyChanges != null && !hasKey()) {
             throw new XappException("class " + getSimpleName() + " is annotated with @TrackKeyChanges but has no primary key");
         }
-        namespaceFor = m_class.getAnnotation(NamespaceFor.class);
+        NamespaceFor nf = m_class.getAnnotation(NamespaceFor.class);
+        namespaceFor = nf != null ? nf.value() : null;
     }
 
     public Map<String, ClassModel> getValidImplementations() {
@@ -134,16 +135,19 @@ public class ClassModel<T> {
         return result;
     }
 
-    public NamespaceFor getNamespaceFor() {
-        Class aClass = m_class;
-        while(aClass != Object.class) {
-            NamespaceFor namespaceFor = (NamespaceFor) aClass.getAnnotation(NamespaceFor.class);
-            if(namespaceFor != null) {
-                return namespaceFor;
-            }
-            aClass = aClass.getSuperclass();
+    public Class[] getNamespaceFor() {
+        if(namespaceFor != null) {
+            return namespaceFor;
         }
-        return null;
+        Class<? super T> superclass = m_class.getSuperclass();
+        if(!superclass.equals(Object.class)) {
+            return getClassDatabase().getClassModel(superclass).getNamespaceFor();
+        }
+        return new Class[]{};
+    }
+
+    public void setNamespaceFor(Class... namespaceFor) {
+        this.namespaceFor = namespaceFor;
     }
 
     private void addProperties(List<? extends Property> properties) {

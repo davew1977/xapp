@@ -39,7 +39,7 @@ import static net.sf.xapp.objectmodelling.core.NamespacePath.fullPath;
 public class Property implements Comparable {
     protected final PropertyAccess propertyAccess;
     protected Class m_class;//class of return type of accessor
-    private Reference reference;//true if this should point to another object in the datamodel
+    private boolean reference;//true if this should point to another object in the datamodel
     private String filterOnProperty;
     private boolean key;
     private EditorWidgetFactory editorWidgetFactory; //override the default bound component
@@ -67,7 +67,7 @@ public class Property implements Comparable {
         this.mandatory = mandatory;
         this.propertyAccess = propertyAccess;
         m_class = aClass;
-        reference = ref;
+        reference = ref != null;
         this.filterOnProperty = filterOnProperty;
         this.key = key != null;
         if(editorWidget != null) {
@@ -257,10 +257,6 @@ public class Property implements Comparable {
     }
 
     public boolean isReference() {
-        return reference != null;
-    }
-
-    public Reference getReference() {
         return reference;
     }
 
@@ -400,6 +396,11 @@ public class Property implements Comparable {
 
     public Property setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+        return this;
+    }
+
+    public Property setReference() {
+        this.reference = true;
         return this;
     }
 

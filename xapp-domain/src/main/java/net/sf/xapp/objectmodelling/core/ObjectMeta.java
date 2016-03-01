@@ -43,12 +43,9 @@ public class ObjectMeta<T> implements Namespace, TreeContext{
         }
         this.classModel = classModel;
         this.instance = obj;
-        NamespaceFor namespaceFor = classModel !=null ? classModel.getNamespaceFor() : null;
-        if (namespaceFor != null) {
-            for (Class aClass : namespaceFor.value()) {
-                lookupMap.put(aClass, new HashMap<String, ObjectMeta>());
-                lookupSets.put(aClass, new HashSet<ObjectMeta>());
-            }
+        for (Class aClass : classModel.getNamespaceFor()) {
+            lookupMap.put(aClass, new HashMap<String, ObjectMeta>());
+            lookupSets.put(aClass, new HashSet<ObjectMeta>());
         }
         setId(id);
         key = get(classModel.getKeyProperty());
