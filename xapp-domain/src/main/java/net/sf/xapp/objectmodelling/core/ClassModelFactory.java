@@ -101,7 +101,7 @@ public class ClassModelFactory {
         if (inspectionType == InspectionType.FIELD) {
             for (Field field : selectFields(aClass)) {
                 int modifiers = field.getModifiers();
-                if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers)) {
+                if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || classModelManager.isTransient(aClass, field.getName())) {
                     continue;
                 }
                 PropertyAccess propertyAccess = new FieldProperty(field);

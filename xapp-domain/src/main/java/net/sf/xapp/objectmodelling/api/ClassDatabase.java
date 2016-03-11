@@ -110,4 +110,10 @@ public interface ClassDatabase<T>
     String getKeyProperty(Class aClass);
 
     void setKeyProperty(Class aClass, String propName);
+
+    /**
+     * in some cases, if set from outside, we must do this before classmodels are created
+     */
+    void setTransient(Class aClass, String... propNames);
+    boolean isTransient(Class aClass, String propName);
 }

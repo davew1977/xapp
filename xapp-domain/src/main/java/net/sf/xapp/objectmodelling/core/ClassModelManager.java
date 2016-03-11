@@ -51,6 +51,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     private HashMap<PropertyObjectPair, String> resourceMapByReference;
     private Map<Class, List<Class>> validSubTypes;  //config when model can't be annotated
     private Map<Class,String> keyProperties;
+    private Map<Class,Set<String>> transientProps; //extra transient props
     private HashSet<Class> simpleTypes;
     private KeyChangeHistory keyChangeHistory;
 
@@ -79,6 +80,7 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
         resourceMapByReference = new HashMap<PropertyObjectPair, String>();
         validSubTypes = new HashMap<>();
         keyProperties = new HashMap<>();
+        transientProps = new HashMap<>();
         simpleTypes = new HashSet<Class>();
         simpleTypes.add(Integer.class);
         simpleTypes.add(Long.class);
@@ -189,6 +191,17 @@ public class ClassModelManager<T> implements ClassDatabase<T>, MarshallingContex
     @Override
     public void setKeyProperty(Class aClass, String propName) {
         keyProperties.put(aClass, propName);
+    }
+
+    @Override
+    public void setTransient(Class aClass, String... propNames) {
+        transientProps.put(aClass, new HashSet<>(Arrays.asList(propNames)));
+    }
+
+    @Override
+    public boolean isTransient(Class aClass, String propName) {
+        Set<String> props = transientProps.get(aClass);
+        return props != null && props.contains(propName);
     }
 
     @Override
