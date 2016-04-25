@@ -75,7 +75,7 @@ public class SimpleApplication<T> implements Application<T> {
 
     public boolean nodeSelected(Node node) {
         ObjectMeta objectMeta = node.objectMeta();
-        if(objectMeta.getKey()!=null) {
+        if(objectMeta.getKey()!=null && appData !=null) {
             appData.setLastSelected(objectMeta.getType().getSimpleName() + ":" + objectMeta.getGlobalKey());
         }
         return false;
@@ -171,14 +171,16 @@ public class SimpleApplication<T> implements Application<T> {
     }
 
     protected void selectLastEditedContent() {
-        String lastEdited = appData.getLastSelected();
-        if (lastEdited != null) {
-            String[] s = lastEdited.split(":");
-            ClassModel cm = classDatabase().getClassModelBySimpleName(s[0]);
-            if (cm != null) { //cm could be null if no instances of the type implied have been created, we can't lazily create because we only have the simple name
-                Object o = cm.getClassDatabase().getInstanceNoCheck(cm.getContainedClass(), s[1]);
-                if (o != null) {
-                    appContainer.expand(o);
+        if (appData != null) {
+            String lastEdited = appData.getLastSelected();
+            if (lastEdited != null) {
+                String[] s = lastEdited.split(":");
+                ClassModel cm = classDatabase().getClassModelBySimpleName(s[0]);
+                if (cm != null) { //cm could be null if no instances of the type implied have been created, we can't lazily create because we only have the simple name
+                    Object o = cm.getClassDatabase().getInstanceNoCheck(cm.getContainedClass(), s[1]);
+                    if (o != null) {
+                        appContainer.expand(o);
+                    }
                 }
             }
         }
@@ -186,28 +188,31 @@ public class SimpleApplication<T> implements Application<T> {
 
     protected void initAppData() {
         String appDataFileName = "app-data.xml";
-        final File appDataFile = new File(appContainer.getGuiContext().getCurrentFile().getParentFile(), appDataFileName);
-        if (appDataFile.exists()) {
-            try {
-                appData = classDatabase().createUnmarshaller(AppData.class).unmarshal(appDataFile).getInstance();
-                int div = appData.getDividerLocation();
-                if (div != 0) {
-                    appContainer.setDividerLocation(div);
+        final File appDataFile;
+        if (appContainer.getGuiContext().hasWritableFile()) {
+            appDataFile = new File(appContainer.getGuiContext().getCurrentFile().getParentFile(), appDataFileName);
+            if (appDataFile.exists()) {
+                try {
+                    appData = classDatabase().createUnmarshaller(AppData.class).unmarshal(appDataFile).getInstance();
+                    int div = appData.getDividerLocation();
+                    if (div != 0) {
+                        appContainer.setDividerLocation(div);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    appData = new AppData();
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } else {
                 appData = new AppData();
             }
-        } else {
-            appData = new AppData();
+            appContainer.addAfterHook(DefaultAction.SAVE, new ApplicationContainer.Hook() {
+                public void execute() {
+                    appData.setDividerLocation(appContainer.getDividerLocation());
+                    classDatabase().createMarshaller(AppData.class).marshal(appDataFile, appData);
+                }
+            });
         }
 
-        appContainer.addAfterHook(DefaultAction.SAVE, new ApplicationContainer.Hook() {
-            public void execute() {
-                appData.setDividerLocation(appContainer.getDividerLocation());
-                classDatabase().createMarshaller(AppData.class).marshal(appDataFile, appData);
-            }
-        });
     }
 
     public JFrame getAppFrame() {

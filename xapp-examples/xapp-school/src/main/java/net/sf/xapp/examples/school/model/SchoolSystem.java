@@ -5,6 +5,7 @@ import net.sf.xapp.annotations.objectmodelling.Reference;
 import net.sf.xapp.application.api.ApplicationContainer;
 import net.sf.xapp.application.api.Launcher;
 
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 /**
@@ -62,7 +63,7 @@ public class SchoolSystem {
         this.personOfTheYear = personOfTheYear;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         ApplicationContainer appContainer = Launcher.run(SchoolSystem.class, new SchoolApp() {
             @Override
             public void handleUncaughtException(Throwable e) {

@@ -19,6 +19,7 @@ import net.sf.xapp.objectmodelling.core.ClassModel;
 import net.sf.xapp.objectmodelling.core.ClassModelManager;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -44,8 +45,7 @@ public class TestData
         return cdb.getInstanceNoCheck(cl, id);
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws FileNotFoundException {
         Launcher.run(TestData.class, new ViewerApplication(), args[0], InspectionType.FIELD);
     }
 

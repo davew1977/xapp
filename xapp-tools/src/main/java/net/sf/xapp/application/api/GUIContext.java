@@ -20,6 +20,7 @@ import java.io.File;
 
 public interface GUIContext<T>
 {
+    boolean hasWritableFile();
     File getCurrentFile();
 
     ObjectMeta<T> getObjectMeta();

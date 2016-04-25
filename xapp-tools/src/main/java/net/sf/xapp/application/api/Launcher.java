@@ -27,34 +27,32 @@ import net.sf.xapp.utils.svn.SvnConfig;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 
 public class Launcher
 {
 
-    public static ApplicationContainer run(Class rootClass)
-    {
+    public static ApplicationContainer run(Class rootClass) throws FileNotFoundException {
         return run(rootClass, new SimpleApplication(), null);
     }
 
-    public static ApplicationContainer run(Class rootClass, String fileName)
-    {
+    public static ApplicationContainer run(Class rootClass, String fileName) throws FileNotFoundException {
         return run(rootClass, new SimpleApplication(), fileName);
     }
 
-    public static ApplicationContainer run(Class rootClass, final Application application)
-    {
+    public static ApplicationContainer run(Class rootClass, final Application application) throws FileNotFoundException {
         return run(rootClass, application, null);
     }
 
-    public static ApplicationContainer run(Class rootClass, final Application application, String fileNameOrURL)
-    {
+    public static ApplicationContainer run(Class rootClass, final Application application, String fileNameOrURL) throws FileNotFoundException {
         return run(rootClass, application, fileNameOrURL, InspectionType.METHOD);
     }
 
-    public static ApplicationContainer run(Class rootClass, final Application application, String fileNameOrURL, InspectionType inspectionType)
-    {
+    public static ApplicationContainer run(Class rootClass, final Application application, String fileNameOrURL, InspectionType inspectionType) throws FileNotFoundException {
         final ClassDatabase classDatabase = new ClassModelManager(rootClass, inspectionType);
         ClassModel classModel = classDatabase.getRootClassModel();
         final ObjectMeta rootObj;
@@ -65,9 +63,9 @@ public class Launcher
         }
         else
         {
-            file = resolveFile(fileNameOrURL);
+            InputStream is = resolveFile(fileNameOrURL);
             Unmarshaller unmarshaller = new Unmarshaller(classModel);
-            rootObj = unmarshaller.unmarshal(file.getAbsolutePath());
+            rootObj = unmarshaller.unmarshal(is);
         }
         return run(application, classDatabase, rootObj, file);
     }
@@ -122,22 +120,14 @@ public class Launcher
         }
     }
 
-    private static File resolveFile(String fileNameOrURL)
-    {
+    private static InputStream resolveFile(String fileNameOrURL) throws FileNotFoundException {
         if (fileNameOrURL.startsWith("classpath://"))
         {
-            try
-            {
-                return new File(Launcher.class.getResource(fileNameOrURL.substring("classpath://".length())).toURI());
-            }
-            catch (URISyntaxException e)
-            {
-                throw new RuntimeException(e);
-            }
+            return Launcher.class.getResourceAsStream(fileNameOrURL.substring("classpath://".length()));
         }
         else
         {
-            return new File(fileNameOrURL);
+            return new FileInputStream(new File(fileNameOrURL));
         }
     }
 

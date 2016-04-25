@@ -7,6 +7,7 @@ package net.sf.xapp.objectmodelling.core;
 import net.sf.xapp.annotations.objectmodelling.ListType;
 import net.sf.xapp.application.api.Launcher;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class Database
@@ -42,8 +43,7 @@ public class Database
         return "Database";
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws FileNotFoundException {
         Launcher.run(Database.class, "Database.xml");
     }
 }

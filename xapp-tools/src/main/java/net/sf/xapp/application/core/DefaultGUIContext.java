@@ -57,6 +57,11 @@ public class DefaultGUIContext implements GUIContext
         m_dateFormat = new SimpleDateFormat("HH:mm:ss");
     }
 
+    @Override
+    public boolean hasWritableFile() {
+        return m_currentFile != null;
+    }
+
     public File getCurrentFile()
     {
         return m_currentFile;

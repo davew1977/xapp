@@ -14,6 +14,7 @@ import net.sf.xapp.codegen.model.*;
 import net.sf.xapp.objectmodelling.core.ObjectMeta;
 import net.sf.xapp.utils.Filter;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,8 +55,7 @@ public class Generator
         return Model.loadModel(generatorContext);
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws FileNotFoundException {
         System.out.println(Arrays.asList(args));
         Generator generator = new Generator();
         generator.run(args);
@@ -70,8 +70,7 @@ public class Generator
         return generatorContext;
     }
 
-    public void run(String[] args)
-    {
+    public void run(String[] args) throws FileNotFoundException {
         if (args.length > 0 && args[0].equals("edit"))
         {
             Launcher.run(Model.class, new Editor(new EditorPlugin(), this), generatorContext.getModelFilePath());
