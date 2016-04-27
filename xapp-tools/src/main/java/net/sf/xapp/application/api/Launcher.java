@@ -27,14 +27,10 @@ import net.sf.xapp.utils.svn.SvnConfig;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 
-public class Launcher
-{
+public class Launcher {
 
     public static ApplicationContainer run(Class rootClass) throws FileNotFoundException {
         return run(rootClass, new SimpleApplication(), null);
@@ -57,98 +53,78 @@ public class Launcher
         ClassModel classModel = classDatabase.getRootClassModel();
         final ObjectMeta rootObj;
         File file = null;
-        if (fileNameOrURL == null)
-        {
+        if (fileNameOrURL == null) {
             rootObj = classModel.newInstance(null, true, false);
         }
-        else
-        {
-            InputStream is = resolveFile(fileNameOrURL);
+        else {
             Unmarshaller unmarshaller = new Unmarshaller(classModel);
-            rootObj = unmarshaller.unmarshal(is);
+            if (fileNameOrURL.startsWith("classpath://")) {
+                rootObj = unmarshaller.unmarshal(Launcher.class.getResourceAsStream(fileNameOrURL.substring("classpath://".length())));
+                //no writable file in this case
+            }
+            else {
+                file = new File(fileNameOrURL);
+                rootObj = unmarshaller.unmarshal(file);
+            }
         }
         return run(application, classDatabase, rootObj, file);
     }
 
-    public static ApplicationContainer edit(Object obj, File file, Application application)
-    {
+    public static ApplicationContainer edit(Object obj, File file, Application application) {
         throw new UnsupportedOperationException(); //todo fix
         //return run(application, new ClassModelManager(obj.getClass(), InspectionType.FIELD), obj, file);
     }
-    public static ApplicationContainer edit(Object obj)
-    {
+
+    public static ApplicationContainer edit(Object obj) {
         return edit(obj, null, new SimpleApplication());
     }
-    public static ApplicationContainer edit(Object obj, Application application)
-    {
+
+    public static ApplicationContainer edit(Object obj, Application application) {
         return edit(obj, null, application);
     }
 
-    public static ApplicationContainer run(final Application application, final ClassDatabase classDatabase, final ObjectMeta rootObj, File file)
-    {
-        try
-        {
+    public static ApplicationContainer run(final Application application, final ClassDatabase classDatabase, final ObjectMeta rootObj, File file) {
+        try {
             final ApplicationContainerImpl[] applicationContainer = new ApplicationContainerImpl[1];
             final File file1 = file;
-            Runnable launch = new Runnable()
-            {
-                public void run()
-                {
+            Runnable launch = new Runnable() {
+                public void run() {
                     applicationContainer[0] = new ApplicationContainerImpl(new DefaultGUIContext(file1, classDatabase, rootObj));
                     applicationContainer[0].setUserGUI(application);
                     applicationContainer[0].getMainFrame().setVisible(true);
                     applicationContainer[0].getMainFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 }
             };
-            if(SwingUtilities.isEventDispatchThread())
-            {
+            if (SwingUtilities.isEventDispatchThread()) {
                 launch.run();
             }
-            else
-            {
+            else {
                 SwingUtilities.invokeAndWait(launch);
             }
             return applicationContainer[0];
         }
-        catch (InterruptedException e)
-        {
+        catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        catch (InvocationTargetException e)
-        {
+        catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static InputStream resolveFile(String fileNameOrURL) throws FileNotFoundException {
-        if (fileNameOrURL.startsWith("classpath://"))
-        {
-            return Launcher.class.getResourceAsStream(fileNameOrURL.substring("classpath://".length()));
-        }
-        else
-        {
-            return new FileInputStream(new File(fileNameOrURL));
-        }
-    }
-
-    public static SVNFacade createSVNFacade()
-    {
+    public static SVNFacade createSVNFacade() {
         return createSVNFacade(new SvnConfig(), false);
     }
 
-    public static SVNFacade createSVNFacade(SvnConfig svnConfig)
-    {
+    public static SVNFacade createSVNFacade(SvnConfig svnConfig) {
         return createSVNFacade(svnConfig, false);
     }
 
 
-    public static SVNFacade createSVNFacade(boolean forceCredentials)
-    {
+    public static SVNFacade createSVNFacade(boolean forceCredentials) {
         return createSVNFacade(new SvnConfig(), forceCredentials);
     }
 
-    public static SVNFacade createSVNFacade(SvnConfig svnConfig, boolean forceCredentials)
-    {
+    public static SVNFacade createSVNFacade(SvnConfig svnConfig, boolean forceCredentials) {
         String username = svnConfig.getUsername();
         String password = svnConfig.getPassword();
         String[] creds = Boolean.getBoolean("skip.dialog") ?
