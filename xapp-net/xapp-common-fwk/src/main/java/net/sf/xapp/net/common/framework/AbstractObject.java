@@ -7,6 +7,12 @@
 package net.sf.xapp.net.common.framework;
 
 
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.List;
 
 public abstract class AbstractObject implements TransportObject
@@ -33,6 +39,16 @@ public abstract class AbstractObject implements TransportObject
     {
         throw new UnsupportedOperationException();
 
+    }
+
+    @Override
+    public void writeData(ObjectDataOutput out) throws IOException {
+        writeData((DataOutput) out);
+    }
+
+    @Override
+    public void readData(ObjectDataInput in) throws IOException {
+        readData((DataInput) in);
     }
 
     /**

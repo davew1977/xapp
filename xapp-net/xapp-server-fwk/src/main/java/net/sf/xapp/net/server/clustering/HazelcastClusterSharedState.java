@@ -8,10 +8,7 @@ package net.sf.xapp.net.server.clustering;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.XmlConfigBuilder;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.MessageListener;
+import com.hazelcast.core.*;
 import net.sf.xapp.net.common.framework.InMessage;
 import net.sf.xapp.net.common.framework.MessageHandler;
 import net.sf.xapp.net.common.types.NodeData;
@@ -38,7 +35,7 @@ public class HazelcastClusterSharedState implements ClusterSharedState
         log.info("starting new Hazelcast instance");
         Config config = new XmlConfigBuilder().build();
         config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastPort(multicastPort);
-        config.setPort(port);
+        config.getNetworkConfig().setPort(port);
         config.getGroupConfig().setName("ngpoker");
         hazelcastInstance = Hazelcast.newHazelcastInstance(config);
         log.info(hazelcastInstance.toString());
@@ -103,9 +100,8 @@ public class HazelcastClusterSharedState implements ClusterSharedState
         hazelcastInstance.<InMessage>getTopic(topicName).addMessageListener(new MessageListener<InMessage>()
         {
             @Override
-            public void onMessage(InMessage message)
-            {
-                messageHandler.handleMessage(message);
+            public void onMessage(Message<InMessage> message) {
+                messageHandler.handleMessage(message.getMessageObject());
             }
         });
     }
