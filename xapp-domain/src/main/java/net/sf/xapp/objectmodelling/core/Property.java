@@ -442,7 +442,8 @@ public class Property implements Comparable {
     }
 
     public boolean isComplexNonReference() {
-        return !(isReference() || isImmutable() || isTransient());
+        boolean transientExcluded = isTransient() && !isDisplayNodes();
+        return !(isReference() || isImmutable() || transientExcluded);
     }
 
     public boolean canConvertToString(){
