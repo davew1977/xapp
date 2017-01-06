@@ -118,7 +118,7 @@ public class ContainerProperty extends Property
 
     @Override
     public boolean isComplexNonReference() {
-        return !isTransient() && !isImmutable() && !containsReferences();
+        return !isTransientExcluded() && !isImmutable() && !containsReferences();
     }
 
     public final Object createCollection() {
